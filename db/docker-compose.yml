@@ -1,0 +1,13 @@
+version: '3'
+services:
+  oracle-xe:
+    ports:
+      - '1521:1521'
+    environment:
+      - ORACLE_PASSWORD=changeit
+    volumes:
+      - 'oracle-xe-volume:/opt/oracle/oradata'
+    image: 'gvenzl/oracle-xe:18'
+
+volumes:
+  oracle-xe-volume:
