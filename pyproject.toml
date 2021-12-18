@@ -8,6 +8,7 @@ authors = ["Lajos Cseppento <lajos.cseppento@cern.ch>"]
 python = "^3.10"
 Django = "^4.0"
 djangorestframework = "^3.13.1"
+cx-Oracle = "^8.3.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"

@@ -75,8 +75,10 @@ WSGI_APPLICATION = "ycc_hull.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "tmp/db.sqlite3",
+        "ENGINE": "django.db.backends.oracle",
+        "NAME": "127.0.0.1:1521",
+        "USER": "ycclocal",
+        "PASSWORD": "changeit"
     }
 }
 
