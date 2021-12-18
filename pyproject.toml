@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "ycc-hull"
+version = "0.1.0"
+description = ""
+authors = ["Lajos Cseppento <lajos.cseppento@cern.ch>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^4.0"
+djangorestframework = "^3.13.1"
+
+[tool.poetry.dev-dependencies]
+black = "^21.12b0"
+flake8 = "^4.0.1"
+mypy = "^0.920"
+pylint = "^2.12.2"
+pytest = "^6.2.5"
+pytest-cov = "^3.0.0"
+pytest-django = "^4.5.2"
+pytest-html = "^3.1.1"
+pytest-mock = "^3.6.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
