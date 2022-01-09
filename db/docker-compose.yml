@@ -8,8 +8,7 @@ services:
     volumes:
       - 'oracle-xe-volume:/opt/oracle/oradata'
       - './init-local:/container-entrypoint-startdb.d'
-    # TODO more lightweight image
-    image: 'gvenzl/oracle-xe:21-full'
+    image: 'gvenzl/oracle-xe:21'
 
 volumes:
   oracle-xe-volume:
