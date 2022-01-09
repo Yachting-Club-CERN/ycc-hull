@@ -7,7 +7,9 @@ services:
       - ORACLE_PASSWORD=changeit
     volumes:
       - 'oracle-xe-volume:/opt/oracle/oradata'
-    image: 'gvenzl/oracle-xe:18'
+      - './init-local:/container-entrypoint-startdb.d'
+    # TODO more lightweight image
+    image: 'gvenzl/oracle-xe:21-full'
 
 volumes:
   oracle-xe-volume:
