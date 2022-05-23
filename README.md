@@ -25,11 +25,17 @@ cd db && docker-compose up
 Start application:
 
 ```
-poetry shell
-python manage.py runserver
+poetry run start-dev
 ```
 
 Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+## Development Guide
+
+### Regenerating Python Model from Database
+
+1. `poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile ycc_hull/db/models.py`
+2. Restore & update the comment about when, who and from what regenerated the model
 
 ## PoC History
 
