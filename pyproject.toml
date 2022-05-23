@@ -8,7 +8,7 @@ authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 python = "^3.10"
 # REST API
 fastapi = "^0.78.0"
-uvicorn = {extras = ["standard"], version = "^0.17.6"}
+uvicorn = { extras = ["standard"], version = "^0.17.6" }
 # DB
 cx-Oracle = "^8.3.0"
 SQLAlchemy = "^1.4.36"
@@ -25,6 +25,9 @@ pytest = "^7.1.2"
 pytest-cov = "^3.0.0"
 pytest-html = "^3.1.1"
 pytest-mock = "^3.7.0"
+
+[tool.poetry.scripts]
+start-dev = "ycc_hull.main:start_dev"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
