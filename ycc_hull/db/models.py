@@ -22,7 +22,7 @@ class ModelBase:
 
 
 class Member(Base, ModelBase):
-    __tablename__ = 'members'
+    __tablename__ = "members"
 
     id = Column(NUMBER, nullable=False, primary_key=True)
     name = Column(VARCHAR2(25), nullable=False)
@@ -57,38 +57,50 @@ class Member(Base, ModelBase):
 
     def json_dict(self) -> dict:
         return {
-            'id': self.id,
-            'first_name': self.firstname,
-            'last_name': self.name,
-            'membership_type': self.membership,
+            "id": self.id,
+            "first_name": self.firstname,
+            "last_name": self.name,
+            "membership_type": self.membership,
         }
 
     user = relationship("User", back_populates="member", uselist=False)
 
 
 class MembershipType(Base, ModelBase):
-    __tablename__ = 'membership'
+    __tablename__ = "membership"
 
-    mb_id = Column(NUMBER(2, 0), nullable=False, primary_key=True)  # Code only primary key, not in DB
-    mb_name = Column(VARCHAR2(2), nullable=False, unique=True)  # Code only unique key, not in DB
+    mb_id = Column(
+        NUMBER(2, 0),
+        nullable=False,
+        # Code only primary key, not in DB
+        primary_key=True,
+    )
+    mb_name = Column(
+        VARCHAR2(2),
+        nullable=False,
+        # Code only unique key, not in DB
+        unique=True,
+    )
     e_desc = Column(VARCHAR2(20), nullable=False)
     f_desc = Column(VARCHAR2(20), nullable=False)
     comments = Column(VARCHAR2(100))
 
     def json_dict(self) -> dict:
         return {
-            'id': self.mb_id,
-            'name': self.mb_name,
-            'description_en': self.e_desc,
-            'description_fr': self.f_desc,
-            'comments': self.comments,
+            "id": self.mb_id,
+            "name": self.mb_name,
+            "description_en": self.e_desc,
+            "description_fr": self.f_desc,
+            "comments": self.comments,
         }
 
 
 class User(Base, ModelBase):
-    __tablename__ = 'web_logon'
+    __tablename__ = "web_logon"
 
-    member_id = Column(NUMBER, ForeignKey('members.id'), nullable=False, primary_key=True)
+    member_id = Column(
+        NUMBER, ForeignKey("members.id"), nullable=False, primary_key=True
+    )
     logon_id = Column(VARCHAR2(25), nullable=False, unique=True)
     session_id = Column(NUMBER)
     session_date = Column(DATE)
@@ -101,8 +113,8 @@ class User(Base, ModelBase):
 
     def json_dict(self) -> dict:
         return {
-            'id': self.member_id,
-            'username': self.logon_id,
+            "id": self.member_id,
+            "username": self.logon_id,
             # Do not send password
-            'last_changed': self.last_changed,
+            "last_changed": self.last_changed,
         }

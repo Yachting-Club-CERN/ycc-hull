@@ -39,7 +39,8 @@ def _fake_username_collision(first_name: str, last_name: str) -> str:
             return username
 
     raise Exception(
-        f"Could not generate username for {first_name} {last_name} - try again or improve the code")
+        f"Could not generate username for {first_name} {last_name} - try again or improve the code"
+    )
 
 
 def generate_members(count: int) -> List[Member]:
@@ -109,41 +110,48 @@ def generate_user(member: Member) -> User:
         logon_pass2=hash_ycc_password(username),
         pass_reset_key=None,
         pass_reset_exp=None,
-        last_changed=faker.date_between(start_date=date(2021, 1, 1), end_date=date(2022, 5, 1))
+        last_changed=faker.date_between(
+            start_date=date(2021, 1, 1), end_date=date(2022, 5, 1)
+        ),
     )
 
 
 def to_oracle_data_json(obj):
     if isinstance(obj, date):
-        return obj.strftime('%d-%b-%Y').upper()
+        return obj.strftime("%d-%b-%Y").upper()
 
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
 
 def read_json_file(file: str, cls: Type[ModelBase]) -> List[ModelBase]:
-    print(f'== Reading from {file} ...')
-    with open(file, 'r') as fp:
+    print(f"== Reading from {file} ...")
+    with open(file, "r") as fp:
         return [cls(**entry) for entry in json.load(fp)]
 
 
 def write_json_file(file: str, entries: List[ModelBase]) -> None:
     print(f"Writing {file} ...")
-    with open(file, 'w') as fp:
-        json.dump([entry.dict() for entry in entries], fp, default=to_oracle_data_json, indent=2)
+    with open(file, "w") as fp:
+        json.dump(
+            [entry.dict() for entry in entries],
+            fp,
+            default=to_oracle_data_json,
+            indent=2,
+        )
 
 
 def generate():
     if path.exists(MEMBERS_JSON_FILE):
         members = read_json_file(MEMBERS_JSON_FILE, Member)
     else:
-        print('== Generating members...')
+        print("== Generating members...")
         members = generate_members(MEMBER_COUNT)
         write_json_file(MEMBERS_JSON_FILE, members)
 
     if path.exists(USERS_JSON_FILE):
-        print('== Skipping users')
+        print("== Skipping users")
     else:
-        print('== Generating users...')
+        print("== Generating users...")
         write_json_file(USERS_JSON_FILE, generate_users(members))
 
 
