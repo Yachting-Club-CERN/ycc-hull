@@ -34,8 +34,21 @@ Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ### Regenerating Python Model from Database
 
-1. `poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile ycc_hull/db/models.py`
-2. Restore & update the comment about when, who and from what regenerated the model
+You can regenerate models using the following commands:
+
+```
+poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile ycc_hull/db/models_generated.py
+```
+
+Generated models does not work as good as handwritten ones. Please use the generated models as a reference for updating
+handwritten models in `models.py`.
+
+### Test Data
+
+For non-sensitive data such as membership types or boats, we can use directly the real YCC data.
+
+For sensitive data (names, addresses, bookings, *boat logs*), automatic one-shot generation is preferred with tools like
+[Faker](https://faker.readthedocs.io) or [Mockaroo](https://www.mockaroo.com/).
 
 ## PoC History
 

@@ -8,6 +8,7 @@ authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 python = "^3.10"
 # REST API
 fastapi = "^0.78.0"
+python-multipart = "^0.0.5"
 uvicorn = { extras = ["standard"], version = "^0.17.6" }
 # DB
 cx-Oracle = "^8.3.0"
@@ -17,6 +18,7 @@ passlib = "^1.7.4"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
+Faker = "^13.11.1"
 flake8 = "^4.0.1"
 mypy = "^0.950"
 poetryup = "^0.7.1"
@@ -28,7 +30,7 @@ pytest-mock = "^3.7.0"
 sqlacodegen = "^3.0.0rc1"
 
 [tool.poetry.scripts]
-start-dev = "ycc_hull.main:start_dev"
+start = "ycc_hull.main:start"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
