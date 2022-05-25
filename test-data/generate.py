@@ -1,9 +1,16 @@
 import json
-from typing import Set, List
+from datetime import date
+from os import path
+from typing import Set, List, Type
 
 from faker import Faker
 
-from ycc_hull.db.models import Member
+from ycc_hull.auth.password_hashing import hash_ycc_password
+from ycc_hull.db.models import Member, User, ModelBase
+
+MEMBER_COUNT = 300
+MEMBERS_JSON_FILE = "Members.json"
+USERS_JSON_FILE = "Users.json"
 
 faker: Faker = Faker()
 assigned_usernames: Set[str] = set()
@@ -15,7 +22,7 @@ def fake_username(first_name: str, last_name: str) -> str:
     if not last_name:
         raise ValueError(f"Invalid last name: f{last_name}")
 
-    username: str = f"{first_name[0]}{last_name[1:8]}".upper()
+    username: str = f"{first_name[0]}{last_name[0:7]}".upper()
 
     if username in assigned_usernames:
         username = _fake_username_collision(first_name, last_name)
@@ -26,7 +33,7 @@ def fake_username(first_name: str, last_name: str) -> str:
 
 def _fake_username_collision(first_name: str, last_name: str) -> str:
     for i in range(1, 10):
-        username: str = f"{first_name[0]}{last_name[1:7]}{str(i)}".upper()
+        username: str = f"{first_name[0]}{last_name[0:6]}{str(i)}".upper()
 
         if username not in assigned_usernames:
             return username
@@ -88,14 +95,57 @@ def generate_member(id: int) -> Member:
     )
 
 
-def generate_ycc_logon(members: List[Member]):
-    # TODO
-    # username = fake_username(first_name, last_name)
-    pass
+def generate_users(members: List[Member]) -> List[User]:
+    return [generate_user(member) for member in members]
+
+
+def generate_user(member: Member) -> User:
+    username = fake_username(member.firstname, member.name)
+    return User(
+        member_id=member.id,
+        logon_id=username,
+        session_id=None,
+        session_date=None,
+        logon_pass2=hash_ycc_password(username),
+        pass_reset_key=None,
+        pass_reset_exp=None,
+        last_changed=faker.date_between(start_date=date(2021, 1, 1), end_date=date(2022, 5, 1))
+    )
+
+
+def to_oracle_data_json(obj):
+    if isinstance(obj, date):
+        return obj.strftime('%d-%b-%Y').upper()
+
+    raise TypeError(f"Cannot serialize type: {type(obj)}")
+
+
+def read_json_file(file: str, cls: Type[ModelBase]) -> List[ModelBase]:
+    print(f'== Reading from {file} ...')
+    with open(file, 'r') as fp:
+        return [cls(**entry) for entry in json.load(fp)]
+
+
+def write_json_file(file: str, entries: List[ModelBase]) -> None:
+    print(f"Writing {file} ...")
+    with open(file, 'w') as fp:
+        json.dump([entry.dict() for entry in entries], fp, default=to_oracle_data_json, indent=2)
+
+
+def generate():
+    if path.exists(MEMBERS_JSON_FILE):
+        members = read_json_file(MEMBERS_JSON_FILE, Member)
+    else:
+        print('== Generating members...')
+        members = generate_members(MEMBER_COUNT)
+        write_json_file(MEMBERS_JSON_FILE, members)
+
+    if path.exists(USERS_JSON_FILE):
+        print('== Skipping users')
+    else:
+        print('== Generating users...')
+        write_json_file(USERS_JSON_FILE, generate_users(members))
 
 
 if __name__ == "__main__":
-    members = generate_members(300)
-    with open('Members.json', 'w') as fp:
-        json.dump([member.dict() for member in members], fp, indent=2)
-        print('== Generated members')
+    generate()

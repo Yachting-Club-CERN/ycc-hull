@@ -9,7 +9,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from ycc_hull.config import DB_URL, UVICORN_PORT, UVICORN_RELOAD
-from ycc_hull.db.models import Member, MembershipType, ModelBase
+from ycc_hull.db.models import Member, MembershipType, ModelBase, User
 
 engine: sqlalchemy.future.engine.Engine = sqlalchemy.create_engine(
     DB_URL, echo=True, future=True)
@@ -19,8 +19,8 @@ app = FastAPI()
 
 # TODO test data should be disabled on production
 
-@app.post("/api/v0/test-data/generate")
-async def test_data_generate():
+@app.post("/api/v0/test-data/populate")
+async def test_data_populate():
     log: List[str] = []
 
     with Session(engine) as session:
@@ -35,14 +35,24 @@ async def test_data_generate():
                     session.add(MembershipType(**entry))
 
         if await members_get():
-            log.append("Skipping members types")
+            log.append("Skipping members")
         else:
             with open('test-data/Members.json', 'r') as f:
-                members = json.load(f)
-                for entry in members:
+                entries = json.load(f)
+                for entry in entries:
                     session.add(Member(**entry))
 
-                log.append(f"Add {len(members)} members")
+                log.append(f"Add {len(entries)} members")
+
+        if await users_get():
+            log.append("Skipping users")
+        else:
+            with open('test-data/Users.json', 'r') as f:
+                entries = json.load(f)
+                for entry in entries:
+                    session.add(User(**entry))
+
+                log.append(f"Add {len(entries)} users")
 
         session.commit()
 
@@ -59,6 +69,9 @@ async def test_data_clear():
         log.append("Deleting membership types")
         session.execute(delete(MembershipType))
 
+        log.append("Deleting users")
+        session.execute(delete(User))
+
         log.append("Deleting members")
         session.execute(delete(Member))
 
@@ -69,12 +82,12 @@ async def test_data_clear():
     return log
 
 
-@app.post("/api/v0/test-data/regenerate")
-async def test_data_regenerate():
+@app.post("/api/v0/test-data/repopulate")
+async def test_data_repopulate():
     log: List[str] = []
 
     log.extend(await test_data_clear())
-    log.extend(await test_data_generate())
+    log.extend(await test_data_populate())
 
     return log
 
@@ -87,6 +100,11 @@ async def members_get():
 @app.get("/api/v0/membership-types")
 async def membership_types_get():
     return query_all(MembershipType)
+
+
+@app.get("/api/v0/users")
+async def users_get():
+    return query_all(User)
 
 
 def query_all(cls) -> List[Any]:
