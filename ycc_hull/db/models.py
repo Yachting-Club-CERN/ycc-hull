@@ -3,10 +3,10 @@ Handwritten models containing only the relevant tables and using Oracle dialect 
 
 Note: SQLAlchemy requires all tables with PK, but sometimes they are not in the database. These are marked with comments.
 """
-from typing import Dict, Any
+from typing import Any, Dict
 
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.dialects.oracle import CHAR, NUMBER, DATE, VARCHAR2
+from sqlalchemy.dialects.oracle import CHAR, DATE, NUMBER, VARCHAR2
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()

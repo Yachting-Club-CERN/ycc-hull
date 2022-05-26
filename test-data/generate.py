@@ -1,12 +1,12 @@
 import json
 from datetime import date
 from os import path
-from typing import Set, List, Type
+from typing import List, Set, Type
 
 from faker import Faker
 
 from ycc_hull.auth.password_hashing import hash_ycc_password
-from ycc_hull.db.models import Member, User, ModelBase
+from ycc_hull.db.models import Member, ModelBase, User
 
 MEMBER_COUNT = 300
 MEMBERS_JSON_FILE = "Members.json"

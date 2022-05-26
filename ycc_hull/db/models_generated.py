@@ -1,5 +1,7 @@
 from sqlalchemy import (
     CHAR,
+    TIMESTAMP,
+    VARCHAR,
     CheckConstraint,
     Column,
     DateTime,
@@ -8,10 +10,8 @@ from sqlalchemy import (
     Integer,
     LargeBinary,
     PrimaryKeyConstraint,
-    TIMESTAMP,
     Table,
     Text,
-    VARCHAR,
     text,
 )
 from sqlalchemy.dialects.oracle import NUMBER

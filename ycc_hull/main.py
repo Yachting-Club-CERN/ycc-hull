@@ -1,5 +1,5 @@
 import json
-from typing import List, Any
+from typing import Any, List
 
 import sqlalchemy
 import uvicorn
@@ -9,7 +9,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from ycc_hull.config import DB_URL, UVICORN_PORT, UVICORN_RELOAD
-from ycc_hull.db.models import Member, MembershipType, ModelBase, User, Holiday
+from ycc_hull.db.models import Holiday, Member, MembershipType, ModelBase, User
 
 engine: sqlalchemy.future.engine.Engine = sqlalchemy.create_engine(
     DB_URL, echo=True, future=True

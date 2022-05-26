@@ -2,7 +2,7 @@ import base64
 import logging
 import re
 import struct
-from re import Pattern, Match
+from re import Match, Pattern
 
 from passlib.handlers.pbkdf2 import ldap_pbkdf2_sha1
 from passlib.utils.handlers import PrefixWrapper
