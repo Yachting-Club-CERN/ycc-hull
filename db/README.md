@@ -5,9 +5,8 @@ The new system uses the existing Oracle database (hosted at CERN). This is mainl
 To connect to the database programmatically (both local and remote) you will need to
 install [Oracle Instant Client](https://www.oracle.com/uk/database/technologies/instant-client/downloads.html).
 
-To inspect the database, best is to use [SQL Developer](
-
-).
+To inspect the database, best is to
+use [SQL Developer](https://www.oracle.com/database/technologies/appdev/sqldeveloper-landing.html).
 Modern IDEs also have data browser extensions.
 
 ## Local Instance

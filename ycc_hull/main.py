@@ -9,7 +9,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from ycc_hull.config import DB_URL, UVICORN_PORT, UVICORN_RELOAD
-from ycc_hull.db.models import Member, MembershipType, ModelBase, User
+from ycc_hull.db.models import Member, MembershipType, ModelBase, User, Holiday
 
 engine: sqlalchemy.future.engine.Engine = sqlalchemy.create_engine(
     DB_URL, echo=True, future=True
@@ -27,6 +27,16 @@ async def test_data_populate():
 
     with Session(engine) as session:
         session: Session
+
+        if await holidays_get():
+            log.append("Skipping holidays")
+        else:
+            with open("test-data/Holidays.json", "r") as f:
+                entries = json.load(f)
+                for entry in entries:
+                    session.add(Holiday(**entry))
+
+                log.append(f"Add {len(entries)} holidays")
 
         if await membership_types_get():
             log.append("Skipping membership types")
@@ -77,6 +87,8 @@ async def test_data_clear():
         log.append("Deleting members")
         session.execute(delete(Member))
 
+        log.append("Deleting holidays")
+        session.execute(delete(Holiday))
         session.commit()
 
         log.append("Commit")
@@ -92,6 +104,11 @@ async def test_data_repopulate():
     log.extend(await test_data_populate())
 
     return log
+
+
+@app.get("/api/v0/holidays")
+async def holidays_get():
+    return query_all(Holiday)
 
 
 @app.get("/api/v0/members")

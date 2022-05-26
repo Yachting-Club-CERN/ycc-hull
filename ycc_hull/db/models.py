@@ -21,6 +21,24 @@ class ModelBase:
         return f"{self.__class__.__name__}{self.dict()}"
 
 
+class Holiday(Base, ModelBase):
+    __tablename__ = "holidays"
+
+    day = Column(
+        DATE,
+        nullable=False,
+        # Code only primary key, not in DB
+        primary_key=True,
+    )
+    label = Column(VARCHAR2(20), nullable=False)
+
+    def json_dict(self) -> dict:
+        return {
+            "date": self.day.date().isoformat(),  # Oracle DATE = datetime, but here not needed
+            "label": self.label,
+        }
+
+
 class Member(Base, ModelBase):
     __tablename__ = "members"
 
@@ -115,6 +133,5 @@ class User(Base, ModelBase):
         return {
             "id": self.member_id,
             "username": self.logon_id,
-            # Do not send password
-            "last_changed": self.last_changed,
+            # Ignore sensitive info
         }

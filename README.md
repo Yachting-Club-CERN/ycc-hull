@@ -7,6 +7,7 @@ YCC back-end service.
 - Install Python 3.10
 - Install Poetry
 - Install Docker & Docker Compose
+- Prepare the local Oracle database (see `db/`)
 
 ## Run Application Locally
 
