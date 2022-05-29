@@ -7,7 +7,6 @@ YCC back-end service.
 - Install Python 3.10
 - Install Poetry
 - Install Docker & Docker Compose
-- Prepare the local Oracle database (see `db/`)
 
 ## Run Application Locally
 
@@ -26,7 +25,7 @@ cd db && docker-compose up
 Start application:
 
 ```
-poetry run start-dev
+poetry run start
 ```
 
 Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
