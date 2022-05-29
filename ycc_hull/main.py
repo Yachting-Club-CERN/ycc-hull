@@ -87,6 +87,9 @@ async def test_data_clear():
     log: List[str] = []
 
     with Session(engine) as session:
+        log.append("Deleting boats")
+        session.execute(delete(Boat))
+
         log.append("Deleting membership types")
         session.execute(delete(MembershipType))
 
@@ -98,9 +101,6 @@ async def test_data_clear():
 
         log.append("Deleting holidays")
         session.execute(delete(Holiday))
-
-        log.append("Deleting boats")
-        session.execute(delete(Boat))
 
         session.commit()
         log.append("Commit")
