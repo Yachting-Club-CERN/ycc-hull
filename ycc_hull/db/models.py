@@ -6,7 +6,7 @@ Note: SQLAlchemy requires all tables with PK, but sometimes they are not in the 
 from typing import Any, Dict
 
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.dialects.oracle import CHAR, DATE, NUMBER, VARCHAR2
+from sqlalchemy.dialects.oracle import BLOB, CHAR, DATE, NUMBER, VARCHAR2
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -19,6 +19,49 @@ class ModelBase:
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}{self.dict()}"
+
+
+class Boat(Base, ModelBase):
+    __tablename__ = "boats"
+
+    boat_id = Column(NUMBER(3, 0), nullable=False, primary_key=True)
+    name = Column(VARCHAR2(20), nullable=False, unique=True)
+    type = Column(VARCHAR2(20), nullable=False)
+    ycc_num = Column(NUMBER(3, 0), nullable=False, unique=True)
+    license = Column(VARCHAR2(5), nullable=False)
+    class_ = Column("class", VARCHAR2(5), nullable=False)
+    table_pos = Column(NUMBER(3, 0), nullable=False, unique=True)
+    # Maintainer and maintainer2 are used for sending e-mails to maintainers, e.g., upon Warning/Out of order log entries
+    maintainer_id = Column(NUMBER, ForeignKey("members.id"))
+    ext_reg_cat = Column(VARCHAR2(2))
+    maintainer_id2 = Column(NUMBER, ForeignKey("members.id"))
+    registration_pdf = Column(BLOB)
+
+    # TODO This should be many to many when away from Perl
+    maintainer1 = relationship(
+        "Member",
+        back_populates="maintained_boats1",
+        foreign_keys=maintainer_id,
+        lazy="joined",
+    )
+    maintainer2 = relationship(
+        "Member",
+        back_populates="maintained_boats2",
+        foreign_keys=maintainer_id2,
+        lazy="joined",
+    )
+
+    def json_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "type": self.type,
+            "number": self.ycc_num,
+            "license": self.license,
+            "class": self.class_,
+            "tablePosition": self.table_pos,
+            "maintainer1": self.maintainer1.json_dict() if self.maintainer1 else None,
+            "maintainer2": self.maintainer2.json_dict() if self.maintainer2 else None,
+        }
 
 
 class Holiday(Base, ModelBase):
@@ -73,15 +116,22 @@ class Member(Base, ModelBase):
     last_updated_date = Column(DATE)
     valid_from_date = Column(DATE)
 
+    user = relationship("User", back_populates="member", uselist=False)
+    # TODO This should be many to many when away from Perl
+    maintained_boats1 = relationship(
+        "Boat", back_populates="maintainer1", foreign_keys="Boat.maintainer_id"
+    )
+    maintained_boats2 = relationship(
+        "Boat", back_populates="maintainer2", foreign_keys="Boat.maintainer_id"
+    )
+
     def json_dict(self) -> dict:
         return {
             "id": self.id,
-            "first_name": self.firstname,
-            "last_name": self.name,
-            "membership_type": self.membership,
+            "firstName": self.firstname,
+            "lastName": self.name,
+            "membershipType": self.membership,
         }
-
-    user = relationship("User", back_populates="member", uselist=False)
 
 
 class MembershipType(Base, ModelBase):
@@ -107,8 +157,8 @@ class MembershipType(Base, ModelBase):
         return {
             "id": self.mb_id,
             "name": self.mb_name,
-            "description_en": self.e_desc,
-            "description_fr": self.f_desc,
+            "descriptionEn": self.e_desc,
+            "descriptionFr": self.f_desc,
             "comments": self.comments,
         }
 

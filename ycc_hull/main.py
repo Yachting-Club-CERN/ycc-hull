@@ -9,7 +9,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from ycc_hull.config import DB_URL, UVICORN_PORT, UVICORN_RELOAD
-from ycc_hull.db.models import Holiday, Member, MembershipType, ModelBase, User
+from ycc_hull.db.models import Holiday, Member, MembershipType, ModelBase, User, Boat
 
 engine: sqlalchemy.future.engine.Engine = sqlalchemy.create_engine(
     DB_URL, echo=True, future=True
@@ -66,8 +66,17 @@ async def test_data_populate():
 
                 log.append(f"Add {len(entries)} users")
 
-        session.commit()
+        if await boats_get():
+            log.append("Skipping boats")
+        else:
+            with open("test-data/Boats.json", "r") as f:
+                entries = json.load(f)
+                for entry in entries:
+                    session.add(Boat(**entry))
 
+                log.append(f"Add {len(entries)} boats")
+
+        session.commit()
         log.append("Commit")
 
     return log
@@ -89,8 +98,11 @@ async def test_data_clear():
 
         log.append("Deleting holidays")
         session.execute(delete(Holiday))
-        session.commit()
 
+        log.append("Deleting boats")
+        session.execute(delete(Boat))
+
+        session.commit()
         log.append("Commit")
 
     return log
@@ -104,6 +116,11 @@ async def test_data_repopulate():
     log.extend(await test_data_populate())
 
     return log
+
+
+@app.get("/api/v0/boats")
+async def boats_get():
+    return query_all(Boat)
 
 
 @app.get("/api/v0/holidays")
