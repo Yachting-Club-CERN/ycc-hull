@@ -1,14 +1,15 @@
 version: '3'
 services:
   oracle-xe:
+    container_name: 'ycc-db-local'
+    image: 'gvenzl/oracle-xe:21-faststart'
     ports:
       - '1521:1521'
     environment:
-      - ORACLE_PASSWORD=changeit
+      - 'ORACLE_PASSWORD=changeit'
     volumes:
       - 'oracle-xe-volume:/opt/oracle/oradata'
       - './init-local:/container-entrypoint-startdb.d'
-    image: 'gvenzl/oracle-xe:21'
 
 volumes:
   oracle-xe-volume:
