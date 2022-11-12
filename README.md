@@ -4,7 +4,7 @@ YCC back-end service.
 
 ## Prerequisites
 
-- Install Python 3.10
+- Install Python 3.11
 - Install Poetry
 - Install Docker & Docker Compose
 
