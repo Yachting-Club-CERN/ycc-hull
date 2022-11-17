@@ -62,10 +62,13 @@ def generate_member(id: int) -> Member:
     else:
         membership_type = "AS"
 
+    last_name = faker.unique.last_name()
+    first_name = faker.first_name()
+
     return Member(
         id=id,
-        name=faker.unique.last_name(),
-        firstname=faker.first_name(),
+        name=last_name,
+        firstname=first_name,
         # birthday = Column(DATE)
         # nationality = Column(VARCHAR2(3))
         membership=membership_type,
@@ -79,7 +82,7 @@ def generate_member(id: int) -> Member:
         # work_town = Column(VARCHAR2(25))
         # work_state = Column(VARCHAR2(5))
         # work_phone = Column(VARCHAR2(25))
-        # e_mail = Column(VARCHAR2(50))
+        e_mail=f"{first_name}.{last_name}@mailinator.com",
         home_addr="~~~Ignored~~~",
         # home_towncode = Column(VARCHAR2(7))
         # home_town = Column(VARCHAR2(25))
