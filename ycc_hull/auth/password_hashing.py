@@ -47,7 +47,7 @@ def _hash_to_perl(python_hash: str) -> str:
         _LOG.debug("The Python hash seems invalid: " + python_hash)
         raise ValueError("The Python hash seems invalid")
 
-    rounds: str = _pack(int(match.group(1))).replace("==", "")
+    rounds: str = _pack(int(match.group(1))).replace("=", "")
     return f"{{X-PBKDF2}}HMACSHA1:{rounds}:{match.group(2)}:{match.group(3)}"
 
 
