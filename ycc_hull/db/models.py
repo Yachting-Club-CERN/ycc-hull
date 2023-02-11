@@ -111,10 +111,24 @@ class Member(Base, ModelBase):
     favourite_mailing_post = Column(VARCHAR2(1))
     member_entrance = Column(VARCHAR2(4), nullable=False)
     cell_phone = Column(VARCHAR2(25))
-    gender = Column(CHAR(1))
+    gender = Column(VARCHAR2(2))
     valid_until_date = Column(DATE)
     last_updated_date = Column(DATE)
     valid_from_date = Column(DATE)
+    interest_in_fibreglass = Column(NUMBER(1, 0))
+    interest_in_woodwork = Column(NUMBER(1, 0))
+    interest_in_ropework = Column(NUMBER(1, 0))
+    interest_in_paintwork = Column(NUMBER(1, 0))
+    interest_in_motors = Column(NUMBER(1, 0))
+    interest_in_organising_social = Column(NUMBER(1, 0))
+    interest_in_organising_regattas = Column(NUMBER(1, 0))
+    interest_in_teaching_dinghies = Column(NUMBER(1, 0))
+    interest_in_teaching_cats = Column(NUMBER(1, 0))
+    interest_in_teaching_keelboats = Column(NUMBER(1, 0))
+    interest_in_teaching_motorboats = Column(NUMBER(1, 0))
+    interest_in_surveillance = Column(NUMBER(1, 0))
+    interest_in_towing_on_land = Column(NUMBER(1, 0))
+    special_talents = Column(VARCHAR2(1000))
 
     user = relationship("User", back_populates="member", uselist=False)
     # TODO This should be many to many when away from Perl
@@ -128,6 +142,7 @@ class Member(Base, ModelBase):
     def json_dict(self) -> dict:
         return {
             "id": self.id,
+            "username": self.user.logon_id,
             "firstName": self.firstname,
             "lastName": self.name,
             "membershipType": self.membership,

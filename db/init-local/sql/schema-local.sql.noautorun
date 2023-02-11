@@ -1,4 +1,4 @@
--- Schema @ 2022-11 without VIEWs
+-- Schema @ 2023-02 without VIEWs
 -- .noautorun: The container should importing this file as SYS too upon start
 SET ECHO ON ;
 WHENEVER SQLERROR EXIT FAILURE ;
@@ -281,6 +281,17 @@ WHENEVER SQLERROR EXIT FAILURE ;
  NOCOMPRESS LOGGING
   TABLESPACE "USERS" ;
 --------------------------------------------------------
+--  DDL for Table DEPARTMENTS
+--------------------------------------------------------
+
+  CREATE TABLE "DEPARTMENTS"
+   (	"DEP_ID" NUMBER(10,0),
+	"DEP_NAME" VARCHAR2(50 BYTE)
+   ) SEGMENT CREATION IMMEDIATE
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
 --  DDL for Table EMAIL_QUEUE_TABLE
 --------------------------------------------------------
 
@@ -305,6 +316,18 @@ WHENEVER SQLERROR EXIT FAILURE ;
    (	"ID" NUMBER(4,0),
 	"BODY" VARCHAR2(4000 BYTE),
 	"DESCRIPTION" VARCHAR2(60 BYTE)
+   ) SEGMENT CREATION IMMEDIATE
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Table EMPLOYEES
+--------------------------------------------------------
+
+  CREATE TABLE "EMPLOYEES"
+   (	"EMP_ID" NUMBER(10,0),
+	"EMP_NAME" VARCHAR2(50 BYTE),
+	"DEP_ID" NUMBER(10,0)
    ) SEGMENT CREATION IMMEDIATE
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
  NOCOMPRESS LOGGING
@@ -415,6 +438,17 @@ WHENEVER SQLERROR EXIT FAILURE ;
 	"COURSE_NAME" VARCHAR2(30 BYTE),
 	"COURSE_ACTIVE" CHAR(1 BYTE),
 	"COURSE_LEVEL" NUMBER(1,0)
+   ) SEGMENT CREATION IMMEDIATE
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;
+--------------------------------------------------------
+--  DDL for Table INTEREST_LEVELS
+--------------------------------------------------------
+
+  CREATE TABLE "INTEREST_LEVELS"
+   (	"INTEREST_LEVEL" NUMBER(1,0),
+	"DESCRIPTION" VARCHAR2(100 BYTE)
    ) SEGMENT CREATION IMMEDIATE
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
  NOCOMPRESS LOGGING
@@ -552,10 +586,24 @@ WHENEVER SQLERROR EXIT FAILURE ;
 	"FAVOURITE_MAILING_POST" VARCHAR2(1 BYTE),
 	"MEMBER_ENTRANCE" VARCHAR2(4 BYTE),
 	"CELL_PHONE" VARCHAR2(25 BYTE),
-	"GENDER" CHAR(1 BYTE),
+	"GENDER" VARCHAR2(2 BYTE),
 	"VALID_UNTIL_DATE" DATE,
 	"LAST_UPDATED_DATE" DATE,
-	"VALID_FROM_DATE" DATE
+	"VALID_FROM_DATE" DATE,
+	"INTEREST_IN_FIBREGLASS" NUMBER(1,0),
+	"INTEREST_IN_WOODWORK" NUMBER(1,0),
+	"INTEREST_IN_ROPEWORK" NUMBER(1,0),
+	"INTEREST_IN_PAINTWORK" NUMBER(1,0),
+	"INTEREST_IN_MOTORS" NUMBER(1,0),
+	"INTEREST_IN_ORGANISING_SOCIAL" NUMBER(1,0),
+	"INTEREST_IN_ORGANISING_REGATTAS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_DINGHIES" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_CATS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_KEELBOATS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_MOTORBOATS" NUMBER(1,0),
+	"INTEREST_IN_SURVEILLANCE" NUMBER(1,0),
+	"INTEREST_IN_TOWING_ON_LAND" NUMBER(1,0),
+	"SPECIAL_TALENTS" VARCHAR2(1000 BYTE)
    ) SEGMENT CREATION IMMEDIATE
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
  NOCOMPRESS LOGGING
@@ -569,7 +617,7 @@ WHENEVER SQLERROR EXIT FAILURE ;
 	"MB_NAME" VARCHAR2(2 BYTE),
 	"E_DESC" VARCHAR2(20 BYTE),
 	"F_DESC" VARCHAR2(20 BYTE),
-	"COMMENTS" VARCHAR2(100 BYTE)
+	"COMMENTS" VARCHAR2(200 BYTE)
    ) SEGMENT CREATION IMMEDIATE
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
  NOCOMPRESS LOGGING
@@ -612,11 +660,27 @@ WHENEVER SQLERROR EXIT FAILURE ;
 	"PRINT_RECEIVED" CHAR(1 BYTE) DEFAULT 'N',
 	"SUBMITTED_DATE" DATE DEFAULT sysdate,
 	"LAST_UPDATED_DATE" DATE,
-	"GENDER" CHAR(1 BYTE),
+	"GENDER" VARCHAR2(2 BYTE),
 	"LOGON_PASS2" VARCHAR2(128 BYTE),
 	"PASS_RESET_KEY" VARCHAR2(64 BYTE),
 	"PASS_RESET_EXP" DATE,
-	"LAST_CHANGED" DATE
+	"LAST_CHANGED" DATE,
+	"VALID_UNTIL_DATE" DATE,
+	"VALID_FROM_DATE" DATE,
+	"INTEREST_IN_FIBREGLASS" NUMBER(1,0),
+	"INTEREST_IN_WOODWORK" NUMBER(1,0),
+	"INTEREST_IN_ROPEWORK" NUMBER(1,0),
+	"INTEREST_IN_PAINTWORK" NUMBER(1,0),
+	"INTEREST_IN_ORGANISING_SOCIAL" NUMBER(1,0),
+	"INTEREST_IN_ORGANISING_REGATTAS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_DINGHIES" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_CATS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_KEELBOATS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_MOTORBOATS" NUMBER(1,0),
+	"INTEREST_IN_SURVEILLANCE" NUMBER(1,0),
+	"INTEREST_IN_TOWING_ON_LAND" NUMBER(1,0),
+	"SPECIAL_TALENTS" VARCHAR2(1000 BYTE),
+	"INTEREST_IN_MOTORS" NUMBER(1,0)
    ) SEGMENT CREATION IMMEDIATE
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
  NOCOMPRESS LOGGING
@@ -659,11 +723,27 @@ WHENEVER SQLERROR EXIT FAILURE ;
 	"PRINT_RECEIVED" CHAR(1 BYTE),
 	"SUBMITTED_DATE" DATE,
 	"LAST_UPDATED_DATE" DATE,
-	"GENDER" CHAR(1 BYTE),
+	"GENDER" VARCHAR2(2 BYTE),
 	"LOGON_PASS2" VARCHAR2(128 BYTE),
 	"PASS_RESET_KEY" VARCHAR2(64 BYTE),
 	"PASS_RESET_EXP" DATE,
-	"LAST_CHANGED" DATE
+	"LAST_CHANGED" DATE,
+	"VALID_UNTIL_DATE" DATE,
+	"VALID_FROM_DATE" DATE,
+	"INTEREST_IN_FIBREGLASS" NUMBER(1,0),
+	"INTEREST_IN_WOODWORK" NUMBER(1,0),
+	"INTEREST_IN_ROPEWORK" NUMBER(1,0),
+	"INTEREST_IN_PAINTWORK" NUMBER(1,0),
+	"INTEREST_IN_ORGANISING_SOCIAL" NUMBER(1,0),
+	"INTEREST_IN_ORGANISING_REGATTAS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_DINGHIES" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_CATS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_KEELBOATS" NUMBER(1,0),
+	"INTEREST_IN_TEACHING_MOTORBOATS" NUMBER(1,0),
+	"INTEREST_IN_SURVEILLANCE" NUMBER(1,0),
+	"INTEREST_IN_TOWING_ON_LAND" NUMBER(1,0),
+	"SPECIAL_TALENTS" VARCHAR2(1000 BYTE),
+	"INTEREST_IN_MOTORS" NUMBER(1,0)
    ) SEGMENT CREATION IMMEDIATE
   PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255
  NOCOMPRESS LOGGING
@@ -699,7 +779,7 @@ WHENEVER SQLERROR EXIT FAILURE ;
 	"FAVOURITE_MAILING_POST" VARCHAR2(1 BYTE),
 	"MEMBER_ENTRANCE" VARCHAR2(4 BYTE),
 	"CELL_PHONE" VARCHAR2(25 BYTE),
-	"GENDER" CHAR(1 BYTE),
+	"GENDER" VARCHAR2(2 BYTE),
 	"VALID_UNTIL_DATE" DATE,
 	"VALID_FROM_DATE" DATE
    ) SEGMENT CREATION IMMEDIATE
@@ -756,10 +836,10 @@ WHENEVER SQLERROR EXIT FAILURE ;
  NOCOMPRESS LOGGING
   TABLESPACE "USERS" ;
 --------------------------------------------------------
---  DDL for Table NATIONALITIES
+--  DDL for Table NATIONALITIES_TO_DROP
 --------------------------------------------------------
 
-  CREATE TABLE "NATIONALITIES"
+  CREATE TABLE "NATIONALITIES_TO_DROP"
    (	"NATID" VARCHAR2(2 BYTE),
 	"ENAME" VARCHAR2(15 BYTE),
 	"FNAME" VARCHAR2(15 BYTE)
@@ -1510,7 +1590,21 @@ BEGIN
     last_updated_date,
     gender,
     valid_from_date,
-    valid_until_date
+      valid_until_date,
+      interest_in_fibreglass,
+      interest_in_woodwork,
+      interest_in_ropework,
+      interest_in_paintwork,
+      interest_in_motors,
+      interest_in_organising_social,
+      interest_in_organising_regattas,
+      interest_in_teaching_dinghies,
+      interest_in_teaching_cats,
+      interest_in_teaching_keelboats,
+      interest_in_teaching_motorboats,
+      interest_in_surveillance,
+      interest_in_towing_on_land,
+      special_talents
     ) select
     ID,
     upper(NAME),
@@ -1541,7 +1635,21 @@ BEGIN
     last_updated_date,
     gender,
     valid_from_date,
-    valid_until_date
+      valid_until_date,
+      interest_in_fibreglass,
+      interest_in_woodwork,
+      interest_in_ropework,
+      interest_in_paintwork,
+      interest_in_motors,
+      interest_in_organising_social,
+      interest_in_organising_regattas,
+      interest_in_teaching_dinghies,
+      interest_in_teaching_cats,
+      interest_in_teaching_keelboats,
+      interest_in_teaching_motorboats,
+      interest_in_surveillance,
+      interest_in_towing_on_land,
+      special_talents
     from membership_applications where id = new_member_id;
 
     insert into entrance_feesrecords (member_id, year_f) select new_member_id, y from membership_applications where id = new_member_id and upper(membership_applications.membership)in ('AJ','AS');
@@ -7230,7 +7338,6 @@ Returns p_username if the username and password match a YCC user, or null otherw
 
   ALTER TABLE "EMAIL_TEMPLATES" ADD PRIMARY KEY ("ID")
   USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
-
   TABLESPACE "USERS"  ENABLE;
 --------------------------------------------------------
 --  Constraints for Table FEES
@@ -7389,6 +7496,13 @@ Returns p_username if the username and password match a YCC user, or null otherw
   ALTER TABLE "FEESCOURSES_LASTENTRY2005_OBS" MODIFY ("COURSE" NOT NULL ENABLE);
   ALTER TABLE "FEESCOURSES_LASTENTRY2005_OBS" MODIFY ("FEECOURSE" NOT NULL ENABLE);
 --------------------------------------------------------
+--  Constraints for Table DEPARTMENTS
+--------------------------------------------------------
+
+  ALTER TABLE "DEPARTMENTS" ADD PRIMARY KEY ("DEP_ID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
 --  Constraints for Table MEMBERS_XX_EMPTY
 --------------------------------------------------------
 
@@ -7461,6 +7575,12 @@ Returns p_username if the username and password match a YCC user, or null otherw
   USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
   TABLESPACE "USERS"  ENABLE;
 --------------------------------------------------------
+--  Constraints for Table T_MEMBERS_OBSOLETE
+--------------------------------------------------------
+
+  ALTER TABLE "T_MEMBERS_OBSOLETE" MODIFY ("T_ID" NOT NULL ENABLE);
+  ALTER TABLE "T_MEMBERS_OBSOLETE" MODIFY ("T_YEAR" NOT NULL ENABLE);
+--------------------------------------------------------
 --  Constraints for Table MEMBERSHIP_APPLICATIONS_TO_DEL
 --------------------------------------------------------
 
@@ -7471,16 +7591,12 @@ Returns p_username if the username and password match a YCC user, or null otherw
   ALTER TABLE "MEMBERSHIP_APPLICATIONS_TO_DEL" MODIFY ("MEMBERSHIP" NOT NULL ENABLE);
   ALTER TABLE "MEMBERSHIP_APPLICATIONS_TO_DEL" MODIFY ("CATEGORY" NOT NULL ENABLE);
 --------------------------------------------------------
---  Constraints for Table T_MEMBERS_OBSOLETE
+--  Constraints for Table EMPLOYEES
 --------------------------------------------------------
 
-  ALTER TABLE "T_MEMBERS_OBSOLETE" MODIFY ("T_ID" NOT NULL ENABLE);
-  ALTER TABLE "T_MEMBERS_OBSOLETE" MODIFY ("T_YEAR" NOT NULL ENABLE);
---------------------------------------------------------
---  Constraints for Table NATIONALITIES
---------------------------------------------------------
-
-  ALTER TABLE "NATIONALITIES" MODIFY ("NATID" NOT NULL ENABLE);
+  ALTER TABLE "EMPLOYEES" ADD PRIMARY KEY ("EMP_ID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
+  TABLESPACE "USERS"  ENABLE;
 --------------------------------------------------------
 --  Constraints for Table RESERVATIONS
 --------------------------------------------------------
@@ -7511,6 +7627,8 @@ Returns p_username if the username and password match a YCC user, or null otherw
   ALTER TABLE "CLASSES_OBSOLETE2001" MODIFY ("COURSE_ID" NOT NULL ENABLE);
   ALTER TABLE "CLASSES_OBSOLETE2001" MODIFY ("TEACHER_ID" NOT NULL ENABLE);
   ALTER TABLE "CLASSES_OBSOLETE2001" MODIFY ("COURSE_YEAR" NOT NULL ENABLE);
+  ALTER TABLE "CLASSES_OBSOLETE2001" ADD CONSTRAINT "CLASSES_PK" PRIMARY KEY ("CLASS_ID", "TEACHER_ID", "COURSE_YEAR")
+  USING INDEX "CLASSES_PK"  ENABLE;
 --------------------------------------------------------
 --  Constraints for Table DELETED_MEMBER_APPS
 --------------------------------------------------------
@@ -7519,6 +7637,13 @@ Returns p_username if the username and password match a YCC user, or null otherw
   ALTER TABLE "DELETED_MEMBER_APPS" MODIFY ("NAME" NOT NULL ENABLE);
   ALTER TABLE "DELETED_MEMBER_APPS" MODIFY ("FIRSTNAME" NOT NULL ENABLE);
   ALTER TABLE "DELETED_MEMBER_APPS" ADD PRIMARY KEY ("ID")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
+  TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table INTEREST_LEVELS
+--------------------------------------------------------
+
+  ALTER TABLE "INTEREST_LEVELS" ADD PRIMARY KEY ("INTEREST_LEVEL")
   USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
   TABLESPACE "USERS"  ENABLE;
 --------------------------------------------------------
@@ -7567,6 +7692,7 @@ Returns p_username if the username and password match a YCC user, or null otherw
   ALTER TABLE "COMMITTEE" MODIFY ("COMMID" NOT NULL ENABLE);
   ALTER TABLE "COMMITTEE" ADD UNIQUE ("COMMID")
   USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
+  TABLESPACE "USERS"  ENABLE;
 --------------------------------------------------------
 --  Constraints for Table LOTTERY_PLACES
 --------------------------------------------------------
@@ -7602,6 +7728,11 @@ Returns p_username if the username and password match a YCC user, or null otherw
   ALTER TABLE "YCCLOG" ADD PRIMARY KEY ("MODIFIED")
   USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS
   TABLESPACE "USERS"  ENABLE;
+--------------------------------------------------------
+--  Constraints for Table NATIONALITIES_TO_DROP
+--------------------------------------------------------
+
+  ALTER TABLE "NATIONALITIES_TO_DROP" MODIFY ("NATID" NOT NULL ENABLE);
 --------------------------------------------------------
 --  Constraints for Table MEMBERS
 --------------------------------------------------------
@@ -7646,6 +7777,12 @@ Returns p_username if the username and password match a YCC user, or null otherw
 
   ALTER TABLE "COURSES_OBS" ADD CONSTRAINT "MEMBER_FK" FOREIGN KEY ("MEMBER_ID")
 	  REFERENCES "MEMBERS" ("ID") ENABLE;
+--------------------------------------------------------
+--  Ref Constraints for Table EMPLOYEES
+--------------------------------------------------------
+
+  ALTER TABLE "EMPLOYEES" ADD FOREIGN KEY ("DEP_ID")
+	  REFERENCES "DEPARTMENTS" ("DEP_ID") ENABLE;
 --------------------------------------------------------
 --  Ref Constraints for Table KEYS
 --------------------------------------------------------
