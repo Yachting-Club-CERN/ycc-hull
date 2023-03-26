@@ -1,3 +1,6 @@
+"""
+Application configuration.
+"""
 import os
 
 PRODUCTION: bool = os.getenv("PRODUCTION") == "1"
@@ -8,7 +11,7 @@ UVICORN_RELOAD: bool = not PRODUCTION
 
 DB_URL: str
 if PRODUCTION:
-    raise "PRODUCTION IS NOT CONFIGURED"
+    raise Exception("PRODUCTION IS NOT CONFIGURED")
 else:
     CORS_ORIGINS = [
         "http://localhost:3000",

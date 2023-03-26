@@ -50,7 +50,6 @@ async def populate() -> List[str]:
     log: List[str] = []
 
     with Session(get_db_engine()) as session:
-        session: Session
         importer = TestDataImporter(directory="test_data/", session=session)
 
         if await holidays_get():

@@ -1,7 +1,7 @@
 """
 Main API endpoints.
 """
-from typing import Any, List
+from typing import List
 
 from fastapi import APIRouter
 from sqlalchemy.future import select

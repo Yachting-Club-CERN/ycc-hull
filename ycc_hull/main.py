@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from ycc_hull.api.main import api_main
 from ycc_hull.api.test_data import api_test_data
 
-from ycc_hull.config import CORS_ORIGINS, UVICORN_PORT, UVICORN_RELOAD
+from ycc_hull.config import CORS_ORIGINS, PRODUCTION, UVICORN_PORT, UVICORN_RELOAD
 
 
 app = FastAPI()
@@ -20,8 +20,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(api_main)
-# TODO test data should be disabled in production
-app.include_router(api_test_data)
+if not PRODUCTION:
+    app.include_router(api_test_data)
 
 
 def start():

@@ -6,7 +6,7 @@ Note: SQLAlchemy requires all tables with PK, but sometimes they are not in the 
 from typing import Any, Dict
 
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy.dialects.oracle import BLOB, CHAR, DATE, NUMBER, VARCHAR2
+from sqlalchemy.dialects.oracle import BLOB, DATE, NUMBER, VARCHAR2
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
