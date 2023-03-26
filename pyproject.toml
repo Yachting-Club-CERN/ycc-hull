@@ -13,8 +13,6 @@ uvicorn = { extras = ["standard"], version = "^0.21.1" }
 # DB
 cx-Oracle = "^8.3.0"
 SQLAlchemy = "^1.4.47"
-# Util
-passlib = "^1.7.4"
 
 [tool.poetry.dev-dependencies]
 black = "^23.1.0"
