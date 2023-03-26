@@ -9,8 +9,8 @@ from ycc_hull.auth.password_hashing import hash_ycc_password
 from ycc_hull.db.models import Member, ModelBase, User
 
 MEMBER_COUNT = 300
-MEMBERS_JSON_FILE = "Members.json"
-USERS_JSON_FILE = "Users.json"
+MEMBERS_JSON_FILE = "generated/Members.json"
+USERS_JSON_FILE = "generated/Users.json"
 
 faker: Faker = Faker()
 assigned_usernames: Set[str] = set()
