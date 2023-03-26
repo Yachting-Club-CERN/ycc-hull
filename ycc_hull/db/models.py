@@ -136,7 +136,7 @@ class Member(Base, ModelBase):
         "Boat", back_populates="maintainer1", foreign_keys="Boat.maintainer_id"
     )
     maintained_boats2 = relationship(
-        "Boat", back_populates="maintainer2", foreign_keys="Boat.maintainer_id"
+        "Boat", back_populates="maintainer2", foreign_keys="Boat.maintainer_id2"
     )
 
     def json_dict(self) -> dict:
