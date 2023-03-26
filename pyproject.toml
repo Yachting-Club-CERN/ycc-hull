@@ -12,7 +12,8 @@ python-multipart = "^0.0.6"
 uvicorn = { extras = ["standard"], version = "^0.21.1" }
 # DB
 cx-Oracle = "^8.3.0"
-SQLAlchemy = "^1.4.47"
+# Migrate to 2.x when sqlacodegen is ready (also comes with built-in mypy support)
+SQLAlchemy = { extras = ["mypy"], version = "^1.4.47" }
 
 [tool.poetry.dev-dependencies]
 black = "^23.1.0"
