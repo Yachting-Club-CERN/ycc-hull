@@ -10,7 +10,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from ycc_hull.config import DB_URL, CORS_ORIGINS, UVICORN_PORT, UVICORN_RELOAD
-from ycc_hull.db.models import Holiday, Member, MembershipType, ModelBase, User, Boat
+from ycc_hull.db.models import Boat, Holiday, Member, MembershipType, ModelBase, User
 
 engine: sqlalchemy.future.engine.Engine = sqlalchemy.create_engine(
     DB_URL, echo=True, future=True
@@ -30,60 +30,73 @@ app.add_middleware(
 # TODO test data should be disabled on production
 
 
+class TestDataImporter:
+    def __init__(self, directory: str, session: Session):
+        self._directory = directory
+        self._session = session
+
+    def import_exported(self, file_path: str, cls: Any) -> List:
+        with open(
+            f"{self._directory}/exported/{file_path}", "r", encoding="utf-8"
+        ) as file:
+            content = json.load(file)
+            entries = content["results"][0]["items"]
+            for entry in entries:
+                self._session.add(cls(**entry))
+            return entries
+
+    def import_generated(self, file_path: str, cls: Any) -> List:
+        with open(
+            f"{self._directory}/generated/{file_path}", "r", encoding="utf-8"
+        ) as file:
+            entries = json.load(file)
+            for entry in entries:
+                self._session.add(cls(**entry))
+            return entries
+
+
 @app.post("/api/v0/test-data/populate")
 async def test_data_populate():
     log: List[str] = []
 
     with Session(engine) as session:
         session: Session
+        importer = TestDataImporter(directory="test_data/", session=session)
 
         if await holidays_get():
             log.append("Skipping holidays")
         else:
-            with open("test-data/Holidays.json", "r") as f:
-                entries = json.load(f)
-                for entry in entries:
-                    session.add(Holiday(**entry))
-
-                log.append(f"Add {len(entries)} holidays")
+            entries = importer.import_exported(
+                "HOLIDAYS_DATA_TABLE.json-formatted", Holiday
+            )
+            log.append(f"Add {len(entries)} holidays")
 
         if await membership_types_get():
             log.append("Skipping membership types")
         else:
-            with open("test-data/MembershipTypes.json", "r") as f:
-                for entry in json.load(f):
-                    log.append(f"Add membership type {entry['mb_name']}")
-                    session.add(MembershipType(**entry))
+            entries = importer.import_exported(
+                "MEMBERSHIP_DATA_TABLE.json-formatted", MembershipType
+            )
+
+            log.extend(f"Add membership type {entry['mb_name']}" for entry in entries)
 
         if await members_get():
             log.append("Skipping members")
         else:
-            with open("test-data/Members.json", "r") as f:
-                entries = json.load(f)
-                for entry in entries:
-                    session.add(Member(**entry))
-
-                log.append(f"Add {len(entries)} members")
+            entries = importer.import_generated("Members.json", Member)
+            log.append(f"Add {len(entries)} members")
 
         if await users_get():
             log.append("Skipping users")
         else:
-            with open("test-data/Users.json", "r") as f:
-                entries = json.load(f)
-                for entry in entries:
-                    session.add(User(**entry))
-
-                log.append(f"Add {len(entries)} users")
+            entries = importer.import_generated("Users.json", User)
+            log.append(f"Add {len(entries)} users")
 
         if await boats_get():
             log.append("Skipping boats")
         else:
-            with open("test-data/Boats.json", "r") as f:
-                entries = json.load(f)
-                for entry in entries:
-                    session.add(Boat(**entry))
-
-                log.append(f"Add {len(entries)} boats")
+            entries = importer.import_generated("Boats.json", Boat)
+            log.append(f"Add {len(entries)} boats")
 
         session.commit()
         log.append("Commit")
@@ -91,7 +104,7 @@ async def test_data_populate():
     return log
 
 
-@app.post("/api/v0/test-data/clear")
+@app.post("/api/v0/test_data/clear")
 async def test_data_clear():
     log: List[str] = []
 
@@ -117,7 +130,7 @@ async def test_data_clear():
     return log
 
 
-@app.post("/api/v0/test-data/repopulate")
+@app.post("/api/v0/test_data/repopulate")
 async def test_data_repopulate():
     log: List[str] = []
 
