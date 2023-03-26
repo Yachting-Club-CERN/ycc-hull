@@ -1,3 +1,7 @@
+"""
+Test data generator. Some data can be directly used as it was exported, some needs tailoring, some have to be generated.
+"""
+import copy
 import json
 from datetime import date
 from os import path
@@ -5,14 +9,17 @@ from typing import List, Set, Type
 
 from faker import Faker
 
-from ycc_hull.auth.password_hashing import hash_ycc_password
-from ycc_hull.db.models import Member, ModelBase, User
+from legacy_password_hashing.password_hashing import hash_ycc_password
+from ycc_hull.db.models import Boat, Member, ModelBase, User
 
 MEMBER_COUNT = 300
+BOATS_JSON_FILE = "generated/Boats.json"
 MEMBERS_JSON_FILE = "generated/Members.json"
 USERS_JSON_FILE = "generated/Users.json"
 
 faker: Faker = Faker()
+Faker.seed(2021)
+
 assigned_usernames: Set[str] = set()
 
 
@@ -114,9 +121,26 @@ def generate_user(member: Member) -> User:
         pass_reset_key=None,
         pass_reset_exp=None,
         last_changed=faker.date_between(
-            start_date=date(2021, 1, 1), end_date=date(2022, 5, 1)
+            start_date=date(2022, 1, 1), end_date=date(2023, 4, 1)
         ),
     )
+
+
+def generate_boats() -> List[Boat]:
+    # Remove maintainers from the exported file
+    with open(
+        "exported/BOATS_DATA_TABLE.json-formatted", "r", encoding="utf-8"
+    ) as file:
+        return [generate_boat(boat) for boat in json.load(file)["results"][0]["items"]]
+
+
+def generate_boat(exported_boat: dict) -> Boat:
+    boat = copy.copy(exported_boat)
+    boat["class_"] = boat["class"]
+    del boat["class"]
+    boat["maintainer_id"] = None
+    boat["maintainer_id2"] = None
+    return Boat(**boat)
 
 
 def to_oracle_data_json(obj):
@@ -126,18 +150,18 @@ def to_oracle_data_json(obj):
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
 
-def read_json_file(file: str, cls: Type[ModelBase]) -> List[ModelBase]:
-    print(f"== Reading from {file} ...")
-    with open(file, "r") as fp:
-        return [cls(**entry) for entry in json.load(fp)]
+def read_json_file(file_path: str, cls: Type[ModelBase]) -> List[ModelBase]:
+    print(f"== Reading from {file_path} ...")
+    with open(file_path, "r", encoding="utf-8") as file:
+        return [cls(**entry) for entry in json.load(file)]
 
 
-def write_json_file(file: str, entries: List[ModelBase]) -> None:
-    print(f"Writing {file} ...")
-    with open(file, "w") as fp:
+def write_json_file(file_path: str, entries: List[ModelBase]) -> None:
+    print(f"Writing {file_path} ...")
+    with open(file_path, "w", encoding="utf-8") as file:
         json.dump(
             [entry.dict() for entry in entries],
-            fp,
+            file,
             default=to_oracle_data_json,
             indent=2,
         )
@@ -145,6 +169,7 @@ def write_json_file(file: str, entries: List[ModelBase]) -> None:
 
 def generate():
     if path.exists(MEMBERS_JSON_FILE):
+        print("== Skipping members")
         members = read_json_file(MEMBERS_JSON_FILE, Member)
     else:
         print("== Generating members...")
@@ -156,6 +181,12 @@ def generate():
     else:
         print("== Generating users...")
         write_json_file(USERS_JSON_FILE, generate_users(members))
+
+    if path.exists(BOATS_JSON_FILE):
+        print("== Skipping boats")
+    else:
+        print("== Generating boats...")
+        write_json_file(BOATS_JSON_FILE, generate_boats())
 
 
 if __name__ == "__main__":
