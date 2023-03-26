@@ -4,11 +4,12 @@ from typing import Any, List
 import sqlalchemy
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from ycc_hull.config import DB_URL, UVICORN_PORT, UVICORN_RELOAD
+from ycc_hull.config import DB_URL, CORS_ORIGINS, UVICORN_PORT, UVICORN_RELOAD
 from ycc_hull.db.models import Holiday, Member, MembershipType, ModelBase, User, Boat
 
 engine: sqlalchemy.future.engine.Engine = sqlalchemy.create_engine(
@@ -16,6 +17,14 @@ engine: sqlalchemy.future.engine.Engine = sqlalchemy.create_engine(
 )
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # TODO test data should be disabled on production
