@@ -12,10 +12,13 @@ from faker import Faker
 from legacy_password_hashing.password_hashing import hash_ycc_password
 from ycc_hull.db.models import Boat, Member, ModelBase, User
 
+SCRIPT_DIR = path.dirname(path.realpath(__file__))
+
 MEMBER_COUNT = 300
-BOATS_JSON_FILE = "generated/Boats.json"
-MEMBERS_JSON_FILE = "generated/Members.json"
-USERS_JSON_FILE = "generated/Users.json"
+BOATS_JSON_FILE = f"{SCRIPT_DIR}/generated/Boats.json"
+BOATS_EXPORTED_JSON_FILE = f"{SCRIPT_DIR}/exported/BOATS_DATA_TABLE.json-formatted"
+MEMBERS_JSON_FILE = f"{SCRIPT_DIR}/generated/Members.json"
+USERS_JSON_FILE = f"{SCRIPT_DIR}/generated/Users.json"
 
 faker: Faker = Faker()
 Faker.seed(2021)
@@ -128,9 +131,7 @@ def generate_user(member: Member) -> User:
 
 def generate_boats() -> List[Boat]:
     # Remove maintainers from the exported file
-    with open(
-        "exported/BOATS_DATA_TABLE.json-formatted", "r", encoding="utf-8"
-    ) as file:
+    with open(BOATS_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
         return [generate_boat(boat) for boat in json.load(file)["results"][0]["items"]]
 
 
