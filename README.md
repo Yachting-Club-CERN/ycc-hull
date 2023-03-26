@@ -1,6 +1,6 @@
 # YCC Hull
 
-YCC back-end service.
+YCC backend service.
 
 ## Prerequisites
 
@@ -73,7 +73,7 @@ See the `ycc-infra` repository for updating the Docker image. Then apply the upd
 This section records which technologies were dropped during PoC and why.
 
 - Node.js frameworks (notable Sails and TypeORM): poor integration with the existing Oracle Database. YCC Hull will
-  provide a back-end service, which can be used from other applications without having to worry about Oracle
+  provide a backend service, which can be used from other applications without having to worry about Oracle
   integration.
 - Django: Django ORM is inferior to SQLAlchemy, plus, this service only provides an API. Django would have worked, but
   it would have complicated too much.
