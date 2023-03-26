@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "ycc-hull"
+version = "0.1.0"
+description = "YCC Hull Back-End Service"
+authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+# REST API
+fastapi = "^0.95.0"
+python-multipart = "^0.0.6"
+uvicorn = { extras = ["standard"], version = "^0.21.1" }
+# DB
+cx-Oracle = "^8.3.0"
+# Migrate to 2.x when sqlacodegen is ready (also comes with built-in mypy support)
+SQLAlchemy = { extras = ["mypy"], version = "^1.4.47" }
+
+[tool.poetry.dev-dependencies]
+black = "^23.1.0"
+Faker = "^18.3.1"
+flake8 = "^6.0.0"
+mypy = "^1.1.1"
+passlib = "^1.7.4"
+pylint = "^2.17.1"
+pytest = "^7.2.2"
+pytest-cov = "^4.0.0"
+pytest-html = "^3.2.0"
+pytest-mock = "^3.10.0"
+sqlacodegen = "^3.0.0rc2"
+
+[tool.poetry.scripts]
+start = "ycc_hull.main:start"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

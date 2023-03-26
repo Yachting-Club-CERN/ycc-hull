@@ -1,0 +1,72 @@
+{
+  "results" : [
+    {
+      "columns" : [
+        {
+          "name" : "MB_ID",
+          "type" : "NUMBER"
+        },
+        {
+          "name" : "MB_NAME",
+          "type" : "VARCHAR2"
+        },
+        {
+          "name" : "E_DESC",
+          "type" : "VARCHAR2"
+        },
+        {
+          "name" : "F_DESC",
+          "type" : "VARCHAR2"
+        },
+        {
+          "name" : "COMMENTS",
+          "type" : "VARCHAR2"
+        }
+      ],
+      "items" : [
+        {
+          "mb_id" : 0,
+          "mb_name" : "H",
+          "e_desc" : "Honorary",
+          "f_desc" : "Honoraire",
+          "comments" : ""
+        },
+        {
+          "mb_id" : 1,
+          "mb_name" : "AS",
+          "e_desc" : "Active",
+          "f_desc" : "Active",
+          "comments" : "For all club activities."
+        },
+        {
+          "mb_id" : 2,
+          "mb_name" : "AJ",
+          "e_desc" : "Junior",
+          "f_desc" : "Junior",
+          "comments" : "Younger than 26 years old on April 1st."
+        },
+        {
+          "mb_id" : 3,
+          "mb_name" : "FM",
+          "e_desc" : "Friend",
+          "f_desc" : "Ami",
+          "comments" : "For social events and cruises only. No courses, regattas or Thursday outings."
+        },
+        {
+          "mb_id" : 5,
+          "mb_name" : "T",
+          "e_desc" : "Temporary",
+          "f_desc" : "Temporaire",
+          "comments" : "Only short-term visitors to CERN (less than 6\nmonths), for a period not exceeding 2 months.\nMay not be temporary members for two consecutive seasons."
+        },
+        {
+          "mb_id" : 6,
+          "mb_name" : "SV",
+          "e_desc" : "Service provider",
+          "f_desc" : "Fournisseur",
+          "comments" : "For example: sail maker, boat repair company"
+        }
+      ]
+    }
+  ]
+}
