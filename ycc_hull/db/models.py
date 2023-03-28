@@ -60,7 +60,7 @@ class EntranceFeeRecord(Base):
     __tablename__ = "entrance_feesrecords"
     __table_args__ = (Index("entrance_fee_uq", "member_id", "year_f", unique=True),)
 
-    # Code only foreign key, not in DB
+    # Code-only foreign key, not in DB
     member_id: Mapped[int] = mapped_column(
         NUMBER, ForeignKey("members.id"), nullable=False, primary_key=True
     )
@@ -90,7 +90,7 @@ class FeeRecord(Base):
     # Note: FEESRECORDS_TRG trigger may fill entered_date and paymentid
     __tablename__ = "feesrecords"
     __table_args__ = (
-        # Code only primary key, not in DB
+        # Code-only primary key, not in DB
         PrimaryKeyConstraint(
             "member_id",
             "year_f",
@@ -102,7 +102,7 @@ class FeeRecord(Base):
         ),
     )
 
-    # Code only foreign key, not in DB
+    # Code-only foreign key, not in DB
     member_id: Mapped[int] = mapped_column(
         NUMBER, ForeignKey("members.id"), nullable=False
     )
@@ -124,7 +124,7 @@ class Holiday(Base):
     day: Mapped[datetime] = mapped_column(
         DATE,
         nullable=False,
-        # Code only primary key, not in DB
+        # Code-only primary key, not in DB
         primary_key=True,
     )
     label: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
@@ -183,9 +183,9 @@ class Member(Base):
     interest_in_towing_on_land: Mapped[int] = mapped_column(NUMBER(1, 0))
     special_talents: Mapped[str] = mapped_column(VARCHAR2(1000))
 
-    # Code only foreign key, not in DB
+    # Code-only foreign key, not in DB
     entrance_fee_record: Mapped["EntranceFeeRecord"] = relationship()
-    # Code only foreign key, not in DB
+    # Code-only foreign key, not in DB
     fee_records: Mapped[List["FeeRecord"]] = relationship(
         order_by="FeeRecord.paid_date"
     )
@@ -213,13 +213,13 @@ class MembershipType(Base):
     mb_id: Mapped[int] = mapped_column(
         NUMBER(2, 0),
         nullable=False,
-        # Code only primary key, not in DB
+        # Code-only primary key, not in DB
         primary_key=True,
     )
     mb_name: Mapped[str] = mapped_column(
         VARCHAR2(2),
         nullable=False,
-        # Code only unique key, not in DB
+        # Code-only unique key, not in DB
         unique=True,
     )
     e_desc: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
