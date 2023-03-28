@@ -5,19 +5,12 @@ import copy
 import json
 from datetime import date, datetime, timedelta
 from os import path
-from typing import List, NamedTuple, Optional, Set, Type
+from typing import List, NamedTuple, Optional, Sequence, Set, Type
 
 from faker import Faker
 
 from legacy_password_hashing.password_hashing import hash_ycc_password
-from ycc_hull.db.models import (
-    Base,
-    Boat,
-    EntranceFeeRecord,
-    FeeRecord,
-    Member,
-    User,
-)
+from ycc_hull.db.models import Base, Boat, EntranceFeeRecord, FeeRecord, Member, User
 
 SCRIPT_DIR = path.dirname(path.realpath(__file__))
 
@@ -164,8 +157,8 @@ def generate_user(member: Member) -> User:
 
 
 def generate_member_entrance_fee_record(member: Member) -> Optional[EntranceFeeRecord]:
-    financial_year: int = (
-        member.member_entrance if faker.pybool(truth_probability=90) else None
+    financial_year: Optional[int] = (
+        int(member.member_entrance) if faker.pybool(truth_probability=90) else None
     )
     return (
         EntranceFeeRecord(
@@ -184,7 +177,7 @@ def generate_member_fee_records(member: Member) -> List[FeeRecord]:
         return fee_records
 
     # This test data generator really tries to simulate the existing database, e.g., missing payment records from the database
-    for year in range(member.member_entrance, CURRENT_YEAR + 1):
+    for year in range(int(member.member_entrance), CURRENT_YEAR + 1):
         if faker.pybool(truth_probability=95):
             fee_records.append(create_fee_record(member, year, 350))
 
@@ -235,13 +228,13 @@ def to_oracle_data_json(obj):
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
 
-def read_json_file(file_path: str, cls: Type[Base]) -> List[Base]:
+def read_json_file(file_path: str, cls: Type[Base]) -> Sequence[Base]:
     print(f"== Reading from {file_path} ...")
     with open(file_path, "r", encoding="utf-8") as file:
         return [cls(**entry) for entry in json.load(file)]
 
 
-def write_json_file(file_path: str, entries: List[Base]) -> None:
+def write_json_file(file_path: str, entries: Sequence[Base]) -> None:
     print(f"Writing {file_path} ...")
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(

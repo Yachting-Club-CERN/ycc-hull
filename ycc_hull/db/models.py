@@ -174,6 +174,7 @@ class Member(Base):
     home_phone: Mapped[str] = mapped_column(VARCHAR2(25))
     mail_preference: Mapped[str] = mapped_column(VARCHAR2(1))
     favourite_mailing_post: Mapped[str] = mapped_column(VARCHAR2(1))
+    # Note: it is VARCHAR2(4 BYTE) in the DB
     member_entrance: Mapped[str] = mapped_column(VARCHAR2(4), nullable=False)
     cell_phone: Mapped[str] = mapped_column(VARCHAR2(25))
     gender: Mapped[str] = mapped_column(VARCHAR2(2))
