@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "ycc-hull-generated-model"
+version = "0.0.0"
+description = "YCC Hull Backend Service - Generated Model"
+authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+# oracledb is not supported yet with SQLAlchemy 1.x
+cx-Oracle = "^8.3.0"
+SQLAlchemy = "^1.4.47"
+
+[tool.poetry.dev-dependencies]
+sqlacodegen = "^3.0.0rc2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

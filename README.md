@@ -13,19 +13,19 @@ YCC backend service.
 
 Initialise environment:
 
-```
+```sh
 poetry install
 ```
 
 Start database:
 
-```
+```sh
 cd ../ycc-infra/ycc-db-local && docker-compose up
 ```
 
 Start application:
 
-```
+```sh
 poetry run start
 ```
 
@@ -37,12 +37,15 @@ Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 You can regenerate models using the following commands:
 
-```
+```sh
+cd generated_model
 poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile ycc_hull/db/models_generated.py
 ```
 
 Generated models does not work as good as handwritten ones. Please use the generated models as a reference for updating
 handwritten models in `models.py`.
+
+(Also note that as of 2023-03 we use SQLAlchemy 2.x (way faster with Oracle and way more convenient), while latest sqlacodegen only supports SQLAlchemy 1.x.)
 
 ### Test Data
 
@@ -60,6 +63,16 @@ Upgrade to latest compatible versions:
 Upgrade to latest versions:
 
 `poetry up --latest`
+
+### Basic QA
+
+```sh
+poetry run black .
+poetry run mypy .
+poetry run flake8 .
+poetry run pylint test_data
+poetry run pylint ycc_hull
+```
 
 ### Database Schema Upgrade
 
@@ -79,3 +92,5 @@ This section records which technologies were dropped during PoC and why.
   it would have complicated too much.
 
 Note that other services can be in Node.js/Django, since they only communicate with this one over the network.
+
+(On the funny note when `ycc-hull` was already under development, Sequelize (Node/JS) came out with Oracle support...)

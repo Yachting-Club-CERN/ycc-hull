@@ -25,6 +25,9 @@ if not PRODUCTION:
 
 
 def start():
+    """
+    Application entry point.
+    """
     uvicorn.run(
         "ycc_hull.main:app", host="0.0.0.0", port=UVICORN_PORT, reload=UVICORN_RELOAD
     )
