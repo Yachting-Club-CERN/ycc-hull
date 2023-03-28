@@ -64,6 +64,16 @@ Upgrade to latest versions:
 
 `poetry up --latest`
 
+### Basic QA
+
+```sh
+poetry run black .
+poetry run mypy .
+poetry run flake8 .
+poetry run pylint test_data
+poetry run pylint ycc_hull
+```
+
 ### Database Schema Upgrade
 
 See the `ycc-infra` repository for updating the Docker image. Then apply the update to `ycc-hull`:
