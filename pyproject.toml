@@ -11,9 +11,8 @@ fastapi = "^0.95.0"
 python-multipart = "^0.0.6"
 uvicorn = { extras = ["standard"], version = "^0.21.1" }
 # DB
-cx-Oracle = "^8.3.0"
-# Migrate to 2.x when sqlacodegen is ready (also comes with built-in mypy support)
-SQLAlchemy = { extras = ["mypy"], version = "^1.4.47" }
+oracledb = "^1.2.2"
+SQLAlchemy = { extras = ["mypy"], version = "^2.0.7" }
 
 [tool.poetry.dev-dependencies]
 black = "^23.1.0"
@@ -26,10 +25,12 @@ pytest = "^7.2.2"
 pytest-cov = "^4.0.0"
 pytest-html = "^3.2.0"
 pytest-mock = "^3.10.0"
-sqlacodegen = "^3.0.0rc2"
 
 [tool.poetry.scripts]
 start = "ycc_hull.main:start"
+generate-test-data = "test_data.generator:generate"
+regenerate-test-data = "test_data.generator:regenerate"
+playground = "test_data.playground:run"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

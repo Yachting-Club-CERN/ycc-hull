@@ -15,7 +15,16 @@ from ycc_hull.api.main import (
     users_get,
 )
 from ycc_hull.db.engine import get_db_engine
-from ycc_hull.db.models import Boat, Holiday, Member, MembershipType, User
+from ycc_hull.db.models import (
+    Base,
+    Boat,
+    EntranceFeeRecord,
+    FeeRecord,
+    Holiday,
+    Member,
+    MembershipType,
+    User,
+)
 
 api_test_data = APIRouter()
 
@@ -70,14 +79,19 @@ async def populate() -> List[str]:
             log.extend(f"Add membership type {entry['mb_name']}" for entry in entries)
 
         if await members_get():
-            log.append("Skipping members")
+            log.append("Skipping members and related entities")
         else:
+            entries = importer.import_generated(
+                "EntranceFeeRecords.json", EntranceFeeRecord
+            )
+            log.append(f"Add {len(entries)} entrance fee records")
+
+            entries = importer.import_generated("FeeRecords.json", FeeRecord)
+            log.append(f"Add {len(entries)} fee records")
+
             entries = importer.import_generated("Members.json", Member)
             log.append(f"Add {len(entries)} members")
 
-        if await users_get():
-            log.append("Skipping users")
-        else:
             entries = importer.import_generated("Users.json", User)
             log.append(f"Add {len(entries)} users")
 
@@ -96,22 +110,31 @@ async def populate() -> List[str]:
 @api_test_data.post("/api/v0/test-data/clear")
 async def clear() -> List[str]:
     log: List[str] = []
+    classes = (
+        # Boats
+        Boat,
+        # Members
+        EntranceFeeRecord,
+        FeeRecord,
+        User,
+        Member,
+        # General
+        MembershipType,
+        Holiday,
+    )
+
+    all_model_classes = set(Base.__subclasses__())
+    unhandled_class_names = [
+        f"{cls.__qualname__}" for cls in all_model_classes.difference(classes)
+    ]
+
+    if unhandled_class_names:
+        raise Exception(f"Some model classes are not handled: {unhandled_class_names}")
 
     with Session(get_db_engine()) as session:
-        log.append("Deleting boats")
-        session.execute(delete(Boat))
-
-        log.append("Deleting membership types")
-        session.execute(delete(MembershipType))
-
-        log.append("Deleting users")
-        session.execute(delete(User))
-
-        log.append("Deleting members")
-        session.execute(delete(Member))
-
-        log.append("Deleting holidays")
-        session.execute(delete(Holiday))
+        for cls in classes:
+            log.append(f"Deleting {cls.__qualname__} entities")
+            session.execute(delete(cls))
 
         session.commit()
         log.append("Commit")

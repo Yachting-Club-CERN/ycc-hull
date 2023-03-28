@@ -4,11 +4,11 @@ Main API endpoints.
 from typing import List
 
 from fastapi import APIRouter
-from sqlalchemy.future import select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ycc_hull.db.engine import get_db_engine
-from ycc_hull.db.models import Boat, Holiday, Member, MembershipType, ModelBase, User
+from ycc_hull.db.models import Base, Boat, Holiday, Member, MembershipType, User
 
 api_main = APIRouter()
 
@@ -39,9 +39,9 @@ async def users_get():
 
 
 def query_all(cls) -> List[dict]:
-    if not cls or not issubclass(cls, ModelBase):
+    if not cls or not issubclass(cls, Base):
         raise ValueError(f"Invalid class: {cls}")
 
-    stmt = select(cls)
-    with Session(get_db_engine(), future=True) as session:
+    with Session(get_db_engine()) as session:
+        stmt = select(cls)
         return [row.json_dict() for row in session.scalars(stmt)]
