@@ -5,2998 +5,2998 @@
     "firstname": "Michele",
     "home_addr": "~~~Ignored~~~",
     "id": 1,
-    "member_entrance": 2007,
+    "member_entrance": 2005,
     "membership": "H",
     "name": "Huff"
   },
   {
     "category": "E",
-    "e_mail": "Cynthia.Wright@mailinator.com",
-    "firstname": "Cynthia",
+    "e_mail": "Brandon.Weaver@mailinator.com",
+    "firstname": "Brandon",
     "home_addr": "~~~Ignored~~~",
     "id": 2,
-    "member_entrance": 2020,
+    "member_entrance": 1991,
     "membership": "H",
-    "name": "Wright"
+    "name": "Weaver"
   },
   {
-    "category": "C",
-    "e_mail": "Lawrence.Andrews@mailinator.com",
-    "firstname": "Lawrence",
+    "category": "E",
+    "e_mail": "Benjamin.Hickman@mailinator.com",
+    "firstname": "Benjamin",
     "home_addr": "~~~Ignored~~~",
     "id": 3,
-    "member_entrance": 2020,
+    "member_entrance": 1992,
     "membership": "H",
-    "name": "Andrews"
+    "name": "Hickman"
   },
   {
     "category": "C",
-    "e_mail": "Pamela.Jones@mailinator.com",
-    "firstname": "Pamela",
+    "e_mail": "Kristin.Mcdonald@mailinator.com",
+    "firstname": "Kristin",
     "home_addr": "~~~Ignored~~~",
     "id": 4,
-    "member_entrance": 1993,
+    "member_entrance": 2023,
     "membership": "H",
-    "name": "Jones"
+    "name": "Mcdonald"
   },
   {
     "category": "E",
-    "e_mail": "Emily.Paul@mailinator.com",
-    "firstname": "Emily",
+    "e_mail": "Randall.Gamble@mailinator.com",
+    "firstname": "Randall",
     "home_addr": "~~~Ignored~~~",
     "id": 5,
-    "member_entrance": 2008,
-    "membership": "AJ",
-    "name": "Paul"
-  },
-  {
-    "category": "E",
-    "e_mail": "Margaret.Williams@mailinator.com",
-    "firstname": "Margaret",
-    "home_addr": "~~~Ignored~~~",
-    "id": 6,
-    "member_entrance": 1997,
-    "membership": "AJ",
-    "name": "Williams"
-  },
-  {
-    "category": "E",
-    "e_mail": "Robyn.Gonzalez@mailinator.com",
-    "firstname": "Robyn",
-    "home_addr": "~~~Ignored~~~",
-    "id": 7,
-    "member_entrance": 2007,
-    "membership": "AJ",
-    "name": "Gonzalez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Elizabeth.Rose@mailinator.com",
-    "firstname": "Elizabeth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 8,
-    "member_entrance": 1997,
-    "membership": "AJ",
-    "name": "Rose"
-  },
-  {
-    "category": "E",
-    "e_mail": "John.Terrell@mailinator.com",
-    "firstname": "John",
-    "home_addr": "~~~Ignored~~~",
-    "id": 9,
     "member_entrance": 2018,
     "membership": "AJ",
-    "name": "Terrell"
+    "name": "Gamble"
   },
   {
     "category": "C",
-    "e_mail": "Deborah.Ruiz@mailinator.com",
-    "firstname": "Deborah",
+    "e_mail": "Diane.Brown@mailinator.com",
+    "firstname": "Diane",
     "home_addr": "~~~Ignored~~~",
-    "id": 10,
-    "member_entrance": 2019,
-    "membership": "FM",
-    "name": "Ruiz"
-  },
-  {
-    "category": "C",
-    "e_mail": "Rebecca.Kennedy@mailinator.com",
-    "firstname": "Rebecca",
-    "home_addr": "~~~Ignored~~~",
-    "id": 11,
-    "member_entrance": 1990,
-    "membership": "FM",
-    "name": "Kennedy"
-  },
-  {
-    "category": "C",
-    "e_mail": "Katherine.Smith@mailinator.com",
-    "firstname": "Katherine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 12,
-    "member_entrance": 2002,
-    "membership": "FM",
-    "name": "Smith"
-  },
-  {
-    "category": "C",
-    "e_mail": "Maria.Campos@mailinator.com",
-    "firstname": "Maria",
-    "home_addr": "~~~Ignored~~~",
-    "id": 13,
-    "member_entrance": 2015,
-    "membership": "FM",
-    "name": "Campos"
+    "id": 6,
+    "member_entrance": 2023,
+    "membership": "AJ",
+    "name": "Brown"
   },
   {
     "category": "E",
-    "e_mail": "Diana.Simmons@mailinator.com",
-    "firstname": "Diana",
+    "e_mail": "Dean.Campbell@mailinator.com",
+    "firstname": "Dean",
     "home_addr": "~~~Ignored~~~",
-    "id": 14,
-    "member_entrance": 2006,
+    "id": 7,
+    "member_entrance": 1996,
+    "membership": "AJ",
+    "name": "Campbell"
+  },
+  {
+    "category": "E",
+    "e_mail": "Rebecca.Wells@mailinator.com",
+    "firstname": "Rebecca",
+    "home_addr": "~~~Ignored~~~",
+    "id": 8,
+    "member_entrance": 2023,
+    "membership": "AJ",
+    "name": "Wells"
+  },
+  {
+    "category": "E",
+    "e_mail": "Amy.Simpson@mailinator.com",
+    "firstname": "Amy",
+    "home_addr": "~~~Ignored~~~",
+    "id": 9,
+    "member_entrance": 2023,
+    "membership": "AJ",
+    "name": "Simpson"
+  },
+  {
+    "category": "E",
+    "e_mail": "Christian.Simmons@mailinator.com",
+    "firstname": "Christian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 10,
+    "member_entrance": 2023,
     "membership": "FM",
     "name": "Simmons"
   },
   {
     "category": "C",
-    "e_mail": "Chase.Brown@mailinator.com",
-    "firstname": "Chase",
+    "e_mail": "Daniel.Long@mailinator.com",
+    "firstname": "Daniel",
+    "home_addr": "~~~Ignored~~~",
+    "id": 11,
+    "member_entrance": 1999,
+    "membership": "FM",
+    "name": "Long"
+  },
+  {
+    "category": "E",
+    "e_mail": "Wayne.Molina@mailinator.com",
+    "firstname": "Wayne",
+    "home_addr": "~~~Ignored~~~",
+    "id": 12,
+    "member_entrance": 2007,
+    "membership": "FM",
+    "name": "Molina"
+  },
+  {
+    "category": "E",
+    "e_mail": "James.King@mailinator.com",
+    "firstname": "James",
+    "home_addr": "~~~Ignored~~~",
+    "id": 13,
+    "member_entrance": 1993,
+    "membership": "FM",
+    "name": "King"
+  },
+  {
+    "category": "C",
+    "e_mail": "Joshua.Gonzales@mailinator.com",
+    "firstname": "Joshua",
+    "home_addr": "~~~Ignored~~~",
+    "id": 14,
+    "member_entrance": 2023,
+    "membership": "FM",
+    "name": "Gonzales"
+  },
+  {
+    "category": "E",
+    "e_mail": "Scott.Evans@mailinator.com",
+    "firstname": "Scott",
     "home_addr": "~~~Ignored~~~",
     "id": 15,
     "member_entrance": 2018,
     "membership": "T",
-    "name": "Brown"
-  },
-  {
-    "category": "E",
-    "e_mail": "Beth.Wolfe@mailinator.com",
-    "firstname": "Beth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 16,
-    "member_entrance": 2017,
-    "membership": "T",
-    "name": "Wolfe"
-  },
-  {
-    "category": "C",
-    "e_mail": "Joseph.Sanders@mailinator.com",
-    "firstname": "Joseph",
-    "home_addr": "~~~Ignored~~~",
-    "id": 17,
-    "member_entrance": 2017,
-    "membership": "T",
-    "name": "Sanders"
-  },
-  {
-    "category": "E",
-    "e_mail": "Mckenzie.Taylor@mailinator.com",
-    "firstname": "Mckenzie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 18,
-    "member_entrance": 2008,
-    "membership": "T",
-    "name": "Taylor"
-  },
-  {
-    "category": "E",
-    "e_mail": "Alex.Rodriguez@mailinator.com",
-    "firstname": "Alex",
-    "home_addr": "~~~Ignored~~~",
-    "id": 19,
-    "member_entrance": 2008,
-    "membership": "T",
-    "name": "Rodriguez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Daniel.Gomez@mailinator.com",
-    "firstname": "Daniel",
-    "home_addr": "~~~Ignored~~~",
-    "id": 20,
-    "member_entrance": 1995,
-    "membership": "SV",
-    "name": "Gomez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Brandy.Hamilton@mailinator.com",
-    "firstname": "Brandy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 21,
-    "member_entrance": 1996,
-    "membership": "SV",
-    "name": "Hamilton"
-  },
-  {
-    "category": "C",
-    "e_mail": "Eric.Martin@mailinator.com",
-    "firstname": "Eric",
-    "home_addr": "~~~Ignored~~~",
-    "id": 22,
-    "member_entrance": 2003,
-    "membership": "SV",
-    "name": "Martin"
-  },
-  {
-    "category": "C",
-    "e_mail": "Matthew.Wilson@mailinator.com",
-    "firstname": "Matthew",
-    "home_addr": "~~~Ignored~~~",
-    "id": 23,
-    "member_entrance": 1992,
-    "membership": "SV",
-    "name": "Wilson"
-  },
-  {
-    "category": "E",
-    "e_mail": "Penny.Castro@mailinator.com",
-    "firstname": "Penny",
-    "home_addr": "~~~Ignored~~~",
-    "id": 24,
-    "member_entrance": 1991,
-    "membership": "SV",
-    "name": "Castro"
-  },
-  {
-    "category": "E",
-    "e_mail": "Joanna.Payne@mailinator.com",
-    "firstname": "Joanna",
-    "home_addr": "~~~Ignored~~~",
-    "id": 25,
-    "member_entrance": 2001,
-    "membership": "AS",
-    "name": "Payne"
-  },
-  {
-    "category": "C",
-    "e_mail": "Daniel.Rojas@mailinator.com",
-    "firstname": "Daniel",
-    "home_addr": "~~~Ignored~~~",
-    "id": 26,
-    "member_entrance": 2016,
-    "membership": "AS",
-    "name": "Rojas"
-  },
-  {
-    "category": "E",
-    "e_mail": "Carolyn.Morgan@mailinator.com",
-    "firstname": "Carolyn",
-    "home_addr": "~~~Ignored~~~",
-    "id": 27,
-    "member_entrance": 2020,
-    "membership": "AS",
-    "name": "Morgan"
-  },
-  {
-    "category": "E",
-    "e_mail": "John.Kelly@mailinator.com",
-    "firstname": "John",
-    "home_addr": "~~~Ignored~~~",
-    "id": 28,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Kelly"
-  },
-  {
-    "category": "E",
-    "e_mail": "Henry.Nelson@mailinator.com",
-    "firstname": "Henry",
-    "home_addr": "~~~Ignored~~~",
-    "id": 29,
-    "member_entrance": 2012,
-    "membership": "AS",
-    "name": "Nelson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Gary.Moreno@mailinator.com",
-    "firstname": "Gary",
-    "home_addr": "~~~Ignored~~~",
-    "id": 30,
-    "member_entrance": 1994,
-    "membership": "AS",
-    "name": "Moreno"
-  },
-  {
-    "category": "E",
-    "e_mail": "Anthony.Jackson@mailinator.com",
-    "firstname": "Anthony",
-    "home_addr": "~~~Ignored~~~",
-    "id": 31,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Jackson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Steven.Hernandez@mailinator.com",
-    "firstname": "Steven",
-    "home_addr": "~~~Ignored~~~",
-    "id": 32,
-    "member_entrance": 2011,
-    "membership": "AS",
-    "name": "Hernandez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Angela.Day@mailinator.com",
-    "firstname": "Angela",
-    "home_addr": "~~~Ignored~~~",
-    "id": 33,
-    "member_entrance": 2000,
-    "membership": "AS",
-    "name": "Day"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jacob.Bonilla@mailinator.com",
-    "firstname": "Jacob",
-    "home_addr": "~~~Ignored~~~",
-    "id": 34,
-    "member_entrance": 2001,
-    "membership": "AS",
-    "name": "Bonilla"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jamie.Page@mailinator.com",
-    "firstname": "Jamie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 35,
-    "member_entrance": 2013,
-    "membership": "AS",
-    "name": "Page"
-  },
-  {
-    "category": "E",
-    "e_mail": "Bryan.Hill@mailinator.com",
-    "firstname": "Bryan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 36,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Hill"
-  },
-  {
-    "category": "E",
-    "e_mail": "Robert.Turner@mailinator.com",
-    "firstname": "Robert",
-    "home_addr": "~~~Ignored~~~",
-    "id": 37,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Turner"
-  },
-  {
-    "category": "C",
-    "e_mail": "Denise.Walker@mailinator.com",
-    "firstname": "Denise",
-    "home_addr": "~~~Ignored~~~",
-    "id": 38,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Walker"
-  },
-  {
-    "category": "C",
-    "e_mail": "Hannah.Stevens@mailinator.com",
-    "firstname": "Hannah",
-    "home_addr": "~~~Ignored~~~",
-    "id": 39,
-    "member_entrance": 2011,
-    "membership": "AS",
-    "name": "Stevens"
-  },
-  {
-    "category": "C",
-    "e_mail": "Ricky.David@mailinator.com",
-    "firstname": "Ricky",
-    "home_addr": "~~~Ignored~~~",
-    "id": 40,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "David"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jennifer.Lowe@mailinator.com",
-    "firstname": "Jennifer",
-    "home_addr": "~~~Ignored~~~",
-    "id": 41,
-    "member_entrance": 1992,
-    "membership": "AS",
-    "name": "Lowe"
-  },
-  {
-    "category": "E",
-    "e_mail": "Taylor.Santiago@mailinator.com",
-    "firstname": "Taylor",
-    "home_addr": "~~~Ignored~~~",
-    "id": 42,
-    "member_entrance": 2008,
-    "membership": "AS",
-    "name": "Santiago"
-  },
-  {
-    "category": "C",
-    "e_mail": "Steven.Cole@mailinator.com",
-    "firstname": "Steven",
-    "home_addr": "~~~Ignored~~~",
-    "id": 43,
-    "member_entrance": 2017,
-    "membership": "AS",
-    "name": "Cole"
-  },
-  {
-    "category": "E",
-    "e_mail": "Nicole.Mann@mailinator.com",
-    "firstname": "Nicole",
-    "home_addr": "~~~Ignored~~~",
-    "id": 44,
-    "member_entrance": 2014,
-    "membership": "AS",
-    "name": "Mann"
-  },
-  {
-    "category": "E",
-    "e_mail": "Richard.Anderson@mailinator.com",
-    "firstname": "Richard",
-    "home_addr": "~~~Ignored~~~",
-    "id": 45,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Anderson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Michael.Benton@mailinator.com",
-    "firstname": "Michael",
-    "home_addr": "~~~Ignored~~~",
-    "id": 46,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Benton"
-  },
-  {
-    "category": "C",
-    "e_mail": "John.Wolf@mailinator.com",
-    "firstname": "John",
-    "home_addr": "~~~Ignored~~~",
-    "id": 47,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Wolf"
-  },
-  {
-    "category": "C",
-    "e_mail": "Katherine.Brady@mailinator.com",
-    "firstname": "Katherine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 48,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Brady"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jocelyn.Robertson@mailinator.com",
-    "firstname": "Jocelyn",
-    "home_addr": "~~~Ignored~~~",
-    "id": 49,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Robertson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Angela.Lane@mailinator.com",
-    "firstname": "Angela",
-    "home_addr": "~~~Ignored~~~",
-    "id": 50,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Lane"
-  },
-  {
-    "category": "E",
-    "e_mail": "Joshua.Fields@mailinator.com",
-    "firstname": "Joshua",
-    "home_addr": "~~~Ignored~~~",
-    "id": 51,
-    "member_entrance": 2007,
-    "membership": "AS",
-    "name": "Fields"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kimberly.Wells@mailinator.com",
-    "firstname": "Kimberly",
-    "home_addr": "~~~Ignored~~~",
-    "id": 52,
-    "member_entrance": 2007,
-    "membership": "AS",
-    "name": "Wells"
-  },
-  {
-    "category": "E",
-    "e_mail": "Robert.Barton@mailinator.com",
-    "firstname": "Robert",
-    "home_addr": "~~~Ignored~~~",
-    "id": 53,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Barton"
-  },
-  {
-    "category": "C",
-    "e_mail": "Kathryn.Mason@mailinator.com",
-    "firstname": "Kathryn",
-    "home_addr": "~~~Ignored~~~",
-    "id": 54,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Mason"
-  },
-  {
-    "category": "C",
-    "e_mail": "Tara.Rivera@mailinator.com",
-    "firstname": "Tara",
-    "home_addr": "~~~Ignored~~~",
-    "id": 55,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Rivera"
-  },
-  {
-    "category": "C",
-    "e_mail": "Taylor.Murray@mailinator.com",
-    "firstname": "Taylor",
-    "home_addr": "~~~Ignored~~~",
-    "id": 56,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Murray"
-  },
-  {
-    "category": "C",
-    "e_mail": "Eric.Frederick@mailinator.com",
-    "firstname": "Eric",
-    "home_addr": "~~~Ignored~~~",
-    "id": 57,
-    "member_entrance": 2013,
-    "membership": "AS",
-    "name": "Frederick"
-  },
-  {
-    "category": "C",
-    "e_mail": "Tanner.Harrison@mailinator.com",
-    "firstname": "Tanner",
-    "home_addr": "~~~Ignored~~~",
-    "id": 58,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Harrison"
-  },
-  {
-    "category": "E",
-    "e_mail": "Sherri.Johnson@mailinator.com",
-    "firstname": "Sherri",
-    "home_addr": "~~~Ignored~~~",
-    "id": 59,
-    "member_entrance": 2020,
-    "membership": "AS",
-    "name": "Johnson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Adam.Thompson@mailinator.com",
-    "firstname": "Adam",
-    "home_addr": "~~~Ignored~~~",
-    "id": 60,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Thompson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Douglas.Case@mailinator.com",
-    "firstname": "Douglas",
-    "home_addr": "~~~Ignored~~~",
-    "id": 61,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Case"
-  },
-  {
-    "category": "E",
-    "e_mail": "Christine.Diaz@mailinator.com",
-    "firstname": "Christine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 62,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Diaz"
-  },
-  {
-    "category": "C",
-    "e_mail": "Gina.Oconnell@mailinator.com",
-    "firstname": "Gina",
-    "home_addr": "~~~Ignored~~~",
-    "id": 63,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Oconnell"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jeremy.Richards@mailinator.com",
-    "firstname": "Jeremy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 64,
-    "member_entrance": 1991,
-    "membership": "AS",
-    "name": "Richards"
-  },
-  {
-    "category": "C",
-    "e_mail": "Christine.Bailey@mailinator.com",
-    "firstname": "Christine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 65,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Bailey"
-  },
-  {
-    "category": "E",
-    "e_mail": "Wanda.Evans@mailinator.com",
-    "firstname": "Wanda",
-    "home_addr": "~~~Ignored~~~",
-    "id": 66,
-    "member_entrance": 2005,
-    "membership": "AS",
     "name": "Evans"
   },
   {
     "category": "C",
-    "e_mail": "Kevin.Baxter@mailinator.com",
+    "e_mail": "Kevin.Miller@mailinator.com",
     "firstname": "Kevin",
     "home_addr": "~~~Ignored~~~",
-    "id": 67,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Baxter"
-  },
-  {
-    "category": "C",
-    "e_mail": "Meghan.Maxwell@mailinator.com",
-    "firstname": "Meghan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 68,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Maxwell"
-  },
-  {
-    "category": "C",
-    "e_mail": "Bradley.Morrison@mailinator.com",
-    "firstname": "Bradley",
-    "home_addr": "~~~Ignored~~~",
-    "id": 69,
-    "member_entrance": 2005,
-    "membership": "AS",
-    "name": "Morrison"
-  },
-  {
-    "category": "C",
-    "e_mail": "William.Jimenez@mailinator.com",
-    "firstname": "William",
-    "home_addr": "~~~Ignored~~~",
-    "id": 70,
-    "member_entrance": 2005,
-    "membership": "AS",
-    "name": "Jimenez"
-  },
-  {
-    "category": "C",
-    "e_mail": "Michelle.Prince@mailinator.com",
-    "firstname": "Michelle",
-    "home_addr": "~~~Ignored~~~",
-    "id": 71,
-    "member_entrance": 1990,
-    "membership": "AS",
-    "name": "Prince"
-  },
-  {
-    "category": "E",
-    "e_mail": "Lucas.Campbell@mailinator.com",
-    "firstname": "Lucas",
-    "home_addr": "~~~Ignored~~~",
-    "id": 72,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Campbell"
-  },
-  {
-    "category": "C",
-    "e_mail": "Lee.Wong@mailinator.com",
-    "firstname": "Lee",
-    "home_addr": "~~~Ignored~~~",
-    "id": 73,
-    "member_entrance": 2005,
-    "membership": "AS",
-    "name": "Wong"
-  },
-  {
-    "category": "E",
-    "e_mail": "Brad.Blair@mailinator.com",
-    "firstname": "Brad",
-    "home_addr": "~~~Ignored~~~",
-    "id": 74,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Blair"
-  },
-  {
-    "category": "E",
-    "e_mail": "Joseph.Merritt@mailinator.com",
-    "firstname": "Joseph",
-    "home_addr": "~~~Ignored~~~",
-    "id": 75,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Merritt"
-  },
-  {
-    "category": "C",
-    "e_mail": "Cameron.Matthews@mailinator.com",
-    "firstname": "Cameron",
-    "home_addr": "~~~Ignored~~~",
-    "id": 76,
-    "member_entrance": 2012,
-    "membership": "AS",
-    "name": "Matthews"
-  },
-  {
-    "category": "C",
-    "e_mail": "Erin.Richard@mailinator.com",
-    "firstname": "Erin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 77,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Richard"
-  },
-  {
-    "category": "C",
-    "e_mail": "Stephanie.Neal@mailinator.com",
-    "firstname": "Stephanie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 78,
-    "member_entrance": 2017,
-    "membership": "AS",
-    "name": "Neal"
-  },
-  {
-    "category": "C",
-    "e_mail": "Renee.Cross@mailinator.com",
-    "firstname": "Renee",
-    "home_addr": "~~~Ignored~~~",
-    "id": 79,
-    "member_entrance": 2008,
-    "membership": "AS",
-    "name": "Cross"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jason.Ayers@mailinator.com",
-    "firstname": "Jason",
-    "home_addr": "~~~Ignored~~~",
-    "id": 80,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Ayers"
-  },
-  {
-    "category": "E",
-    "e_mail": "Erin.Miller@mailinator.com",
-    "firstname": "Erin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 81,
-    "member_entrance": 2022,
-    "membership": "AS",
+    "id": 16,
+    "member_entrance": 2023,
+    "membership": "T",
     "name": "Miller"
   },
   {
     "category": "E",
-    "e_mail": "Heather.Owens@mailinator.com",
-    "firstname": "Heather",
+    "e_mail": "Justin.Branch@mailinator.com",
+    "firstname": "Justin",
     "home_addr": "~~~Ignored~~~",
-    "id": 82,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Owens"
+    "id": 17,
+    "member_entrance": 2013,
+    "membership": "T",
+    "name": "Branch"
   },
   {
-    "category": "E",
-    "e_mail": "John.Webster@mailinator.com",
+    "category": "C",
+    "e_mail": "John.Stanley@mailinator.com",
     "firstname": "John",
     "home_addr": "~~~Ignored~~~",
-    "id": 83,
-    "member_entrance": 2020,
-    "membership": "AS",
-    "name": "Webster"
-  },
-  {
-    "category": "C",
-    "e_mail": "Arthur.Arroyo@mailinator.com",
-    "firstname": "Arthur",
-    "home_addr": "~~~Ignored~~~",
-    "id": 84,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Arroyo"
-  },
-  {
-    "category": "E",
-    "e_mail": "Katie.Schneider@mailinator.com",
-    "firstname": "Katie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 85,
-    "member_entrance": 2013,
-    "membership": "AS",
-    "name": "Schneider"
-  },
-  {
-    "category": "E",
-    "e_mail": "Lauren.Fowler@mailinator.com",
-    "firstname": "Lauren",
-    "home_addr": "~~~Ignored~~~",
-    "id": 86,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Fowler"
-  },
-  {
-    "category": "C",
-    "e_mail": "Ricky.Hanson@mailinator.com",
-    "firstname": "Ricky",
-    "home_addr": "~~~Ignored~~~",
-    "id": 87,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Hanson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Lisa.Gray@mailinator.com",
-    "firstname": "Lisa",
-    "home_addr": "~~~Ignored~~~",
-    "id": 88,
+    "id": 18,
     "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Gray"
+    "membership": "T",
+    "name": "Stanley"
   },
   {
     "category": "E",
-    "e_mail": "Nicholas.Fuller@mailinator.com",
-    "firstname": "Nicholas",
+    "e_mail": "Amber.Hayden@mailinator.com",
+    "firstname": "Amber",
     "home_addr": "~~~Ignored~~~",
-    "id": 89,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Fuller"
+    "id": 19,
+    "member_entrance": 2023,
+    "membership": "T",
+    "name": "Hayden"
+  },
+  {
+    "category": "E",
+    "e_mail": "Christine.Andersen@mailinator.com",
+    "firstname": "Christine",
+    "home_addr": "~~~Ignored~~~",
+    "id": 20,
+    "member_entrance": 2010,
+    "membership": "SV",
+    "name": "Andersen"
+  },
+  {
+    "category": "E",
+    "e_mail": "Stephanie.Martinez@mailinator.com",
+    "firstname": "Stephanie",
+    "home_addr": "~~~Ignored~~~",
+    "id": 21,
+    "member_entrance": 2019,
+    "membership": "SV",
+    "name": "Martinez"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jeffrey.Velez@mailinator.com",
+    "firstname": "Jeffrey",
+    "home_addr": "~~~Ignored~~~",
+    "id": 22,
+    "member_entrance": 1991,
+    "membership": "SV",
+    "name": "Velez"
   },
   {
     "category": "C",
-    "e_mail": "Scott.Cruz@mailinator.com",
-    "firstname": "Scott",
+    "e_mail": "Ashley.Rivera@mailinator.com",
+    "firstname": "Ashley",
     "home_addr": "~~~Ignored~~~",
-    "id": 90,
+    "id": 23,
+    "member_entrance": 2003,
+    "membership": "SV",
+    "name": "Rivera"
+  },
+  {
+    "category": "E",
+    "e_mail": "Alexis.Morrison@mailinator.com",
+    "firstname": "Alexis",
+    "home_addr": "~~~Ignored~~~",
+    "id": 24,
     "member_entrance": 2008,
-    "membership": "AS",
-    "name": "Cruz"
+    "membership": "SV",
+    "name": "Morrison"
   },
   {
     "category": "C",
-    "e_mail": "Tim.Mcguire@mailinator.com",
-    "firstname": "Tim",
+    "e_mail": "Sharon.Lopez@mailinator.com",
+    "firstname": "Sharon",
     "home_addr": "~~~Ignored~~~",
-    "id": 91,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Mcguire"
-  },
-  {
-    "category": "E",
-    "e_mail": "Mary.Lopez@mailinator.com",
-    "firstname": "Mary",
-    "home_addr": "~~~Ignored~~~",
-    "id": 92,
-    "member_entrance": 2012,
+    "id": 25,
+    "member_entrance": 2006,
     "membership": "AS",
     "name": "Lopez"
   },
   {
     "category": "C",
-    "e_mail": "Patricia.Lewis@mailinator.com",
-    "firstname": "Patricia",
-    "home_addr": "~~~Ignored~~~",
-    "id": 93,
-    "member_entrance": 2017,
-    "membership": "AS",
-    "name": "Lewis"
-  },
-  {
-    "category": "E",
-    "e_mail": "Katherine.Curry@mailinator.com",
-    "firstname": "Katherine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 94,
-    "member_entrance": 2010,
-    "membership": "AS",
-    "name": "Curry"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jennifer.James@mailinator.com",
-    "firstname": "Jennifer",
-    "home_addr": "~~~Ignored~~~",
-    "id": 95,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "James"
-  },
-  {
-    "category": "C",
-    "e_mail": "James.Allen@mailinator.com",
-    "firstname": "James",
-    "home_addr": "~~~Ignored~~~",
-    "id": 96,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Allen"
-  },
-  {
-    "category": "E",
-    "e_mail": "Benjamin.Jacobson@mailinator.com",
-    "firstname": "Benjamin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 97,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Jacobson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Christina.Salazar@mailinator.com",
-    "firstname": "Christina",
-    "home_addr": "~~~Ignored~~~",
-    "id": 98,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Salazar"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jill.Fisher@mailinator.com",
-    "firstname": "Jill",
-    "home_addr": "~~~Ignored~~~",
-    "id": 99,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Fisher"
-  },
-  {
-    "category": "C",
-    "e_mail": "Christine.Dixon@mailinator.com",
-    "firstname": "Christine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 100,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Dixon"
-  },
-  {
-    "category": "E",
-    "e_mail": "Tiffany.Stokes@mailinator.com",
-    "firstname": "Tiffany",
-    "home_addr": "~~~Ignored~~~",
-    "id": 101,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Stokes"
-  },
-  {
-    "category": "E",
-    "e_mail": "Christine.Garcia@mailinator.com",
-    "firstname": "Christine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 102,
-    "member_entrance": 2014,
-    "membership": "AS",
-    "name": "Garcia"
-  },
-  {
-    "category": "E",
-    "e_mail": "Alyssa.Flores@mailinator.com",
-    "firstname": "Alyssa",
-    "home_addr": "~~~Ignored~~~",
-    "id": 103,
-    "member_entrance": 2005,
-    "membership": "AS",
-    "name": "Flores"
-  },
-  {
-    "category": "C",
-    "e_mail": "Kathy.Kelley@mailinator.com",
-    "firstname": "Kathy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 104,
-    "member_entrance": 2019,
-    "membership": "AS",
-    "name": "Kelley"
-  },
-  {
-    "category": "E",
-    "e_mail": "Karen.Walters@mailinator.com",
-    "firstname": "Karen",
-    "home_addr": "~~~Ignored~~~",
-    "id": 105,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Walters"
-  },
-  {
-    "category": "C",
-    "e_mail": "Shane.Garrett@mailinator.com",
-    "firstname": "Shane",
-    "home_addr": "~~~Ignored~~~",
-    "id": 106,
-    "member_entrance": 2020,
-    "membership": "AS",
-    "name": "Garrett"
-  },
-  {
-    "category": "C",
-    "e_mail": "Christian.Wagner@mailinator.com",
-    "firstname": "Christian",
-    "home_addr": "~~~Ignored~~~",
-    "id": 107,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Wagner"
-  },
-  {
-    "category": "C",
-    "e_mail": "Susan.Martinez@mailinator.com",
-    "firstname": "Susan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 108,
-    "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Martinez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kathleen.Edwards@mailinator.com",
-    "firstname": "Kathleen",
-    "home_addr": "~~~Ignored~~~",
-    "id": 109,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Edwards"
-  },
-  {
-    "category": "C",
-    "e_mail": "Christopher.Maldonado@mailinator.com",
-    "firstname": "Christopher",
-    "home_addr": "~~~Ignored~~~",
-    "id": 110,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Maldonado"
-  },
-  {
-    "category": "E",
-    "e_mail": "Bianca.Navarro@mailinator.com",
-    "firstname": "Bianca",
-    "home_addr": "~~~Ignored~~~",
-    "id": 111,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Navarro"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jerry.Perez@mailinator.com",
-    "firstname": "Jerry",
-    "home_addr": "~~~Ignored~~~",
-    "id": 112,
-    "member_entrance": 2007,
-    "membership": "AS",
-    "name": "Perez"
-  },
-  {
-    "category": "C",
-    "e_mail": "Robert.Thomas@mailinator.com",
-    "firstname": "Robert",
-    "home_addr": "~~~Ignored~~~",
-    "id": 113,
-    "member_entrance": 2009,
-    "membership": "AS",
-    "name": "Thomas"
-  },
-  {
-    "category": "E",
-    "e_mail": "Patrick.Compton@mailinator.com",
-    "firstname": "Patrick",
-    "home_addr": "~~~Ignored~~~",
-    "id": 114,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Compton"
-  },
-  {
-    "category": "E",
-    "e_mail": "Michelle.Floyd@mailinator.com",
-    "firstname": "Michelle",
-    "home_addr": "~~~Ignored~~~",
-    "id": 115,
-    "member_entrance": 2007,
-    "membership": "AS",
-    "name": "Floyd"
-  },
-  {
-    "category": "E",
-    "e_mail": "Anne.Bryant@mailinator.com",
-    "firstname": "Anne",
-    "home_addr": "~~~Ignored~~~",
-    "id": 116,
-    "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Bryant"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jay.Ford@mailinator.com",
-    "firstname": "Jay",
-    "home_addr": "~~~Ignored~~~",
-    "id": 117,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Ford"
-  },
-  {
-    "category": "E",
-    "e_mail": "Daniel.Avery@mailinator.com",
-    "firstname": "Daniel",
-    "home_addr": "~~~Ignored~~~",
-    "id": 118,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Avery"
-  },
-  {
-    "category": "E",
-    "e_mail": "Dennis.Davis@mailinator.com",
-    "firstname": "Dennis",
-    "home_addr": "~~~Ignored~~~",
-    "id": 119,
-    "member_entrance": 2011,
-    "membership": "AS",
-    "name": "Davis"
-  },
-  {
-    "category": "C",
-    "e_mail": "Brian.Galvan@mailinator.com",
-    "firstname": "Brian",
-    "home_addr": "~~~Ignored~~~",
-    "id": 120,
-    "member_entrance": 2016,
-    "membership": "AS",
-    "name": "Galvan"
-  },
-  {
-    "category": "C",
-    "e_mail": "Mitchell.Pratt@mailinator.com",
-    "firstname": "Mitchell",
-    "home_addr": "~~~Ignored~~~",
-    "id": 121,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Pratt"
-  },
-  {
-    "category": "C",
-    "e_mail": "Joseph.Pineda@mailinator.com",
-    "firstname": "Joseph",
-    "home_addr": "~~~Ignored~~~",
-    "id": 122,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Pineda"
-  },
-  {
-    "category": "C",
-    "e_mail": "Madison.Burton@mailinator.com",
-    "firstname": "Madison",
-    "home_addr": "~~~Ignored~~~",
-    "id": 123,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Burton"
-  },
-  {
-    "category": "C",
-    "e_mail": "Sierra.Kerr@mailinator.com",
-    "firstname": "Sierra",
-    "home_addr": "~~~Ignored~~~",
-    "id": 124,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Kerr"
-  },
-  {
-    "category": "E",
-    "e_mail": "John.Ramirez@mailinator.com",
-    "firstname": "John",
-    "home_addr": "~~~Ignored~~~",
-    "id": 125,
-    "member_entrance": 2012,
-    "membership": "AS",
-    "name": "Ramirez"
-  },
-  {
-    "category": "C",
-    "e_mail": "Kristin.Barnes@mailinator.com",
-    "firstname": "Kristin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 126,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Barnes"
-  },
-  {
-    "category": "C",
-    "e_mail": "Madison.White@mailinator.com",
-    "firstname": "Madison",
-    "home_addr": "~~~Ignored~~~",
-    "id": 127,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "White"
-  },
-  {
-    "category": "C",
-    "e_mail": "Amanda.King@mailinator.com",
-    "firstname": "Amanda",
-    "home_addr": "~~~Ignored~~~",
-    "id": 128,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "King"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jeremy.Mullen@mailinator.com",
-    "firstname": "Jeremy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 129,
-    "member_entrance": 2007,
-    "membership": "AS",
-    "name": "Mullen"
-  },
-  {
-    "category": "E",
-    "e_mail": "Monica.Reed@mailinator.com",
+    "e_mail": "Monica.Santos@mailinator.com",
     "firstname": "Monica",
     "home_addr": "~~~Ignored~~~",
-    "id": 130,
-    "member_entrance": 2003,
+    "id": 26,
+    "member_entrance": 1996,
     "membership": "AS",
-    "name": "Reed"
+    "name": "Santos"
   },
   {
     "category": "C",
-    "e_mail": "David.Hickman@mailinator.com",
-    "firstname": "David",
+    "e_mail": "Victor.Cook@mailinator.com",
+    "firstname": "Victor",
     "home_addr": "~~~Ignored~~~",
-    "id": 131,
-    "member_entrance": 2011,
+    "id": 27,
+    "member_entrance": 2021,
     "membership": "AS",
-    "name": "Hickman"
+    "name": "Cook"
   },
   {
     "category": "C",
-    "e_mail": "Cassandra.Beltran@mailinator.com",
-    "firstname": "Cassandra",
+    "e_mail": "Jennifer.Smith@mailinator.com",
+    "firstname": "Jennifer",
     "home_addr": "~~~Ignored~~~",
-    "id": 132,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Beltran"
-  },
-  {
-    "category": "C",
-    "e_mail": "Carla.Snyder@mailinator.com",
-    "firstname": "Carla",
-    "home_addr": "~~~Ignored~~~",
-    "id": 133,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Snyder"
-  },
-  {
-    "category": "C",
-    "e_mail": "Beth.Rangel@mailinator.com",
-    "firstname": "Beth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 134,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Rangel"
-  },
-  {
-    "category": "E",
-    "e_mail": "Dylan.Dominguez@mailinator.com",
-    "firstname": "Dylan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 135,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Dominguez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Richard.Nguyen@mailinator.com",
-    "firstname": "Richard",
-    "home_addr": "~~~Ignored~~~",
-    "id": 136,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Nguyen"
-  },
-  {
-    "category": "E",
-    "e_mail": "Dana.Harrell@mailinator.com",
-    "firstname": "Dana",
-    "home_addr": "~~~Ignored~~~",
-    "id": 137,
-    "member_entrance": 2014,
-    "membership": "AS",
-    "name": "Harrell"
-  },
-  {
-    "category": "C",
-    "e_mail": "Brandon.Peterson@mailinator.com",
-    "firstname": "Brandon",
-    "home_addr": "~~~Ignored~~~",
-    "id": 138,
+    "id": 28,
     "member_entrance": 2000,
     "membership": "AS",
-    "name": "Peterson"
-  },
-  {
-    "category": "C",
-    "e_mail": "David.Welch@mailinator.com",
-    "firstname": "David",
-    "home_addr": "~~~Ignored~~~",
-    "id": 139,
-    "member_entrance": 2000,
-    "membership": "AS",
-    "name": "Welch"
+    "name": "Smith"
   },
   {
     "category": "E",
-    "e_mail": "Angela.Watts@mailinator.com",
-    "firstname": "Angela",
-    "home_addr": "~~~Ignored~~~",
-    "id": 140,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Watts"
-  },
-  {
-    "category": "C",
-    "e_mail": "Patricia.Vazquez@mailinator.com",
-    "firstname": "Patricia",
-    "home_addr": "~~~Ignored~~~",
-    "id": 141,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Vazquez"
-  },
-  {
-    "category": "C",
-    "e_mail": "Bonnie.Suarez@mailinator.com",
-    "firstname": "Bonnie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 142,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Suarez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Danielle.Stein@mailinator.com",
-    "firstname": "Danielle",
-    "home_addr": "~~~Ignored~~~",
-    "id": 143,
-    "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Stein"
-  },
-  {
-    "category": "C",
-    "e_mail": "Joshua.Rosales@mailinator.com",
-    "firstname": "Joshua",
-    "home_addr": "~~~Ignored~~~",
-    "id": 144,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Rosales"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jaclyn.Cummings@mailinator.com",
-    "firstname": "Jaclyn",
-    "home_addr": "~~~Ignored~~~",
-    "id": 145,
-    "member_entrance": 2017,
-    "membership": "AS",
-    "name": "Cummings"
-  },
-  {
-    "category": "E",
-    "e_mail": "Alexandra.Rhodes@mailinator.com",
-    "firstname": "Alexandra",
-    "home_addr": "~~~Ignored~~~",
-    "id": 146,
-    "member_entrance": 2019,
-    "membership": "AS",
-    "name": "Rhodes"
-  },
-  {
-    "category": "C",
-    "e_mail": "Dawn.Hunt@mailinator.com",
-    "firstname": "Dawn",
-    "home_addr": "~~~Ignored~~~",
-    "id": 147,
-    "member_entrance": 2013,
-    "membership": "AS",
-    "name": "Hunt"
-  },
-  {
-    "category": "C",
-    "e_mail": "Lawrence.Rich@mailinator.com",
-    "firstname": "Lawrence",
-    "home_addr": "~~~Ignored~~~",
-    "id": 148,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Rich"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jennifer.Simon@mailinator.com",
-    "firstname": "Jennifer",
-    "home_addr": "~~~Ignored~~~",
-    "id": 149,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Simon"
-  },
-  {
-    "category": "E",
-    "e_mail": "Cheryl.Cooper@mailinator.com",
-    "firstname": "Cheryl",
-    "home_addr": "~~~Ignored~~~",
-    "id": 150,
-    "member_entrance": 1991,
-    "membership": "AS",
-    "name": "Cooper"
-  },
-  {
-    "category": "C",
-    "e_mail": "Meghan.Frost@mailinator.com",
-    "firstname": "Meghan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 151,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Frost"
-  },
-  {
-    "category": "C",
-    "e_mail": "Tina.Freeman@mailinator.com",
-    "firstname": "Tina",
-    "home_addr": "~~~Ignored~~~",
-    "id": 152,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Freeman"
-  },
-  {
-    "category": "C",
-    "e_mail": "Rachel.Gonzales@mailinator.com",
-    "firstname": "Rachel",
-    "home_addr": "~~~Ignored~~~",
-    "id": 153,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Gonzales"
-  },
-  {
-    "category": "C",
-    "e_mail": "Elizabeth.Robinson@mailinator.com",
-    "firstname": "Elizabeth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 154,
-    "member_entrance": 1990,
-    "membership": "AS",
-    "name": "Robinson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Amanda.West@mailinator.com",
-    "firstname": "Amanda",
-    "home_addr": "~~~Ignored~~~",
-    "id": 155,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "West"
-  },
-  {
-    "category": "C",
-    "e_mail": "Scott.Brooks@mailinator.com",
-    "firstname": "Scott",
-    "home_addr": "~~~Ignored~~~",
-    "id": 156,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Brooks"
-  },
-  {
-    "category": "C",
-    "e_mail": "Angela.Cox@mailinator.com",
-    "firstname": "Angela",
-    "home_addr": "~~~Ignored~~~",
-    "id": 157,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Cox"
-  },
-  {
-    "category": "C",
-    "e_mail": "Ryan.Lee@mailinator.com",
-    "firstname": "Ryan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 158,
-    "member_entrance": 2017,
-    "membership": "AS",
-    "name": "Lee"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kyle.Mathis@mailinator.com",
-    "firstname": "Kyle",
-    "home_addr": "~~~Ignored~~~",
-    "id": 159,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Mathis"
-  },
-  {
-    "category": "C",
-    "e_mail": "Kenneth.Booker@mailinator.com",
-    "firstname": "Kenneth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 160,
-    "member_entrance": 2007,
-    "membership": "AS",
-    "name": "Booker"
-  },
-  {
-    "category": "C",
-    "e_mail": "Lori.Larsen@mailinator.com",
-    "firstname": "Lori",
-    "home_addr": "~~~Ignored~~~",
-    "id": 161,
-    "member_entrance": 2019,
-    "membership": "AS",
-    "name": "Larsen"
-  },
-  {
-    "category": "C",
-    "e_mail": "Cheyenne.Cochran@mailinator.com",
-    "firstname": "Cheyenne",
-    "home_addr": "~~~Ignored~~~",
-    "id": 162,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Cochran"
-  },
-  {
-    "category": "C",
-    "e_mail": "Andrew.Stone@mailinator.com",
-    "firstname": "Andrew",
-    "home_addr": "~~~Ignored~~~",
-    "id": 163,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Stone"
-  },
-  {
-    "category": "E",
-    "e_mail": "Amber.Osborn@mailinator.com",
-    "firstname": "Amber",
-    "home_addr": "~~~Ignored~~~",
-    "id": 164,
-    "member_entrance": 1994,
-    "membership": "AS",
-    "name": "Osborn"
-  },
-  {
-    "category": "C",
-    "e_mail": "Angel.Bradford@mailinator.com",
-    "firstname": "Angel",
-    "home_addr": "~~~Ignored~~~",
-    "id": 165,
-    "member_entrance": 2016,
-    "membership": "AS",
-    "name": "Bradford"
-  },
-  {
-    "category": "E",
-    "e_mail": "Cheryl.Faulkner@mailinator.com",
-    "firstname": "Cheryl",
-    "home_addr": "~~~Ignored~~~",
-    "id": 166,
-    "member_entrance": 2012,
-    "membership": "AS",
-    "name": "Faulkner"
-  },
-  {
-    "category": "C",
-    "e_mail": "Matthew.Franco@mailinator.com",
-    "firstname": "Matthew",
-    "home_addr": "~~~Ignored~~~",
-    "id": 167,
-    "member_entrance": 1991,
-    "membership": "AS",
-    "name": "Franco"
-  },
-  {
-    "category": "E",
-    "e_mail": "James.Walsh@mailinator.com",
-    "firstname": "James",
-    "home_addr": "~~~Ignored~~~",
-    "id": 168,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Walsh"
-  },
-  {
-    "category": "C",
-    "e_mail": "Teresa.Barber@mailinator.com",
-    "firstname": "Teresa",
-    "home_addr": "~~~Ignored~~~",
-    "id": 169,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Barber"
-  },
-  {
-    "category": "C",
-    "e_mail": "Brian.Moore@mailinator.com",
-    "firstname": "Brian",
-    "home_addr": "~~~Ignored~~~",
-    "id": 170,
-    "member_entrance": 2010,
-    "membership": "AS",
-    "name": "Moore"
-  },
-  {
-    "category": "E",
-    "e_mail": "Debra.Calhoun@mailinator.com",
-    "firstname": "Debra",
-    "home_addr": "~~~Ignored~~~",
-    "id": 171,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Calhoun"
-  },
-  {
-    "category": "E",
-    "e_mail": "Brandy.Norton@mailinator.com",
-    "firstname": "Brandy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 172,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Norton"
-  },
-  {
-    "category": "E",
-    "e_mail": "Adam.Walter@mailinator.com",
-    "firstname": "Adam",
-    "home_addr": "~~~Ignored~~~",
-    "id": 173,
-    "member_entrance": 2016,
-    "membership": "AS",
-    "name": "Walter"
-  },
-  {
-    "category": "E",
-    "e_mail": "Sarah.Todd@mailinator.com",
-    "firstname": "Sarah",
-    "home_addr": "~~~Ignored~~~",
-    "id": 174,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Todd"
-  },
-  {
-    "category": "E",
-    "e_mail": "John.Sanford@mailinator.com",
-    "firstname": "John",
-    "home_addr": "~~~Ignored~~~",
-    "id": 175,
-    "member_entrance": 1990,
-    "membership": "AS",
-    "name": "Sanford"
-  },
-  {
-    "category": "E",
-    "e_mail": "Patricia.Green@mailinator.com",
-    "firstname": "Patricia",
-    "home_addr": "~~~Ignored~~~",
-    "id": 176,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Green"
-  },
-  {
-    "category": "E",
-    "e_mail": "Angela.Dean@mailinator.com",
-    "firstname": "Angela",
-    "home_addr": "~~~Ignored~~~",
-    "id": 177,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Dean"
-  },
-  {
-    "category": "C",
-    "e_mail": "Monica.Hogan@mailinator.com",
-    "firstname": "Monica",
-    "home_addr": "~~~Ignored~~~",
-    "id": 178,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Hogan"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jillian.Garza@mailinator.com",
-    "firstname": "Jillian",
-    "home_addr": "~~~Ignored~~~",
-    "id": 179,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Garza"
-  },
-  {
-    "category": "E",
-    "e_mail": "Natasha.Glass@mailinator.com",
-    "firstname": "Natasha",
-    "home_addr": "~~~Ignored~~~",
-    "id": 180,
-    "member_entrance": 2020,
-    "membership": "AS",
-    "name": "Glass"
-  },
-  {
-    "category": "E",
-    "e_mail": "Melinda.Warner@mailinator.com",
-    "firstname": "Melinda",
-    "home_addr": "~~~Ignored~~~",
-    "id": 181,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Warner"
-  },
-  {
-    "category": "C",
-    "e_mail": "Julia.Murphy@mailinator.com",
-    "firstname": "Julia",
-    "home_addr": "~~~Ignored~~~",
-    "id": 182,
-    "member_entrance": 1998,
-    "membership": "AS",
-    "name": "Murphy"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jordan.Scott@mailinator.com",
-    "firstname": "Jordan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 183,
-    "member_entrance": 2016,
-    "membership": "AS",
-    "name": "Scott"
-  },
-  {
-    "category": "C",
-    "e_mail": "Mary.Stout@mailinator.com",
-    "firstname": "Mary",
-    "home_addr": "~~~Ignored~~~",
-    "id": 184,
-    "member_entrance": 2019,
-    "membership": "AS",
-    "name": "Stout"
-  },
-  {
-    "category": "C",
-    "e_mail": "Charles.Perkins@mailinator.com",
-    "firstname": "Charles",
-    "home_addr": "~~~Ignored~~~",
-    "id": 185,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Perkins"
-  },
-  {
-    "category": "C",
-    "e_mail": "Tommy.Peters@mailinator.com",
-    "firstname": "Tommy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 186,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Peters"
-  },
-  {
-    "category": "E",
-    "e_mail": "Mary.Short@mailinator.com",
-    "firstname": "Mary",
-    "home_addr": "~~~Ignored~~~",
-    "id": 187,
-    "member_entrance": 2013,
-    "membership": "AS",
-    "name": "Short"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kenneth.Roman@mailinator.com",
-    "firstname": "Kenneth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 188,
-    "member_entrance": 2015,
-    "membership": "AS",
-    "name": "Roman"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jacob.Young@mailinator.com",
-    "firstname": "Jacob",
-    "home_addr": "~~~Ignored~~~",
-    "id": 189,
-    "member_entrance": 1990,
-    "membership": "AS",
-    "name": "Young"
-  },
-  {
-    "category": "E",
-    "e_mail": "Mark.Greene@mailinator.com",
-    "firstname": "Mark",
-    "home_addr": "~~~Ignored~~~",
-    "id": 190,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Greene"
-  },
-  {
-    "category": "C",
-    "e_mail": "Benjamin.Bowman@mailinator.com",
-    "firstname": "Benjamin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 191,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Bowman"
-  },
-  {
-    "category": "C",
-    "e_mail": "Joseph.Stewart@mailinator.com",
-    "firstname": "Joseph",
-    "home_addr": "~~~Ignored~~~",
-    "id": 192,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Stewart"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kara.Kaufman@mailinator.com",
-    "firstname": "Kara",
-    "home_addr": "~~~Ignored~~~",
-    "id": 193,
-    "member_entrance": 2009,
-    "membership": "AS",
-    "name": "Kaufman"
-  },
-  {
-    "category": "C",
-    "e_mail": "David.Sanchez@mailinator.com",
-    "firstname": "David",
-    "home_addr": "~~~Ignored~~~",
-    "id": 194,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Sanchez"
-  },
-  {
-    "category": "C",
-    "e_mail": "Lauren.Chandler@mailinator.com",
-    "firstname": "Lauren",
-    "home_addr": "~~~Ignored~~~",
-    "id": 195,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Chandler"
-  },
-  {
-    "category": "C",
-    "e_mail": "Daisy.Mccoy@mailinator.com",
-    "firstname": "Daisy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 196,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Mccoy"
-  },
-  {
-    "category": "C",
-    "e_mail": "Tonya.Rice@mailinator.com",
-    "firstname": "Tonya",
-    "home_addr": "~~~Ignored~~~",
-    "id": 197,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Rice"
-  },
-  {
-    "category": "E",
-    "e_mail": "Carl.Reeves@mailinator.com",
-    "firstname": "Carl",
-    "home_addr": "~~~Ignored~~~",
-    "id": 198,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Reeves"
-  },
-  {
-    "category": "C",
-    "e_mail": "Lisa.Schmidt@mailinator.com",
-    "firstname": "Lisa",
-    "home_addr": "~~~Ignored~~~",
-    "id": 199,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Schmidt"
-  },
-  {
-    "category": "C",
-    "e_mail": "Monica.Massey@mailinator.com",
-    "firstname": "Monica",
-    "home_addr": "~~~Ignored~~~",
-    "id": 200,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Massey"
-  },
-  {
-    "category": "E",
-    "e_mail": "Ethan.Travis@mailinator.com",
-    "firstname": "Ethan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 201,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Travis"
-  },
-  {
-    "category": "E",
-    "e_mail": "Nichole.Pittman@mailinator.com",
-    "firstname": "Nichole",
-    "home_addr": "~~~Ignored~~~",
-    "id": 202,
-    "member_entrance": 2022,
-    "membership": "AS",
-    "name": "Pittman"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jason.Powell@mailinator.com",
-    "firstname": "Jason",
-    "home_addr": "~~~Ignored~~~",
-    "id": 203,
-    "member_entrance": 1992,
-    "membership": "AS",
-    "name": "Powell"
-  },
-  {
-    "category": "C",
-    "e_mail": "Sarah.Keller@mailinator.com",
-    "firstname": "Sarah",
-    "home_addr": "~~~Ignored~~~",
-    "id": 204,
-    "member_entrance": 2014,
-    "membership": "AS",
-    "name": "Keller"
-  },
-  {
-    "category": "C",
-    "e_mail": "Jennifer.Lynch@mailinator.com",
-    "firstname": "Jennifer",
-    "home_addr": "~~~Ignored~~~",
-    "id": 205,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Lynch"
-  },
-  {
-    "category": "C",
-    "e_mail": "Daniel.Hicks@mailinator.com",
-    "firstname": "Daniel",
-    "home_addr": "~~~Ignored~~~",
-    "id": 206,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Hicks"
-  },
-  {
-    "category": "E",
-    "e_mail": "Alexander.Chan@mailinator.com",
-    "firstname": "Alexander",
-    "home_addr": "~~~Ignored~~~",
-    "id": 207,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Chan"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kevin.Richardson@mailinator.com",
-    "firstname": "Kevin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 208,
-    "member_entrance": 1994,
-    "membership": "AS",
-    "name": "Richardson"
-  },
-  {
-    "category": "C",
-    "e_mail": "Matthew.Webb@mailinator.com",
-    "firstname": "Matthew",
-    "home_addr": "~~~Ignored~~~",
-    "id": 209,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Webb"
-  },
-  {
-    "category": "C",
-    "e_mail": "Carlos.Porter@mailinator.com",
-    "firstname": "Carlos",
-    "home_addr": "~~~Ignored~~~",
-    "id": 210,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Porter"
-  },
-  {
-    "category": "E",
-    "e_mail": "Amy.Hahn@mailinator.com",
+    "e_mail": "Amy.Mcgee@mailinator.com",
     "firstname": "Amy",
     "home_addr": "~~~Ignored~~~",
-    "id": 211,
-    "member_entrance": 1991,
+    "id": 29,
+    "member_entrance": 2023,
     "membership": "AS",
-    "name": "Hahn"
+    "name": "Mcgee"
   },
   {
     "category": "C",
-    "e_mail": "Matthew.Mcdonald@mailinator.com",
-    "firstname": "Matthew",
+    "e_mail": "Mitchell.Wise@mailinator.com",
+    "firstname": "Mitchell",
     "home_addr": "~~~Ignored~~~",
-    "id": 212,
-    "member_entrance": 1992,
-    "membership": "AS",
-    "name": "Mcdonald"
-  },
-  {
-    "category": "E",
-    "e_mail": "Suzanne.Fox@mailinator.com",
-    "firstname": "Suzanne",
-    "home_addr": "~~~Ignored~~~",
-    "id": 213,
-    "member_entrance": 1994,
-    "membership": "AS",
-    "name": "Fox"
-  },
-  {
-    "category": "C",
-    "e_mail": "Randy.Rodgers@mailinator.com",
-    "firstname": "Randy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 214,
-    "member_entrance": 2010,
-    "membership": "AS",
-    "name": "Rodgers"
-  },
-  {
-    "category": "C",
-    "e_mail": "April.Wallace@mailinator.com",
-    "firstname": "April",
-    "home_addr": "~~~Ignored~~~",
-    "id": 215,
-    "member_entrance": 2001,
-    "membership": "AS",
-    "name": "Wallace"
-  },
-  {
-    "category": "C",
-    "e_mail": "Kenneth.Palmer@mailinator.com",
-    "firstname": "Kenneth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 216,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Palmer"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jennifer.Long@mailinator.com",
-    "firstname": "Jennifer",
-    "home_addr": "~~~Ignored~~~",
-    "id": 217,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Long"
-  },
-  {
-    "category": "C",
-    "e_mail": "James.Patel@mailinator.com",
-    "firstname": "James",
-    "home_addr": "~~~Ignored~~~",
-    "id": 218,
-    "member_entrance": 2013,
-    "membership": "AS",
-    "name": "Patel"
-  },
-  {
-    "category": "E",
-    "e_mail": "Michael.Salas@mailinator.com",
-    "firstname": "Michael",
-    "home_addr": "~~~Ignored~~~",
-    "id": 219,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Salas"
-  },
-  {
-    "category": "C",
-    "e_mail": "Robert.Boyd@mailinator.com",
-    "firstname": "Robert",
-    "home_addr": "~~~Ignored~~~",
-    "id": 220,
+    "id": 30,
     "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Boyd"
-  },
-  {
-    "category": "E",
-    "e_mail": "Pamela.Beck@mailinator.com",
-    "firstname": "Pamela",
-    "home_addr": "~~~Ignored~~~",
-    "id": 221,
-    "member_entrance": 1990,
-    "membership": "AS",
-    "name": "Beck"
-  },
-  {
-    "category": "E",
-    "e_mail": "Justin.Villarreal@mailinator.com",
-    "firstname": "Justin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 222,
-    "member_entrance": 1994,
-    "membership": "AS",
-    "name": "Villarreal"
-  },
-  {
-    "category": "C",
-    "e_mail": "Christie.Ward@mailinator.com",
-    "firstname": "Christie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 223,
-    "member_entrance": 1992,
-    "membership": "AS",
-    "name": "Ward"
-  },
-  {
-    "category": "E",
-    "e_mail": "Rhonda.Townsend@mailinator.com",
-    "firstname": "Rhonda",
-    "home_addr": "~~~Ignored~~~",
-    "id": 224,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Townsend"
-  },
-  {
-    "category": "E",
-    "e_mail": "Matthew.Sexton@mailinator.com",
-    "firstname": "Matthew",
-    "home_addr": "~~~Ignored~~~",
-    "id": 225,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Sexton"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jesus.Ewing@mailinator.com",
-    "firstname": "Jesus",
-    "home_addr": "~~~Ignored~~~",
-    "id": 226,
-    "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Ewing"
-  },
-  {
-    "category": "C",
-    "e_mail": "Harry.Hubbard@mailinator.com",
-    "firstname": "Harry",
-    "home_addr": "~~~Ignored~~~",
-    "id": 227,
-    "member_entrance": 2001,
-    "membership": "AS",
-    "name": "Hubbard"
-  },
-  {
-    "category": "E",
-    "e_mail": "Elizabeth.Weber@mailinator.com",
-    "firstname": "Elizabeth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 228,
-    "member_entrance": 2000,
-    "membership": "AS",
-    "name": "Weber"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kevin.Mccullough@mailinator.com",
-    "firstname": "Kevin",
-    "home_addr": "~~~Ignored~~~",
-    "id": 229,
-    "member_entrance": 2018,
-    "membership": "AS",
-    "name": "Mccullough"
-  },
-  {
-    "category": "E",
-    "e_mail": "Catherine.Strickland@mailinator.com",
-    "firstname": "Catherine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 230,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Strickland"
-  },
-  {
-    "category": "C",
-    "e_mail": "Nicholas.Collins@mailinator.com",
-    "firstname": "Nicholas",
-    "home_addr": "~~~Ignored~~~",
-    "id": 231,
-    "member_entrance": 2019,
-    "membership": "AS",
-    "name": "Collins"
-  },
-  {
-    "category": "E",
-    "e_mail": "Kenneth.Clark@mailinator.com",
-    "firstname": "Kenneth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 232,
-    "member_entrance": 1992,
-    "membership": "AS",
-    "name": "Clark"
-  },
-  {
-    "category": "E",
-    "e_mail": "Sandy.Alvarez@mailinator.com",
-    "firstname": "Sandy",
-    "home_addr": "~~~Ignored~~~",
-    "id": 233,
-    "member_entrance": 2014,
-    "membership": "AS",
-    "name": "Alvarez"
-  },
-  {
-    "category": "E",
-    "e_mail": "Heather.Carter@mailinator.com",
-    "firstname": "Heather",
-    "home_addr": "~~~Ignored~~~",
-    "id": 234,
-    "member_entrance": 1991,
-    "membership": "AS",
-    "name": "Carter"
-  },
-  {
-    "category": "E",
-    "e_mail": "Cody.Mclaughlin@mailinator.com",
-    "firstname": "Cody",
-    "home_addr": "~~~Ignored~~~",
-    "id": 235,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Mclaughlin"
-  },
-  {
-    "category": "C",
-    "e_mail": "Gabrielle.Bradley@mailinator.com",
-    "firstname": "Gabrielle",
-    "home_addr": "~~~Ignored~~~",
-    "id": 236,
-    "member_entrance": 1992,
-    "membership": "AS",
-    "name": "Bradley"
-  },
-  {
-    "category": "C",
-    "e_mail": "Karen.Hayden@mailinator.com",
-    "firstname": "Karen",
-    "home_addr": "~~~Ignored~~~",
-    "id": 237,
-    "member_entrance": 1992,
-    "membership": "AS",
-    "name": "Hayden"
-  },
-  {
-    "category": "E",
-    "e_mail": "Laura.Butler@mailinator.com",
-    "firstname": "Laura",
-    "home_addr": "~~~Ignored~~~",
-    "id": 238,
-    "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Butler"
-  },
-  {
-    "category": "E",
-    "e_mail": "Christopher.Riddle@mailinator.com",
-    "firstname": "Christopher",
-    "home_addr": "~~~Ignored~~~",
-    "id": 239,
-    "member_entrance": 1993,
-    "membership": "AS",
-    "name": "Riddle"
-  },
-  {
-    "category": "E",
-    "e_mail": "David.Wise@mailinator.com",
-    "firstname": "David",
-    "home_addr": "~~~Ignored~~~",
-    "id": 240,
-    "member_entrance": 2019,
     "membership": "AS",
     "name": "Wise"
   },
   {
     "category": "E",
-    "e_mail": "Russell.Russell@mailinator.com",
-    "firstname": "Russell",
+    "e_mail": "Nichole.Thompson@mailinator.com",
+    "firstname": "Nichole",
     "home_addr": "~~~Ignored~~~",
-    "id": 241,
-    "member_entrance": 2013,
+    "id": 31,
+    "member_entrance": 2023,
     "membership": "AS",
-    "name": "Russell"
+    "name": "Thompson"
   },
   {
     "category": "E",
-    "e_mail": "Taylor.Carson@mailinator.com",
-    "firstname": "Taylor",
+    "e_mail": "Michaela.Collier@mailinator.com",
+    "firstname": "Michaela",
     "home_addr": "~~~Ignored~~~",
-    "id": 242,
-    "member_entrance": 1991,
+    "id": 32,
+    "member_entrance": 2012,
     "membership": "AS",
-    "name": "Carson"
+    "name": "Collier"
   },
   {
     "category": "C",
-    "e_mail": "Christopher.Baker@mailinator.com",
-    "firstname": "Christopher",
+    "e_mail": "Jonathan.Bryant@mailinator.com",
+    "firstname": "Jonathan",
     "home_addr": "~~~Ignored~~~",
-    "id": 243,
-    "member_entrance": 2006,
-    "membership": "AS",
-    "name": "Baker"
-  },
-  {
-    "category": "E",
-    "e_mail": "Katherine.Castillo@mailinator.com",
-    "firstname": "Katherine",
-    "home_addr": "~~~Ignored~~~",
-    "id": 244,
-    "member_entrance": 2001,
-    "membership": "AS",
-    "name": "Castillo"
-  },
-  {
-    "category": "E",
-    "e_mail": "Lori.Santos@mailinator.com",
-    "firstname": "Lori",
-    "home_addr": "~~~Ignored~~~",
-    "id": 245,
+    "id": 33,
     "member_entrance": 2010,
     "membership": "AS",
-    "name": "Santos"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jamie.Dunlap@mailinator.com",
-    "firstname": "Jamie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 246,
-    "member_entrance": 1999,
-    "membership": "AS",
-    "name": "Dunlap"
+    "name": "Bryant"
   },
   {
     "category": "C",
-    "e_mail": "Maureen.Carlson@mailinator.com",
-    "firstname": "Maureen",
+    "e_mail": "Thomas.Peck@mailinator.com",
+    "firstname": "Thomas",
     "home_addr": "~~~Ignored~~~",
-    "id": 247,
-    "member_entrance": 2008,
+    "id": 34,
+    "member_entrance": 2023,
     "membership": "AS",
-    "name": "Carlson"
+    "name": "Peck"
+  },
+  {
+    "category": "C",
+    "e_mail": "Alexis.Daugherty@mailinator.com",
+    "firstname": "Alexis",
+    "home_addr": "~~~Ignored~~~",
+    "id": 35,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Daugherty"
   },
   {
     "category": "E",
-    "e_mail": "Michael.Pena@mailinator.com",
-    "firstname": "Michael",
+    "e_mail": "Donald.Daniel@mailinator.com",
+    "firstname": "Donald",
     "home_addr": "~~~Ignored~~~",
-    "id": 248,
+    "id": 36,
     "member_entrance": 2007,
     "membership": "AS",
-    "name": "Pena"
+    "name": "Daniel"
   },
   {
     "category": "C",
-    "e_mail": "Taylor.Glover@mailinator.com",
-    "firstname": "Taylor",
+    "e_mail": "Angela.French@mailinator.com",
+    "firstname": "Angela",
     "home_addr": "~~~Ignored~~~",
-    "id": 249,
-    "member_entrance": 2010,
+    "id": 37,
+    "member_entrance": 1991,
     "membership": "AS",
-    "name": "Glover"
+    "name": "French"
   },
   {
     "category": "C",
-    "e_mail": "Hailey.Buckley@mailinator.com",
-    "firstname": "Hailey",
+    "e_mail": "Brandon.White@mailinator.com",
+    "firstname": "Brandon",
     "home_addr": "~~~Ignored~~~",
-    "id": 250,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Buckley"
-  },
-  {
-    "category": "C",
-    "e_mail": "Priscilla.Obrien@mailinator.com",
-    "firstname": "Priscilla",
-    "home_addr": "~~~Ignored~~~",
-    "id": 251,
-    "member_entrance": 2017,
-    "membership": "AS",
-    "name": "Obrien"
-  },
-  {
-    "category": "E",
-    "e_mail": "Emily.Curtis@mailinator.com",
-    "firstname": "Emily",
-    "home_addr": "~~~Ignored~~~",
-    "id": 252,
-    "member_entrance": 2000,
-    "membership": "AS",
-    "name": "Curtis"
-  },
-  {
-    "category": "E",
-    "e_mail": "Ashley.Flowers@mailinator.com",
-    "firstname": "Ashley",
-    "home_addr": "~~~Ignored~~~",
-    "id": 253,
-    "member_entrance": 2014,
-    "membership": "AS",
-    "name": "Flowers"
-  },
-  {
-    "category": "C",
-    "e_mail": "Karen.Sweeney@mailinator.com",
-    "firstname": "Karen",
-    "home_addr": "~~~Ignored~~~",
-    "id": 254,
-    "member_entrance": 2010,
-    "membership": "AS",
-    "name": "Sweeney"
-  },
-  {
-    "category": "C",
-    "e_mail": "Kathleen.Chase@mailinator.com",
-    "firstname": "Kathleen",
-    "home_addr": "~~~Ignored~~~",
-    "id": 255,
+    "id": 38,
     "member_entrance": 2006,
+    "membership": "AS",
+    "name": "White"
+  },
+  {
+    "category": "E",
+    "e_mail": "Joanna.Romero@mailinator.com",
+    "firstname": "Joanna",
+    "home_addr": "~~~Ignored~~~",
+    "id": 39,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Romero"
+  },
+  {
+    "category": "E",
+    "e_mail": "Ivan.Chase@mailinator.com",
+    "firstname": "Ivan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 40,
+    "member_entrance": 2020,
     "membership": "AS",
     "name": "Chase"
   },
   {
     "category": "E",
-    "e_mail": "John.Oliver@mailinator.com",
-    "firstname": "John",
+    "e_mail": "Jeffrey.Diaz@mailinator.com",
+    "firstname": "Jeffrey",
     "home_addr": "~~~Ignored~~~",
-    "id": 256,
-    "member_entrance": 2009,
+    "id": 41,
+    "member_entrance": 1998,
     "membership": "AS",
-    "name": "Oliver"
-  },
-  {
-    "category": "E",
-    "e_mail": "Bryan.Rowe@mailinator.com",
-    "firstname": "Bryan",
-    "home_addr": "~~~Ignored~~~",
-    "id": 257,
-    "member_entrance": 2020,
-    "membership": "AS",
-    "name": "Rowe"
+    "name": "Diaz"
   },
   {
     "category": "C",
-    "e_mail": "Glen.Fleming@mailinator.com",
-    "firstname": "Glen",
+    "e_mail": "Angela.Day@mailinator.com",
+    "firstname": "Angela",
     "home_addr": "~~~Ignored~~~",
-    "id": 258,
-    "member_entrance": 1999,
+    "id": 42,
+    "member_entrance": 2023,
     "membership": "AS",
-    "name": "Fleming"
+    "name": "Day"
   },
   {
     "category": "C",
-    "e_mail": "Mark.Greer@mailinator.com",
-    "firstname": "Mark",
+    "e_mail": "Darren.Johnson@mailinator.com",
+    "firstname": "Darren",
     "home_addr": "~~~Ignored~~~",
-    "id": 259,
+    "id": 43,
     "member_entrance": 2006,
     "membership": "AS",
-    "name": "Greer"
+    "name": "Johnson"
   },
   {
     "category": "C",
-    "e_mail": "Kenneth.Washington@mailinator.com",
-    "firstname": "Kenneth",
+    "e_mail": "Robert.Hughes@mailinator.com",
+    "firstname": "Robert",
     "home_addr": "~~~Ignored~~~",
-    "id": 260,
-    "member_entrance": 2002,
-    "membership": "AS",
-    "name": "Washington"
-  },
-  {
-    "category": "E",
-    "e_mail": "Joyce.Burns@mailinator.com",
-    "firstname": "Joyce",
-    "home_addr": "~~~Ignored~~~",
-    "id": 261,
-    "member_entrance": 2011,
-    "membership": "AS",
-    "name": "Burns"
-  },
-  {
-    "category": "E",
-    "e_mail": "Jared.Myers@mailinator.com",
-    "firstname": "Jared",
-    "home_addr": "~~~Ignored~~~",
-    "id": 262,
-    "member_entrance": 2003,
-    "membership": "AS",
-    "name": "Myers"
-  },
-  {
-    "category": "C",
-    "e_mail": "David.Everett@mailinator.com",
-    "firstname": "David",
-    "home_addr": "~~~Ignored~~~",
-    "id": 263,
-    "member_entrance": 2017,
-    "membership": "AS",
-    "name": "Everett"
-  },
-  {
-    "category": "C",
-    "e_mail": "Lindsay.Price@mailinator.com",
-    "firstname": "Lindsay",
-    "home_addr": "~~~Ignored~~~",
-    "id": 264,
-    "member_entrance": 2012,
-    "membership": "AS",
-    "name": "Price"
-  },
-  {
-    "category": "E",
-    "e_mail": "Stephen.Phillips@mailinator.com",
-    "firstname": "Stephen",
-    "home_addr": "~~~Ignored~~~",
-    "id": 265,
-    "member_entrance": 2013,
-    "membership": "AS",
-    "name": "Phillips"
-  },
-  {
-    "category": "E",
-    "e_mail": "William.Lyons@mailinator.com",
-    "firstname": "William",
-    "home_addr": "~~~Ignored~~~",
-    "id": 266,
-    "member_entrance": 2004,
-    "membership": "AS",
-    "name": "Lyons"
-  },
-  {
-    "category": "E",
-    "e_mail": "Michael.Montoya@mailinator.com",
-    "firstname": "Michael",
-    "home_addr": "~~~Ignored~~~",
-    "id": 267,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Montoya"
-  },
-  {
-    "category": "C",
-    "e_mail": "Kristopher.Middleton@mailinator.com",
-    "firstname": "Kristopher",
-    "home_addr": "~~~Ignored~~~",
-    "id": 268,
+    "id": 44,
     "member_entrance": 2018,
     "membership": "AS",
-    "name": "Middleton"
+    "name": "Hughes"
   },
   {
     "category": "E",
-    "e_mail": "Sarah.Adams@mailinator.com",
-    "firstname": "Sarah",
+    "e_mail": "Jenna.Allen@mailinator.com",
+    "firstname": "Jenna",
     "home_addr": "~~~Ignored~~~",
-    "id": 269,
+    "id": 45,
     "member_entrance": 2019,
+    "membership": "AS",
+    "name": "Allen"
+  },
+  {
+    "category": "C",
+    "e_mail": "Kelsey.Camacho@mailinator.com",
+    "firstname": "Kelsey",
+    "home_addr": "~~~Ignored~~~",
+    "id": 46,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Camacho"
+  },
+  {
+    "category": "C",
+    "e_mail": "Amanda.Mendoza@mailinator.com",
+    "firstname": "Amanda",
+    "home_addr": "~~~Ignored~~~",
+    "id": 47,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Mendoza"
+  },
+  {
+    "category": "E",
+    "e_mail": "Vincent.Patterson@mailinator.com",
+    "firstname": "Vincent",
+    "home_addr": "~~~Ignored~~~",
+    "id": 48,
+    "member_entrance": 1999,
+    "membership": "AS",
+    "name": "Patterson"
+  },
+  {
+    "category": "C",
+    "e_mail": "Linda.Brock@mailinator.com",
+    "firstname": "Linda",
+    "home_addr": "~~~Ignored~~~",
+    "id": 49,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Brock"
+  },
+  {
+    "category": "E",
+    "e_mail": "Kimberly.Wallace@mailinator.com",
+    "firstname": "Kimberly",
+    "home_addr": "~~~Ignored~~~",
+    "id": 50,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Wallace"
+  },
+  {
+    "category": "E",
+    "e_mail": "Vernon.Graham@mailinator.com",
+    "firstname": "Vernon",
+    "home_addr": "~~~Ignored~~~",
+    "id": 51,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Graham"
+  },
+  {
+    "category": "C",
+    "e_mail": "Maria.Flores@mailinator.com",
+    "firstname": "Maria",
+    "home_addr": "~~~Ignored~~~",
+    "id": 52,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Flores"
+  },
+  {
+    "category": "C",
+    "e_mail": "Jasmine.Wolfe@mailinator.com",
+    "firstname": "Jasmine",
+    "home_addr": "~~~Ignored~~~",
+    "id": 53,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Wolfe"
+  },
+  {
+    "category": "E",
+    "e_mail": "Christopher.Moran@mailinator.com",
+    "firstname": "Christopher",
+    "home_addr": "~~~Ignored~~~",
+    "id": 54,
+    "member_entrance": 2018,
+    "membership": "AS",
+    "name": "Moran"
+  },
+  {
+    "category": "E",
+    "e_mail": "Seth.Chen@mailinator.com",
+    "firstname": "Seth",
+    "home_addr": "~~~Ignored~~~",
+    "id": 55,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Chen"
+  },
+  {
+    "category": "C",
+    "e_mail": "Matthew.Ryan@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 56,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Ryan"
+  },
+  {
+    "category": "C",
+    "e_mail": "Robert.Bell@mailinator.com",
+    "firstname": "Robert",
+    "home_addr": "~~~Ignored~~~",
+    "id": 57,
+    "member_entrance": 1997,
+    "membership": "AS",
+    "name": "Bell"
+  },
+  {
+    "category": "C",
+    "e_mail": "Michael.Livingston@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 58,
+    "member_entrance": 1990,
+    "membership": "AS",
+    "name": "Livingston"
+  },
+  {
+    "category": "C",
+    "e_mail": "Dylan.Snyder@mailinator.com",
+    "firstname": "Dylan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 59,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Snyder"
+  },
+  {
+    "category": "E",
+    "e_mail": "Nicholas.Rodriguez@mailinator.com",
+    "firstname": "Nicholas",
+    "home_addr": "~~~Ignored~~~",
+    "id": 60,
+    "member_entrance": 1991,
+    "membership": "AS",
+    "name": "Rodriguez"
+  },
+  {
+    "category": "C",
+    "e_mail": "Cynthia.Burgess@mailinator.com",
+    "firstname": "Cynthia",
+    "home_addr": "~~~Ignored~~~",
+    "id": 61,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Burgess"
+  },
+  {
+    "category": "E",
+    "e_mail": "Reginald.Scott@mailinator.com",
+    "firstname": "Reginald",
+    "home_addr": "~~~Ignored~~~",
+    "id": 62,
+    "member_entrance": 1998,
+    "membership": "AS",
+    "name": "Scott"
+  },
+  {
+    "category": "E",
+    "e_mail": "Andrea.Adams@mailinator.com",
+    "firstname": "Andrea",
+    "home_addr": "~~~Ignored~~~",
+    "id": 63,
+    "member_entrance": 2005,
     "membership": "AS",
     "name": "Adams"
   },
   {
     "category": "C",
-    "e_mail": "Rita.Watson@mailinator.com",
-    "firstname": "Rita",
+    "e_mail": "Michelle.Griffin@mailinator.com",
+    "firstname": "Michelle",
     "home_addr": "~~~Ignored~~~",
-    "id": 270,
-    "member_entrance": 2020,
+    "id": 64,
+    "member_entrance": 1998,
     "membership": "AS",
-    "name": "Watson"
+    "name": "Griffin"
   },
   {
     "category": "C",
-    "e_mail": "Billy.Glenn@mailinator.com",
-    "firstname": "Billy",
+    "e_mail": "Patrick.Roy@mailinator.com",
+    "firstname": "Patrick",
     "home_addr": "~~~Ignored~~~",
-    "id": 271,
-    "member_entrance": 2008,
-    "membership": "AS",
-    "name": "Glenn"
-  },
-  {
-    "category": "E",
-    "e_mail": "Christopher.Alexander@mailinator.com",
-    "firstname": "Christopher",
-    "home_addr": "~~~Ignored~~~",
-    "id": 272,
+    "id": 65,
     "member_entrance": 2001,
     "membership": "AS",
-    "name": "Alexander"
-  },
-  {
-    "category": "E",
-    "e_mail": "Julian.Contreras@mailinator.com",
-    "firstname": "Julian",
-    "home_addr": "~~~Ignored~~~",
-    "id": 273,
-    "member_entrance": 2012,
-    "membership": "AS",
-    "name": "Contreras"
+    "name": "Roy"
   },
   {
     "category": "C",
-    "e_mail": "Jillian.Moses@mailinator.com",
-    "firstname": "Jillian",
+    "e_mail": "Joseph.Harrison@mailinator.com",
+    "firstname": "Joseph",
     "home_addr": "~~~Ignored~~~",
-    "id": 274,
-    "member_entrance": 2010,
+    "id": 66,
+    "member_entrance": 2007,
     "membership": "AS",
-    "name": "Moses"
+    "name": "Harrison"
+  },
+  {
+    "category": "C",
+    "e_mail": "Brian.Atkins@mailinator.com",
+    "firstname": "Brian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 67,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Atkins"
   },
   {
     "category": "E",
-    "e_mail": "Patricia.Sparks@mailinator.com",
-    "firstname": "Patricia",
+    "e_mail": "Rebecca.Brewer@mailinator.com",
+    "firstname": "Rebecca",
     "home_addr": "~~~Ignored~~~",
-    "id": 275,
-    "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Sparks"
-  },
-  {
-    "category": "E",
-    "e_mail": "Anthony.Peck@mailinator.com",
-    "firstname": "Anthony",
-    "home_addr": "~~~Ignored~~~",
-    "id": 276,
-    "member_entrance": 1995,
-    "membership": "AS",
-    "name": "Peck"
-  },
-  {
-    "category": "E",
-    "e_mail": "Elizabeth.Jennings@mailinator.com",
-    "firstname": "Elizabeth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 277,
+    "id": 68,
     "member_entrance": 1993,
     "membership": "AS",
-    "name": "Jennings"
+    "name": "Brewer"
   },
   {
     "category": "C",
-    "e_mail": "Beth.Bennett@mailinator.com",
-    "firstname": "Beth",
+    "e_mail": "Debbie.Garza@mailinator.com",
+    "firstname": "Debbie",
     "home_addr": "~~~Ignored~~~",
-    "id": 278,
-    "member_entrance": 2000,
+    "id": 69,
+    "member_entrance": 2013,
     "membership": "AS",
-    "name": "Bennett"
+    "name": "Garza"
+  },
+  {
+    "category": "C",
+    "e_mail": "Donald.Wiley@mailinator.com",
+    "firstname": "Donald",
+    "home_addr": "~~~Ignored~~~",
+    "id": 70,
+    "member_entrance": 2015,
+    "membership": "AS",
+    "name": "Wiley"
   },
   {
     "category": "E",
-    "e_mail": "Wendy.Conley@mailinator.com",
-    "firstname": "Wendy",
+    "e_mail": "Adam.Jones@mailinator.com",
+    "firstname": "Adam",
     "home_addr": "~~~Ignored~~~",
-    "id": 279,
-    "member_entrance": 2009,
+    "id": 71,
+    "member_entrance": 2019,
     "membership": "AS",
-    "name": "Conley"
+    "name": "Jones"
   },
   {
     "category": "C",
-    "e_mail": "Terri.Jordan@mailinator.com",
-    "firstname": "Terri",
+    "e_mail": "Martin.Fitzgerald@mailinator.com",
+    "firstname": "Martin",
     "home_addr": "~~~Ignored~~~",
-    "id": 280,
+    "id": 72,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Fitzgerald"
+  },
+  {
+    "category": "C",
+    "e_mail": "Maria.Manning@mailinator.com",
+    "firstname": "Maria",
+    "home_addr": "~~~Ignored~~~",
+    "id": 73,
+    "member_entrance": 2008,
+    "membership": "AS",
+    "name": "Manning"
+  },
+  {
+    "category": "E",
+    "e_mail": "Mark.Davidson@mailinator.com",
+    "firstname": "Mark",
+    "home_addr": "~~~Ignored~~~",
+    "id": 74,
+    "member_entrance": 2017,
+    "membership": "AS",
+    "name": "Davidson"
+  },
+  {
+    "category": "C",
+    "e_mail": "Kevin.Briggs@mailinator.com",
+    "firstname": "Kevin",
+    "home_addr": "~~~Ignored~~~",
+    "id": 75,
+    "member_entrance": 1997,
+    "membership": "AS",
+    "name": "Briggs"
+  },
+  {
+    "category": "C",
+    "e_mail": "Kimberly.Lambert@mailinator.com",
+    "firstname": "Kimberly",
+    "home_addr": "~~~Ignored~~~",
+    "id": 76,
+    "member_entrance": 2015,
+    "membership": "AS",
+    "name": "Lambert"
+  },
+  {
+    "category": "C",
+    "e_mail": "Edwin.Orr@mailinator.com",
+    "firstname": "Edwin",
+    "home_addr": "~~~Ignored~~~",
+    "id": 77,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Orr"
+  },
+  {
+    "category": "E",
+    "e_mail": "Amber.Chapman@mailinator.com",
+    "firstname": "Amber",
+    "home_addr": "~~~Ignored~~~",
+    "id": 78,
     "member_entrance": 1991,
     "membership": "AS",
-    "name": "Jordan"
+    "name": "Chapman"
   },
   {
     "category": "C",
-    "e_mail": "Jenna.Keith@mailinator.com",
-    "firstname": "Jenna",
+    "e_mail": "Terri.Williams@mailinator.com",
+    "firstname": "Terri",
     "home_addr": "~~~Ignored~~~",
-    "id": 281,
-    "member_entrance": 1995,
+    "id": 79,
+    "member_entrance": 2023,
     "membership": "AS",
-    "name": "Keith"
+    "name": "Williams"
+  },
+  {
+    "category": "C",
+    "e_mail": "John.Bruce@mailinator.com",
+    "firstname": "John",
+    "home_addr": "~~~Ignored~~~",
+    "id": 80,
+    "member_entrance": 2002,
+    "membership": "AS",
+    "name": "Bruce"
   },
   {
     "category": "E",
-    "e_mail": "Jeremy.Chavez@mailinator.com",
-    "firstname": "Jeremy",
+    "e_mail": "Nicholas.Frost@mailinator.com",
+    "firstname": "Nicholas",
     "home_addr": "~~~Ignored~~~",
-    "id": 282,
+    "id": 81,
+    "member_entrance": 1999,
+    "membership": "AS",
+    "name": "Frost"
+  },
+  {
+    "category": "C",
+    "e_mail": "Lucas.Palmer@mailinator.com",
+    "firstname": "Lucas",
+    "home_addr": "~~~Ignored~~~",
+    "id": 82,
+    "member_entrance": 2008,
+    "membership": "AS",
+    "name": "Palmer"
+  },
+  {
+    "category": "E",
+    "e_mail": "Luis.Hall@mailinator.com",
+    "firstname": "Luis",
+    "home_addr": "~~~Ignored~~~",
+    "id": 83,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Hall"
+  },
+  {
+    "category": "C",
+    "e_mail": "Kathy.Butler@mailinator.com",
+    "firstname": "Kathy",
+    "home_addr": "~~~Ignored~~~",
+    "id": 84,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Butler"
+  },
+  {
+    "category": "C",
+    "e_mail": "Susan.Green@mailinator.com",
+    "firstname": "Susan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 85,
+    "member_entrance": 2011,
+    "membership": "AS",
+    "name": "Green"
+  },
+  {
+    "category": "E",
+    "e_mail": "Brian.Rogers@mailinator.com",
+    "firstname": "Brian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 86,
+    "member_entrance": 2002,
+    "membership": "AS",
+    "name": "Rogers"
+  },
+  {
+    "category": "C",
+    "e_mail": "Charles.Duncan@mailinator.com",
+    "firstname": "Charles",
+    "home_addr": "~~~Ignored~~~",
+    "id": 87,
     "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Duncan"
+  },
+  {
+    "category": "C",
+    "e_mail": "Sherry.Wood@mailinator.com",
+    "firstname": "Sherry",
+    "home_addr": "~~~Ignored~~~",
+    "id": 88,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Wood"
+  },
+  {
+    "category": "C",
+    "e_mail": "Martha.Wilson@mailinator.com",
+    "firstname": "Martha",
+    "home_addr": "~~~Ignored~~~",
+    "id": 89,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Wilson"
+  },
+  {
+    "category": "C",
+    "e_mail": "Patricia.Logan@mailinator.com",
+    "firstname": "Patricia",
+    "home_addr": "~~~Ignored~~~",
+    "id": 90,
+    "member_entrance": 2014,
+    "membership": "AS",
+    "name": "Logan"
+  },
+  {
+    "category": "E",
+    "e_mail": "Thomas.Frazier@mailinator.com",
+    "firstname": "Thomas",
+    "home_addr": "~~~Ignored~~~",
+    "id": 91,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Frazier"
+  },
+  {
+    "category": "C",
+    "e_mail": "Victor.Becker@mailinator.com",
+    "firstname": "Victor",
+    "home_addr": "~~~Ignored~~~",
+    "id": 92,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Becker"
+  },
+  {
+    "category": "E",
+    "e_mail": "Paula.Tran@mailinator.com",
+    "firstname": "Paula",
+    "home_addr": "~~~Ignored~~~",
+    "id": 93,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Tran"
+  },
+  {
+    "category": "E",
+    "e_mail": "Matthew.Calhoun@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 94,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Calhoun"
+  },
+  {
+    "category": "C",
+    "e_mail": "Joyce.Hahn@mailinator.com",
+    "firstname": "Joyce",
+    "home_addr": "~~~Ignored~~~",
+    "id": 95,
+    "member_entrance": 2017,
+    "membership": "AS",
+    "name": "Hahn"
+  },
+  {
+    "category": "E",
+    "e_mail": "Joanna.Gibson@mailinator.com",
+    "firstname": "Joanna",
+    "home_addr": "~~~Ignored~~~",
+    "id": 96,
+    "member_entrance": 2013,
+    "membership": "AS",
+    "name": "Gibson"
+  },
+  {
+    "category": "E",
+    "e_mail": "William.Shaw@mailinator.com",
+    "firstname": "William",
+    "home_addr": "~~~Ignored~~~",
+    "id": 97,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Shaw"
+  },
+  {
+    "category": "C",
+    "e_mail": "Jennifer.Moore@mailinator.com",
+    "firstname": "Jennifer",
+    "home_addr": "~~~Ignored~~~",
+    "id": 98,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Moore"
+  },
+  {
+    "category": "E",
+    "e_mail": "Brett.Berg@mailinator.com",
+    "firstname": "Brett",
+    "home_addr": "~~~Ignored~~~",
+    "id": 99,
+    "member_entrance": 1998,
+    "membership": "AS",
+    "name": "Berg"
+  },
+  {
+    "category": "E",
+    "e_mail": "Kim.Brandt@mailinator.com",
+    "firstname": "Kim",
+    "home_addr": "~~~Ignored~~~",
+    "id": 100,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Brandt"
+  },
+  {
+    "category": "C",
+    "e_mail": "Tyler.Patrick@mailinator.com",
+    "firstname": "Tyler",
+    "home_addr": "~~~Ignored~~~",
+    "id": 101,
+    "member_entrance": 1997,
+    "membership": "AS",
+    "name": "Patrick"
+  },
+  {
+    "category": "E",
+    "e_mail": "Michael.Pratt@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 102,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Pratt"
+  },
+  {
+    "category": "C",
+    "e_mail": "Troy.Stevens@mailinator.com",
+    "firstname": "Troy",
+    "home_addr": "~~~Ignored~~~",
+    "id": 103,
+    "member_entrance": 2016,
+    "membership": "AS",
+    "name": "Stevens"
+  },
+  {
+    "category": "E",
+    "e_mail": "John.Burke@mailinator.com",
+    "firstname": "John",
+    "home_addr": "~~~Ignored~~~",
+    "id": 104,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Burke"
+  },
+  {
+    "category": "C",
+    "e_mail": "Karen.Costa@mailinator.com",
+    "firstname": "Karen",
+    "home_addr": "~~~Ignored~~~",
+    "id": 105,
+    "member_entrance": 2010,
+    "membership": "AS",
+    "name": "Costa"
+  },
+  {
+    "category": "C",
+    "e_mail": "Elizabeth.Barnett@mailinator.com",
+    "firstname": "Elizabeth",
+    "home_addr": "~~~Ignored~~~",
+    "id": 106,
+    "member_entrance": 2010,
+    "membership": "AS",
+    "name": "Barnett"
+  },
+  {
+    "category": "E",
+    "e_mail": "Chris.Eaton@mailinator.com",
+    "firstname": "Chris",
+    "home_addr": "~~~Ignored~~~",
+    "id": 107,
+    "member_entrance": 2003,
+    "membership": "AS",
+    "name": "Eaton"
+  },
+  {
+    "category": "E",
+    "e_mail": "Nathan.Reed@mailinator.com",
+    "firstname": "Nathan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 108,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Reed"
+  },
+  {
+    "category": "E",
+    "e_mail": "Tracy.Krause@mailinator.com",
+    "firstname": "Tracy",
+    "home_addr": "~~~Ignored~~~",
+    "id": 109,
+    "member_entrance": 2019,
+    "membership": "AS",
+    "name": "Krause"
+  },
+  {
+    "category": "C",
+    "e_mail": "Sarah.Mckenzie@mailinator.com",
+    "firstname": "Sarah",
+    "home_addr": "~~~Ignored~~~",
+    "id": 110,
+    "member_entrance": 2011,
+    "membership": "AS",
+    "name": "Mckenzie"
+  },
+  {
+    "category": "C",
+    "e_mail": "William.Taylor@mailinator.com",
+    "firstname": "William",
+    "home_addr": "~~~Ignored~~~",
+    "id": 111,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Taylor"
+  },
+  {
+    "category": "C",
+    "e_mail": "Charles.Stone@mailinator.com",
+    "firstname": "Charles",
+    "home_addr": "~~~Ignored~~~",
+    "id": 112,
+    "member_entrance": 2009,
+    "membership": "AS",
+    "name": "Stone"
+  },
+  {
+    "category": "C",
+    "e_mail": "Heather.Wong@mailinator.com",
+    "firstname": "Heather",
+    "home_addr": "~~~Ignored~~~",
+    "id": 113,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Wong"
+  },
+  {
+    "category": "E",
+    "e_mail": "Tiffany.Ortiz@mailinator.com",
+    "firstname": "Tiffany",
+    "home_addr": "~~~Ignored~~~",
+    "id": 114,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Ortiz"
+  },
+  {
+    "category": "E",
+    "e_mail": "Francisco.Gonzalez@mailinator.com",
+    "firstname": "Francisco",
+    "home_addr": "~~~Ignored~~~",
+    "id": 115,
+    "member_entrance": 2015,
+    "membership": "AS",
+    "name": "Gonzalez"
+  },
+  {
+    "category": "C",
+    "e_mail": "Andrew.Cooper@mailinator.com",
+    "firstname": "Andrew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 116,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Cooper"
+  },
+  {
+    "category": "C",
+    "e_mail": "Shaun.Santiago@mailinator.com",
+    "firstname": "Shaun",
+    "home_addr": "~~~Ignored~~~",
+    "id": 117,
+    "member_entrance": 2002,
+    "membership": "AS",
+    "name": "Santiago"
+  },
+  {
+    "category": "C",
+    "e_mail": "Brian.Kirby@mailinator.com",
+    "firstname": "Brian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 118,
+    "member_entrance": 2004,
+    "membership": "AS",
+    "name": "Kirby"
+  },
+  {
+    "category": "E",
+    "e_mail": "Alex.Dean@mailinator.com",
+    "firstname": "Alex",
+    "home_addr": "~~~Ignored~~~",
+    "id": 119,
+    "member_entrance": 2002,
+    "membership": "AS",
+    "name": "Dean"
+  },
+  {
+    "category": "E",
+    "e_mail": "Brian.Kidd@mailinator.com",
+    "firstname": "Brian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 120,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Kidd"
+  },
+  {
+    "category": "C",
+    "e_mail": "Timothy.Nguyen@mailinator.com",
+    "firstname": "Timothy",
+    "home_addr": "~~~Ignored~~~",
+    "id": 121,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Nguyen"
+  },
+  {
+    "category": "E",
+    "e_mail": "John.Lin@mailinator.com",
+    "firstname": "John",
+    "home_addr": "~~~Ignored~~~",
+    "id": 122,
+    "member_entrance": 2015,
+    "membership": "AS",
+    "name": "Lin"
+  },
+  {
+    "category": "E",
+    "e_mail": "Michael.Ellis@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 123,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Ellis"
+  },
+  {
+    "category": "E",
+    "e_mail": "Amy.Martin@mailinator.com",
+    "firstname": "Amy",
+    "home_addr": "~~~Ignored~~~",
+    "id": 124,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Martin"
+  },
+  {
+    "category": "E",
+    "e_mail": "Ricky.Curry@mailinator.com",
+    "firstname": "Ricky",
+    "home_addr": "~~~Ignored~~~",
+    "id": 125,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Curry"
+  },
+  {
+    "category": "C",
+    "e_mail": "Andrew.Lee@mailinator.com",
+    "firstname": "Andrew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 126,
+    "member_entrance": 2000,
+    "membership": "AS",
+    "name": "Lee"
+  },
+  {
+    "category": "E",
+    "e_mail": "Matthew.Jackson@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 127,
+    "member_entrance": 1995,
+    "membership": "AS",
+    "name": "Jackson"
+  },
+  {
+    "category": "E",
+    "e_mail": "Brian.Mcneil@mailinator.com",
+    "firstname": "Brian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 128,
+    "member_entrance": 1998,
+    "membership": "AS",
+    "name": "Mcneil"
+  },
+  {
+    "category": "C",
+    "e_mail": "Allison.Chavez@mailinator.com",
+    "firstname": "Allison",
+    "home_addr": "~~~Ignored~~~",
+    "id": 129,
+    "member_entrance": 1998,
     "membership": "AS",
     "name": "Chavez"
   },
   {
     "category": "C",
-    "e_mail": "Samantha.Jenkins@mailinator.com",
-    "firstname": "Samantha",
+    "e_mail": "Jamie.Thomas@mailinator.com",
+    "firstname": "Jamie",
     "home_addr": "~~~Ignored~~~",
-    "id": 283,
-    "member_entrance": 1991,
+    "id": 130,
+    "member_entrance": 2012,
     "membership": "AS",
-    "name": "Jenkins"
+    "name": "Thomas"
   },
   {
     "category": "E",
-    "e_mail": "Anthony.Gutierrez@mailinator.com",
-    "firstname": "Anthony",
+    "e_mail": "Steven.Lane@mailinator.com",
+    "firstname": "Steven",
     "home_addr": "~~~Ignored~~~",
-    "id": 284,
-    "member_entrance": 1996,
+    "id": 131,
+    "member_entrance": 2001,
     "membership": "AS",
-    "name": "Gutierrez"
+    "name": "Lane"
   },
   {
     "category": "C",
-    "e_mail": "Dominic.Steele@mailinator.com",
-    "firstname": "Dominic",
+    "e_mail": "Randall.Steele@mailinator.com",
+    "firstname": "Randall",
     "home_addr": "~~~Ignored~~~",
-    "id": 285,
-    "member_entrance": 2018,
+    "id": 132,
+    "member_entrance": 2010,
     "membership": "AS",
     "name": "Steele"
   },
   {
     "category": "E",
-    "e_mail": "Joshua.Mejia@mailinator.com",
-    "firstname": "Joshua",
+    "e_mail": "Carlos.Mccarthy@mailinator.com",
+    "firstname": "Carlos",
     "home_addr": "~~~Ignored~~~",
-    "id": 286,
-    "member_entrance": 2002,
+    "id": 133,
+    "member_entrance": 2006,
     "membership": "AS",
-    "name": "Mejia"
+    "name": "Mccarthy"
+  },
+  {
+    "category": "E",
+    "e_mail": "Bethany.Murray@mailinator.com",
+    "firstname": "Bethany",
+    "home_addr": "~~~Ignored~~~",
+    "id": 134,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Murray"
+  },
+  {
+    "category": "E",
+    "e_mail": "Ricardo.Blackburn@mailinator.com",
+    "firstname": "Ricardo",
+    "home_addr": "~~~Ignored~~~",
+    "id": 135,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Blackburn"
   },
   {
     "category": "C",
-    "e_mail": "Jeffrey.Bates@mailinator.com",
-    "firstname": "Jeffrey",
+    "e_mail": "Angela.Zimmerman@mailinator.com",
+    "firstname": "Angela",
     "home_addr": "~~~Ignored~~~",
-    "id": 287,
-    "member_entrance": 2013,
+    "id": 136,
+    "member_entrance": 2003,
     "membership": "AS",
-    "name": "Bates"
+    "name": "Zimmerman"
   },
   {
     "category": "C",
-    "e_mail": "Christina.Aguilar@mailinator.com",
-    "firstname": "Christina",
+    "e_mail": "Geoffrey.Nash@mailinator.com",
+    "firstname": "Geoffrey",
     "home_addr": "~~~Ignored~~~",
-    "id": 288,
-    "member_entrance": 2000,
+    "id": 137,
+    "member_entrance": 2023,
     "membership": "AS",
-    "name": "Aguilar"
-  },
-  {
-    "category": "E",
-    "e_mail": "Derrick.Stuart@mailinator.com",
-    "firstname": "Derrick",
-    "home_addr": "~~~Ignored~~~",
-    "id": 289,
-    "member_entrance": 2008,
-    "membership": "AS",
-    "name": "Stuart"
-  },
-  {
-    "category": "E",
-    "e_mail": "Lindsey.Benson@mailinator.com",
-    "firstname": "Lindsey",
-    "home_addr": "~~~Ignored~~~",
-    "id": 290,
-    "member_entrance": 2005,
-    "membership": "AS",
-    "name": "Benson"
-  },
-  {
-    "category": "E",
-    "e_mail": "Stephanie.Moran@mailinator.com",
-    "firstname": "Stephanie",
-    "home_addr": "~~~Ignored~~~",
-    "id": 291,
-    "member_entrance": 1997,
-    "membership": "AS",
-    "name": "Moran"
+    "name": "Nash"
   },
   {
     "category": "C",
-    "e_mail": "Micheal.Rocha@mailinator.com",
-    "firstname": "Micheal",
+    "e_mail": "Michael.Ramsey@mailinator.com",
+    "firstname": "Michael",
     "home_addr": "~~~Ignored~~~",
-    "id": 292,
-    "member_entrance": 2009,
+    "id": 138,
+    "member_entrance": 2016,
     "membership": "AS",
-    "name": "Rocha"
+    "name": "Ramsey"
   },
   {
     "category": "E",
-    "e_mail": "David.Torres@mailinator.com",
+    "e_mail": "Natalie.George@mailinator.com",
+    "firstname": "Natalie",
+    "home_addr": "~~~Ignored~~~",
+    "id": 139,
+    "member_entrance": 2016,
+    "membership": "AS",
+    "name": "George"
+  },
+  {
+    "category": "E",
+    "e_mail": "Michael.Arnold@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 140,
+    "member_entrance": 2015,
+    "membership": "AS",
+    "name": "Arnold"
+  },
+  {
+    "category": "E",
+    "e_mail": "David.Fowler@mailinator.com",
     "firstname": "David",
     "home_addr": "~~~Ignored~~~",
-    "id": 293,
+    "id": 141,
+    "member_entrance": 2000,
+    "membership": "AS",
+    "name": "Fowler"
+  },
+  {
+    "category": "E",
+    "e_mail": "Preston.Olson@mailinator.com",
+    "firstname": "Preston",
+    "home_addr": "~~~Ignored~~~",
+    "id": 142,
     "member_entrance": 2018,
     "membership": "AS",
-    "name": "Torres"
+    "name": "Olson"
+  },
+  {
+    "category": "C",
+    "e_mail": "Brandi.Fitzpatrick@mailinator.com",
+    "firstname": "Brandi",
+    "home_addr": "~~~Ignored~~~",
+    "id": 143,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Fitzpatrick"
   },
   {
     "category": "E",
-    "e_mail": "John.Nichols@mailinator.com",
+    "e_mail": "John.Walsh@mailinator.com",
     "firstname": "John",
     "home_addr": "~~~Ignored~~~",
-    "id": 294,
-    "member_entrance": 1993,
+    "id": 144,
+    "member_entrance": 2023,
     "membership": "AS",
-    "name": "Nichols"
-  },
-  {
-    "category": "C",
-    "e_mail": "Ruth.Valdez@mailinator.com",
-    "firstname": "Ruth",
-    "home_addr": "~~~Ignored~~~",
-    "id": 295,
-    "member_entrance": 2021,
-    "membership": "AS",
-    "name": "Valdez"
+    "name": "Walsh"
   },
   {
     "category": "E",
-    "e_mail": "Alexandra.Cherry@mailinator.com",
-    "firstname": "Alexandra",
+    "e_mail": "Lisa.Adkins@mailinator.com",
+    "firstname": "Lisa",
     "home_addr": "~~~Ignored~~~",
-    "id": 296,
+    "id": 145,
+    "member_entrance": 1997,
+    "membership": "AS",
+    "name": "Adkins"
+  },
+  {
+    "category": "C",
+    "e_mail": "Harold.Chang@mailinator.com",
+    "firstname": "Harold",
+    "home_addr": "~~~Ignored~~~",
+    "id": 146,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Chang"
+  },
+  {
+    "category": "E",
+    "e_mail": "Nathaniel.Gutierrez@mailinator.com",
+    "firstname": "Nathaniel",
+    "home_addr": "~~~Ignored~~~",
+    "id": 147,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Gutierrez"
+  },
+  {
+    "category": "C",
+    "e_mail": "Sean.Gregory@mailinator.com",
+    "firstname": "Sean",
+    "home_addr": "~~~Ignored~~~",
+    "id": 148,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Gregory"
+  },
+  {
+    "category": "E",
+    "e_mail": "Isaiah.Kim@mailinator.com",
+    "firstname": "Isaiah",
+    "home_addr": "~~~Ignored~~~",
+    "id": 149,
+    "member_entrance": 2015,
+    "membership": "AS",
+    "name": "Kim"
+  },
+  {
+    "category": "C",
+    "e_mail": "Michelle.Shepard@mailinator.com",
+    "firstname": "Michelle",
+    "home_addr": "~~~Ignored~~~",
+    "id": 150,
     "member_entrance": 2007,
     "membership": "AS",
-    "name": "Cherry"
-  },
-  {
-    "category": "C",
-    "e_mail": "Grant.Hurley@mailinator.com",
-    "firstname": "Grant",
-    "home_addr": "~~~Ignored~~~",
-    "id": 297,
-    "member_entrance": 1996,
-    "membership": "AS",
-    "name": "Hurley"
+    "name": "Shepard"
   },
   {
     "category": "E",
-    "e_mail": "Sarah.Holden@mailinator.com",
-    "firstname": "Sarah",
+    "e_mail": "Gregory.Terrell@mailinator.com",
+    "firstname": "Gregory",
     "home_addr": "~~~Ignored~~~",
-    "id": 298,
-    "member_entrance": 2017,
+    "id": 151,
+    "member_entrance": 2003,
     "membership": "AS",
-    "name": "Holden"
+    "name": "Terrell"
   },
   {
     "category": "C",
-    "e_mail": "Nicholas.Ortega@mailinator.com",
+    "e_mail": "Paul.Roth@mailinator.com",
+    "firstname": "Paul",
+    "home_addr": "~~~Ignored~~~",
+    "id": 152,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Roth"
+  },
+  {
+    "category": "C",
+    "e_mail": "Cheryl.Banks@mailinator.com",
+    "firstname": "Cheryl",
+    "home_addr": "~~~Ignored~~~",
+    "id": 153,
+    "member_entrance": 1991,
+    "membership": "AS",
+    "name": "Banks"
+  },
+  {
+    "category": "C",
+    "e_mail": "Raymond.Gross@mailinator.com",
+    "firstname": "Raymond",
+    "home_addr": "~~~Ignored~~~",
+    "id": 154,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Gross"
+  },
+  {
+    "category": "C",
+    "e_mail": "Anita.Harris@mailinator.com",
+    "firstname": "Anita",
+    "home_addr": "~~~Ignored~~~",
+    "id": 155,
+    "member_entrance": 2014,
+    "membership": "AS",
+    "name": "Harris"
+  },
+  {
+    "category": "C",
+    "e_mail": "Joshua.Carter@mailinator.com",
+    "firstname": "Joshua",
+    "home_addr": "~~~Ignored~~~",
+    "id": 156,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Carter"
+  },
+  {
+    "category": "E",
+    "e_mail": "Savannah.Floyd@mailinator.com",
+    "firstname": "Savannah",
+    "home_addr": "~~~Ignored~~~",
+    "id": 157,
+    "member_entrance": 1999,
+    "membership": "AS",
+    "name": "Floyd"
+  },
+  {
+    "category": "C",
+    "e_mail": "Molly.Acosta@mailinator.com",
+    "firstname": "Molly",
+    "home_addr": "~~~Ignored~~~",
+    "id": 158,
+    "member_entrance": 2019,
+    "membership": "AS",
+    "name": "Acosta"
+  },
+  {
+    "category": "C",
+    "e_mail": "Nicholas.Bradley@mailinator.com",
     "firstname": "Nicholas",
     "home_addr": "~~~Ignored~~~",
-    "id": 299,
-    "member_entrance": 2008,
+    "id": 159,
+    "member_entrance": 1993,
     "membership": "AS",
-    "name": "Ortega"
+    "name": "Bradley"
+  },
+  {
+    "category": "E",
+    "e_mail": "Kim.Owens@mailinator.com",
+    "firstname": "Kim",
+    "home_addr": "~~~Ignored~~~",
+    "id": 160,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Owens"
+  },
+  {
+    "category": "E",
+    "e_mail": "Karen.Moody@mailinator.com",
+    "firstname": "Karen",
+    "home_addr": "~~~Ignored~~~",
+    "id": 161,
+    "member_entrance": 2013,
+    "membership": "AS",
+    "name": "Moody"
   },
   {
     "category": "C",
-    "e_mail": "Patrick.Donovan@mailinator.com",
-    "firstname": "Patrick",
+    "e_mail": "Louis.Mccarty@mailinator.com",
+    "firstname": "Louis",
     "home_addr": "~~~Ignored~~~",
-    "id": 300,
+    "id": 162,
+    "member_entrance": 2016,
+    "membership": "AS",
+    "name": "Mccarty"
+  },
+  {
+    "category": "C",
+    "e_mail": "Michael.Parker@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 163,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Parker"
+  },
+  {
+    "category": "C",
+    "e_mail": "Thomas.Peters@mailinator.com",
+    "firstname": "Thomas",
+    "home_addr": "~~~Ignored~~~",
+    "id": 164,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Peters"
+  },
+  {
+    "category": "C",
+    "e_mail": "Steven.Knox@mailinator.com",
+    "firstname": "Steven",
+    "home_addr": "~~~Ignored~~~",
+    "id": 165,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Knox"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jacqueline.Francis@mailinator.com",
+    "firstname": "Jacqueline",
+    "home_addr": "~~~Ignored~~~",
+    "id": 166,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Francis"
+  },
+  {
+    "category": "E",
+    "e_mail": "Lindsay.Ramirez@mailinator.com",
+    "firstname": "Lindsay",
+    "home_addr": "~~~Ignored~~~",
+    "id": 167,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Ramirez"
+  },
+  {
+    "category": "E",
+    "e_mail": "Mark.Coleman@mailinator.com",
+    "firstname": "Mark",
+    "home_addr": "~~~Ignored~~~",
+    "id": 168,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Coleman"
+  },
+  {
+    "category": "E",
+    "e_mail": "Dustin.Levy@mailinator.com",
+    "firstname": "Dustin",
+    "home_addr": "~~~Ignored~~~",
+    "id": 169,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Levy"
+  },
+  {
+    "category": "C",
+    "e_mail": "Darlene.Lowe@mailinator.com",
+    "firstname": "Darlene",
+    "home_addr": "~~~Ignored~~~",
+    "id": 170,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Lowe"
+  },
+  {
+    "category": "E",
+    "e_mail": "Dylan.Mason@mailinator.com",
+    "firstname": "Dylan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 171,
+    "member_entrance": 2003,
+    "membership": "AS",
+    "name": "Mason"
+  },
+  {
+    "category": "C",
+    "e_mail": "Denise.Howe@mailinator.com",
+    "firstname": "Denise",
+    "home_addr": "~~~Ignored~~~",
+    "id": 172,
+    "member_entrance": 2009,
+    "membership": "AS",
+    "name": "Howe"
+  },
+  {
+    "category": "C",
+    "e_mail": "Catherine.Crosby@mailinator.com",
+    "firstname": "Catherine",
+    "home_addr": "~~~Ignored~~~",
+    "id": 173,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Crosby"
+  },
+  {
+    "category": "E",
+    "e_mail": "Michael.Reyes@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 174,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Reyes"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jennifer.Townsend@mailinator.com",
+    "firstname": "Jennifer",
+    "home_addr": "~~~Ignored~~~",
+    "id": 175,
+    "member_entrance": 1994,
+    "membership": "AS",
+    "name": "Townsend"
+  },
+  {
+    "category": "C",
+    "e_mail": "Michael.Phillips@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 176,
+    "member_entrance": 1990,
+    "membership": "AS",
+    "name": "Phillips"
+  },
+  {
+    "category": "C",
+    "e_mail": "Michelle.Rivers@mailinator.com",
+    "firstname": "Michelle",
+    "home_addr": "~~~Ignored~~~",
+    "id": 177,
+    "member_entrance": 2014,
+    "membership": "AS",
+    "name": "Rivers"
+  },
+  {
+    "category": "E",
+    "e_mail": "Noah.David@mailinator.com",
+    "firstname": "Noah",
+    "home_addr": "~~~Ignored~~~",
+    "id": 178,
+    "member_entrance": 2017,
+    "membership": "AS",
+    "name": "David"
+  },
+  {
+    "category": "C",
+    "e_mail": "Kyle.Cervantes@mailinator.com",
+    "firstname": "Kyle",
+    "home_addr": "~~~Ignored~~~",
+    "id": 179,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Cervantes"
+  },
+  {
+    "category": "E",
+    "e_mail": "Laura.Hopkins@mailinator.com",
+    "firstname": "Laura",
+    "home_addr": "~~~Ignored~~~",
+    "id": 180,
+    "member_entrance": 2000,
+    "membership": "AS",
+    "name": "Hopkins"
+  },
+  {
+    "category": "C",
+    "e_mail": "Emily.Wilcox@mailinator.com",
+    "firstname": "Emily",
+    "home_addr": "~~~Ignored~~~",
+    "id": 181,
+    "member_entrance": 1998,
+    "membership": "AS",
+    "name": "Wilcox"
+  },
+  {
+    "category": "E",
+    "e_mail": "James.Ramos@mailinator.com",
+    "firstname": "James",
+    "home_addr": "~~~Ignored~~~",
+    "id": 182,
+    "member_entrance": 2007,
+    "membership": "AS",
+    "name": "Ramos"
+  },
+  {
+    "category": "C",
+    "e_mail": "Dakota.Richard@mailinator.com",
+    "firstname": "Dakota",
+    "home_addr": "~~~Ignored~~~",
+    "id": 183,
+    "member_entrance": 2011,
+    "membership": "AS",
+    "name": "Richard"
+  },
+  {
+    "category": "E",
+    "e_mail": "Vanessa.Nielsen@mailinator.com",
+    "firstname": "Vanessa",
+    "home_addr": "~~~Ignored~~~",
+    "id": 184,
+    "member_entrance": 2007,
+    "membership": "AS",
+    "name": "Nielsen"
+  },
+  {
+    "category": "C",
+    "e_mail": "Walter.Bullock@mailinator.com",
+    "firstname": "Walter",
+    "home_addr": "~~~Ignored~~~",
+    "id": 185,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Bullock"
+  },
+  {
+    "category": "E",
+    "e_mail": "Shane.Hamilton@mailinator.com",
+    "firstname": "Shane",
+    "home_addr": "~~~Ignored~~~",
+    "id": 186,
+    "member_entrance": 2018,
+    "membership": "AS",
+    "name": "Hamilton"
+  },
+  {
+    "category": "E",
+    "e_mail": "Natalie.Cameron@mailinator.com",
+    "firstname": "Natalie",
+    "home_addr": "~~~Ignored~~~",
+    "id": 187,
+    "member_entrance": 2007,
+    "membership": "AS",
+    "name": "Cameron"
+  },
+  {
+    "category": "E",
+    "e_mail": "Tanya.Hurst@mailinator.com",
+    "firstname": "Tanya",
+    "home_addr": "~~~Ignored~~~",
+    "id": 188,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Hurst"
+  },
+  {
+    "category": "C",
+    "e_mail": "Nathaniel.Bryan@mailinator.com",
+    "firstname": "Nathaniel",
+    "home_addr": "~~~Ignored~~~",
+    "id": 189,
+    "member_entrance": 2013,
+    "membership": "AS",
+    "name": "Bryan"
+  },
+  {
+    "category": "E",
+    "e_mail": "Ryan.Franco@mailinator.com",
+    "firstname": "Ryan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 190,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Franco"
+  },
+  {
+    "category": "C",
+    "e_mail": "Aaron.Cantrell@mailinator.com",
+    "firstname": "Aaron",
+    "home_addr": "~~~Ignored~~~",
+    "id": 191,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Cantrell"
+  },
+  {
+    "category": "E",
+    "e_mail": "Russell.Reid@mailinator.com",
+    "firstname": "Russell",
+    "home_addr": "~~~Ignored~~~",
+    "id": 192,
+    "member_entrance": 2009,
+    "membership": "AS",
+    "name": "Reid"
+  },
+  {
+    "category": "C",
+    "e_mail": "James.Kaufman@mailinator.com",
+    "firstname": "James",
+    "home_addr": "~~~Ignored~~~",
+    "id": 193,
+    "member_entrance": 2014,
+    "membership": "AS",
+    "name": "Kaufman"
+  },
+  {
+    "category": "C",
+    "e_mail": "James.Barnes@mailinator.com",
+    "firstname": "James",
+    "home_addr": "~~~Ignored~~~",
+    "id": 194,
+    "member_entrance": 2010,
+    "membership": "AS",
+    "name": "Barnes"
+  },
+  {
+    "category": "E",
+    "e_mail": "Renee.Garcia@mailinator.com",
+    "firstname": "Renee",
+    "home_addr": "~~~Ignored~~~",
+    "id": 195,
+    "member_entrance": 2020,
+    "membership": "AS",
+    "name": "Garcia"
+  },
+  {
+    "category": "C",
+    "e_mail": "Betty.Hernandez@mailinator.com",
+    "firstname": "Betty",
+    "home_addr": "~~~Ignored~~~",
+    "id": 196,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Hernandez"
+  },
+  {
+    "category": "E",
+    "e_mail": "John.Friedman@mailinator.com",
+    "firstname": "John",
+    "home_addr": "~~~Ignored~~~",
+    "id": 197,
+    "member_entrance": 2008,
+    "membership": "AS",
+    "name": "Friedman"
+  },
+  {
+    "category": "C",
+    "e_mail": "Morgan.Perez@mailinator.com",
+    "firstname": "Morgan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 198,
+    "member_entrance": 2010,
+    "membership": "AS",
+    "name": "Perez"
+  },
+  {
+    "category": "C",
+    "e_mail": "Joshua.Freeman@mailinator.com",
+    "firstname": "Joshua",
+    "home_addr": "~~~Ignored~~~",
+    "id": 199,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Freeman"
+  },
+  {
+    "category": "C",
+    "e_mail": "Joshua.Davis@mailinator.com",
+    "firstname": "Joshua",
+    "home_addr": "~~~Ignored~~~",
+    "id": 200,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Davis"
+  },
+  {
+    "category": "E",
+    "e_mail": "Michael.Flynn@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 201,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Flynn"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jeanne.Poole@mailinator.com",
+    "firstname": "Jeanne",
+    "home_addr": "~~~Ignored~~~",
+    "id": 202,
+    "member_entrance": 1996,
+    "membership": "AS",
+    "name": "Poole"
+  },
+  {
+    "category": "C",
+    "e_mail": "Tammy.Ewing@mailinator.com",
+    "firstname": "Tammy",
+    "home_addr": "~~~Ignored~~~",
+    "id": 203,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Ewing"
+  },
+  {
+    "category": "E",
+    "e_mail": "Tina.Short@mailinator.com",
+    "firstname": "Tina",
+    "home_addr": "~~~Ignored~~~",
+    "id": 204,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Short"
+  },
+  {
+    "category": "E",
+    "e_mail": "Pam.Munoz@mailinator.com",
+    "firstname": "Pam",
+    "home_addr": "~~~Ignored~~~",
+    "id": 205,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Munoz"
+  },
+  {
+    "category": "E",
+    "e_mail": "Kristina.Cole@mailinator.com",
+    "firstname": "Kristina",
+    "home_addr": "~~~Ignored~~~",
+    "id": 206,
+    "member_entrance": 2004,
+    "membership": "AS",
+    "name": "Cole"
+  },
+  {
+    "category": "E",
+    "e_mail": "Sylvia.Hunt@mailinator.com",
+    "firstname": "Sylvia",
+    "home_addr": "~~~Ignored~~~",
+    "id": 207,
+    "member_entrance": 2018,
+    "membership": "AS",
+    "name": "Hunt"
+  },
+  {
+    "category": "C",
+    "e_mail": "Jennifer.Hart@mailinator.com",
+    "firstname": "Jennifer",
+    "home_addr": "~~~Ignored~~~",
+    "id": 208,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Hart"
+  },
+  {
+    "category": "C",
+    "e_mail": "Kelly.Gill@mailinator.com",
+    "firstname": "Kelly",
+    "home_addr": "~~~Ignored~~~",
+    "id": 209,
+    "member_entrance": 1993,
+    "membership": "AS",
+    "name": "Gill"
+  },
+  {
+    "category": "C",
+    "e_mail": "Raymond.Love@mailinator.com",
+    "firstname": "Raymond",
+    "home_addr": "~~~Ignored~~~",
+    "id": 210,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Love"
+  },
+  {
+    "category": "E",
+    "e_mail": "Matthew.Woods@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 211,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Woods"
+  },
+  {
+    "category": "C",
+    "e_mail": "Elizabeth.Rosario@mailinator.com",
+    "firstname": "Elizabeth",
+    "home_addr": "~~~Ignored~~~",
+    "id": 212,
+    "member_entrance": 1996,
+    "membership": "AS",
+    "name": "Rosario"
+  },
+  {
+    "category": "E",
+    "e_mail": "Dylan.Humphrey@mailinator.com",
+    "firstname": "Dylan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 213,
+    "member_entrance": 2013,
+    "membership": "AS",
+    "name": "Humphrey"
+  },
+  {
+    "category": "E",
+    "e_mail": "Frank.Sellers@mailinator.com",
+    "firstname": "Frank",
+    "home_addr": "~~~Ignored~~~",
+    "id": 214,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Sellers"
+  },
+  {
+    "category": "C",
+    "e_mail": "Mark.Vasquez@mailinator.com",
+    "firstname": "Mark",
+    "home_addr": "~~~Ignored~~~",
+    "id": 215,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Vasquez"
+  },
+  {
+    "category": "C",
+    "e_mail": "Bradley.Santana@mailinator.com",
+    "firstname": "Bradley",
+    "home_addr": "~~~Ignored~~~",
+    "id": 216,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Santana"
+  },
+  {
+    "category": "E",
+    "e_mail": "Robert.Castillo@mailinator.com",
+    "firstname": "Robert",
+    "home_addr": "~~~Ignored~~~",
+    "id": 217,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Castillo"
+  },
+  {
+    "category": "C",
+    "e_mail": "Carla.Bishop@mailinator.com",
+    "firstname": "Carla",
+    "home_addr": "~~~Ignored~~~",
+    "id": 218,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Bishop"
+  },
+  {
+    "category": "C",
+    "e_mail": "Susan.Monroe@mailinator.com",
+    "firstname": "Susan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 219,
+    "member_entrance": 2014,
+    "membership": "AS",
+    "name": "Monroe"
+  },
+  {
+    "category": "E",
+    "e_mail": "Nichole.Coffey@mailinator.com",
+    "firstname": "Nichole",
+    "home_addr": "~~~Ignored~~~",
+    "id": 220,
+    "member_entrance": 2009,
+    "membership": "AS",
+    "name": "Coffey"
+  },
+  {
+    "category": "E",
+    "e_mail": "Joshua.Robles@mailinator.com",
+    "firstname": "Joshua",
+    "home_addr": "~~~Ignored~~~",
+    "id": 221,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Robles"
+  },
+  {
+    "category": "E",
+    "e_mail": "Dawn.Turner@mailinator.com",
+    "firstname": "Dawn",
+    "home_addr": "~~~Ignored~~~",
+    "id": 222,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Turner"
+  },
+  {
+    "category": "C",
+    "e_mail": "Christine.Sanchez@mailinator.com",
+    "firstname": "Christine",
+    "home_addr": "~~~Ignored~~~",
+    "id": 223,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Sanchez"
+  },
+  {
+    "category": "E",
+    "e_mail": "Matthew.Shah@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 224,
+    "member_entrance": 2019,
+    "membership": "AS",
+    "name": "Shah"
+  },
+  {
+    "category": "E",
+    "e_mail": "Kelly.Small@mailinator.com",
+    "firstname": "Kelly",
+    "home_addr": "~~~Ignored~~~",
+    "id": 225,
+    "member_entrance": 2001,
+    "membership": "AS",
+    "name": "Small"
+  },
+  {
+    "category": "C",
+    "e_mail": "Cameron.Spears@mailinator.com",
+    "firstname": "Cameron",
+    "home_addr": "~~~Ignored~~~",
+    "id": 226,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Spears"
+  },
+  {
+    "category": "E",
+    "e_mail": "Andrew.Berger@mailinator.com",
+    "firstname": "Andrew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 227,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Berger"
+  },
+  {
+    "category": "C",
+    "e_mail": "Matthew.Preston@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 228,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Preston"
+  },
+  {
+    "category": "C",
+    "e_mail": "Patricia.Gaines@mailinator.com",
+    "firstname": "Patricia",
+    "home_addr": "~~~Ignored~~~",
+    "id": 229,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Gaines"
+  },
+  {
+    "category": "E",
+    "e_mail": "Eric.Payne@mailinator.com",
+    "firstname": "Eric",
+    "home_addr": "~~~Ignored~~~",
+    "id": 230,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Payne"
+  },
+  {
+    "category": "C",
+    "e_mail": "Jim.Salazar@mailinator.com",
+    "firstname": "Jim",
+    "home_addr": "~~~Ignored~~~",
+    "id": 231,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Salazar"
+  },
+  {
+    "category": "E",
+    "e_mail": "Matthew.Robinson@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 232,
+    "member_entrance": 2003,
+    "membership": "AS",
+    "name": "Robinson"
+  },
+  {
+    "category": "C",
+    "e_mail": "Jorge.Rowe@mailinator.com",
+    "firstname": "Jorge",
+    "home_addr": "~~~Ignored~~~",
+    "id": 233,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Rowe"
+  },
+  {
+    "category": "E",
+    "e_mail": "Krista.Cox@mailinator.com",
+    "firstname": "Krista",
+    "home_addr": "~~~Ignored~~~",
+    "id": 234,
+    "member_entrance": 2007,
+    "membership": "AS",
+    "name": "Cox"
+  },
+  {
+    "category": "C",
+    "e_mail": "Michelle.Chan@mailinator.com",
+    "firstname": "Michelle",
+    "home_addr": "~~~Ignored~~~",
+    "id": 235,
+    "member_entrance": 2000,
+    "membership": "AS",
+    "name": "Chan"
+  },
+  {
+    "category": "C",
+    "e_mail": "Phillip.Dunlap@mailinator.com",
+    "firstname": "Phillip",
+    "home_addr": "~~~Ignored~~~",
+    "id": 236,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Dunlap"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jeremiah.Powell@mailinator.com",
+    "firstname": "Jeremiah",
+    "home_addr": "~~~Ignored~~~",
+    "id": 237,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Powell"
+  },
+  {
+    "category": "E",
+    "e_mail": "Pamela.Alvarez@mailinator.com",
+    "firstname": "Pamela",
+    "home_addr": "~~~Ignored~~~",
+    "id": 238,
+    "member_entrance": 1991,
+    "membership": "AS",
+    "name": "Alvarez"
+  },
+  {
+    "category": "C",
+    "e_mail": "Donna.Robertson@mailinator.com",
+    "firstname": "Donna",
+    "home_addr": "~~~Ignored~~~",
+    "id": 239,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Robertson"
+  },
+  {
+    "category": "E",
+    "e_mail": "Rachael.Leon@mailinator.com",
+    "firstname": "Rachael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 240,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Leon"
+  },
+  {
+    "category": "E",
+    "e_mail": "Michael.Roberts@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 241,
+    "member_entrance": 2008,
+    "membership": "AS",
+    "name": "Roberts"
+  },
+  {
+    "category": "C",
+    "e_mail": "Joseph.Maynard@mailinator.com",
+    "firstname": "Joseph",
+    "home_addr": "~~~Ignored~~~",
+    "id": 242,
+    "member_entrance": 2017,
+    "membership": "AS",
+    "name": "Maynard"
+  },
+  {
+    "category": "E",
+    "e_mail": "Steven.Crane@mailinator.com",
+    "firstname": "Steven",
+    "home_addr": "~~~Ignored~~~",
+    "id": 243,
+    "member_entrance": 1998,
+    "membership": "AS",
+    "name": "Crane"
+  },
+  {
+    "category": "C",
+    "e_mail": "Kevin.Little@mailinator.com",
+    "firstname": "Kevin",
+    "home_addr": "~~~Ignored~~~",
+    "id": 244,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Little"
+  },
+  {
+    "category": "E",
+    "e_mail": "Julian.Wolf@mailinator.com",
+    "firstname": "Julian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 245,
+    "member_entrance": 2003,
+    "membership": "AS",
+    "name": "Wolf"
+  },
+  {
+    "category": "C",
+    "e_mail": "Ashley.Kent@mailinator.com",
+    "firstname": "Ashley",
+    "home_addr": "~~~Ignored~~~",
+    "id": 246,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Kent"
+  },
+  {
+    "category": "C",
+    "e_mail": "Lisa.Cross@mailinator.com",
+    "firstname": "Lisa",
+    "home_addr": "~~~Ignored~~~",
+    "id": 247,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Cross"
+  },
+  {
+    "category": "C",
+    "e_mail": "Michael.Hill@mailinator.com",
+    "firstname": "Michael",
+    "home_addr": "~~~Ignored~~~",
+    "id": 248,
+    "member_entrance": 2013,
+    "membership": "AS",
+    "name": "Hill"
+  },
+  {
+    "category": "C",
+    "e_mail": "Christopher.Arias@mailinator.com",
+    "firstname": "Christopher",
+    "home_addr": "~~~Ignored~~~",
+    "id": 249,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Arias"
+  },
+  {
+    "category": "E",
+    "e_mail": "Juan.Valenzuela@mailinator.com",
+    "firstname": "Juan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 250,
+    "member_entrance": 2019,
+    "membership": "AS",
+    "name": "Valenzuela"
+  },
+  {
+    "category": "C",
+    "e_mail": "David.Ferrell@mailinator.com",
+    "firstname": "David",
+    "home_addr": "~~~Ignored~~~",
+    "id": 251,
+    "member_entrance": 1990,
+    "membership": "AS",
+    "name": "Ferrell"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jamie.Reilly@mailinator.com",
+    "firstname": "Jamie",
+    "home_addr": "~~~Ignored~~~",
+    "id": 252,
+    "member_entrance": 2007,
+    "membership": "AS",
+    "name": "Reilly"
+  },
+  {
+    "category": "C",
+    "e_mail": "Anthony.Navarro@mailinator.com",
+    "firstname": "Anthony",
+    "home_addr": "~~~Ignored~~~",
+    "id": 253,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Navarro"
+  },
+  {
+    "category": "E",
+    "e_mail": "Lauren.Goodman@mailinator.com",
+    "firstname": "Lauren",
+    "home_addr": "~~~Ignored~~~",
+    "id": 254,
+    "member_entrance": 1995,
+    "membership": "AS",
+    "name": "Goodman"
+  },
+  {
+    "category": "E",
+    "e_mail": "Lisa.Mays@mailinator.com",
+    "firstname": "Lisa",
+    "home_addr": "~~~Ignored~~~",
+    "id": 255,
+    "member_entrance": 1992,
+    "membership": "AS",
+    "name": "Mays"
+  },
+  {
+    "category": "E",
+    "e_mail": "Tara.Davenport@mailinator.com",
+    "firstname": "Tara",
+    "home_addr": "~~~Ignored~~~",
+    "id": 256,
+    "member_entrance": 2004,
+    "membership": "AS",
+    "name": "Davenport"
+  },
+  {
+    "category": "E",
+    "e_mail": "Julie.Bright@mailinator.com",
+    "firstname": "Julie",
+    "home_addr": "~~~Ignored~~~",
+    "id": 257,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Bright"
+  },
+  {
+    "category": "C",
+    "e_mail": "Christian.Burton@mailinator.com",
+    "firstname": "Christian",
+    "home_addr": "~~~Ignored~~~",
+    "id": 258,
+    "member_entrance": 2000,
+    "membership": "AS",
+    "name": "Burton"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jennifer.Brooks@mailinator.com",
+    "firstname": "Jennifer",
+    "home_addr": "~~~Ignored~~~",
+    "id": 259,
+    "member_entrance": 2008,
+    "membership": "AS",
+    "name": "Brooks"
+  },
+  {
+    "category": "C",
+    "e_mail": "Elizabeth.Ayers@mailinator.com",
+    "firstname": "Elizabeth",
+    "home_addr": "~~~Ignored~~~",
+    "id": 260,
+    "member_entrance": 2011,
+    "membership": "AS",
+    "name": "Ayers"
+  },
+  {
+    "category": "E",
+    "e_mail": "Marissa.Moreno@mailinator.com",
+    "firstname": "Marissa",
+    "home_addr": "~~~Ignored~~~",
+    "id": 261,
+    "member_entrance": 2004,
+    "membership": "AS",
+    "name": "Moreno"
+  },
+  {
+    "category": "E",
+    "e_mail": "Scott.Harvey@mailinator.com",
+    "firstname": "Scott",
+    "home_addr": "~~~Ignored~~~",
+    "id": 262,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Harvey"
+  },
+  {
+    "category": "C",
+    "e_mail": "Matthew.Oliver@mailinator.com",
+    "firstname": "Matthew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 263,
+    "member_entrance": 1994,
+    "membership": "AS",
+    "name": "Oliver"
+  },
+  {
+    "category": "C",
+    "e_mail": "Anthony.Mcknight@mailinator.com",
+    "firstname": "Anthony",
+    "home_addr": "~~~Ignored~~~",
+    "id": 264,
+    "member_entrance": 1996,
+    "membership": "AS",
+    "name": "Mcknight"
+  },
+  {
+    "category": "C",
+    "e_mail": "Justin.Mitchell@mailinator.com",
+    "firstname": "Justin",
+    "home_addr": "~~~Ignored~~~",
+    "id": 265,
+    "member_entrance": 1995,
+    "membership": "AS",
+    "name": "Mitchell"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jerry.Petersen@mailinator.com",
+    "firstname": "Jerry",
+    "home_addr": "~~~Ignored~~~",
+    "id": 266,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Petersen"
+  },
+  {
+    "category": "E",
+    "e_mail": "George.Rivas@mailinator.com",
+    "firstname": "George",
+    "home_addr": "~~~Ignored~~~",
+    "id": 267,
+    "member_entrance": 1997,
+    "membership": "AS",
+    "name": "Rivas"
+  },
+  {
+    "category": "C",
+    "e_mail": "David.Russell@mailinator.com",
+    "firstname": "David",
+    "home_addr": "~~~Ignored~~~",
+    "id": 268,
+    "member_entrance": 2010,
+    "membership": "AS",
+    "name": "Russell"
+  },
+  {
+    "category": "E",
+    "e_mail": "James.Myers@mailinator.com",
+    "firstname": "James",
+    "home_addr": "~~~Ignored~~~",
+    "id": 269,
+    "member_entrance": 2011,
+    "membership": "AS",
+    "name": "Myers"
+  },
+  {
+    "category": "C",
+    "e_mail": "Marcia.Paul@mailinator.com",
+    "firstname": "Marcia",
+    "home_addr": "~~~Ignored~~~",
+    "id": 270,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Paul"
+  },
+  {
+    "category": "C",
+    "e_mail": "Jeffrey.Ross@mailinator.com",
+    "firstname": "Jeffrey",
+    "home_addr": "~~~Ignored~~~",
+    "id": 271,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Ross"
+  },
+  {
+    "category": "E",
+    "e_mail": "Sean.Delgado@mailinator.com",
+    "firstname": "Sean",
+    "home_addr": "~~~Ignored~~~",
+    "id": 272,
+    "member_entrance": 2014,
+    "membership": "AS",
+    "name": "Delgado"
+  },
+  {
+    "category": "C",
+    "e_mail": "Christopher.Arellano@mailinator.com",
+    "firstname": "Christopher",
+    "home_addr": "~~~Ignored~~~",
+    "id": 273,
+    "member_entrance": 2003,
+    "membership": "AS",
+    "name": "Arellano"
+  },
+  {
+    "category": "C",
+    "e_mail": "Mitchell.Chambers@mailinator.com",
+    "firstname": "Mitchell",
+    "home_addr": "~~~Ignored~~~",
+    "id": 274,
+    "member_entrance": 2021,
+    "membership": "AS",
+    "name": "Chambers"
+  },
+  {
+    "category": "C",
+    "e_mail": "Andrew.Mcbride@mailinator.com",
+    "firstname": "Andrew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 275,
+    "member_entrance": 1998,
+    "membership": "AS",
+    "name": "Mcbride"
+  },
+  {
+    "category": "C",
+    "e_mail": "Clayton.Mccoy@mailinator.com",
+    "firstname": "Clayton",
+    "home_addr": "~~~Ignored~~~",
+    "id": 276,
+    "member_entrance": 2016,
+    "membership": "AS",
+    "name": "Mccoy"
+  },
+  {
+    "category": "E",
+    "e_mail": "Christina.Garner@mailinator.com",
+    "firstname": "Christina",
+    "home_addr": "~~~Ignored~~~",
+    "id": 277,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Garner"
+  },
+  {
+    "category": "C",
+    "e_mail": "David.Kelley@mailinator.com",
+    "firstname": "David",
+    "home_addr": "~~~Ignored~~~",
+    "id": 278,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Kelley"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jason.Fields@mailinator.com",
+    "firstname": "Jason",
+    "home_addr": "~~~Ignored~~~",
+    "id": 279,
     "member_entrance": 2002,
     "membership": "AS",
-    "name": "Donovan"
+    "name": "Fields"
+  },
+  {
+    "category": "C",
+    "e_mail": "Jaime.Wright@mailinator.com",
+    "firstname": "Jaime",
+    "home_addr": "~~~Ignored~~~",
+    "id": 280,
+    "member_entrance": 1994,
+    "membership": "AS",
+    "name": "Wright"
+  },
+  {
+    "category": "C",
+    "e_mail": "Megan.Montes@mailinator.com",
+    "firstname": "Megan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 281,
+    "member_entrance": 1996,
+    "membership": "AS",
+    "name": "Montes"
+  },
+  {
+    "category": "E",
+    "e_mail": "Tara.Jacobs@mailinator.com",
+    "firstname": "Tara",
+    "home_addr": "~~~Ignored~~~",
+    "id": 282,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Jacobs"
+  },
+  {
+    "category": "C",
+    "e_mail": "Gabriel.Richardson@mailinator.com",
+    "firstname": "Gabriel",
+    "home_addr": "~~~Ignored~~~",
+    "id": 283,
+    "member_entrance": 2006,
+    "membership": "AS",
+    "name": "Richardson"
+  },
+  {
+    "category": "E",
+    "e_mail": "Ashley.Castro@mailinator.com",
+    "firstname": "Ashley",
+    "home_addr": "~~~Ignored~~~",
+    "id": 284,
+    "member_entrance": 2016,
+    "membership": "AS",
+    "name": "Castro"
+  },
+  {
+    "category": "C",
+    "e_mail": "Laura.Stevenson@mailinator.com",
+    "firstname": "Laura",
+    "home_addr": "~~~Ignored~~~",
+    "id": 285,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Stevenson"
+  },
+  {
+    "category": "C",
+    "e_mail": "Heather.Andrews@mailinator.com",
+    "firstname": "Heather",
+    "home_addr": "~~~Ignored~~~",
+    "id": 286,
+    "member_entrance": 1998,
+    "membership": "AS",
+    "name": "Andrews"
+  },
+  {
+    "category": "C",
+    "e_mail": "Andrew.Pruitt@mailinator.com",
+    "firstname": "Andrew",
+    "home_addr": "~~~Ignored~~~",
+    "id": 287,
+    "member_entrance": 2005,
+    "membership": "AS",
+    "name": "Pruitt"
+  },
+  {
+    "category": "C",
+    "e_mail": "Karen.Buckley@mailinator.com",
+    "firstname": "Karen",
+    "home_addr": "~~~Ignored~~~",
+    "id": 288,
+    "member_entrance": 1999,
+    "membership": "AS",
+    "name": "Buckley"
+  },
+  {
+    "category": "E",
+    "e_mail": "Nathan.Foster@mailinator.com",
+    "firstname": "Nathan",
+    "home_addr": "~~~Ignored~~~",
+    "id": 289,
+    "member_entrance": 2004,
+    "membership": "AS",
+    "name": "Foster"
+  },
+  {
+    "category": "E",
+    "e_mail": "Patricia.Kelly@mailinator.com",
+    "firstname": "Patricia",
+    "home_addr": "~~~Ignored~~~",
+    "id": 290,
+    "member_entrance": 2012,
+    "membership": "AS",
+    "name": "Kelly"
+  },
+  {
+    "category": "E",
+    "e_mail": "Stacey.Prince@mailinator.com",
+    "firstname": "Stacey",
+    "home_addr": "~~~Ignored~~~",
+    "id": 291,
+    "member_entrance": 1996,
+    "membership": "AS",
+    "name": "Prince"
+  },
+  {
+    "category": "E",
+    "e_mail": "Fernando.Warren@mailinator.com",
+    "firstname": "Fernando",
+    "home_addr": "~~~Ignored~~~",
+    "id": 292,
+    "member_entrance": 1990,
+    "membership": "AS",
+    "name": "Warren"
+  },
+  {
+    "category": "C",
+    "e_mail": "Anna.Estrada@mailinator.com",
+    "firstname": "Anna",
+    "home_addr": "~~~Ignored~~~",
+    "id": 293,
+    "member_entrance": 2009,
+    "membership": "AS",
+    "name": "Estrada"
+  },
+  {
+    "category": "C",
+    "e_mail": "Mary.Young@mailinator.com",
+    "firstname": "Mary",
+    "home_addr": "~~~Ignored~~~",
+    "id": 294,
+    "member_entrance": 1995,
+    "membership": "AS",
+    "name": "Young"
+  },
+  {
+    "category": "E",
+    "e_mail": "Jose.Todd@mailinator.com",
+    "firstname": "Jose",
+    "home_addr": "~~~Ignored~~~",
+    "id": 295,
+    "member_entrance": 2002,
+    "membership": "AS",
+    "name": "Todd"
+  },
+  {
+    "category": "E",
+    "e_mail": "Kristin.Pearson@mailinator.com",
+    "firstname": "Kristin",
+    "home_addr": "~~~Ignored~~~",
+    "id": 296,
+    "member_entrance": 2000,
+    "membership": "AS",
+    "name": "Pearson"
+  },
+  {
+    "category": "C",
+    "e_mail": "Linda.Anderson@mailinator.com",
+    "firstname": "Linda",
+    "home_addr": "~~~Ignored~~~",
+    "id": 297,
+    "member_entrance": 2021,
+    "membership": "AS",
+    "name": "Anderson"
+  },
+  {
+    "category": "E",
+    "e_mail": "Daniel.Sullivan@mailinator.com",
+    "firstname": "Daniel",
+    "home_addr": "~~~Ignored~~~",
+    "id": 298,
+    "member_entrance": 1997,
+    "membership": "AS",
+    "name": "Sullivan"
+  },
+  {
+    "category": "E",
+    "e_mail": "Gwendolyn.Hudson@mailinator.com",
+    "firstname": "Gwendolyn",
+    "home_addr": "~~~Ignored~~~",
+    "id": 299,
+    "member_entrance": 2022,
+    "membership": "AS",
+    "name": "Hudson"
+  },
+  {
+    "category": "C",
+    "e_mail": "John.Cannon@mailinator.com",
+    "firstname": "John",
+    "home_addr": "~~~Ignored~~~",
+    "id": 300,
+    "member_entrance": 2023,
+    "membership": "AS",
+    "name": "Cannon"
   }
 ]
