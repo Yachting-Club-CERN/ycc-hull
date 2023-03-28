@@ -23,18 +23,16 @@ def dump_members_and_fees() -> None:
             print()
 
             print(
-                member.entrance_fee_record.json_dict()
+                member.entrance_fee_record.dict()
                 if member.entrance_fee_record
                 else "<No entrance fee>"
             )
             print()
 
             for fee_record in member.fee_records:
-                print(fee_record.json_dict())
+                print(fee_record.dict())
             print()
             print()
-
-    pass
 
 
 def run():

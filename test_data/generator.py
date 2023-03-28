@@ -70,8 +70,8 @@ def generate_member_infos(count: int) -> List[MemberInfo]:
     return [generate_member_info(i + 1) for i in range(0, count)]
 
 
-def generate_member_info(id: int) -> MemberInfo:
-    member = generate_member(id)
+def generate_member_info(member_id: int) -> MemberInfo:
+    member = generate_member(member_id)
     return MemberInfo(
         member=member,
         user=generate_user(member),
@@ -80,17 +80,17 @@ def generate_member_info(id: int) -> MemberInfo:
     )
 
 
-def generate_member(id: int) -> Member:
+def generate_member(member_id: int) -> Member:
     # Make sure to eventually use all membership types
-    if id < 5:
+    if member_id < 5:
         membership_type = "H"
-    elif id < 10:
+    elif member_id < 10:
         membership_type = "AJ"
-    elif id < 15:
+    elif member_id < 15:
         membership_type = "FM"
-    elif id < 20:
+    elif member_id < 20:
         membership_type = "T"
-    elif id < 25:
+    elif member_id < 25:
         membership_type = "SV"
     else:
         membership_type = "AS"
@@ -99,7 +99,7 @@ def generate_member(id: int) -> Member:
     first_name = faker.first_name()
 
     return Member(
-        id=id,
+        id=member_id,
         name=last_name,
         firstname=first_name,
         # birthday = Column(DATE)
@@ -150,7 +150,7 @@ def generate_user(member: Member) -> User:
         logon_pass2=hash_ycc_password(username),
         pass_reset_key=None,
         pass_reset_exp=None,
-        last_changed=faker.date_between(
+        last_changed=faker.date_time_between(
             start_date=date(CURRENT_YEAR - 2, 1, 1), end_date=date(CURRENT_YEAR, 4, 1)
         ),
     )
@@ -196,14 +196,24 @@ def create_fee_record(member: Member, financial_year: int, fee: int) -> FeeRecor
     entered_date: datetime = faker.date_time_between(
         start_date=paid_date, end_date=paid_date + timedelta(days=10)
     )
+
     return FeeRecord(
         member_id=member.id,
         year_f=financial_year,
         paid_date=paid_date,
-        paid_mode="UBS" if faker.pybool(truth_probability=90) else "XXX",
+        paid_mode=generate_paid_mode(),
         fee=fee,
         entered_date=entered_date,
     )
+
+
+def generate_paid_mode():
+    if faker.pybool(truth_probability=80):
+        return "UBS"
+    if faker.pybool(truth_probability=50):
+        return "XXX"
+
+    return None
 
 
 def generate_boats() -> List[Boat]:
@@ -222,8 +232,11 @@ def generate_boat(exported_boat: dict) -> Boat:
 
 
 def to_oracle_data_json(obj):
+    # This will cause the importer to handle certain types as objects, not strings
+    if isinstance(obj, datetime):
+        return {"@type": "datetime", "@value": obj.isoformat()}
     if isinstance(obj, date):
-        return obj.strftime("%d-%b-%Y").upper()
+        return {"@type": "date", "@value": obj.isoformat()}
 
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
@@ -249,8 +262,8 @@ def regenerate():
     generate(True)
 
 
-def generate(regenerate: bool = False):
-    if path.exists(MEMBERS_JSON_FILE) and not regenerate:
+def generate(force_regenerate: bool = False):
+    if path.exists(MEMBERS_JSON_FILE) and not force_regenerate:
         print("== Skipping members")
     else:
         print(
@@ -275,7 +288,7 @@ def generate(regenerate: bool = False):
         write_json_file(ENTRANCE_FEE_RECORDS_JSON_FILE, entrance_fee_records)
         write_json_file(FEE_RECORDS_JSON_FILE, fee_records)
 
-    if path.exists(BOATS_JSON_FILE) and not regenerate:
+    if path.exists(BOATS_JSON_FILE) and not force_regenerate:
         print("== Skipping boats")
     else:
         print("== Generating boats...")
