@@ -6,13 +6,16 @@ authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+# General
+aiofiles = "^23.1.0"
+pyhumps = "^3.8.0"
 # REST API
 fastapi = "^0.95.0"
 python-multipart = "^0.0.6"
 uvicorn = { extras = ["standard"], version = "^0.21.1" }
 # DB
 oracledb = "^1.2.2"
-SQLAlchemy = { extras = ["mypy"], version = "^2.0.7" }
+SQLAlchemy = { extras = ["asyncio", "mypy"], version = "^2.0.7" }
 
 [tool.poetry.dev-dependencies]
 black = "^23.1.0"
@@ -25,6 +28,8 @@ pytest = "^7.2.2"
 pytest-cov = "^4.0.0"
 pytest-html = "^3.2.0"
 pytest-mock = "^3.10.0"
+types-aiofiles = "^23.1.0.1"
+types-passlib = "^1.7.7.11"
 
 [tool.poetry.scripts]
 start = "ycc_hull.main:start"
