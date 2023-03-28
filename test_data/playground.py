@@ -2,25 +2,15 @@
 Playground.
 """
 from sqlalchemy import ScalarResult, select
-from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from legacy_password_hashing.password_hashing import hash_ycc_password
-from ycc_hull.db.models import (
-    Base,
-    Boat,
-    EntranceFeeRecord,
-    FeeRecord,
-    Member,
-    User,
-)
-
 from ycc_hull.db.engine import _create_db_engine
+from ycc_hull.db.models import Member
 
 engine = _create_db_engine(db_engine_echo=True)
 
 
-def dump_members():
+def dump_members_and_fees() -> None:
     with Session(engine) as session:
         members: ScalarResult[Member] = session.scalars(
             select(Member).order_by(Member.id)
@@ -48,7 +38,7 @@ def dump_members():
 
 
 def run():
-    dump_members()
+    dump_members_and_fees()
 
 
 if __name__ == "__main__":
