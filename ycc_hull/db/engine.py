@@ -1,9 +1,10 @@
 """
 DB Engine.
 """
+from typing import Optional
+
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
-from typing import Optional
 
 from ycc_hull.config import DB_ENGINE_ECHO, DB_URL
 

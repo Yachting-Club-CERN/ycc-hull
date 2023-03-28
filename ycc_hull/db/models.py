@@ -4,14 +4,18 @@ Handwritten models containing only the relevant tables and using Oracle dialect 
 Note: SQLAlchemy requires all tables with PK, but sometimes they are not in the database. These are marked with comments.
 """
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-from sqlalchemy import Column, ForeignKey, Index, PrimaryKeyConstraint, text
+from sqlalchemy import ForeignKey, Index, PrimaryKeyConstraint, text
 from sqlalchemy.dialects.oracle import BLOB, DATE, NUMBER, VARCHAR, VARCHAR2
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
+    """
+    Base class for DB model types.
+    """
+
     def dict(self) -> Dict[str, Any]:
         return {k: v for k, v in sorted(self.__dict__.items()) if not k.startswith("_")}
 
@@ -20,6 +24,10 @@ class Base(DeclarativeBase):
 
 
 class Boat(Base):
+    """
+    Represents a boat.
+    """
+
     __tablename__ = "boats"
 
     boat_id: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, primary_key=True)
@@ -35,7 +43,7 @@ class Boat(Base):
     maintainer_id2: Mapped[int] = mapped_column(NUMBER, ForeignKey("members.id"))
     registration_pdf: Mapped[Any] = mapped_column(BLOB)
 
-    # TODO This should be many to many when away from Perl
+    # This could be many to many when away from Perl (and maybe APEX too)
     maintainer1: Mapped["Member"] = relationship(
         back_populates="maintained_boats1", foreign_keys=maintainer_id
     )
@@ -43,20 +51,12 @@ class Boat(Base):
         back_populates="maintained_boats2", foreign_keys=maintainer_id2
     )
 
-    def json_dict(self) -> dict:
-        return {
-            "name": self.name,
-            "type": self.type,
-            "number": self.ycc_num,
-            "license": self.license,
-            "class": self.class_,
-            "tablePosition": self.table_pos,
-            "maintainer1": self.maintainer1.json_dict() if self.maintainer1 else None,
-            "maintainer2": self.maintainer2.json_dict() if self.maintainer2 else None,
-        }
-
 
 class EntranceFeeRecord(Base):
+    """
+    Represents an entrance fee record paid by a new member.
+    """
+
     __tablename__ = "entrance_feesrecords"
     __table_args__ = (Index("entrance_fee_uq", "member_id", "year_f", unique=True),)
 
@@ -67,7 +67,7 @@ class EntranceFeeRecord(Base):
     """
     This field is nullable, however, it is only null for some members who joined 2010 or before. (Lajos, 2023-03)
 
-    SELECT 
+    SELECT
         '' as "-- MEMBERS --",
         m.NAME,
         m.FIRSTNAME,
@@ -81,14 +81,12 @@ class EntranceFeeRecord(Base):
     """
     year_f: Mapped[int] = mapped_column(NUMBER(4, 0), nullable=True)
 
-    def json_dict(self) -> dict:
-        return {
-            "memberId": self.member_id,
-            "financialYear": self.year_f,
-        }
-
 
 class FeeRecord(Base):
+    """
+    Represents a fee record paid by a member (membership fee, course fee, etc.).
+    """
+
     # Note: FEESRECORDS_TRG trigger may fill entered_date and paymentid
     __tablename__ = "feesrecords"
     __table_args__ = (
@@ -115,20 +113,12 @@ class FeeRecord(Base):
     entered_date: Mapped[datetime] = mapped_column(DATE, server_default=text("sysdate"))
     paymentid: Mapped[int] = mapped_column(NUMBER)
 
-    def json_dict(self) -> dict:
-        return {
-            "memberId": self.member_id,
-            "financialYear": self.year_f,
-            # Oracle DATE = datetime, but time is not used here
-            "paymentDate": _datetime_to_date_str(self.paid_date),
-            "paymentMode": self.paid_mode,
-            "fee": self.fee,
-            "enteredDate": _datetime_to_str(self.entered_date),
-            "paymentId": self.paymentid,
-        }
-
 
 class Holiday(Base):
+    """
+    Represents a holiday. Holidays are usually the CERN holidays and are used for boat booking rules.
+    """
+
     __tablename__ = "holidays"
 
     day: Mapped[datetime] = mapped_column(
@@ -139,15 +129,12 @@ class Holiday(Base):
     )
     label: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
 
-    def json_dict(self) -> dict:
-        return {
-            # Oracle DATE = datetime, but time is not needed here
-            "date": _datetime_to_date_str(self.day),
-            "label": self.label,
-        }
-
 
 class Member(Base):
+    """
+    Represents a YCC member.
+    """
+
     __tablename__ = "members"
 
     id: Mapped[int] = mapped_column(NUMBER, nullable=False, primary_key=True)
@@ -202,7 +189,7 @@ class Member(Base):
     fee_records: Mapped[List["FeeRecord"]] = relationship(
         order_by="FeeRecord.paid_date"
     )
-    # TODO This should be many to many when away from Perl
+    # This could be many to many when away from Perl (and maybe APEX too)
     maintained_boats1: Mapped[List["Boat"]] = relationship(
         back_populates="maintainer1",
         foreign_keys="Boat.maintainer_id",
@@ -215,17 +202,12 @@ class Member(Base):
     )
     user: Mapped["User"] = relationship(back_populates="member", lazy="joined")
 
-    def json_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "username": self.user.logon_id,
-            "firstName": self.firstname,
-            "lastName": self.name,
-            "membershipType": self.membership,
-        }
-
 
 class MembershipType(Base):
+    """
+    Represents a YCC membership type.
+    """
+
     __tablename__ = "membership"
 
     mb_id: Mapped[int] = mapped_column(
@@ -244,17 +226,12 @@ class MembershipType(Base):
     f_desc: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
     comments: Mapped[str] = mapped_column(VARCHAR2(100))
 
-    def json_dict(self) -> dict:
-        return {
-            "id": self.mb_id,
-            "name": self.mb_name,
-            "descriptionEn": self.e_desc,
-            "descriptionFr": self.f_desc,
-            "comments": self.comments,
-        }
-
 
 class User(Base):
+    """
+    Represents a YCC member's login details.
+    """
+
     __tablename__ = "web_logon"
 
     member_id: Mapped[int] = mapped_column(
@@ -269,18 +246,3 @@ class User(Base):
     last_changed: Mapped[datetime] = mapped_column(DATE)
 
     member: Mapped["Member"] = relationship(back_populates="user", lazy="joined")
-
-    def json_dict(self) -> dict:
-        return {
-            "id": self.member_id,
-            "username": self.logon_id,
-            # Ignore sensitive info
-        }
-
-
-def _datetime_to_str(dt: Optional[datetime]) -> Optional[str]:
-    return None if dt is None else dt.isoformat()
-
-
-def _datetime_to_date_str(dt: Optional[datetime]) -> Optional[str]:
-    return None if dt is None else dt.date().isoformat()
