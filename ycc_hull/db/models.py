@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 from sqlalchemy import ForeignKey, Index, PrimaryKeyConstraint, text
-from sqlalchemy.dialects.oracle import BLOB, DATE, NUMBER, VARCHAR, VARCHAR2
+from sqlalchemy.dialects.oracle import BLOB, DATE, NUMBER, VARCHAR2
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -32,7 +32,7 @@ class Boat(Base):
 
     boat_id: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, primary_key=True)
     name: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False, unique=True)
-    type: Mapped[str] = mapped_column(VARCHAR(20), nullable=False)
+    type: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
     ycc_num: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, unique=True)
     license: Mapped[str] = mapped_column(VARCHAR2(5), nullable=False)
     class_: Mapped[str] = mapped_column("class", VARCHAR2(5), nullable=False)
