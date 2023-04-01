@@ -29,7 +29,8 @@ Start application:
 poetry run start
 ```
 
-Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- API Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ## Development Guide
 
@@ -79,6 +80,7 @@ Upgrade to latest versions:
 poetry run black .
 poetry run mypy .
 poetry run flake8 .
+poetry run pylint legacy_password_hashing
 poetry run pylint test_data
 poetry run pylint ycc_hull
 ```

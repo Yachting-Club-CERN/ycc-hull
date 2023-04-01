@@ -1,5 +1,5 @@
 """
-Main API endpoints.
+Boats controller.
 """
 from typing import Sequence
 from sqlalchemy import select

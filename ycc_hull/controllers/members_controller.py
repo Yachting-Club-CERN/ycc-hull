@@ -1,5 +1,5 @@
 """
-Main API endpoints.
+Members controller.
 """
 from typing import Optional, Sequence
 

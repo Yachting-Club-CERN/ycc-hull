@@ -1,5 +1,5 @@
 """
-General controllers.
+Holidays controller.
 """
 from typing import Sequence
 
