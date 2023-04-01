@@ -94,11 +94,10 @@ def _pack(data: int) -> str:
         # Perl pack('N', ...) is 32-bit big-endian (https://perldoc.perl.org/functions/pack)
         # It translates to `>I` in Python struct.pack (https://docs.python.org/3/library/struct.html#format-strings)
         return base64.b64encode(struct.pack(">I", data)).decode("ascii")
-    else:
-        raise ValueError(f"Unsupported value type: {type(data)}")
+    raise ValueError(f"Unsupported value type: {type(data)}")
 
 
-def _unpack_int(data):
+def _unpack_int(data: str) -> int:
     if not isinstance(data, str):
         raise ValueError("The data must be a string")
 

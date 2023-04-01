@@ -7,7 +7,13 @@ from typing import Optional
 from humps import camelize
 from pydantic import BaseModel
 
-from ycc_hull.db.models import Boat, Holiday, Member, MembershipType, User
+from ycc_hull.db.entities import (
+    BoatEntity,
+    HolidayEntity,
+    MemberEntity,
+    MembershipTypeEntity,
+    UserEntity,
+)
 
 
 class CamelisedBaseModel(BaseModel):
@@ -31,7 +37,7 @@ class BoatDto(CamelisedBaseModel):
 
     @staticmethod
     def create(
-        boat: Boat,
+        boat: BoatEntity,
     ) -> "BoatDto":
         return BoatDto(
             id=boat.boat_id,
@@ -50,7 +56,7 @@ class HolidayDto(CamelisedBaseModel):
 
     @staticmethod
     def create(
-        holiday: Holiday,
+        holiday: HolidayEntity,
     ) -> "HolidayDto":
         return HolidayDto(
             date=holiday.day.date(),
@@ -58,23 +64,52 @@ class HolidayDto(CamelisedBaseModel):
         )
 
 
-class MemberDto(CamelisedBaseModel):
-    id: int
+class MemberPublicInfoDto(CamelisedBaseModel):
+    """
+    DTO for a member, containing information public to all active members.
+    """
+
     username: str
     first_name: str
     last_name: str
+    email: Optional[str]
+    mobile_phone: Optional[str]
+    home_phone: Optional[str]
+    work_phone: Optional[str]
+
+    @staticmethod
+    def create(
+        member: MemberEntity,
+    ) -> "MemberPublicInfoDto":
+        return MemberPublicInfoDto(
+            username=member.user.logon_id,
+            first_name=member.firstname,
+            last_name=member.name,
+            email=member.e_mail,
+            mobile_phone=member.cell_phone,
+            home_phone=member.home_phone,
+            work_phone=member.work_phone,
+        )
+
+
+class MemberSensitiveInfoDto(MemberPublicInfoDto):
+    id: int
     membership_type: str
 
     @staticmethod
     def create(
-        member: Member,
-    ) -> "MemberDto":
-        return MemberDto(
+        member: MemberEntity,
+    ) -> "MemberSensitiveInfoDto":
+        return MemberSensitiveInfoDto(
             id=member.id,
             username=member.user.logon_id,
             first_name=member.firstname,
             last_name=member.name,
             membership_type=member.membership,
+            email=member.e_mail,
+            mobile_phone=member.cell_phone,
+            home_phone=member.home_phone,
+            work_phone=member.work_phone,
         )
 
 
@@ -87,7 +122,7 @@ class MembershipTypeDto(CamelisedBaseModel):
 
     @staticmethod
     def create(
-        membership_type: MembershipType,
+        membership_type: MembershipTypeEntity,
     ) -> "MembershipTypeDto":
         return MembershipTypeDto(
             id=membership_type.mb_id,
@@ -104,7 +139,7 @@ class UserDto(CamelisedBaseModel):
 
     @staticmethod
     def create(
-        user: User,
+        user: UserEntity,
     ) -> "UserDto":
         return UserDto(
             id=user.member_id,

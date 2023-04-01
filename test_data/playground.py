@@ -5,15 +5,15 @@ from sqlalchemy import ScalarResult, select
 from sqlalchemy.orm import Session
 
 from ycc_hull.db.engine import _create_db_engine
-from ycc_hull.db.models import Member
+from ycc_hull.db.entities import MemberEntity
 
 engine = _create_db_engine(db_engine_echo=True)
 
 
 def dump_members_and_fees() -> None:
     with Session(engine) as session:
-        members: ScalarResult[Member] = session.scalars(
-            select(Member).order_by(Member.id)
+        members: ScalarResult[MemberEntity] = session.scalars(
+            select(MemberEntity).order_by(MemberEntity.id)
         )
         for member in members:
             print("=" * 80)
@@ -35,7 +35,7 @@ def dump_members_and_fees() -> None:
             print()
 
 
-def run():
+def run() -> None:
     dump_members_and_fees()
 
 

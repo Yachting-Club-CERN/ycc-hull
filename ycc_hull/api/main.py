@@ -1,53 +1,56 @@
 """
 Main API endpoints.
 """
-from typing import Any, Callable, Sequence, TypeVar
+from datetime import date
+from typing import Optional, Sequence
 
-from fastapi import APIRouter
-from sqlalchemy import select, Select
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
 
-from ycc_hull.db.engine import get_db_engine
-from ycc_hull.db.models import Boat, Holiday, Member, MembershipType, User
-
-from .dtos import BoatDto, HolidayDto, MemberDto, MembershipTypeDto, UserDto
+from ycc_hull.controllers.boats_controller import BoatsController
+from ycc_hull.controllers.holidays_controller import HolidaysController
+from ycc_hull.controllers.members_controller import MembersController
+from ycc_hull.models.dtos import (
+    BoatDto,
+    HolidayDto,
+    MemberPublicInfoDto,
+    MembershipTypeDto,
+    UserDto,
+)
 
 api_main = APIRouter()
 
 
 @api_main.get("/api/v0/boats")
 async def boats_get() -> Sequence[BoatDto]:
-    return _query_all(select(Boat).order_by(Boat.table_pos), BoatDto.create)
+    return await BoatsController.find_all()
 
 
 @api_main.get("/api/v0/holidays")
 async def holidays_get() -> Sequence[HolidayDto]:
-    return _query_all(select(Holiday).order_by(Holiday.day), HolidayDto.create)
+    return await HolidaysController.find_all()
 
 
 @api_main.get("/api/v0/members")
-async def members_get() -> Sequence[MemberDto]:
-    return _query_all(
-        select(Member).order_by(Member.name, Member.firstname), MemberDto.create
-    )
+async def members_get(year: Optional[int] = None) -> Sequence[MemberPublicInfoDto]:
+    # TODO
+    pretend_committee_member = True
+
+    current_year = date.today().year
+
+    if year != current_year and not pretend_committee_member:
+        raise HTTPException(
+            status_code=403,
+            detail=f"You do not have permission to list members for {year}",
+        )
+
+    return await MembersController.find_all_public_infos(year)
 
 
 @api_main.get("/api/v0/membership-types")
 async def membership_types_get() -> Sequence[MembershipTypeDto]:
-    return _query_all(
-        select(MembershipType).order_by(MembershipType.e_desc),
-        MembershipTypeDto.create,
-    )
+    return await MembersController.find_all_membership_types()
 
 
 @api_main.get("/api/v0/users")
 async def users_get() -> Sequence[UserDto]:
-    return _query_all(select(User).order_by(User.logon_id), UserDto.create)
-
-
-T = TypeVar("T")
-
-
-def _query_all(statement: Select, dto_factory: Callable[[Any], T]) -> Sequence[T]:
-    with Session(get_db_engine()) as session:
-        return [dto_factory(row) for row in session.scalars(statement)]
+    return await MembersController.find_all_users()

@@ -1,5 +1,5 @@
 """
-Handwritten models containing only the relevant tables and using Oracle dialect types.
+Handwritten entities containing only the relevant tables and using Oracle dialect types.
 
 Note: SQLAlchemy requires all tables with PK, but sometimes they are not in the database. These are marked with comments.
 """
@@ -11,9 +11,9 @@ from sqlalchemy.dialects.oracle import BLOB, DATE, NUMBER, VARCHAR2
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
-class Base(DeclarativeBase):
+class BaseEntity(DeclarativeBase):
     """
-    Base class for DB model types.
+    Base class for DB entities.
     """
 
     def dict(self) -> Dict[str, Any]:
@@ -23,7 +23,7 @@ class Base(DeclarativeBase):
         return f"{self.__class__.__qualname__}{self.dict()}"
 
 
-class Boat(Base):
+class BoatEntity(BaseEntity):
     """
     Represents a boat.
     """
@@ -44,15 +44,16 @@ class Boat(Base):
     registration_pdf: Mapped[Any] = mapped_column(BLOB)
 
     # This could be many to many when away from Perl (and maybe APEX too)
-    maintainer1: Mapped["Member"] = relationship(
-        back_populates="maintained_boats1", foreign_keys=maintainer_id
+    maintainer1: Mapped["MemberEntity"] = relationship(
+        foreign_keys=maintainer_id, back_populates="maintained_boats1"
     )
-    maintainer2: Mapped["Member"] = relationship(
-        back_populates="maintained_boats2", foreign_keys=maintainer_id2
+    maintainer2: Mapped["MemberEntity"] = relationship(
+        foreign_keys=maintainer_id2,
+        back_populates="maintained_boats2",
     )
 
 
-class EntranceFeeRecord(Base):
+class EntranceFeeRecordEntity(BaseEntity):
     """
     Represents an entrance fee record paid by a new member.
     """
@@ -82,7 +83,7 @@ class EntranceFeeRecord(Base):
     year_f: Mapped[int] = mapped_column(NUMBER(4, 0), nullable=True)
 
 
-class FeeRecord(Base):
+class FeeRecordEntity(BaseEntity):
     """
     Represents a fee record paid by a member (membership fee, course fee, etc.).
     """
@@ -114,7 +115,7 @@ class FeeRecord(Base):
     paymentid: Mapped[int] = mapped_column(NUMBER)
 
 
-class Holiday(Base):
+class HolidayEntity(BaseEntity):
     """
     Represents a holiday. Holidays are usually the CERN holidays and are used for boat booking rules.
     """
@@ -130,7 +131,7 @@ class Holiday(Base):
     label: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
 
 
-class Member(Base):
+class MemberEntity(BaseEntity):
     """
     Represents a YCC member.
     """
@@ -184,26 +185,26 @@ class Member(Base):
     special_talents: Mapped[str] = mapped_column(VARCHAR2(1000))
 
     # Code-only foreign key, not in DB
-    entrance_fee_record: Mapped["EntranceFeeRecord"] = relationship()
+    entrance_fee_record: Mapped["EntranceFeeRecordEntity"] = relationship()
     # Code-only foreign key, not in DB
-    fee_records: Mapped[List["FeeRecord"]] = relationship(
-        order_by="FeeRecord.paid_date"
+    fee_records: Mapped[List["FeeRecordEntity"]] = relationship(
+        order_by="FeeRecordEntity.paid_date"
     )
     # This could be many to many when away from Perl (and maybe APEX too)
-    maintained_boats1: Mapped[List["Boat"]] = relationship(
+    maintained_boats1: Mapped[List["BoatEntity"]] = relationship(
+        foreign_keys="BoatEntity.maintainer_id",
+        order_by="BoatEntity.name",
         back_populates="maintainer1",
-        foreign_keys="Boat.maintainer_id",
-        order_by="Boat.name",
     )
-    maintained_boats2: Mapped[List["Boat"]] = relationship(
+    maintained_boats2: Mapped[List["BoatEntity"]] = relationship(
+        foreign_keys="BoatEntity.maintainer_id2",
+        order_by="BoatEntity.name",
         back_populates="maintainer2",
-        foreign_keys="Boat.maintainer_id2",
-        order_by="Boat.name",
     )
-    user: Mapped["User"] = relationship(back_populates="member", lazy="joined")
+    user: Mapped["UserEntity"] = relationship(back_populates="member", lazy="joined")
 
 
-class MembershipType(Base):
+class MembershipTypeEntity(BaseEntity):
     """
     Represents a YCC membership type.
     """
@@ -227,7 +228,7 @@ class MembershipType(Base):
     comments: Mapped[str] = mapped_column(VARCHAR2(100))
 
 
-class User(Base):
+class UserEntity(BaseEntity):
     """
     Represents a YCC member's login details.
     """
@@ -245,4 +246,4 @@ class User(Base):
     pass_reset_exp: Mapped[datetime] = mapped_column(DATE)
     last_changed: Mapped[datetime] = mapped_column(DATE)
 
-    member: Mapped["Member"] = relationship(back_populates="user", lazy="joined")
+    member: Mapped["MemberEntity"] = relationship(back_populates="user", lazy="joined")

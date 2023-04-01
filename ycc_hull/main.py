@@ -24,7 +24,7 @@ if not PRODUCTION:
     app.include_router(api_test_data)
 
 
-def start():
+def start() -> None:
     """
     Application entry point.
     """

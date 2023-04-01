@@ -10,17 +10,16 @@ from fastapi import APIRouter
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from ycc_hull.api.main import boats_get, holidays_get, members_get, membership_types_get
-from ycc_hull.db.engine import get_db_engine
-from ycc_hull.db.models import (
-    Base,
-    Boat,
-    EntranceFeeRecord,
-    FeeRecord,
-    Holiday,
-    Member,
-    MembershipType,
-    User,
+from ycc_hull.db.engine import get_db_engine, query_count
+from ycc_hull.db.entities import (
+    BaseEntity,
+    BoatEntity,
+    EntranceFeeRecordEntity,
+    FeeRecordEntity,
+    HolidayEntity,
+    MemberEntity,
+    MembershipTypeEntity,
+    UserEntity,
 )
 
 api_test_data = APIRouter()
@@ -76,44 +75,46 @@ async def populate() -> List[str]:
     with Session(get_db_engine()) as session:
         importer = TestDataImporter(directory="test_data/", session=session)
 
-        if await holidays_get():
+        if query_count(HolidayEntity):
             log.append("Skipping holidays")
         else:
             entries = await importer.import_exported(
-                "HOLIDAYS_DATA_TABLE.json-formatted", Holiday
+                "HOLIDAYS_DATA_TABLE.json-formatted", HolidayEntity
             )
             log.append(f"Add {len(entries)} holidays")
 
-        if await membership_types_get():
+        if query_count(MembershipTypeEntity):
             log.append("Skipping membership types")
         else:
             entries = await importer.import_exported(
-                "MEMBERSHIP_DATA_TABLE.json-formatted", MembershipType
+                "MEMBERSHIP_DATA_TABLE.json-formatted", MembershipTypeEntity
             )
 
             log.extend(f"Add membership type {entry['mb_name']}" for entry in entries)
 
-        if await members_get():
+        if query_count(MemberEntity):
             log.append("Skipping members and related entities")
         else:
             entries = await importer.import_generated(
-                "EntranceFeeRecords.json", EntranceFeeRecord
+                "EntranceFeeRecords.json", EntranceFeeRecordEntity
             )
             log.append(f"Add {len(entries)} entrance fee records")
 
-            entries = await importer.import_generated("FeeRecords.json", FeeRecord)
+            entries = await importer.import_generated(
+                "FeeRecords.json", FeeRecordEntity
+            )
             log.append(f"Add {len(entries)} fee records")
 
-            entries = await importer.import_generated("Members.json", Member)
+            entries = await importer.import_generated("Members.json", MemberEntity)
             log.append(f"Add {len(entries)} members")
 
-            entries = await importer.import_generated("Users.json", User)
+            entries = await importer.import_generated("Users.json", UserEntity)
             log.append(f"Add {len(entries)} users")
 
-        if await boats_get():
+        if query_count(BoatEntity):
             log.append("Skipping boats")
         else:
-            entries = await importer.import_generated("Boats.json", Boat)
+            entries = await importer.import_generated("Boats.json", BoatEntity)
             log.append(f"Add {len(entries)} boats")
 
         session.commit()
@@ -127,24 +128,24 @@ async def clear() -> List[str]:
     log: List[str] = []
     classes = (
         # Boats
-        Boat,
+        BoatEntity,
         # Members
-        EntranceFeeRecord,
-        FeeRecord,
-        User,
-        Member,
+        EntranceFeeRecordEntity,
+        FeeRecordEntity,
+        UserEntity,
+        MemberEntity,
         # General
-        MembershipType,
-        Holiday,
+        MembershipTypeEntity,
+        HolidayEntity,
     )
 
-    all_model_classes = set(Base.__subclasses__())
+    all_entity_classes = set(BaseEntity.__subclasses__())
     unhandled_class_names = [
-        f"{cls.__qualname__}" for cls in all_model_classes.difference(classes)
+        f"{cls.__qualname__}" for cls in all_entity_classes.difference(classes)
     ]
 
     if unhandled_class_names:
-        raise Exception(f"Some model classes are not handled: {unhandled_class_names}")
+        raise Exception(f"Some entity classes are not handled: {unhandled_class_names}")
 
     with Session(get_db_engine()) as session:
         for cls in classes:

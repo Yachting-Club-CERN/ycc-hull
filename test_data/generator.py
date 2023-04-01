@@ -5,12 +5,19 @@ import copy
 import json
 from datetime import date, datetime, timedelta
 from os import path
-from typing import List, NamedTuple, Optional, Sequence, Set, Type
+from typing import Any, Iterator, List, NamedTuple, Optional, Sequence, Set, Type
 
 from faker import Faker
 
 from legacy_password_hashing.password_hashing import hash_ycc_password
-from ycc_hull.db.models import Base, Boat, EntranceFeeRecord, FeeRecord, Member, User
+from ycc_hull.db.entities import (
+    BaseEntity,
+    BoatEntity,
+    EntranceFeeRecordEntity,
+    FeeRecordEntity,
+    MemberEntity,
+    UserEntity,
+)
 
 SCRIPT_DIR = path.dirname(path.realpath(__file__))
 
@@ -26,10 +33,10 @@ USERS_JSON_FILE = f"{SCRIPT_DIR}/generated/Users.json"
 MemberInfo = NamedTuple(
     "MemberInfo",
     [
-        ("member", Member),
-        ("user", User),
-        ("entrance_fee_record", Optional[EntranceFeeRecord]),
-        ("fee_records", List[FeeRecord]),
+        ("member", MemberEntity),
+        ("user", UserEntity),
+        ("entrance_fee_record", Optional[EntranceFeeRecordEntity]),
+        ("fee_records", List[FeeRecordEntity]),
     ],
 )
 
@@ -80,17 +87,17 @@ def generate_member_info(member_id: int) -> MemberInfo:
     )
 
 
-def generate_member(member_id: int) -> Member:
+def generate_member(member_id: int) -> MemberEntity:
     # Make sure to eventually use all membership types
-    if member_id < 5:
+    if member_id <= 5:
         membership_type = "H"
-    elif member_id < 10:
+    elif member_id <= 10:
         membership_type = "AJ"
-    elif member_id < 15:
+    elif member_id <= 15:
         membership_type = "FM"
-    elif member_id < 20:
+    elif member_id <= 20:
         membership_type = "T"
-    elif member_id < 25:
+    elif member_id <= 25:
         membership_type = "SV"
     else:
         membership_type = "AS"
@@ -98,7 +105,7 @@ def generate_member(member_id: int) -> Member:
     last_name = faker.unique.last_name()
     first_name = faker.first_name()
 
-    return Member(
+    return MemberEntity(
         id=member_id,
         name=last_name,
         firstname=first_name,
@@ -108,23 +115,23 @@ def generate_member(member_id: int) -> Member:
         # temp_memb = Column(NUMBER(1, 0))
         # lang1 = Column(VARCHAR2(3))
         # lang2 = Column(VARCHAR2(3))
-        category="C" if faker.pybool() else "E",  # *C*ERN or *E*xternal
+        category=generate_member_category(),
         # work_address1 = Column(VARCHAR2(50))
         # work_address2 = Column(VARCHAR2(50))
         # work_towncode = Column(VARCHAR2(7))
         # work_town = Column(VARCHAR2(25))
         # work_state = Column(VARCHAR2(5))
-        # work_phone = Column(VARCHAR2(25))
+        work_phone=generate_phone_number(member_id, 10),
         e_mail=f"{first_name}.{last_name}@mailinator.com",
         home_addr="~~~Ignored~~~",
         # home_towncode = Column(VARCHAR2(7))
         # home_town = Column(VARCHAR2(25))
         # home_state = Column(VARCHAR2(5))
-        # home_phone = Column(VARCHAR2(25))
+        home_phone=generate_phone_number(member_id, 10),
         # mail_preference = Column(VARCHAR2(1))
         # favourite_mailing_post = Column(VARCHAR2(1))
-        member_entrance=generate_member_entrance(),
-        # cell_phone = Column(VARCHAR2(25))
+        member_entrance=generate_member_entrance(membership_type),
+        cell_phone=generate_phone_number(member_id, 90),
         # gender = Column(CHAR(1))
         # valid_until_date = Column(DATE)
         # last_updated_date = Column(DATE)
@@ -132,17 +139,42 @@ def generate_member(member_id: int) -> Member:
     )
 
 
-def generate_member_entrance():
+def generate_phone_number(member_id: int, truth_probability: int) -> Optional[str]:
     return (
-        CURRENT_YEAR
-        if faker.pybool(truth_probability=20)
-        else faker.pyint(min_value=1990, max_value=CURRENT_YEAR - 1)
+        fake_phone_number()
+        if member_id == 2 or faker.pybool(truth_probability=truth_probability)
+        else None
     )
 
 
-def generate_user(member: Member) -> User:
+def fake_phone_number() -> str:
+    country_code = "+41" if faker.pybool(truth_probability=75) else "+33"
+    number = faker.random_number(digits=7)
+    return f"{country_code}00{number:07}"
+
+
+def generate_member_category() -> str:
+    if faker.pybool(truth_probability=50):
+        # *C*ERN
+        return "C"
+    if faker.pybool(truth_probability=45):
+        # *E*xternal
+        return "E"
+    # *R*elative
+    return "R"
+
+
+def generate_member_entrance(membership_type: str) -> int:
+    if membership_type == "H":
+        return faker.pyint(min_value=1990, max_value=CURRENT_YEAR - 10)
+    if faker.pybool(truth_probability=80):
+        return faker.pyint(min_value=1990, max_value=CURRENT_YEAR - 1)
+    return CURRENT_YEAR
+
+
+def generate_user(member: MemberEntity) -> UserEntity:
     username = fake_username(member.firstname, member.name)
-    return User(
+    return UserEntity(
         member_id=member.id,
         logon_id=username,
         session_id=None,
@@ -156,12 +188,14 @@ def generate_user(member: Member) -> User:
     )
 
 
-def generate_member_entrance_fee_record(member: Member) -> Optional[EntranceFeeRecord]:
+def generate_member_entrance_fee_record(
+    member: MemberEntity,
+) -> Optional[EntranceFeeRecordEntity]:
     financial_year: Optional[int] = (
         int(member.member_entrance) if faker.pybool(truth_probability=90) else None
     )
     return (
-        EntranceFeeRecord(
+        EntranceFeeRecordEntity(
             member_id=member.id,
             year_f=financial_year,
         )
@@ -170,8 +204,8 @@ def generate_member_entrance_fee_record(member: Member) -> Optional[EntranceFeeR
     )
 
 
-def generate_member_fee_records(member: Member) -> List[FeeRecord]:
-    fee_records: List[FeeRecord] = []
+def generate_member_fee_records(member: MemberEntity) -> List[FeeRecordEntity]:
+    fee_records: List[FeeRecordEntity] = []
     if member.id == 2:
         # Fixed honorary member without any payments
         return fee_records
@@ -189,7 +223,9 @@ def generate_member_fee_records(member: Member) -> List[FeeRecord]:
     return fee_records
 
 
-def create_fee_record(member: Member, financial_year: int, fee: int) -> FeeRecord:
+def create_fee_record(
+    member: MemberEntity, financial_year: int, fee: int
+) -> FeeRecordEntity:
     paid_date: date = faker.date_between(
         start_date=date(financial_year - 1, 11, 1), end_date=date(financial_year, 4, 1)
     )
@@ -197,7 +233,7 @@ def create_fee_record(member: Member, financial_year: int, fee: int) -> FeeRecor
         start_date=paid_date, end_date=paid_date + timedelta(days=10)
     )
 
-    return FeeRecord(
+    return FeeRecordEntity(
         member_id=member.id,
         year_f=financial_year,
         paid_date=paid_date,
@@ -207,7 +243,7 @@ def create_fee_record(member: Member, financial_year: int, fee: int) -> FeeRecor
     )
 
 
-def generate_paid_mode():
+def generate_paid_mode() -> Optional[str]:
     if faker.pybool(truth_probability=80):
         return "UBS"
     if faker.pybool(truth_probability=50):
@@ -216,22 +252,22 @@ def generate_paid_mode():
     return None
 
 
-def generate_boats() -> List[Boat]:
+def generate_boats() -> List[BoatEntity]:
     # Remove maintainers from the exported file
     with open(BOATS_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
         return [generate_boat(boat) for boat in json.load(file)["results"][0]["items"]]
 
 
-def generate_boat(exported_boat: dict) -> Boat:
+def generate_boat(exported_boat: dict) -> BoatEntity:
     boat = copy.copy(exported_boat)
     boat["class_"] = boat["class"]
     del boat["class"]
     boat["maintainer_id"] = None
     boat["maintainer_id2"] = None
-    return Boat(**boat)
+    return BoatEntity(**boat)
 
 
-def to_oracle_data_json(obj):
+def to_json_dict(obj: Any) -> dict:
     # This will cause the importer to handle certain types as objects, not strings
     if isinstance(obj, datetime):
         return {"@type": "datetime", "@value": obj.isoformat()}
@@ -241,28 +277,65 @@ def to_oracle_data_json(obj):
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
 
-def read_json_file(file_path: str, cls: Type[Base]) -> Sequence[Base]:
+def read_json_file(file_path: str, cls: Type[BaseEntity]) -> Sequence[BaseEntity]:
     print(f"== Reading from {file_path} ...")
     with open(file_path, "r", encoding="utf-8") as file:
         return [cls(**entry) for entry in json.load(file)]
 
 
-def write_json_file(file_path: str, entries: Sequence[Base]) -> None:
+def write_json_file(file_path: str, entries: Sequence[BaseEntity]) -> None:
     print(f"Writing {file_path} ...")
     with open(file_path, "w", encoding="utf-8") as file:
         json.dump(
             [entry.dict() for entry in entries],
             file,
-            default=to_oracle_data_json,
+            default=to_json_dict,
             indent=2,
         )
 
 
-def regenerate():
+def regenerate() -> None:
     generate(True)
 
 
-def generate(force_regenerate: bool = False):
+def get_member_info_by_id(member_id: int, member_infos: List[MemberInfo]) -> MemberInfo:
+    return next(
+        filter(lambda member_info: member_info.member.id == member_id, member_infos)
+    )
+
+
+def get_members_with_payment_current_year(
+    member_infos: List[MemberInfo],
+) -> Iterator[MemberInfo]:
+    return filter(_paid_fee_current_year, member_infos)
+
+
+def get_members_without_payment_current_year(
+    member_infos: List[MemberInfo],
+) -> Iterator[MemberInfo]:
+    return filter(
+        _did_not_pay_fee_current_year,
+        member_infos,
+    )
+
+
+def _paid_fee_current_year(member_info: MemberInfo) -> bool:
+    search = filter(
+        lambda fee_record: fee_record.year_f == CURRENT_YEAR,
+        member_info.fee_records,
+    )
+    return any(search)
+
+
+def _did_not_pay_fee_current_year(member_info: MemberInfo) -> bool:
+    # search = filter(
+    #     lambda fee_record: fee_record.year_f != CURRENT_YEAR,
+    #     member_info.fee_records,
+    # )
+    return not _paid_fee_current_year(member_info)
+
+
+def generate(force_regenerate: bool = False) -> None:
     if path.exists(MEMBERS_JSON_FILE) and not force_regenerate:
         print("== Skipping members")
     else:
@@ -288,6 +361,24 @@ def generate(force_regenerate: bool = False):
         write_json_file(ENTRANCE_FEE_RECORDS_JSON_FILE, entrance_fee_records)
         write_json_file(FEE_RECORDS_JSON_FILE, fee_records)
 
+        print(
+            "Member with id=2 (honorary, no fee paid): "
+            + get_member_info_by_id(2, member_infos).user.logon_id
+        )
+
+        print(
+            "Active with payment: "
+            + next(
+                get_members_with_payment_current_year(member_infos[100:])
+            ).user.logon_id
+        )
+        print(
+            "Inactive member: "
+            + next(
+                get_members_without_payment_current_year(member_infos[100:])
+            ).user.logon_id
+        )
+
     if path.exists(BOATS_JSON_FILE) and not force_regenerate:
         print("== Skipping boats")
     else:
@@ -296,4 +387,4 @@ def generate(force_regenerate: bool = False):
 
 
 if __name__ == "__main__":
-    generate()
+    generate(True)
