@@ -26,6 +26,7 @@ jobs:
           git status
       - name: Lint
         run: |
+          set -x
           poetry run black .
           git status
           poetry run mypy .
@@ -33,3 +34,4 @@ jobs:
           poetry run pylint legacy_password_hashing
           poetry run pylint test_data
           poetry run pylint ycc_hull
+          set +x
