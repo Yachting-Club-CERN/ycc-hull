@@ -19,8 +19,8 @@ class Environment(str, Enum):
     """
 
     PRODUCTION = "PRODUCTION"
-    NEXT = "NEXT"
-    DEV = "DEV"
+    TEST = "TEST"
+    DEVELOPMENT = "DEVELOPMENT"
     LOCAL = "LOCAL"
 
 

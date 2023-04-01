@@ -21,7 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-if CONFIG.environment in (Environment.LOCAL, Environment.DEV):
+if CONFIG.environment in (Environment.LOCAL, Environment.DEVELOPMENT):
     app.swagger_ui_init_oauth = {
         "clientId": CONFIG.keycloak_swagger_client,
         "realm": CONFIG.keycloak_realm,
