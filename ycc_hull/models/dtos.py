@@ -1,11 +1,8 @@
 """
-API DTO Objects.
+API DTO Classes.
 """
 from datetime import date
 from typing import Optional
-
-from humps import camelize
-from pydantic import BaseModel
 
 from ycc_hull.db.entities import (
     BoatEntity,
@@ -14,20 +11,7 @@ from ycc_hull.db.entities import (
     MembershipTypeEntity,
     UserEntity,
 )
-
-
-class CamelisedBaseModel(BaseModel):
-    """
-    Base class for all DTOs which will camelise snake_case attributes when converting to JSON.
-    """
-
-    class Config:
-        """
-        Base config.
-        """
-
-        alias_generator = camelize
-        allow_population_by_field_name = True
+from ycc_hull.models.base import CamelisedBaseModel
 
 
 class BoatDto(CamelisedBaseModel):

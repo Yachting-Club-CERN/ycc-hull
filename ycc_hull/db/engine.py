@@ -7,19 +7,23 @@ from sqlalchemy import Select, create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from ycc_hull.config import DB_ENGINE_ECHO, DB_URL
+from ycc_hull.config import CONFIG, Environment
 
 _ENGINE: Optional[Engine] = None
 
 
 def _create_db_engine(db_engine_echo: Optional[bool] = None) -> Engine:
-    return create_engine(
-        DB_URL, echo=DB_ENGINE_ECHO if db_engine_echo is None else db_engine_echo
+    echo = (
+        CONFIG.environment == Environment.LOCAL
+        if db_engine_echo is None
+        else db_engine_echo
     )
+    return create_engine(CONFIG.db_url, echo=echo)
 
 
 def get_db_engine() -> Engine:
-    """Gets the database engine. Creates it if it does not exist.
+    """
+    Gets the database engine. Creates it if it does not exist.
 
     Returns:
         Engine: the database engine
@@ -36,7 +40,8 @@ T = TypeVar("T")
 def query_all(
     statement: Select, row_transformer: Optional[Callable[[Any], T]] = None
 ) -> Sequence[T]:
-    """Queries all results for the specified statement from the database.
+    """
+    Queries all results for the specified statement from the database.
 
     Args:
         statement (Select): a SELECT query

@@ -23,6 +23,14 @@ Start database:
 cd ../ycc-infra/ycc-db-local && docker-compose up
 ```
 
+Start Keycloak & configure clients if needed (see below for details):
+
+```sh
+cd ../ycc-infra/ycc-keycloak-local
+./init.sh
+./kc.sh start-dev
+```
+
 Start application:
 
 ```sh
@@ -31,6 +39,26 @@ poetry run start
 
 - Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 - API Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+## Keycloak Client Configuration
+
+For a clean config two clients are recommended, one for `ycc-hull` and one for the Swagger UI. The latter is optional.
+
+For `ycc-hull` create a client with:
+
+- Client authentication enabled (authorisation disabled)
+- Service accounts roles enabled
+- Ensure that the `ycc-client-groups-and-roles` client scope is enabled
+- Save the credentials to `config/conf.json`
+
+For the Swagger UI (optional) create a client with:
+
+- Client authentication disabled
+- Direct access grants enabled
+- Ensure that the `ycc-client-groups-and-roles` client scope is enabled
+- URLs `http://localhost:8000` (base, home, admin) and `http://localhost:8000/*` (redirect)
+- Web origins `+`
+- Optionally you can increase token refresh for example to 1 hour under the advanced settings
 
 ## Development Guide
 

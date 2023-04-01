@@ -1,33 +1,62 @@
 """
 Application configuration.
 """
+import json
 import os
+from enum import Enum
+from typing import FrozenSet, Optional
 
-PRODUCTION: bool = os.getenv("PRODUCTION") == "1"
+from ycc_hull.models.base import CamelisedBaseModel
 
-UVICORN_PORT: int = 8000
-UVICORN_RELOAD: bool = not PRODUCTION
 
-DB_ENGINE_ECHO: bool
-DB_URL: str
+CONFIG_FILE = "conf/config.json"
+LOGGING_CONFIG_FILE = "conf/logging.conf"
 
-if PRODUCTION:
-    DB_ENGINE_ECHO = False
-    CORS_ORIGINS = []
-    # DB URL format: oracle+oracledb://user:pass@hostname:port[/dbname][?service_name=<service>[&key=value&key=value...]]
-    DB_URL = "oracle+oracledb://to-be-configured"
+
+class Environment(str, Enum):
+    """
+    Environment enumeration.
+    """
+
+    PRODUCTION = "PRODUCTION"
+    NEXT = "NEXT"
+    DEV = "DEV"
+    LOCAL = "LOCAL"
+
+
+class Config(CamelisedBaseModel):
+    """
+    Application configuration.
+    """
+
+    environment: Environment
+    db_url: str
+    cors_origins: FrozenSet[str]
+    keycloak_server: str
+    keycloak_realm: str
+    keycloak_client: str
+    keycloak_client_secret: str
+    keycloak_swagger_client: Optional[str]
+    uvicorn_port: int = 8000
+
+    @property
+    def is_local(self) -> bool:
+        return self.environment == Environment.LOCAL
+
+    class Config:
+        """
+        Immutable config.
+        """
+
+        allow_mutation = False
+
+
+CONFIG: Config
+
+
+if os.path.isfile(CONFIG_FILE):
+    with open(CONFIG_FILE, "r", encoding="utf-8") as file:
+        _config_data = json.load(file)
+        CONFIG = Config(**_config_data)
 else:
-    DB_ENGINE_ECHO = True
-    CORS_ORIGINS = [
-        "http://localhost:3000",
-        "localhost:3000",
-        "http://127.0.0.1:3000",
-        "127.0.0.1:3000",
-        "http://localhost:8080",
-        "localhost:8080",
-        "http://127.0.0.1:8080",
-        "127.0.0.1:8080",
-    ]
-    # DB_URL = "oracle+oracledb://ycclocal:changeit@127.0.0.1:1521"
-    # This below works, no idea why the one above does not
-    DB_URL = "oracle+oracledb://ycclocal:changeit@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521)))"
+    raise AssertionError(f"Missing configuration file: {CONFIG_FILE}")
