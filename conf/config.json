@@ -14,5 +14,6 @@
   "keycloakServer": "http://localhost:8080",
   "keycloakRealm": "YCC-LOCAL",
   "keycloakClient": "ycc-hull-local",
-  "keycloakClientSecret": "SaksuyBhXMq4xuLhHTTUQtXsn3JQ3AiG"
+  "keycloakClientSecret": "SaksuyBhXMq4xuLhHTTUQtXsn3JQ3AiG",
+  "keycloakSwaggerClient": "ycc-hull-local-swagger"
 }

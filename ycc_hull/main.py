@@ -9,7 +9,7 @@ from ycc_hull.api.boats import api_boats
 from ycc_hull.api.holidays import api_holidays
 from ycc_hull.api.members import api_members
 from ycc_hull.api.test_data import api_test_data
-from ycc_hull.config import CONFIG
+from ycc_hull.config import CONFIG, LOGGING_CONFIG_FILE
 
 app = FastAPI()
 
@@ -23,8 +23,8 @@ app.add_middleware(
 
 
 app.swagger_ui_init_oauth = {
-    "clientId": "ycc-hull-local-swagger",
-    "realm": "YCC-LOCAL",
+    "clientId": CONFIG.keycloak_swagger_client,
+    "realm": CONFIG.keycloak_realm,
     # These scopes are needed to be able to use the API.
     "scopes": "openid profile email",
 }
@@ -47,5 +47,5 @@ def start() -> None:
         port=CONFIG.uvicorn_port,
         reload=CONFIG.is_local,
         log_level="debug",
-        log_config="logging.conf",
+        log_config=LOGGING_CONFIG_FILE,
     )

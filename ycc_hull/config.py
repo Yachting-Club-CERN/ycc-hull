@@ -4,9 +4,13 @@ Application configuration.
 import json
 import os
 from enum import Enum
-from typing import FrozenSet
+from typing import FrozenSet, Optional
 
 from ycc_hull.models.base import CamelisedBaseModel
+
+
+CONFIG_FILE = "conf/config.json"
+LOGGING_CONFIG_FILE = "conf/logging.conf"
 
 
 class Environment(str, Enum):
@@ -32,6 +36,7 @@ class Config(CamelisedBaseModel):
     keycloak_realm: str
     keycloak_client: str
     keycloak_client_secret: str
+    keycloak_swagger_client: Optional[str]
     uvicorn_port: int = 8000
 
     @property
@@ -46,13 +51,12 @@ class Config(CamelisedBaseModel):
         allow_mutation = False
 
 
-_CONFIG_FILE = "config.json"
 CONFIG: Config
 
 
-if os.path.isfile(_CONFIG_FILE):
-    with open(_CONFIG_FILE, "r", encoding="utf-8") as file:
+if os.path.isfile(CONFIG_FILE):
+    with open(CONFIG_FILE, "r", encoding="utf-8") as file:
         _config_data = json.load(file)
         CONFIG = Config(**_config_data)
 else:
-    raise AssertionError(f"Missing configuration file: {_CONFIG_FILE}")
+    raise AssertionError(f"Missing configuration file: {CONFIG_FILE}")

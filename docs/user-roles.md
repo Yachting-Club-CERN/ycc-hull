@@ -1,39 +1,40 @@
 # User Roles - WIP
 
-*This is part of the idea garden for now, but it would be nice to map permissions (admin, committee, regatta
-organiser, key/licence holder) to roles.*
+**To be revised since part of it was already implemented.**
+
+_This is part of the idea garden for now, but it would be nice to map permissions (admin, committee, regatta organiser, key/licence holder) to roles._
 
 YCC key related roles:
 
-* `KEY_D`
-* `KEY_Y`
+- `KEY_D`
+- `KEY_Y`
 
 Teacher roles:
 
-* `TEACHER_D`
-* `TEACHER_Y`
+- `TEACHER_D`
+- `TEACHER_Y`
 
 ## Administrator and Special roles
 
-YCC Hull translates the rights encoded as bits from the database  (`ADMIN.RIGHTS`) to user roles.
+YCC Hull translates the rights encoded as bits from the database (`ADMIN.RIGHTS`) to user roles.
 
-*TODO Do we really want to translate?*
+_TODO Do we really want to translate?_
 
 | Flag | Code | Role | Description |
-|------|------|------|-------------|
+| ---- | ---- | ---- | ----------- |
 | 1    |      |      |             |
 | 2    |      |      |             |
 | 4    |      |      |             |
 
-* `1` `(R)`: Reservations admin
-* `4 (M)`: `VIEW_MEMBER_DETAILS`
+- `1` `(R)`: Reservations admin
+- `4 (M)`: `VIEW_MEMBER_DETAILS`
 
 ## Documentation of the Perl+Oracle System by Enrico
 
 Ported from https://gitlab.cern.ch/ycc/reservation_system/-/blob/master/README.txt for reference.
 
 ```
-ADMIN TABLE : 
+ADMIN TABLE :
 R=Reservations
 K=Keys (Versoix)
 M= Members details
@@ -50,11 +51,11 @@ The table to update is ADMIN, the bits coding is:
 
 and it is based on the binary system
 
-so 
+so
 0= nothing
 2=K
 3=RK
-15=RKML 
+15=RKML
 31=RKMLA
 ---------------------------------------------
 
