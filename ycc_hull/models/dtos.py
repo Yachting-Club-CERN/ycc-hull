@@ -22,11 +22,19 @@ class CamelisedBaseModel(BaseModel):
     """
 
     class Config:
+        """
+        Base config.
+        """
+
         alias_generator = camelize
         allow_population_by_field_name = True
 
 
 class BoatDto(CamelisedBaseModel):
+    """
+    DTO for a boat.
+    """
+
     id: int
     name: str
     type: str
@@ -51,6 +59,10 @@ class BoatDto(CamelisedBaseModel):
 
 
 class HolidayDto(CamelisedBaseModel):
+    """
+    DTO for a holiday.
+    """
+
     date: date
     label: str
 
@@ -93,6 +105,10 @@ class MemberPublicInfoDto(CamelisedBaseModel):
 
 
 class MemberSensitiveInfoDto(MemberPublicInfoDto):
+    """
+    DTO for a member, containing both information public to all active members and sensitive information.
+    """
+
     id: int
     membership_type: str
 
@@ -114,6 +130,10 @@ class MemberSensitiveInfoDto(MemberPublicInfoDto):
 
 
 class MembershipTypeDto(CamelisedBaseModel):
+    """
+    DTO for a membership type.
+    """
+
     id: int
     name: str
     description_en: str
@@ -134,6 +154,10 @@ class MembershipTypeDto(CamelisedBaseModel):
 
 
 class UserDto(CamelisedBaseModel):
+    """
+    DTO for a user.
+    """
+
     id: int
     username: str
 

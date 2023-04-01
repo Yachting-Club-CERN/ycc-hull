@@ -14,7 +14,6 @@ api_members = APIRouter()
 
 @api_members.get("/api/v0/members")
 async def members_get(year: Optional[int] = None) -> Sequence[MemberPublicInfoDto]:
-    # TODO
     pretend_committee_member = False
 
     current_year = date.today().year
