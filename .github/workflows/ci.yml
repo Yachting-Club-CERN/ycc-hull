@@ -16,7 +16,9 @@ jobs:
           python-version: "3.11"
       - name: Set Up Poetry
         uses: abatilo/actions-poetry@v2
-      - name: Test build
+      - name: Install
+        run: poetry install
+      - name: Build
         run: poetry build
       - name: Test test data generator
         run: |
