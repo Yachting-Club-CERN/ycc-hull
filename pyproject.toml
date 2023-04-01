@@ -9,6 +9,8 @@ python = "^3.11"
 # General
 aiofiles = "^23.1.0"
 pyhumps = "^3.8.0"
+# Auth
+python-keycloak = "^2.14.0"
 # REST API
 fastapi = "^0.95.0"
 python-multipart = "^0.0.6"

@@ -9,23 +9,31 @@ from ycc_hull.api.boats import api_boats
 from ycc_hull.api.holidays import api_holidays
 from ycc_hull.api.members import api_members
 from ycc_hull.api.test_data import api_test_data
-from ycc_hull.config import CORS_ORIGINS, PRODUCTION, UVICORN_PORT, UVICORN_RELOAD
+from ycc_hull.config import CONFIG
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=CONFIG.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+
+app.swagger_ui_init_oauth = {
+    "clientId": "ycc-hull-local-swagger",
+    "realm": "YCC-LOCAL",
+    # These scopes are needed to be able to use the API.
+    "scopes": "openid profile email",
+}
+
 app.include_router(api_boats)
 app.include_router(api_holidays)
 app.include_router(api_members)
 
-if not PRODUCTION:
+if CONFIG.is_local:
     app.include_router(api_test_data)
 
 
@@ -34,5 +42,10 @@ def start() -> None:
     Application entry point.
     """
     uvicorn.run(
-        "ycc_hull.main:app", host="0.0.0.0", port=UVICORN_PORT, reload=UVICORN_RELOAD
+        "ycc_hull.main:app",
+        host="0.0.0.0",
+        port=CONFIG.uvicorn_port,
+        reload=CONFIG.is_local,
+        log_level="debug",
+        log_config="logging.conf",
     )

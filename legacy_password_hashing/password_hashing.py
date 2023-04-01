@@ -1,4 +1,6 @@
-"""YCC Legacy Password Hashing"""
+"""
+YCC Legacy Password Hashing
+"""
 import base64
 import logging
 import re
@@ -31,7 +33,8 @@ _ERROR_HASH_NOT_STRING = "The hash must be a string"
 
 
 def hash_ycc_password(password: str) -> str:
-    """Hashes a YCC legacy password.
+    """
+    Hashes a YCC legacy password.
 
     Args:
         password (str): password
@@ -46,7 +49,8 @@ def hash_ycc_password(password: str) -> str:
 
 
 def verify_ycc_password(password: str, password_hash: str) -> bool:
-    """Verifies a YCC legacy password.
+    """
+    Verifies a YCC legacy password.
 
     Args:
         password (str): password

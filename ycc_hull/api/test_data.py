@@ -22,6 +22,7 @@ from ycc_hull.db.entities import (
     UserEntity,
 )
 
+# No auth needed for local development
 api_test_data = APIRouter()
 
 
