@@ -328,10 +328,6 @@ def _paid_fee_current_year(member_info: MemberInfo) -> bool:
 
 
 def _did_not_pay_fee_current_year(member_info: MemberInfo) -> bool:
-    # search = filter(
-    #     lambda fee_record: fee_record.year_f != CURRENT_YEAR,
-    #     member_info.fee_records,
-    # )
     return not _paid_fee_current_year(member_info)
 
 

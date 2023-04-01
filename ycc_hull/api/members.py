@@ -1,39 +1,21 @@
 """
-Main API endpoints.
+Member API endpoints.
 """
 from datetime import date
 from typing import Optional, Sequence
 
 from fastapi import APIRouter, HTTPException
 
-from ycc_hull.controllers.boats_controller import BoatsController
-from ycc_hull.controllers.holidays_controller import HolidaysController
 from ycc_hull.controllers.members_controller import MembersController
-from ycc_hull.models.dtos import (
-    BoatDto,
-    HolidayDto,
-    MemberPublicInfoDto,
-    MembershipTypeDto,
-    UserDto,
-)
+from ycc_hull.models.dtos import MemberPublicInfoDto, MembershipTypeDto, UserDto
 
-api_main = APIRouter()
+api_members = APIRouter()
 
 
-@api_main.get("/api/v0/boats")
-async def boats_get() -> Sequence[BoatDto]:
-    return await BoatsController.find_all()
-
-
-@api_main.get("/api/v0/holidays")
-async def holidays_get() -> Sequence[HolidayDto]:
-    return await HolidaysController.find_all()
-
-
-@api_main.get("/api/v0/members")
+@api_members.get("/api/v0/members")
 async def members_get(year: Optional[int] = None) -> Sequence[MemberPublicInfoDto]:
     # TODO
-    pretend_committee_member = True
+    pretend_committee_member = False
 
     current_year = date.today().year
 
@@ -46,11 +28,11 @@ async def members_get(year: Optional[int] = None) -> Sequence[MemberPublicInfoDt
     return await MembersController.find_all_public_infos(year)
 
 
-@api_main.get("/api/v0/membership-types")
+@api_members.get("/api/v0/membership-types")
 async def membership_types_get() -> Sequence[MembershipTypeDto]:
     return await MembersController.find_all_membership_types()
 
 
-@api_main.get("/api/v0/users")
+@api_members.get("/api/v0/users")
 async def users_get() -> Sequence[UserDto]:
     return await MembersController.find_all_users()
