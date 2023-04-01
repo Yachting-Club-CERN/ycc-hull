@@ -12,8 +12,10 @@ DB_ENGINE_ECHO: bool
 DB_URL: str
 
 if PRODUCTION:
+    DB_ENGINE_ECHO = False
+    CORS_ORIGINS = []
     # DB URL format: oracle+oracledb://user:pass@hostname:port[/dbname][?service_name=<service>[&key=value&key=value...]]
-    raise Exception("PRODUCTION IS NOT CONFIGURED")
+    DB_URL = "oracle+oracledb://to-be-configured"
 else:
     DB_ENGINE_ECHO = True
     CORS_ORIGINS = [

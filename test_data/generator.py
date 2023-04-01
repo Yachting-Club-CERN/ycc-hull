@@ -68,7 +68,7 @@ def _fake_username_collision(first_name: str, last_name: str) -> str:
         if username not in assigned_usernames:
             return username
 
-    raise Exception(
+    raise AssertionError(
         f"Could not generate username for {first_name} {last_name} - try again or improve the code"
     )
 

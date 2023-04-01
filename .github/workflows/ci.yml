@@ -1,0 +1,35 @@
+name: CI
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    # Avoid duplicated CI
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Set Up Poetry
+        uses: abatilo/actions-poetry@v2
+      - name: Install
+        run: poetry install
+      - name: Build
+        run: poetry build
+      - name: Test test data generator
+        run: |
+          poetry run regenerate-test-data
+          git status
+      - name: Lint
+        run: |
+          set -x
+          poetry run black .
+          git status
+          poetry run mypy .
+          poetry run flake8 .
+          poetry run pylint legacy_password_hashing test_data ycc_hull
+          set +x

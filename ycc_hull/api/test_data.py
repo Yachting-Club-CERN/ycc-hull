@@ -145,7 +145,9 @@ async def clear() -> List[str]:
     ]
 
     if unhandled_class_names:
-        raise Exception(f"Some entity classes are not handled: {unhandled_class_names}")
+        raise AssertionError(
+            f"Some entity classes are not handled: {unhandled_class_names}"
+        )
 
     with Session(get_db_engine()) as session:
         for cls in classes:
