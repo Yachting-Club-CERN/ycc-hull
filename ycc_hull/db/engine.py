@@ -7,8 +7,7 @@ from sqlalchemy import Select, create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from ycc_hull.config import CONFIG
-from ycc_hull.models.config import Environment
+from ycc_hull.config import CONFIG, Environment
 
 _ENGINE: Optional[Engine] = None
 
