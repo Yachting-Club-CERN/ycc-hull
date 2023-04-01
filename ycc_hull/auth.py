@@ -42,7 +42,7 @@ class AuthInfo(BaseModel):
     #   "family_name": ""
     # }
     user_info: dict
-    #     {
+    # {
     #   "exp": 1677017737,
     #   "iat": 1677017437,
     #   "auth_time": 1677015164,
