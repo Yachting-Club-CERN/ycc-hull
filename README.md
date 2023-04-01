@@ -42,7 +42,7 @@ poetry run start
 
 ## Keycloak Client Configuration
 
-You need two clients, one for `ycc-hull` and one for the Swagger UI. The latter is optional.
+For a clean config two clients are recommended, one for `ycc-hull` and one for the Swagger UI. The latter is optional.
 
 For `ycc-hull` create a client with:
 
@@ -53,10 +53,11 @@ For `ycc-hull` create a client with:
 
 For the Swagger UI (optional) create a client with:
 
-- URLs `http://localhost:8000` (base, home, admin) and `http://localhost:8000/*` (redirect)
-- Web origins `+`
 - Client authentication disabled
 - Direct access grants enabled
+- Ensure that the `ycc-client-groups-and-roles` client scope is enabled
+- URLs `http://localhost:8000` (base, home, admin) and `http://localhost:8000/*` (redirect)
+- Web origins `+`
 - Optionally you can increase token refresh for example to 1 hour under the advanced settings
 
 ## Development Guide
