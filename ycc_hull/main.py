@@ -4,11 +4,12 @@ Application entry point.
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from ycc_hull.api.main import api_main
+
+from ycc_hull.api.boats import api_boats
+from ycc_hull.api.holidays import api_holidays
+from ycc_hull.api.members import api_members
 from ycc_hull.api.test_data import api_test_data
-
 from ycc_hull.config import CORS_ORIGINS, PRODUCTION, UVICORN_PORT, UVICORN_RELOAD
-
 
 app = FastAPI()
 
@@ -19,12 +20,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(api_main)
+
+app.include_router(api_boats)
+app.include_router(api_holidays)
+app.include_router(api_members)
+
 if not PRODUCTION:
     app.include_router(api_test_data)
 
 
-def start():
+def start() -> None:
     """
     Application entry point.
     """
