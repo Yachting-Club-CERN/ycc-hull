@@ -32,7 +32,7 @@ class Config(CamelisedBaseModel):
     environment: Environment
     db_url: str
     cors_origins: FrozenSet[str]
-    keycloak_server: str
+    keycloak_server_url: str
     keycloak_realm: str
     keycloak_client: str
     keycloak_client_secret: str

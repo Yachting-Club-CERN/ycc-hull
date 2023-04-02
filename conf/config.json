@@ -11,7 +11,7 @@
     "127.0.0.1:8080"
   ],
   "dbUrl": "oracle+oracledb://ycclocal:changeit@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521)))",
-  "keycloakServer": "http://localhost:8080",
+  "keycloakServerUrl": "http://localhost:8080",
   "keycloakRealm": "YCC-LOCAL",
   "keycloakClient": "ycc-hull-local",
   "keycloakClientSecret": "SaksuyBhXMq4xuLhHTTUQtXsn3JQ3AiG",

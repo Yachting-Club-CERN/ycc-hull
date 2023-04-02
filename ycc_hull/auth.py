@@ -130,7 +130,7 @@ def init_oauth2_scheme() -> OAuth2PasswordBearer:
 
 
 keycloak = KeycloakOpenID(
-    server_url=CONFIG.keycloak_server,
+    server_url=CONFIG.keycloak_server_url,
     realm_name=CONFIG.keycloak_realm,
     client_id=CONFIG.keycloak_client,
     client_secret_key=CONFIG.keycloak_client_secret,
