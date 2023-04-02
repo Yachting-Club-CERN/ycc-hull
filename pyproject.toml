@@ -5,7 +5,7 @@ description = "YCC Hull Backend Service"
 authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "~3.9"
 # General
 aiofiles = "^23.1.0"
 pyhumps = "^3.8.0"
@@ -16,12 +16,12 @@ fastapi = "^0.95.0"
 python-multipart = "^0.0.6"
 uvicorn = { extras = ["standard"], version = "^0.21.1" }
 # DB
-oracledb = "^1.2.2"
-SQLAlchemy = { extras = ["asyncio", "mypy"], version = "^2.0.7" }
+oracledb = "^1.3.0"
+SQLAlchemy = { extras = ["asyncio", "mypy"], version = "^2.0.8" }
 
 [tool.poetry.dev-dependencies]
-black = "^23.1.0"
-Faker = "^18.3.1"
+black = "^23.3.0"
+Faker = "^18.3.2"
 flake8 = "^6.0.0"
 mypy = "^1.1.1"
 passlib = "^1.7.4"
