@@ -2,6 +2,7 @@
 Application entry point.
 """
 import asyncio
+import os
 
 import uvicorn
 from fastapi import FastAPI
@@ -56,6 +57,9 @@ def start() -> None:
     )
 
     print("[init] DB connection successful, membership types: %s", membership_types)
+
+    if not os.path.exists("log"):
+        os.makedirs("log")
 
     uvicorn.run(
         "ycc_hull.main:app",
