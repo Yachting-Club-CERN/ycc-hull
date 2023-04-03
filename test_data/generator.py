@@ -177,9 +177,9 @@ def generate_member_entrance(membership_type: str) -> int:
 
 def generate_user(member: MemberEntity) -> UserEntity:
     username = fake_username(member.firstname, member.name)
-    passwordHash = hash_ycc_password(username)
+    password_hash = hash_ycc_password(username)
 
-    if not verify_ycc_password(username, passwordHash):
+    if not verify_ycc_password(username, password_hash):
         raise AssertionError(f"Password hash verification failed for {username}")
 
     return UserEntity(
@@ -187,7 +187,7 @@ def generate_user(member: MemberEntity) -> UserEntity:
         logon_id=username,
         session_id=None,
         session_date=None,
-        logon_pass2=passwordHash,
+        logon_pass2=password_hash,
         pass_reset_key=None,
         pass_reset_exp=None,
         last_changed=faker.date_time_between(
