@@ -71,12 +71,13 @@ def _hash_to_perl(python_hash: str) -> str:
     if not isinstance(python_hash, str):
         raise ValueError(_ERROR_HASH_NOT_STRING)
 
-    match: Optional[Match] = _PYTHON_HASH_FORMAT_RE.search(python_hash)
+    # . => +: to LDAP BASE64 format
+    match: Optional[Match] = _PYTHON_HASH_FORMAT_RE.search(python_hash.replace(".", "+"))
     if not match:
         _LOG.debug("The Python hash seems invalid: %s", python_hash)
         raise ValueError("The Python hash seems invalid")
 
-    rounds: str = _pack(int(match.group(1))).replace("=", "")
+    rounds: str = _pack(int(match.group(1))) #.replace("=", "")
     return f"{{X-PBKDF2}}HMACSHA1:{rounds}:{match.group(2)}:{match.group(3)}"
 
 
@@ -84,12 +85,13 @@ def _hash_to_python(perl_hash: str) -> str:
     if not isinstance(perl_hash, str):
         raise ValueError(_ERROR_HASH_NOT_STRING)
 
-    match: Optional[Match] = _PERL_HASH_FORMAT_RE.search(perl_hash)
+    # + => .: from LDAP BASE64 format
+    match: Optional[Match] = _PERL_HASH_FORMAT_RE.search(perl_hash.replace("+", "."))
     if not match:
         _LOG.debug("The Perl hash seems invalid: %s", perl_hash)
         raise ValueError("The Perl hash seems invalid")
 
-    rounds: int = _unpack_int(match.group(1) + "==")
+    rounds: int = _unpack_int(match.group(1))
     return f"{{PBKDF2}}{rounds}${match.group(2)}${match.group(3)}"
 
 
