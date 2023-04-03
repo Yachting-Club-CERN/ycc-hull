@@ -119,6 +119,29 @@ See the `ycc-infra` repository for updating the Docker image. Then apply the upd
 1. Regenerate entities from the database (see above)
 2. Update entities and test data if necessary
 
+## Usage
+
+Deployed on CERN OKD.
+
+### Testing Docker Build Locally
+
+You can test the build locally. If you do not want to run the instance, but only inspect the contents, you can set the entry point in your local copy to `/bin/bash` for simplicity.
+
+You can test the build with this command:
+
+```sh
+docker build . -t ycc-hull-local-test
+```
+
+Then start a new container from the image:
+
+```sh
+# You might want to update the config file to work on your computer
+CONFIG_JSON=$(cat conf/config.json)
+LOGGING_CONF=$(cat conf/logging.conf)
+docker run -p 8000:8080  -e CONFIG_JSON="$CONFIG_JSON" -e LOGGING_CONF="$LOGGING_CONF" -it ycc-hull-local-test
+```
+
 ## PoC History
 
 This section records which technologies were dropped during PoC and why.
