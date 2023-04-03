@@ -11,5 +11,6 @@
   "keycloakRealm": "YCC-LOCAL",
   "keycloakClient": "ycc-hull-local",
   "keycloakClientSecret": "SaksuyBhXMq4xuLhHTTUQtXsn3JQ3AiG",
-  "keycloakSwaggerClient": "ycc-hull-local-swagger"
+  "keycloakSwaggerClient": "ycc-hull-local-swagger",
+  "uvicornPort": "8000"
 }

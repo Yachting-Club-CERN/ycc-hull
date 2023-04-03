@@ -37,11 +37,15 @@ class Config(CamelisedBaseModel):
     keycloak_client: str
     keycloak_client_secret: str
     keycloak_swagger_client: Optional[str]
-    uvicorn_port: int = 8000
+    uvicorn_port: int
 
     @property
-    def is_local(self) -> bool:
+    def local(self) -> bool:
         return self.environment == Environment.LOCAL
+
+    @property
+    def api_docs_enabled(self) -> bool:
+        return self.environment in (Environment.LOCAL, Environment.DEVELOPMENT)
 
     class Config:
         """
