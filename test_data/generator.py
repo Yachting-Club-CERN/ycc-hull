@@ -9,7 +9,10 @@ from typing import Any, Iterator, List, NamedTuple, Optional, Sequence, Set, Typ
 
 from faker import Faker
 
-from legacy_password_hashing.password_hashing import hash_ycc_password, verify_ycc_password
+from legacy_password_hashing.password_hashing import (
+    hash_ycc_password,
+    verify_ycc_password,
+)
 from ycc_hull.db.entities import (
     BaseEntity,
     BoatEntity,
@@ -175,10 +178,10 @@ def generate_member_entrance(membership_type: str) -> int:
 def generate_user(member: MemberEntity) -> UserEntity:
     username = fake_username(member.firstname, member.name)
     passwordHash = hash_ycc_password(username)
-    
+
     if not verify_ycc_password(username, passwordHash):
         raise AssertionError(f"Password hash verification failed for {username}")
-    
+
     return UserEntity(
         member_id=member.id,
         logon_id=username,
