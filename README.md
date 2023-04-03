@@ -4,7 +4,7 @@ YCC backend service.
 
 ## Prerequisites
 
-- Install Python 3.11
+- Install Python 3.9
 - Install Poetry & [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
   - `pipx install poetry && pipx inject poetry poetry-plugin-up`
 - Install Docker & Docker Compose
@@ -37,8 +37,8 @@ Start application:
 poetry run start
 ```
 
-- Address: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-- API Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- Address: [http://localhost:8000/](http://localhost:8000/)
+- API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## Keycloak Client Configuration
 
@@ -79,7 +79,8 @@ You can regenerate entities using the following commands:
 
 ```sh
 cd generated_entities
-poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile ycc_hull/db/entities_generated.py
+poetry install
+poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile entities_generated.py
 ```
 
 Generated entities does not work as good as handwritten ones. Please use the generated entities as a reference for updating handwritten entities in `entities.py`.
