@@ -18,20 +18,23 @@ from ycc_hull.db.entities import (
     BoatEntity,
     EntranceFeeRecordEntity,
     FeeRecordEntity,
+    LicenceEntity,
     MemberEntity,
     UserEntity,
 )
 
-SCRIPT_DIR = path.dirname(path.realpath(__file__))
-
-CURRENT_YEAR = date.today().year
-MEMBER_COUNT = 300
-BOATS_JSON_FILE = f"{SCRIPT_DIR}/generated/Boats.json"
-BOATS_EXPORTED_JSON_FILE = f"{SCRIPT_DIR}/exported/BOATS_DATA_TABLE.json-formatted"
-ENTRANCE_FEE_RECORDS_JSON_FILE = f"{SCRIPT_DIR}/generated/EntranceFeeRecords.json"
-FEE_RECORDS_JSON_FILE = f"{SCRIPT_DIR}/generated/FeeRecords.json"
-MEMBERS_JSON_FILE = f"{SCRIPT_DIR}/generated/Members.json"
-USERS_JSON_FILE = f"{SCRIPT_DIR}/generated/Users.json"
+from test_data.generator_config import (
+    BOATS_EXPORTED_JSON_FILE,
+    BOATS_JSON_FILE,
+    CURRENT_YEAR,
+    ENTRANCE_FEE_RECORDS_JSON_FILE,
+    FEE_RECORDS_JSON_FILE,
+    LICENCES_JSON_FILE,
+    MEMBER_COUNT,
+    MEMBERS_JSON_FILE,
+    USERS_JSON_FILE,
+)
+from test_data.utils.licences import generate_licences
 
 MemberInfo = NamedTuple(
     "MemberInfo",
@@ -40,6 +43,7 @@ MemberInfo = NamedTuple(
         ("user", UserEntity),
         ("entrance_fee_record", Optional[EntranceFeeRecordEntity]),
         ("fee_records", List[FeeRecordEntity]),
+        ("licences", List[LicenceEntity]),
     ],
 )
 
@@ -87,6 +91,7 @@ def generate_member_info(member_id: int) -> MemberInfo:
         user=generate_user(member),
         entrance_fee_record=generate_member_entrance_fee_record(member),
         fee_records=generate_member_fee_records(member),
+        licences=generate_licences(faker, member),
     )
 
 
@@ -133,7 +138,7 @@ def generate_member(member_id: int) -> MemberEntity:
         home_phone=generate_phone_number(member_id, 10),
         # mail_preference = Column(VARCHAR2(1))
         # favourite_mailing_post = Column(VARCHAR2(1))
-        member_entrance=generate_member_entrance(membership_type),
+        member_entrance=str(generate_member_entrance(membership_type)),
         cell_phone=generate_phone_number(member_id, 90),
         # gender = Column(CHAR(1))
         # valid_until_date = Column(DATE)
@@ -302,10 +307,6 @@ def write_json_file(file_path: str, entries: Sequence[BaseEntity]) -> None:
         )
 
 
-def regenerate() -> None:
-    generate(True)
-
-
 def get_member_info_by_id(member_id: int, member_infos: List[MemberInfo]) -> MemberInfo:
     return next(
         filter(lambda member_info: member_info.member.id == member_id, member_infos)
@@ -344,7 +345,7 @@ def generate(force_regenerate: bool = False) -> None:
         print("== Skipping members")
     else:
         print(
-            "== Generating members (and users, entrance fee records and fee records)..."
+            "== Generating members (and users, entrance fee records, fee records and licences)..."
         )
         member_infos = generate_member_infos(MEMBER_COUNT)
         members = [member_info.member for member_info in member_infos]
@@ -359,11 +360,15 @@ def generate(force_regenerate: bool = False) -> None:
             for member_info in member_infos
             for fee_record in member_info.fee_records
         ]
+        licences = [
+            licence for member_info in member_infos for licence in member_info.licences
+        ]
 
         write_json_file(MEMBERS_JSON_FILE, members)
         write_json_file(USERS_JSON_FILE, users)
         write_json_file(ENTRANCE_FEE_RECORDS_JSON_FILE, entrance_fee_records)
         write_json_file(FEE_RECORDS_JSON_FILE, fee_records)
+        write_json_file(LICENCES_JSON_FILE, licences)
 
         print(
             "Member with id=2 (honorary, no fee paid): "
@@ -390,5 +395,9 @@ def generate(force_regenerate: bool = False) -> None:
         write_json_file(BOATS_JSON_FILE, generate_boats())
 
 
-if __name__ == "__main__":
+def regenerate() -> None:
     generate(True)
+
+
+if __name__ == "__main__":
+    regenerate()
