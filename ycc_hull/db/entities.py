@@ -145,12 +145,14 @@ class LicenceEntity(BaseEntity):
         PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
     )
 
-    member_id = mapped_column(NUMBER(), ForeignKey("members.id"), nullable=False)
-    licence_id = mapped_column(
+    member_id: Mapped[int] = mapped_column(
+        NUMBER(), ForeignKey("members.id"), nullable=False
+    )
+    licence_id: Mapped[int] = mapped_column(
         NUMBER(2, 0), ForeignKey("infolicences.infoid"), nullable=False
     )
     # Year when the licence was issued
-    lyear = mapped_column(NUMBER(4, 0), nullable=False)
+    lyear: Mapped[int] = mapped_column(NUMBER(4, 0), nullable=False)
     # Most often "Registered by Firstname LASTNAME"
     lcomments: Mapped[str] = mapped_column(VARCHAR2(100))
     # This should be linked to tests when they are supported, see issue #27
