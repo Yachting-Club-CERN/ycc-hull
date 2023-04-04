@@ -42,8 +42,19 @@ def dump_members_and_licences() -> None:
             select(MemberEntity).order_by(MemberEntity.id)
         )
         for member in members:
-            licences = [licence.licence_info.nlicence for licence in member.licences]
-            print(f"> {member.user.logon_id}: {licences}")
+            active_licences = [
+                licence.licence_info.nlicence
+                for licence in member.licences
+                if licence.status
+            ]
+            inactive_licences = [
+                licence.licence_info.nlicence
+                for licence in member.licences
+                if not licence.status
+            ]
+            print(
+                f"> {member.user.logon_id}: {active_licences} (inactive: {inactive_licences}))"
+            )
 
 
 def run() -> None:
