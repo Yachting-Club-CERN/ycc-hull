@@ -2,7 +2,7 @@
 Test data generator component for licences.
 """
 import json
-from typing import Dict, List, Sequence, Set
+from typing import Dict, List, Set
 
 from faker import Faker
 
