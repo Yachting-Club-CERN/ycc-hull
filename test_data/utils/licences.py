@@ -40,7 +40,7 @@ def _create_licence(
         lyear=-1,  # Ignored for now
         test_id=None,  # Ignored for now
         lcomments=None,  # Ignored for now
-        status=faker.pybool(truth_probability=95),  # Rudimentary
+        status=1 if faker.pybool(truth_probability=95) else 0,  # Rudimentary
     )
 
 
