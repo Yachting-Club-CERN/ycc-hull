@@ -146,10 +146,10 @@ class LicenceEntity(BaseEntity):
     )
 
     member_id = mapped_column(NUMBER(), ForeignKey("members.id"), nullable=False)
-    # Year when
     licence_id = mapped_column(
         NUMBER(2, 0), ForeignKey("infolicences.infoid"), nullable=False
     )
+    # Year when the licence was issued
     lyear = mapped_column(NUMBER(4, 0), nullable=False)
     # Most often "Registered by Firstname LASTNAME"
     lcomments: Mapped[str] = mapped_column(VARCHAR2(100))
