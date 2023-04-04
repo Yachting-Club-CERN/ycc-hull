@@ -1,71 +1,7 @@
 [
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 2,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 2,
     "status": 1,
@@ -89,7 +25,71 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 2,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 2,
     "status": 1,
@@ -105,7 +105,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 5,
     "status": 1,
@@ -113,7 +113,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 5,
     "status": 1,
@@ -121,23 +121,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 5,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 5,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 5,
     "status": 1,
@@ -153,7 +137,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 5,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 5,
     "status": 1,
@@ -169,6 +161,30 @@
   },
   {
     "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 5,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 5,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 5,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 6,
     "lyear": -1,
     "member_id": 5,
@@ -177,23 +193,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 5,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 5,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 5,
     "status": 1,
@@ -209,14 +209,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 8,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 8,
@@ -233,9 +225,25 @@
   },
   {
     "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 8,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 9,
     "lyear": -1,
     "member_id": 8,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 4,
+    "lyear": -1,
+    "member_id": 11,
     "status": 1,
     "test_id": null
   },
@@ -257,26 +265,10 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
-    "lyear": -1,
-    "member_id": 11,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 13,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 13,
-    "status": 0,
+    "status": 1,
     "test_id": null
   },
   {
@@ -284,12 +276,20 @@
     "licence_id": 2,
     "lyear": -1,
     "member_id": 13,
-    "status": 1,
+    "status": 0,
     "test_id": null
   },
   {
     "lcomments": null,
     "licence_id": 9,
+    "lyear": -1,
+    "member_id": 13,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 13,
     "status": 1,
@@ -305,14 +305,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 15,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 15,
@@ -331,13 +323,21 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 16,
+    "member_id": 15,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
     "licence_id": 9,
+    "lyear": -1,
+    "member_id": 16,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 16,
     "status": 1,
@@ -385,6 +385,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 4,
+    "lyear": -1,
+    "member_id": 29,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 29,
@@ -409,9 +417,17 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 15,
     "lyear": -1,
-    "member_id": 29,
+    "member_id": 31,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 31,
     "status": 1,
     "test_id": null
   },
@@ -433,22 +449,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 31,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 31,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
     "member_id": 33,
@@ -457,14 +457,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 34,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 9,
     "lyear": -1,
     "member_id": 34,
@@ -475,13 +467,21 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 35,
+    "member_id": 34,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
     "licence_id": 15,
+    "lyear": -1,
+    "member_id": 35,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 35,
     "status": 0,
@@ -489,14 +489,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 36,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 36,
@@ -506,6 +498,14 @@
   {
     "lcomments": null,
     "licence_id": 9,
+    "lyear": -1,
+    "member_id": 36,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 36,
     "status": 1,
@@ -529,7 +529,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 40,
     "status": 1,
@@ -537,7 +537,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 40,
     "status": 0,
@@ -545,7 +545,23 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 41,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 41,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
     "lyear": -1,
     "member_id": 41,
     "status": 1,
@@ -561,7 +577,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 25,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 41,
     "status": 1,
@@ -585,9 +601,17 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 41,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 4,
+    "lyear": -1,
+    "member_id": 42,
     "status": 1,
     "test_id": null
   },
@@ -595,7 +619,7 @@
     "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
-    "member_id": 41,
+    "member_id": 42,
     "status": 1,
     "test_id": null
   },
@@ -603,13 +627,21 @@
     "lcomments": null,
     "licence_id": 2,
     "lyear": -1,
-    "member_id": 41,
+    "member_id": 42,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 42,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
     "lyear": -1,
     "member_id": 42,
     "status": 1,
@@ -625,15 +657,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 42,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 42,
     "status": 1,
@@ -649,14 +673,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 42,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 24,
     "lyear": -1,
     "member_id": 42,
@@ -665,7 +681,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 42,
     "status": 1,
@@ -676,28 +692,12 @@
     "licence_id": 6,
     "lyear": -1,
     "member_id": 42,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 42,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 42,
     "status": 0,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 42,
     "status": 1,
@@ -705,7 +705,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 43,
     "status": 1,
@@ -729,9 +729,17 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 43,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 45,
     "status": 1,
     "test_id": null
   },
@@ -747,7 +755,7 @@
     "lcomments": null,
     "licence_id": 2,
     "lyear": -1,
-    "member_id": 45,
+    "member_id": 47,
     "status": 1,
     "test_id": null
   },
@@ -762,14 +770,6 @@
   {
     "lcomments": null,
     "licence_id": 9,
-    "lyear": -1,
-    "member_id": 47,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
     "lyear": -1,
     "member_id": 47,
     "status": 1,
@@ -785,7 +785,23 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 51,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 51,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 51,
     "status": 1,
@@ -817,23 +833,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 51,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 51,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 51,
     "status": 1,
@@ -857,7 +857,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 58,
     "status": 1,
@@ -865,7 +865,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 58,
     "status": 1,
@@ -873,23 +873,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 58,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 58,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 58,
     "status": 1,
@@ -905,7 +889,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 58,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 58,
     "status": 1,
@@ -921,23 +913,31 @@
   },
   {
     "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 58,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 58,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 58,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 6,
-    "lyear": -1,
-    "member_id": 58,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 58,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
     "lyear": -1,
     "member_id": 58,
     "status": 0,
@@ -945,7 +945,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 58,
     "status": 1,
@@ -964,6 +964,14 @@
     "licence_id": 2,
     "lyear": -1,
     "member_id": 60,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 62,
     "status": 1,
     "test_id": null
   },
@@ -977,9 +985,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 4,
     "lyear": -1,
-    "member_id": 62,
+    "member_id": 64,
     "status": 1,
     "test_id": null
   },
@@ -1009,22 +1017,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
-    "lyear": -1,
-    "member_id": 64,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 66,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 66,
@@ -1042,6 +1034,14 @@
   {
     "lcomments": null,
     "licence_id": 9,
+    "lyear": -1,
+    "member_id": 66,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 66,
     "status": 1,
@@ -1057,14 +1057,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 69,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 69,
@@ -1081,9 +1073,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 5,
     "lyear": -1,
-    "member_id": 70,
+    "member_id": 69,
     "status": 1,
     "test_id": null
   },
@@ -1097,97 +1089,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 71,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 71,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 71,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 9,
     "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 76,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
-    "lyear": -1,
-    "member_id": 76,
+    "member_id": 70,
     "status": 1,
     "test_id": null
   },
@@ -1195,7 +1099,7 @@
     "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
-    "member_id": 76,
+    "member_id": 71,
     "status": 1,
     "test_id": null
   },
@@ -1203,7 +1107,15 @@
     "lcomments": null,
     "licence_id": 2,
     "lyear": -1,
-    "member_id": 76,
+    "member_id": 71,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 71,
     "status": 1,
     "test_id": null
   },
@@ -1219,13 +1131,101 @@
     "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
-    "member_id": 79,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 76,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
     "licence_id": 5,
+    "lyear": -1,
+    "member_id": 76,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 79,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 81,
     "status": 1,
@@ -1241,7 +1241,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 81,
     "status": 1,
@@ -1273,71 +1273,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 85,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 85,
     "status": 1,
@@ -1361,7 +1297,63 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 85,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 85,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 85,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 85,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 85,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 85,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 85,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
     "lyear": -1,
     "member_id": 85,
     "status": 1,
@@ -1371,13 +1363,13 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 92,
+    "member_id": 85,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 3,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 92,
     "status": 1,
@@ -1385,7 +1377,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 92,
     "status": 1,
@@ -1393,7 +1385,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 19,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 92,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
     "lyear": -1,
     "member_id": 92,
     "status": 0,
@@ -1401,7 +1401,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 19,
     "lyear": -1,
     "member_id": 92,
     "status": 1,
@@ -1409,15 +1409,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 92,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 92,
     "status": 1,
@@ -1433,6 +1425,30 @@
   },
   {
     "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 92,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 92,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 92,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 6,
     "lyear": -1,
     "member_id": 92,
@@ -1441,7 +1457,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 92,
     "status": 1,
@@ -1450,22 +1466,6 @@
   {
     "lcomments": null,
     "licence_id": 2,
-    "lyear": -1,
-    "member_id": 92,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
-    "lyear": -1,
-    "member_id": 92,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 5,
     "lyear": -1,
     "member_id": 97,
     "status": 1,
@@ -1497,7 +1497,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 97,
     "status": 1,
@@ -1521,22 +1521,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 104,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 104,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 2,
     "lyear": -1,
     "member_id": 104,
@@ -1546,6 +1530,22 @@
   {
     "lcomments": null,
     "licence_id": 25,
+    "lyear": -1,
+    "member_id": 104,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 104,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 104,
     "status": 1,
@@ -1561,14 +1561,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 108,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 108,
@@ -1579,13 +1571,13 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 110,
+    "member_id": 108,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 19,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 110,
     "status": 1,
@@ -1593,7 +1585,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 110,
     "status": 1,
@@ -1609,10 +1601,34 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
     "lyear": -1,
     "member_id": 110,
     "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 110,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 110,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 110,
+    "status": 0,
     "test_id": null
   },
   {
@@ -1625,23 +1641,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 110,
-    "status": 0,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 110,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 110,
     "status": 1,
@@ -1673,7 +1673,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 116,
     "status": 1,
@@ -1681,7 +1681,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 116,
     "status": 1,
@@ -1713,7 +1713,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 119,
     "status": 1,
@@ -1721,7 +1721,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 119,
     "status": 1,
@@ -1761,6 +1761,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 129,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 14,
     "lyear": -1,
     "member_id": 129,
@@ -1770,14 +1778,6 @@
   {
     "lcomments": null,
     "licence_id": 5,
-    "lyear": -1,
-    "member_id": 129,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
     "lyear": -1,
     "member_id": 129,
     "status": 1,
@@ -1801,14 +1801,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 132,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 132,
@@ -1827,13 +1819,13 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 134,
+    "member_id": 132,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 3,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 134,
     "status": 1,
@@ -1841,7 +1833,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 134,
     "status": 1,
@@ -1849,15 +1841,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 134,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 134,
     "status": 1,
@@ -1873,7 +1857,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 134,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 134,
     "status": 1,
@@ -1889,7 +1881,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 22,
     "lyear": -1,
     "member_id": 134,
     "status": 1,
@@ -1897,7 +1889,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 134,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 134,
     "status": 0,
@@ -1905,15 +1905,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 134,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 6,
     "lyear": -1,
     "member_id": 134,
     "status": 1,
@@ -1923,69 +1915,13 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 135,
+    "member_id": 134,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 135,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 135,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 135,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 135,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 135,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 135,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 135,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 135,
     "status": 1,
@@ -2009,7 +1945,71 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 135,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 135,
     "status": 1,
@@ -2025,7 +2025,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 139,
     "status": 0,
@@ -2033,7 +2033,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 139,
     "status": 1,
@@ -2049,6 +2049,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 145,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
     "member_id": 145,
@@ -2057,9 +2065,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
+    "licence_id": 4,
     "lyear": -1,
-    "member_id": 145,
+    "member_id": 146,
     "status": 1,
     "test_id": null
   },
@@ -2074,14 +2082,6 @@
   {
     "lcomments": null,
     "licence_id": 19,
-    "lyear": -1,
-    "member_id": 146,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
     "lyear": -1,
     "member_id": 146,
     "status": 1,
@@ -2121,7 +2121,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 150,
     "status": 1,
@@ -2145,7 +2145,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 150,
     "status": 1,
@@ -2161,6 +2161,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 152,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
     "member_id": 152,
@@ -2169,9 +2177,17 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 2,
     "lyear": -1,
-    "member_id": 152,
+    "member_id": 153,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 153,
     "status": 1,
     "test_id": null
   },
@@ -2188,22 +2204,6 @@
     "licence_id": 5,
     "lyear": -1,
     "member_id": 153,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 153,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 153,
     "status": 0,
     "test_id": null
   },
@@ -2217,7 +2217,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 155,
     "status": 1,
@@ -2226,6 +2226,14 @@
   {
     "lcomments": null,
     "licence_id": 3,
+    "lyear": -1,
+    "member_id": 155,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 155,
     "status": 1,
@@ -2249,15 +2257,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 155,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 155,
     "status": 1,
@@ -2268,6 +2268,14 @@
     "licence_id": 15,
     "lyear": -1,
     "member_id": 157,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 158,
     "status": 1,
     "test_id": null
   },
@@ -2291,7 +2299,7 @@
     "lcomments": null,
     "licence_id": 2,
     "lyear": -1,
-    "member_id": 158,
+    "member_id": 160,
     "status": 1,
     "test_id": null
   },
@@ -2306,14 +2314,6 @@
   {
     "lcomments": null,
     "licence_id": 5,
-    "lyear": -1,
-    "member_id": 160,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
     "lyear": -1,
     "member_id": 160,
     "status": 0,
@@ -2337,14 +2337,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 165,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 165,
@@ -2354,6 +2346,14 @@
   {
     "lcomments": null,
     "licence_id": 2,
+    "lyear": -1,
+    "member_id": 165,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 165,
     "status": 1,
@@ -2369,14 +2369,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 169,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 9,
     "lyear": -1,
     "member_id": 169,
@@ -2387,7 +2379,7 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 171,
+    "member_id": 169,
     "status": 1,
     "test_id": null
   },
@@ -2402,6 +2394,14 @@
   {
     "lcomments": null,
     "licence_id": 2,
+    "lyear": -1,
+    "member_id": 171,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 171,
     "status": 1,
@@ -2449,6 +2449,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 4,
+    "lyear": -1,
+    "member_id": 181,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 181,
@@ -2473,9 +2481,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 9,
     "lyear": -1,
-    "member_id": 181,
+    "member_id": 182,
     "status": 1,
     "test_id": null
   },
@@ -2489,9 +2497,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 4,
     "lyear": -1,
-    "member_id": 182,
+    "member_id": 187,
     "status": 1,
     "test_id": null
   },
@@ -2513,22 +2521,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
-    "lyear": -1,
-    "member_id": 187,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 188,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 2,
     "lyear": -1,
     "member_id": 188,
@@ -2539,13 +2531,21 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
+    "member_id": 188,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 4,
+    "lyear": -1,
     "member_id": 189,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 3,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 189,
     "status": 0,
@@ -2553,23 +2553,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 189,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 189,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 189,
     "status": 1,
@@ -2585,7 +2569,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 189,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 189,
     "status": 1,
@@ -2601,31 +2593,31 @@
   },
   {
     "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 189,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 189,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 189,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 6,
-    "lyear": -1,
-    "member_id": 189,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 189,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 189,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
     "lyear": -1,
     "member_id": 189,
     "status": 1,
@@ -2635,13 +2627,21 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
+    "member_id": 189,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 15,
+    "lyear": -1,
     "member_id": 190,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 190,
     "status": 1,
@@ -2665,6 +2665,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 190,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 6,
     "lyear": -1,
     "member_id": 190,
@@ -2673,15 +2681,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 190,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 15,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 190,
     "status": 1,
@@ -2713,7 +2713,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 194,
     "status": 1,
@@ -2721,7 +2721,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 194,
     "status": 0,
@@ -2729,23 +2729,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 194,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 194,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 194,
     "status": 1,
@@ -2761,7 +2745,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 194,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 194,
     "status": 1,
@@ -2777,6 +2769,30 @@
   },
   {
     "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 194,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 194,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 194,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 6,
     "lyear": -1,
     "member_id": 194,
@@ -2785,15 +2801,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 194,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 194,
     "status": 1,
@@ -2803,13 +2811,37 @@
     "lcomments": null,
     "licence_id": 4,
     "lyear": -1,
-    "member_id": 194,
+    "member_id": 195,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 195,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 195,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 195,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
     "lyear": -1,
     "member_id": 195,
     "status": 1,
@@ -2825,15 +2857,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 195,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 195,
     "status": 1,
@@ -2849,14 +2873,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 195,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 24,
     "lyear": -1,
     "member_id": 195,
@@ -2865,7 +2881,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 195,
     "status": 1,
@@ -2874,22 +2890,6 @@
   {
     "lcomments": null,
     "licence_id": 6,
-    "lyear": -1,
-    "member_id": 195,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 195,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
     "lyear": -1,
     "member_id": 195,
     "status": 0,
@@ -2897,7 +2897,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 195,
     "status": 1,
@@ -2905,71 +2905,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 197,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 197,
     "status": 1,
@@ -2993,7 +2929,71 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 197,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 197,
     "status": 1,
@@ -3017,7 +3017,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 202,
     "status": 1,
@@ -3033,9 +3033,17 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 202,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 204,
     "status": 1,
     "test_id": null
   },
@@ -3049,9 +3057,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
+    "licence_id": 4,
     "lyear": -1,
-    "member_id": 204,
+    "member_id": 205,
     "status": 1,
     "test_id": null
   },
@@ -3083,13 +3091,37 @@
     "lcomments": null,
     "licence_id": 4,
     "lyear": -1,
-    "member_id": 205,
+    "member_id": 206,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 206,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 206,
+    "status": 0,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 206,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
     "lyear": -1,
     "member_id": 206,
     "status": 1,
@@ -3105,15 +3137,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 206,
-    "status": 0,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 206,
     "status": 1,
@@ -3129,14 +3153,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 206,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 24,
     "lyear": -1,
     "member_id": 206,
@@ -3145,7 +3161,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 206,
     "status": 1,
@@ -3161,31 +3177,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 206,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 206,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
-    "lyear": -1,
-    "member_id": 206,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 5,
+    "lyear": -1,
+    "member_id": 206,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 207,
     "status": 0,
@@ -3193,7 +3193,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 207,
     "status": 1,
@@ -3233,14 +3233,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 213,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 213,
@@ -3259,13 +3251,21 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 215,
+    "member_id": 213,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
     "licence_id": 9,
+    "lyear": -1,
+    "member_id": 215,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 215,
     "status": 1,
@@ -3281,31 +3281,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 217,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 217,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 217,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 217,
     "status": 1,
@@ -3321,7 +3297,23 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 217,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 217,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
     "lyear": -1,
     "member_id": 217,
     "status": 1,
@@ -3331,7 +3323,7 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 219,
+    "member_id": 217,
     "status": 1,
     "test_id": null
   },
@@ -3345,7 +3337,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 5,
+    "lyear": -1,
+    "member_id": 219,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 220,
     "status": 1,
@@ -3353,7 +3353,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 220,
     "status": 1,
@@ -3377,71 +3377,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 229,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 229,
     "status": 1,
@@ -3465,7 +3401,63 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 229,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 229,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 229,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 229,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 229,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 229,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 229,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
     "lyear": -1,
     "member_id": 229,
     "status": 1,
@@ -3475,69 +3467,13 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 230,
+    "member_id": 229,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 230,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 230,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 230,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 230,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 230,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 230,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 230,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 230,
     "status": 1,
@@ -3561,7 +3497,71 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 230,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 230,
     "status": 0,
@@ -3585,7 +3585,39 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 4,
+    "lyear": -1,
+    "member_id": 239,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 239,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 239,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 239,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
     "lyear": -1,
     "member_id": 239,
     "status": 1,
@@ -3596,20 +3628,12 @@
     "licence_id": 3,
     "lyear": -1,
     "member_id": 239,
-    "status": 1,
+    "status": 0,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 239,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
+    "licence_id": 14,
     "lyear": -1,
     "member_id": 239,
     "status": 1,
@@ -3625,14 +3649,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 239,
-    "status": 0,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 24,
     "lyear": -1,
     "member_id": 239,
@@ -3641,7 +3657,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 14,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 239,
     "status": 1,
@@ -3657,23 +3673,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 239,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 239,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 239,
     "status": 1,
@@ -3689,15 +3689,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 244,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 244,
     "status": 1,
@@ -3721,7 +3713,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 244,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 244,
     "status": 1,
@@ -3737,6 +3737,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 251,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
     "member_id": 251,
@@ -3745,9 +3753,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 2,
     "lyear": -1,
-    "member_id": 251,
+    "member_id": 252,
     "status": 1,
     "test_id": null
   },
@@ -3762,14 +3770,6 @@
   {
     "lcomments": null,
     "licence_id": 5,
-    "lyear": -1,
-    "member_id": 252,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
     "lyear": -1,
     "member_id": 252,
     "status": 1,
@@ -3801,71 +3801,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 255,
-    "status": 0,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 255,
     "status": 1,
@@ -3889,7 +3825,71 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 0,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 255,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 255,
     "status": 1,
@@ -3913,14 +3913,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 258,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
     "member_id": 258,
@@ -3937,7 +3929,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 5,
+    "lyear": -1,
+    "member_id": 258,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 259,
     "status": 1,
@@ -3945,7 +3945,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 259,
     "status": 1,
@@ -3961,6 +3961,14 @@
   },
   {
     "lcomments": null,
+    "licence_id": 15,
+    "lyear": -1,
+    "member_id": 264,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 14,
     "lyear": -1,
     "member_id": 264,
@@ -3979,7 +3987,15 @@
     "lcomments": null,
     "licence_id": 15,
     "lyear": -1,
-    "member_id": 264,
+    "member_id": 266,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
+    "lyear": -1,
+    "member_id": 266,
     "status": 1,
     "test_id": null
   },
@@ -4001,17 +4017,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 266,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 2,
     "lyear": -1,
-    "member_id": 266,
+    "member_id": 269,
     "status": 1,
     "test_id": null
   },
@@ -4025,9 +4033,9 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 4,
     "lyear": -1,
-    "member_id": 269,
+    "member_id": 271,
     "status": 1,
     "test_id": null
   },
@@ -4051,13 +4059,13 @@
     "lcomments": null,
     "licence_id": 4,
     "lyear": -1,
-    "member_id": 271,
+    "member_id": 272,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 15,
     "lyear": -1,
     "member_id": 272,
     "status": 1,
@@ -4065,31 +4073,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 272,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 272,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 272,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 272,
     "status": 1,
@@ -4105,7 +4089,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 272,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 272,
     "status": 1,
@@ -4121,6 +4113,30 @@
   },
   {
     "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 272,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 272,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 272,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
     "licence_id": 6,
     "lyear": -1,
     "member_id": 272,
@@ -4129,23 +4145,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 15,
-    "lyear": -1,
-    "member_id": 272,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
-    "lyear": -1,
-    "member_id": 272,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 272,
     "status": 1,
@@ -4161,14 +4161,6 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 274,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
     "licence_id": 9,
     "lyear": -1,
     "member_id": 274,
@@ -4179,7 +4171,7 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 275,
+    "member_id": 274,
     "status": 1,
     "test_id": null
   },
@@ -4195,7 +4187,7 @@
     "lcomments": null,
     "licence_id": 5,
     "lyear": -1,
-    "member_id": 276,
+    "member_id": 275,
     "status": 1,
     "test_id": null
   },
@@ -4217,7 +4209,15 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
+    "licence_id": 5,
+    "lyear": -1,
+    "member_id": 276,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 277,
     "status": 1,
@@ -4225,7 +4225,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 277,
     "status": 1,
@@ -4241,7 +4241,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 282,
     "status": 1,
@@ -4249,23 +4249,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 282,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 282,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 282,
     "status": 1,
@@ -4281,7 +4265,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 24,
+    "licence_id": 19,
     "lyear": -1,
     "member_id": 282,
     "status": 1,
@@ -4289,10 +4273,10 @@
   },
   {
     "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 3,
     "lyear": -1,
     "member_id": 282,
-    "status": 0,
+    "status": 1,
     "test_id": null
   },
   {
@@ -4305,7 +4289,31 @@
   },
   {
     "lcomments": null,
-    "licence_id": 2,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 282,
+    "status": 0,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 282,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 282,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 282,
     "status": 1,
@@ -4314,14 +4322,6 @@
   {
     "lcomments": null,
     "licence_id": 4,
-    "lyear": -1,
-    "member_id": 282,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 2,
     "lyear": -1,
     "member_id": 285,
     "status": 1,
@@ -4329,7 +4329,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 2,
     "lyear": -1,
     "member_id": 285,
     "status": 1,
@@ -4345,7 +4345,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
+    "licence_id": 9,
     "lyear": -1,
     "member_id": 289,
     "status": 1,
@@ -4353,7 +4353,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 9,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 289,
     "status": 1,
@@ -4369,71 +4369,7 @@
   },
   {
     "lcomments": null,
-    "licence_id": 5,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 3,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 9,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 0,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 19,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 22,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 0,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 25,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 24,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 14,
-    "lyear": -1,
-    "member_id": 292,
-    "status": 1,
-    "test_id": null
-  },
-  {
-    "lcomments": null,
-    "licence_id": 6,
+    "licence_id": 4,
     "lyear": -1,
     "member_id": 292,
     "status": 1,
@@ -4452,12 +4388,76 @@
     "licence_id": 2,
     "lyear": -1,
     "member_id": 292,
+    "status": 0,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 25,
+    "lyear": -1,
+    "member_id": 292,
     "status": 1,
     "test_id": null
   },
   {
     "lcomments": null,
-    "licence_id": 4,
+    "licence_id": 19,
+    "lyear": -1,
+    "member_id": 292,
+    "status": 0,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 3,
+    "lyear": -1,
+    "member_id": 292,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 14,
+    "lyear": -1,
+    "member_id": 292,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 22,
+    "lyear": -1,
+    "member_id": 292,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 24,
+    "lyear": -1,
+    "member_id": 292,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 9,
+    "lyear": -1,
+    "member_id": 292,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 6,
+    "lyear": -1,
+    "member_id": 292,
+    "status": 1,
+    "test_id": null
+  },
+  {
+    "lcomments": null,
+    "licence_id": 5,
     "lyear": -1,
     "member_id": 292,
     "status": 1,
