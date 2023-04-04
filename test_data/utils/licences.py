@@ -28,7 +28,7 @@ _LICENCES_OTHER = ["M"]
 def generate_licences(faker: Faker, member: MemberEntity) -> List[LicenceEntity]:
     return [
         _create_licence(faker, member, _LICENCES_TO_IDS[licence])
-        for licence in _generate_licence_list(faker, member)
+        for licence in sorted(_generate_licence_list(faker, member))
     ]
 
 
