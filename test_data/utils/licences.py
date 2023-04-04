@@ -26,9 +26,10 @@ _LICENCES_OTHER = ["M"]
 
 
 def generate_licences(faker: Faker, member: MemberEntity) -> List[LicenceEntity]:
-    lx = _generate_licence_list(faker, member)
-    # print(lx)+
-    return [_create_licence(faker, member, _LICENCES_TO_IDS[licence]) for licence in lx]
+    return [
+        _create_licence(faker, member, _LICENCES_TO_IDS[licence])
+        for licence in _generate_licence_list(faker, member)
+    ]
 
 
 def _create_licence(
