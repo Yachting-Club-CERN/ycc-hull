@@ -127,7 +127,7 @@ class HelperTaskCategoryEntity(BaseEntity):
     __tablename__ = "helper_task_categories"
 
     id: Mapped[int] = mapped_column(NUMBER, primary_key=True)
-    title: Mapped[str] = mapped_column(VARCHAR2(250), nullable=False)
+    title: Mapped[str] = mapped_column(VARCHAR2(50), nullable=False)
     short_description: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
     long_description: Mapped[str] = mapped_column(CLOB)
 
