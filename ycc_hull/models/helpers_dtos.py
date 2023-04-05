@@ -121,3 +121,5 @@ class HelperTaskHelperDto(CamelisedBaseModel):
 HelperTaskCategoryDto.update_forward_refs()
 HelperTaskDto.update_forward_refs()
 HelperTaskHelperDto.update_forward_refs()
+
+# TODO On request DTO objects make sure to add validators (also validate the task timing fields)
