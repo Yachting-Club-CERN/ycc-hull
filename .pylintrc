@@ -1,4 +1,5 @@
 [MAIN]
+fail-under=9
 max-line-length=160
 extension-pkg-allow-list=pydantic
 

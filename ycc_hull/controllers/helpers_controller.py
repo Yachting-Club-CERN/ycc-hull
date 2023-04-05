@@ -36,9 +36,9 @@ class HelpersController:
             select(HelperTaskEntity)
             .options(joinedload(HelperTaskEntity.category))
             .order_by(
-                func.coalesce(
+                func.coalesce(  # pylint: disable=not-callable
                     HelperTaskEntity.start, HelperTaskEntity.deadline
-                ).desc()  # pylint: disable=not-callable
+                ).desc()
             ),
             HelperTaskDto.create,
             unique=True,
