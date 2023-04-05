@@ -47,8 +47,8 @@
           "nkey" : "W",
           "description" : "Windsurf Boards",
           "coursefee" : 100,
-          "course_name" : "",
-          "course_active" : "",
+          "course_name" : null,
+          "course_active" : null,
           "course_level" : 1
         },
         {
@@ -108,14 +108,14 @@
         },
         {
           "infoid" : 7,
-          "ncourse" : "",
+          "ncourse" : null,
           "nlicence" : "O",
           "nkey" : "O",
           "description" : "Soling",
           "coursefee" : 0,
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 8,
@@ -124,9 +124,9 @@
           "nkey" : "CK",
           "description" : "First 25",
           "coursefee" : 170,
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 9,
@@ -135,31 +135,31 @@
           "nkey" : "MM",
           "description" : "Motors",
           "coursefee" : 0,
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 10,
-          "ncourse" : "",
+          "ncourse" : null,
           "nlicence" : "B",
           "nkey" : "B",
           "description" : "Baracs",
           "coursefee" : 0,
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 11,
-          "ncourse" : "",
+          "ncourse" : null,
           "nlicence" : "BA",
           "nkey" : "BA",
           "description" : "BA5",
-          "coursefee" : "",
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "coursefee" : null,
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 12,
@@ -168,31 +168,31 @@
           "nkey" : "W",
           "description" : "Expert Windsurf",
           "coursefee" : 200,
-          "course_name" : "",
-          "course_active" : "",
+          "course_name" : null,
+          "course_active" : null,
           "course_level" : 2
         },
         {
           "infoid" : 13,
           "ncourse" : "1A",
           "nlicence" : "1A",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "First Aid",
           "coursefee" : 0,
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : -1,
           "ncourse" : "NW",
           "nlicence" : "NW",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "no introductor course for W",
-          "coursefee" : "",
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "coursefee" : null,
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 14,
@@ -209,7 +209,7 @@
           "infoid" : 15,
           "ncourse" : "CC",
           "nlicence" : "CC",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Competent Crew for Gib Sea, Surprise",
           "coursefee" : 170,
           "course_name" : "Competent Crew",
@@ -229,31 +229,31 @@
         },
         {
           "infoid" : 20,
-          "ncourse" : "",
+          "ncourse" : null,
           "nlicence" : "R",
           "nkey" : "R",
           "description" : "Rib",
-          "coursefee" : "",
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "coursefee" : null,
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 24,
-          "ncourse" : "",
+          "ncourse" : null,
           "nlicence" : "J7",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "J70  familiarisation outing for SU key holders",
-          "coursefee" : "",
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "coursefee" : null,
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 25,
           "ncourse" : "D3",
           "nlicence" : "D3",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Dynamic 3000, Miss R",
           "coursefee" : 170,
           "course_name" : "Advance Cabin Keel Boat",
@@ -264,7 +264,7 @@
           "infoid" : 18,
           "ncourse" : "CN",
           "nlicence" : "CN",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "CNV + YCC Dinghy course",
           "coursefee" : 410,
           "course_name" : "CNV+YCC Dinghy",
@@ -275,7 +275,7 @@
           "infoid" : 23,
           "ncourse" : "L",
           "nlicence" : "L",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Laser course",
           "coursefee" : 170,
           "course_name" : "Laser",
@@ -286,7 +286,7 @@
           "infoid" : 26,
           "ncourse" : "SS",
           "nlicence" : "SS",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Symmetric Spinnaker course",
           "coursefee" : 90,
           "course_name" : "Spinnaker Symmetric",
@@ -297,7 +297,7 @@
           "infoid" : 27,
           "ncourse" : "SA",
           "nlicence" : "SA",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Asymmetric Spinnaker course",
           "coursefee" : 90,
           "course_name" : "Spinnaker Asymmetric",
@@ -308,7 +308,7 @@
           "infoid" : 28,
           "ncourse" : "SY",
           "nlicence" : "SY",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Yngling Spinnaker course",
           "coursefee" : 90,
           "course_name" : "Spinnaker Yngling",
@@ -319,7 +319,7 @@
           "infoid" : 16,
           "ncourse" : "RD",
           "nlicence" : "RD",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Regatta Dinghies",
           "coursefee" : 170,
           "course_name" : "Regatta Dinghy",
@@ -330,7 +330,7 @@
           "infoid" : 17,
           "ncourse" : "RS",
           "nlicence" : "RS",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Regatta Surprise",
           "coursefee" : 170,
           "course_name" : "Regatta Surprise",
@@ -339,25 +339,25 @@
         },
         {
           "infoid" : 22,
-          "ncourse" : "",
+          "ncourse" : null,
           "nlicence" : "J",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "J80 familiarisation outing for SU key holders",
-          "coursefee" : "",
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "coursefee" : null,
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         },
         {
           "infoid" : 21,
-          "ncourse" : "",
+          "ncourse" : null,
           "nlicence" : "T",
-          "nkey" : "",
+          "nkey" : null,
           "description" : "Theory test",
-          "coursefee" : "",
-          "course_name" : "",
-          "course_active" : "",
-          "course_level" : ""
+          "coursefee" : null,
+          "course_name" : null,
+          "course_active" : null,
+          "course_level" : null
         }
       ]
     }

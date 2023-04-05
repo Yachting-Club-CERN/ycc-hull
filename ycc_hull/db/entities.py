@@ -1,13 +1,17 @@
 """
 Handwritten entities containing only the relevant tables and using Oracle dialect types.
 
-Note: SQLAlchemy requires all tables with PK, but sometimes they are not in the database. These are marked with comments.
+Note 1: SQLAlchemy requires all tables with PK, but sometimes they are not in the database. These are marked with comments.
+
+Note 2: The existing DB is inconsistent in spelling "licence" vs "license". Try to always the British spellings in this project ('c' instead of 's').
+
+Note 3: The existing DB is inconsistent in boolean fields. Sometimes they are NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
 """
 from datetime import datetime
 from typing import Any, Dict, List
 
 from sqlalchemy import ForeignKey, Index, PrimaryKeyConstraint, text
-from sqlalchemy.dialects.oracle import BLOB, DATE, NUMBER, VARCHAR2
+from sqlalchemy.dialects.oracle import BLOB, CHAR, DATE, NUMBER, VARCHAR2
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -131,6 +135,65 @@ class HolidayEntity(BaseEntity):
     label: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
 
 
+class LicenceEntity(BaseEntity):
+    """
+    Represents a licence belonging to a member.
+    """
+
+    __tablename__ = "licences"
+    __table_args__ = (
+        PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
+    )
+
+    member_id: Mapped[int] = mapped_column(
+        NUMBER(), ForeignKey("members.id"), nullable=False
+    )
+    licence_id: Mapped[int] = mapped_column(
+        NUMBER(2, 0), ForeignKey("infolicences.infoid"), nullable=False
+    )
+    # Year when the licence was issued
+    lyear: Mapped[int] = mapped_column(NUMBER(4, 0), nullable=False)
+    # Most often "Registered by Firstname LASTNAME"
+    lcomments: Mapped[str] = mapped_column(VARCHAR2(100))
+    # This should be linked to tests when they are supported, see issue #27
+    test_id: Mapped[int] = mapped_column(NUMBER())
+    # 0 = inactive, 1 = active, no idea why NUMBER(4,0) in the DB
+    status: Mapped[int] = mapped_column(NUMBER(4, 0))
+
+    licence_info: Mapped["LicenceInfoEntity"] = relationship(lazy="joined")
+    member: Mapped["MemberEntity"] = relationship(back_populates="licences")
+
+
+class LicenceInfoEntity(BaseEntity):
+    """
+    Represents a YCC licence.
+
+    This table is a bit of a mess, but it is used for the boat booking rules, courses, etc.
+    """
+
+    __tablename__ = "infolicences"
+
+    # Can be negative
+    infoid: Mapped[int] = mapped_column(NUMBER, nullable=False, primary_key=True)
+    description = mapped_column(VARCHAR2(50), nullable=False)
+    # Course identifier, e.g., "GS", sometimes NULL
+    ncourse: Mapped[str] = mapped_column(VARCHAR2(2))
+    # This is actually the licence ID, same as BoatEntity.license (note the inconsistency in the spelling).
+    # However, boats do not have licence in their table what is here, for example Laser is listed as L here,
+    # but for booking a Laser one needs a D licence (at least as of 2023)
+    nlicence: Mapped[str] = mapped_column(VARCHAR2(2))
+    # Probably we can ignore this one, often NULLm especially for new entries
+    nkey: Mapped[str] = mapped_column(VARCHAR2(2))
+    # NULL, 0, 90, 170, ...
+    coursefee: Mapped[int] = mapped_column(NUMBER(4, 0))
+    # NULL, "Cabin keel-boat", ...
+    course_name: Mapped[str] = mapped_column(VARCHAR2(30))
+    # NULL, Y, N
+    course_active: Mapped[str] = mapped_column(CHAR(1))
+    # NULL, 1, 2, 3
+    course_level: Mapped[int] = mapped_column(NUMBER(1, 0))
+
+
 class MemberEntity(BaseEntity):
     """
     Represents a YCC member.
@@ -190,6 +253,7 @@ class MemberEntity(BaseEntity):
     fee_records: Mapped[List["FeeRecordEntity"]] = relationship(
         order_by="FeeRecordEntity.paid_date"
     )
+    licences: Mapped[List["LicenceEntity"]] = relationship()
     # This could be many to many when away from Perl (and maybe APEX too)
     maintained_boats1: Mapped[List["BoatEntity"]] = relationship(
         foreign_keys="BoatEntity.maintainer_id",

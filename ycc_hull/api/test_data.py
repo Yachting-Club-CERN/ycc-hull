@@ -17,6 +17,8 @@ from ycc_hull.db.entities import (
     EntranceFeeRecordEntity,
     FeeRecordEntity,
     HolidayEntity,
+    LicenceEntity,
+    LicenceInfoEntity,
     MemberEntity,
     MembershipTypeEntity,
     UserEntity,
@@ -118,6 +120,20 @@ async def populate() -> List[str]:
             entries = await importer.import_generated("Boats.json", BoatEntity)
             log.append(f"Add {len(entries)} boats")
 
+        if query_count(LicenceInfoEntity):
+            log.append("Skipping licence infos")
+        else:
+            entries = await importer.import_exported(
+                "INFOLICENCES_DATA_TABLE.json-formatted", LicenceInfoEntity
+            )
+            log.append(f"Add {len(entries)} licence infos")
+
+        if query_count(LicenceEntity):
+            log.append("Skipping licences")
+        else:
+            entries = await importer.import_generated("Licences.json", LicenceEntity)
+            log.append(f"Add {len(entries)} licences")
+
         session.commit()
         log.append("Commit")
 
@@ -130,6 +146,9 @@ async def clear() -> List[str]:
     classes = (
         # Boats
         BoatEntity,
+        # Licences,
+        LicenceInfoEntity,
+        LicenceEntity,
         # Members
         EntranceFeeRecordEntity,
         FeeRecordEntity,

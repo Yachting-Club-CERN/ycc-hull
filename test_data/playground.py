@@ -35,8 +35,31 @@ def dump_members_and_fees() -> None:
             print()
 
 
+def dump_members_and_licences() -> None:
+    with Session(engine) as session:
+        print("=" * 80)
+        members: ScalarResult[MemberEntity] = session.scalars(
+            select(MemberEntity).order_by(MemberEntity.id)
+        )
+        for member in members:
+            active_licences = [
+                licence.licence_info.nlicence
+                for licence in member.licences
+                if licence.status
+            ]
+            inactive_licences = [
+                licence.licence_info.nlicence
+                for licence in member.licences
+                if not licence.status
+            ]
+            print(
+                f"> {member.user.logon_id}: {active_licences} (inactive: {inactive_licences}))"
+            )
+
+
 def run() -> None:
     dump_members_and_fees()
+    dump_members_and_licences()
 
 
 if __name__ == "__main__":
