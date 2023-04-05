@@ -6,8 +6,6 @@ from sqlalchemy.orm import Session, joinedload
 
 from ycc_hull.db.engine import _create_db_engine
 from ycc_hull.db.entities import (
-    FeeRecordEntity,
-    HelperTaskCategoryEntity,
     HelperTaskEntity,
     MemberEntity,
 )
@@ -74,7 +72,9 @@ def dump_helper_tasks() -> None:
         helper_tasks: ScalarResult[HelperTaskEntity] = session.scalars(
             select(HelperTaskEntity)
             .options(joinedload(HelperTaskEntity.category))
-            .order_by(func.coalesce(HelperTaskEntity.start, HelperTaskEntity.deadline))
+            .order_by(
+                func.coalesce(HelperTaskEntity.start, HelperTaskEntity.deadline).asc()
+            )
         ).unique()
 
         for helper_task in helper_tasks:

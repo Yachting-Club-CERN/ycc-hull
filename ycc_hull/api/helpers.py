@@ -1,17 +1,13 @@
 """
 Helper API endpoints.
 """
-from typing import Optional, Sequence
+from typing import Sequence
 
-from fastapi import APIRouter, Depends, HTTPException
-from ycc_hull.auth import AuthInfo, auth
+from fastapi import APIRouter, Depends
+
+from ycc_hull.auth import auth
 from ycc_hull.controllers.helpers_controller import HelpersController
-
-from ycc_hull.error import raise_401
-from ycc_hull.models.helpers_dtos import (
-    HelperTaskCategoryDto,
-    HelperTaskDto,
-)
+from ycc_hull.models.helpers_dtos import HelperTaskCategoryDto, HelperTaskDto
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
 

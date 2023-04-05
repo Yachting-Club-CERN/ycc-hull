@@ -3,7 +3,6 @@ Application entry point.
 """
 import asyncio
 import os
-from typing import Any
 
 import uvicorn
 from fastapi import FastAPI
@@ -16,8 +15,6 @@ from ycc_hull.api.members import api_members
 from ycc_hull.api.test_data import api_test_data
 from ycc_hull.config import CONFIG, LOGGING_CONFIG_FILE
 from ycc_hull.controllers.members_controller import MembersController
-from datetime import datetime
-import json
 
 app = FastAPI(
     docs_url="/docs" if CONFIG.api_docs_enabled else None,

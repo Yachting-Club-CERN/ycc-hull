@@ -1,18 +1,14 @@
 """
 Helpers API DTO classes.
 """
-from datetime import date, datetime
-from typing import ForwardRef, Optional, Sequence
+from datetime import datetime
+from typing import Optional, Sequence
 
 from ycc_hull.db.entities import (
-    BoatEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
     HelperTaskHelperEntity,
-    HolidayEntity,
     MemberEntity,
-    MembershipTypeEntity,
-    UserEntity,
 )
 from ycc_hull.models.base import CamelisedBaseModel
 from ycc_hull.models.dtos import MemberPublicInfoDto
