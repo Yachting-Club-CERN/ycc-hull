@@ -73,7 +73,9 @@ def dump_helper_tasks() -> None:
             select(HelperTaskEntity)
             .options(joinedload(HelperTaskEntity.category))
             .order_by(
-                func.coalesce(HelperTaskEntity.start, HelperTaskEntity.deadline).asc()
+                func.coalesce(
+                    HelperTaskEntity.start, HelperTaskEntity.deadline
+                )  # pylint: disable=not-callable
             )
         ).unique()
 

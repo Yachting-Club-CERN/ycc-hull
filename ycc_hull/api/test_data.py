@@ -145,6 +145,7 @@ async def populate() -> List[str]:
 
 @api_test_data.post("/api/v0/test-data/clear")
 async def clear() -> List[str]:
+    # TODO
     raise Exception("DISABLED! YOU ARE TESTING!")
     log: List[str] = []
     classes = (
