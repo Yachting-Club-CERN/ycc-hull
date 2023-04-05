@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for DB entities: licences
+- Add support for DB entities: licences, helpers
+- Add DTOs: helpers
+- Add API endpoints: GET helper task categories, GET helper tasks
 
 ## [0.1.0] - 2023-04-05
 

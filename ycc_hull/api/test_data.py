@@ -16,6 +16,9 @@ from ycc_hull.db.entities import (
     BoatEntity,
     EntranceFeeRecordEntity,
     FeeRecordEntity,
+    HelperTaskCategoryEntity,
+    HelperTaskEntity,
+    HelperTaskHelperEntity,
     HolidayEntity,
     LicenceEntity,
     LicenceInfoEntity,
@@ -142,6 +145,7 @@ async def populate() -> List[str]:
 
 @api_test_data.post("/api/v0/test-data/clear")
 async def clear() -> List[str]:
+    raise Exception("DISABLED! YOU ARE TESTING!")
     log: List[str] = []
     classes = (
         # Boats
@@ -149,6 +153,10 @@ async def clear() -> List[str]:
         # Licences,
         LicenceInfoEntity,
         LicenceEntity,
+        # Helpers
+        HelperTaskCategoryEntity,
+        HelperTaskEntity,
+        HelperTaskHelperEntity,
         # Members
         EntranceFeeRecordEntity,
         FeeRecordEntity,

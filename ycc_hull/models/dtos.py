@@ -1,5 +1,5 @@
 """
-API DTO Classes.
+General API DTO classes.
 """
 from datetime import date
 from typing import Optional
@@ -100,17 +100,10 @@ class MemberSensitiveInfoDto(MemberPublicInfoDto):
     def create(
         member: MemberEntity,
     ) -> "MemberSensitiveInfoDto":
-        return MemberSensitiveInfoDto(
-            id=member.id,
-            username=member.user.logon_id,
-            first_name=member.firstname,
-            last_name=member.name,
-            membership_type=member.membership,
-            email=member.e_mail,
-            mobile_phone=member.cell_phone,
-            home_phone=member.home_phone,
-            work_phone=member.work_phone,
-        )
+        props = MemberPublicInfoDto.create(member).dict()
+        props["id"] = member.id
+        props["membership_type"] = member.membership
+        return MemberSensitiveInfoDto(**props)
 
 
 class MembershipTypeDto(CamelisedBaseModel):
