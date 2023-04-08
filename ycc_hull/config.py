@@ -4,12 +4,16 @@ Application configuration.
 import json
 import os
 from enum import Enum
-from typing import FrozenSet, Optional
+from typing import FrozenSet, Optional, Sequence
 
 from ycc_hull.models.base import CamelisedBaseModel
 
+CONFIG_FILE = (
+    "conf/config-dev.json"
+    if os.path.exists("conf/config-dev.json")
+    else "conf/config.json"
+)
 
-CONFIG_FILE = "conf/config.json"
 LOGGING_CONFIG_FILE = "conf/logging.conf"
 
 

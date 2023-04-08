@@ -147,15 +147,15 @@ async def populate() -> List[str]:
 async def clear() -> List[str]:
     log: List[str] = []
     classes = (
+        # Helpers
+        HelperTaskEntity,
+        HelperTaskHelperEntity,
+        HelperTaskCategoryEntity,
         # Boats
         BoatEntity,
         # Licences,
         LicenceInfoEntity,
         LicenceEntity,
-        # Helpers
-        HelperTaskCategoryEntity,
-        HelperTaskEntity,
-        HelperTaskHelperEntity,
         # Members
         EntranceFeeRecordEntity,
         FeeRecordEntity,
