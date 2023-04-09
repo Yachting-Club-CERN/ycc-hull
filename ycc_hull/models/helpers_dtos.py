@@ -11,7 +11,7 @@ from ycc_hull.db.entities import (
     MemberEntity,
 )
 from ycc_hull.models.base import CamelisedBaseModel
-from ycc_hull.models.dtos import MemberPublicInfoDto
+from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
 
 class HelperTaskCategoryDto(CamelisedBaseModel):
@@ -49,7 +49,7 @@ class HelperTaskDto(CamelisedBaseModel):
     end: Optional[datetime]
     deadline: Optional[datetime]
     urgent: bool
-    captain_required_licence: Optional[str]
+    captain_required_licence: Optional[LicenceInfoDto]
     helpers_min_count: int
     helpers_max_count: int
     published: bool
@@ -79,7 +79,11 @@ class HelperTaskDto(CamelisedBaseModel):
             end=task.end,
             deadline=task.deadline,
             urgent=task.urgent,
-            captain_required_licence=task.captain_required_licence,
+            captain_required_licence=LicenceInfoDto.create(
+                task.captain_required_licence_info
+            )
+            if task.captain_required_licence_info
+            else None,
             helpers_min_count=task.helpers_min_count,
             helpers_max_count=task.helpers_max_count,
             published=task.published,

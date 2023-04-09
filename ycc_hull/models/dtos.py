@@ -2,11 +2,13 @@
 General API DTO classes.
 """
 from datetime import date
+from numbers import Number
 from typing import Optional
 
 from ycc_hull.db.entities import (
     BoatEntity,
     HolidayEntity,
+    LicenceInfoEntity,
     MemberEntity,
     MembershipTypeEntity,
     UserEntity,
@@ -60,11 +62,27 @@ class HolidayDto(CamelisedBaseModel):
         )
 
 
+class LicenceInfoDto(CamelisedBaseModel):
+    """
+    DTO for a YCC licence info.
+    """
+
+    id: int
+    licence: str
+
+    @staticmethod
+    def create(
+        licence_info: LicenceInfoEntity,
+    ) -> "LicenceInfoDto":
+        return LicenceInfoDto(id=licence_info.infoid, licence=licence_info.nlicence)
+
+
 class MemberPublicInfoDto(CamelisedBaseModel):
     """
     DTO for a member, containing information public to all active members.
     """
 
+    id: int
     username: str
     first_name: str
     last_name: str
@@ -78,6 +96,7 @@ class MemberPublicInfoDto(CamelisedBaseModel):
         member: MemberEntity,
     ) -> "MemberPublicInfoDto":
         return MemberPublicInfoDto(
+            id=member.id,
             username=member.user.logon_id,
             first_name=member.firstname,
             last_name=member.name,
