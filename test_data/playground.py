@@ -4,9 +4,11 @@ Playground.
 from sqlalchemy import ScalarResult, func, select
 from sqlalchemy.orm import Session, joinedload
 
-from ycc_hull.db.engine import _create_db_engine
+from ycc_hull.db.engine import _create_db_engine, query_count
 from ycc_hull.db.entities import (
+    HelperTaskCategoryEntity,
     HelperTaskEntity,
+    HelperTaskHelperEntity,
     MemberEntity,
 )
 from ycc_hull.models.dtos import MemberSensitiveInfoDto
@@ -68,6 +70,10 @@ def dump_members_and_licences() -> None:
 
 
 def dump_helper_tasks() -> None:
+    print(f"COUNT(HelperTaskCategoryEntity): {query_count(HelperTaskCategoryEntity)}")
+    print(f"COUNT(HelperTaskEntity): {query_count(HelperTaskEntity)}")
+    print(f"COUNT(HelperTaskHelperEntity): {query_count(HelperTaskHelperEntity)}")
+
     with Session(engine) as session:
         helper_tasks: ScalarResult[HelperTaskEntity] = session.scalars(
             select(HelperTaskEntity)
@@ -87,7 +93,10 @@ def dump_helper_tasks() -> None:
                 f">   Timing: {helper_task.start} / {helper_task.end} / {helper_task.deadline}"
             )
 
-            print(f">   Required licence: {helper_task.captain_required_licence}")
+            if helper_task.captain_required_licence_info:
+                print(
+                    f">   Required licence: {helper_task.captain_required_licence_info.nlicence}"
+                )
             print(
                 f">   Helpers needed: {helper_task.helpers_min_count} - {helper_task.helpers_max_count}"
             )

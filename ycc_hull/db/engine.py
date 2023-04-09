@@ -3,7 +3,7 @@ DB Engine.
 """
 from typing import Any, Callable, Optional, Sequence, TypeVar
 
-from sqlalchemy import Select, create_engine
+from sqlalchemy import Select, create_engine, func, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
@@ -63,4 +63,4 @@ def query_all(
 
 def query_count(entity_class: type) -> int:
     with Session(get_db_engine()) as session:
-        return session.query(entity_class).count()
+        return session.scalar(select(func.count()).select_from(entity_class))

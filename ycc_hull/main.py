@@ -5,21 +5,56 @@ import asyncio
 import os
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-
+from fastapi.exception_handlers import http_exception_handler
 from ycc_hull.api.boats import api_boats
+from ycc_hull.api.errors import (
+    create_http_exception_400,
+    create_http_exception_404,
+    create_http_exception_409,
+)
 from ycc_hull.api.helpers import api_helpers
 from ycc_hull.api.holidays import api_holidays
 from ycc_hull.api.members import api_members
 from ycc_hull.api.test_data import api_test_data
 from ycc_hull.config import CONFIG, LOGGING_CONFIG_FILE
+from ycc_hull.controllers.exceptions import (
+    ControllerBadRequestException,
+    ControllerConflictException,
+    ControllerNotFoundException,
+)
 from ycc_hull.controllers.members_controller import MembersController
 
 app = FastAPI(
     docs_url="/docs" if CONFIG.api_docs_enabled else None,
     redoc_url="/redoc" if CONFIG.api_docs_enabled else None,
 )
+
+
+@app.exception_handler(ControllerBadRequestException)
+async def controller_400_exception_handler(
+    request: Request,
+    exc: ControllerBadRequestException,
+) -> HTTPException:
+    return await http_exception_handler(request, create_http_exception_400(exc.message))
+
+
+@app.exception_handler(ControllerNotFoundException)
+async def controller_404_exception_handler(
+    request: Request,
+    exc: ControllerNotFoundException,
+) -> HTTPException:
+    return await http_exception_handler(request, create_http_exception_404(exc.message))
+
+
+@app.exception_handler(ControllerConflictException)
+async def controller_409_exception_handler(
+    request: Request,
+    exc: ControllerConflictException,
+) -> HTTPException:
+    return await http_exception_handler(request, create_http_exception_409(exc.message))
+
 
 app.add_middleware(
     CORSMiddleware,

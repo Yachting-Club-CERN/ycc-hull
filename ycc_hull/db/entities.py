@@ -181,14 +181,6 @@ class HelperTaskEntity(BaseEntity):
         back_populates="helper_task", lazy="joined"
     )
 
-    @property
-    def captain_required_licence(self) -> Optional[str]:
-        return (
-            self.captain_required_licence_info.nlicence
-            if self.captain_required_licence_info
-            else None
-        )
-
 
 class HelperTaskHelperEntity(BaseEntity):
     """
