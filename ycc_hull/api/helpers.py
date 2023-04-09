@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends
 
 from ycc_hull.auth import auth
 from ycc_hull.controllers.helpers_controller import HelpersController
+from ycc_hull.error import raise_404
 from ycc_hull.models.helpers_dtos import HelperTaskCategoryDto, HelperTaskDto
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
@@ -19,4 +20,13 @@ async def helper_task_categories_get() -> Sequence[HelperTaskCategoryDto]:
 
 @api_helpers.get("/api/v0/helpers/tasks")
 async def helper_tasks_get() -> Sequence[HelperTaskDto]:
-    return await HelpersController.find_all_tasks()
+    return await HelpersController.find_all_tasks(published=True)
+
+
+@api_helpers.get("/api/v0/helpers/tasks/{task_id}")
+async def helper_tasks_get_by_id(task_id: int) -> HelperTaskDto:
+    task = await HelpersController.find_task_by_id(task_id, published=True)
+    if task:
+        return task
+    else:
+        raise_404()

@@ -46,3 +46,16 @@ def raise_403(detail: Optional[Any] = None) -> HTTPException:
         status_code=403,
         detail=detail,
     )
+
+
+def raise_404(detail: Optional[Any] = None) -> HTTPException:
+    """
+    Raises a HTTP 404 Not Found exception.
+
+    Raises:
+        HTTPException: exception
+    """
+    raise HTTPException(
+        status_code=404,
+        detail=detail,
+    )
