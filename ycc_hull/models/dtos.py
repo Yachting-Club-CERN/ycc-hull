@@ -2,7 +2,6 @@
 General API DTO classes.
 """
 from datetime import date
-from numbers import Number
 from typing import Optional
 
 from ycc_hull.db.entities import (

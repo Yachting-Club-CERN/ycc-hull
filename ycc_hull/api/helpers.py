@@ -28,7 +28,7 @@ async def helper_tasks_get_by_id(task_id: int) -> HelperTaskDto:
 
 
 @api_helpers.post("/api/v0/helpers/tasks/{task_id}/subscribe-as-captain")
-async def helper_tasks_subscribe_as_helper(
+async def helper_tasks_subscribe_as_captain(
     task_id: int, auth_info: AuthInfo = Depends(auth)
 ) -> HelperTaskDto:
     await HelpersController.subscribe_as_captain(task_id, auth_info.member_id)

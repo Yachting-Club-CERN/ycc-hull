@@ -5,7 +5,7 @@ import asyncio
 import os
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exception_handlers import http_exception_handler
 from ycc_hull.api.boats import api_boats
@@ -36,7 +36,7 @@ app = FastAPI(
 async def controller_400_exception_handler(
     request: Request,
     exc: ControllerBadRequestException,
-) -> HTTPException:
+) -> Response:
     return await http_exception_handler(request, create_http_exception_400(exc.message))
 
 
@@ -44,7 +44,7 @@ async def controller_400_exception_handler(
 async def controller_404_exception_handler(
     request: Request,
     exc: ControllerNotFoundException,
-) -> HTTPException:
+) -> Response:
     return await http_exception_handler(request, create_http_exception_404(exc.message))
 
 
@@ -52,7 +52,7 @@ async def controller_404_exception_handler(
 async def controller_409_exception_handler(
     request: Request,
     exc: ControllerConflictException,
-) -> HTTPException:
+) -> Response:
     return await http_exception_handler(request, create_http_exception_409(exc.message))
 
 

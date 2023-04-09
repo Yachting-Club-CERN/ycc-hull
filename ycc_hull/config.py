@@ -4,7 +4,7 @@ Application configuration.
 import json
 import os
 from enum import Enum
-from typing import FrozenSet, Optional, Sequence
+from typing import FrozenSet, Optional
 
 from ycc_hull.models.base import CamelisedBaseModel
 

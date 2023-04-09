@@ -4,13 +4,13 @@ Helpers controller.
 from datetime import datetime
 from typing import Optional, Sequence
 
-from sqlalchemy import func, select, and_
-from sqlalchemy.orm import joinedload, Session, lazyload
+from sqlalchemy import and_, func, select
+from sqlalchemy.orm import Session, joinedload, lazyload
+
 from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
     ControllerNotFoundException,
 )
-
 from ycc_hull.db.engine import get_db_engine, query_all
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
@@ -19,10 +19,7 @@ from ycc_hull.db.entities import (
     LicenceEntity,
     LicenceInfoEntity,
 )
-from ycc_hull.models.helpers_dtos import (
-    HelperTaskCategoryDto,
-    HelperTaskDto,
-)
+from ycc_hull.models.helpers_dtos import HelperTaskCategoryDto, HelperTaskDto
 
 
 class HelpersController:

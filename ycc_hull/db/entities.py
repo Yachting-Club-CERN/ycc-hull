@@ -8,7 +8,7 @@ Note 2: The existing DB is inconsistent in spelling "licence" vs "license". Try 
 Note 3: The existing DB is inconsistent in boolean fields. Sometimes they are NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
 """
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from sqlalchemy import ForeignKey, Index, PrimaryKeyConstraint, text
 from sqlalchemy.dialects.oracle import BLOB, CHAR, CLOB, DATE, NUMBER, VARCHAR2
