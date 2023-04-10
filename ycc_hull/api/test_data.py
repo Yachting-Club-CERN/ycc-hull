@@ -9,6 +9,7 @@ import aiofiles
 from fastapi import APIRouter
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
+from generated_entities.entities_generated import HelperTaskHelpers
 
 from ycc_hull.db.engine import get_db_engine, query_count
 from ycc_hull.db.entities import (
@@ -40,24 +41,32 @@ class TestDataImporter:
         self._directory = directory
         self._session = session
 
-    async def import_exported(self, file_path: str, cls: type) -> List:
+    async def import_exported(
+        self, file_path: str, cls: type, commit_on_each: bool = False
+    ) -> List:
         async with aiofiles.open(
             f"{self._directory}/exported/{file_path}", "r", encoding="utf-8"
         ) as file:
             data = json.loads(await file.read())
-            return self._import(cls, data["results"][0]["items"])
+            return self._import(
+                cls, data["results"][0]["items"], commit_on_each=commit_on_each
+            )
 
-    async def import_generated(self, file_path: str, cls: type) -> list:
+    async def import_generated(
+        self, file_path: str, cls: type, commit_on_each: bool = False
+    ) -> list:
         async with aiofiles.open(
             f"{self._directory}/generated/{file_path}", "r", encoding="utf-8"
         ) as file:
             data = json.loads(await file.read())
-            return self._import(cls, data)
+            return self._import(cls, data, commit_on_each=commit_on_each)
 
-    def _import(self, cls: type, entries: list) -> list:
+    def _import(self, cls: type, entries: list, commit_on_each: bool) -> list:
         for entry in entries:
             entry = self._prepare(entry)
             self._session.add(cls(**entry))
+            if commit_on_each:
+                self._session.commit()
         return entries
 
     def _prepare(self, entry: dict) -> dict:
@@ -156,6 +165,17 @@ async def populate() -> List[str]:
         session.commit()
         log.append("Commit")
 
+        if query_count(HelperTaskHelperEntity):
+            log.append("Skipping helper task helpers")
+        else:
+            entries = await importer.import_generated(
+                "HelperTaskHelpers.json", HelperTaskHelperEntity, commit_on_each=True
+            )
+            log.append(f"Add {len(entries)} helper task helpers (COMMIT on each)")
+
+        session.commit()
+        log.append("Commit")
+
     return log
 
 
@@ -164,8 +184,8 @@ async def clear() -> List[str]:
     log: List[str] = []
     classes = (
         # Helpers
-        HelperTaskEntity,
         HelperTaskHelperEntity,
+        HelperTaskEntity,
         HelperTaskCategoryEntity,
         # Boats
         BoatEntity,

@@ -14,6 +14,7 @@ from legacy_password_hashing.password_hashing import (
     verify_ycc_password,
 )
 from test_data.utils.helpers import (
+    generate_helper_task_helpers,
     generate_helper_tasks,
     generate_helper_task_categories,
 )
@@ -34,6 +35,7 @@ from test_data.generator_config import (
     ENTRANCE_FEE_RECORDS_JSON_FILE,
     FEE_RECORDS_JSON_FILE,
     HELPER_TASK_CATEGORIES_JSON_FILE,
+    HELPER_TASK_HELPERS_JSON_FILE,
     HELPER_TASKS_JSON_FILE,
     LICENCES_JSON_FILE,
     MEMBER_COUNT,
@@ -408,6 +410,7 @@ def generate(force_regenerate: bool = False) -> None:
             HELPER_TASK_CATEGORIES_JSON_FILE, generate_helper_task_categories()
         )
         write_json_file(HELPER_TASKS_JSON_FILE, generate_helper_tasks())
+        write_json_file(HELPER_TASK_HELPERS_JSON_FILE, generate_helper_task_helpers())
 
 
 def regenerate() -> None:

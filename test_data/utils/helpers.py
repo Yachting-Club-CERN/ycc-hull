@@ -1,42 +1,15 @@
 """
 Test data generator component for helpers.
 """
-import json
 from datetime import datetime
-from typing import Dict, List, Set
+from typing import List
 
-from faker import Faker
-
-from test_data.generator_config import CURRENT_YEAR, INFOLICENCES_EXPORTED_JSON_FILE
+from test_data.generator_config import CURRENT_YEAR
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,
     HelperTaskHelperEntity,
-    LicenceEntity,
-    MemberEntity,
 )
-
-# class HelperTaskHelperEntity(BaseEntity):
-#     """
-#     Association between helper tasks and helpers.
-#     """
-
-#     __tablename__ = "helper_task_helpers"
-
-#     task_id: Mapped[int] = mapped_column(
-#         NUMBER, ForeignKey("helper_tasks.id"), primary_key=True
-#     )
-#     member_id: Mapped[int] = mapped_column(
-#         NUMBER, ForeignKey("members.id"), primary_key=True
-#     )
-#     subscribed_at: Mapped[datetime] = mapped_column(DATE, nullable=False)
-
-#     helper_task: Mapped["HelperTaskEntity"] = relationship(
-#         back_populates="helpers", lazy="joined"
-#     )
-#     member: Mapped["MemberEntity"] = relationship(
-#         back_populates="helper_tasks_as_helper", lazy="joined"
-#     )
 
 
 def generate_helper_task_categories() -> List[HelperTaskCategoryEntity]:
@@ -85,7 +58,6 @@ def generate_helper_tasks() -> List[HelperTaskEntity]:
             published=True,
             captain_id=1,
             captain_subscribed_at=datetime(CURRENT_YEAR, 1, 4, 18, 23, 46),
-            # TODO helpers
         ),
         # Shift in the future
         HelperTaskEntity(
@@ -164,5 +136,20 @@ def generate_helper_tasks() -> List[HelperTaskEntity]:
             helpers_max_count=1,
             urgent=True,
             published=True,
+        ),
+    ]
+
+
+def generate_helper_task_helpers() -> List[HelperTaskHelperEntity]:
+    return [
+        HelperTaskHelperEntity(
+            task_id=2012,
+            member_id=2,
+            subscribed_at=datetime(CURRENT_YEAR, 1, 4, 15, 34, 52),
+        ),
+        HelperTaskHelperEntity(
+            task_id=2012,
+            member_id=3,
+            subscribed_at=datetime(CURRENT_YEAR, 1, 4, 19, 24, 26),
         ),
     ]
