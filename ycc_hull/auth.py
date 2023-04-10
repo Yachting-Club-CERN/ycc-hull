@@ -184,6 +184,6 @@ async def auth(token: str = Depends(oauth2_scheme)) -> AuthInfo:
         return info
     except (KeycloakAuthenticationError, KeycloakInvalidTokenError) as exc:
         logger.warning("Authentication failed: %s: %s", exc.__class__.__qualname__, exc)
-        raise create_http_exception_401(
+        raise create_http_exception_401(  # pylint: disable=raise-missing-from
             _AUTHENTICATION_FAILED
-        )  # pylint: disable=raise-missing-from
+        )

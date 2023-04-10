@@ -63,4 +63,8 @@ def query_all(
 
 def query_count(entity_class: type) -> int:
     with Session(get_db_engine()) as session:
-        return session.scalar(select(func.count()).select_from(entity_class))  # type: ignore
+        return session.scalar(
+            select(func.count()).select_from(  # pylint: disable=not-callable
+                entity_class
+            )
+        )  # type: ignore
