@@ -137,6 +137,22 @@ async def populate() -> List[str]:
             entries = await importer.import_generated("Licences.json", LicenceEntity)
             log.append(f"Add {len(entries)} licences")
 
+        if query_count(HelperTaskCategoryEntity):
+            log.append("Skipping helper task categories")
+        else:
+            entries = await importer.import_generated(
+                "HelperTaskCategories.json", HelperTaskCategoryEntity
+            )
+            log.append(f"Add {len(entries)} helper task categories")
+
+        if query_count(HelperTaskEntity):
+            log.append("Skipping helper tasks")
+        else:
+            entries = await importer.import_generated(
+                "HelperTasks.json", HelperTaskEntity
+            )
+            log.append(f"Add {len(entries)} helper tasks")
+
         session.commit()
         log.append("Commit")
 

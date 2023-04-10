@@ -13,6 +13,10 @@ from legacy_password_hashing.password_hashing import (
     hash_ycc_password,
     verify_ycc_password,
 )
+from test_data.utils.helpers import (
+    generate_helper_tasks,
+    generate_helper_task_categories,
+)
 from ycc_hull.db.entities import (
     BaseEntity,
     BoatEntity,
@@ -29,6 +33,8 @@ from test_data.generator_config import (
     CURRENT_YEAR,
     ENTRANCE_FEE_RECORDS_JSON_FILE,
     FEE_RECORDS_JSON_FILE,
+    HELPER_TASK_CATEGORIES_JSON_FILE,
+    HELPER_TASKS_JSON_FILE,
     LICENCES_JSON_FILE,
     MEMBER_COUNT,
     MEMBERS_JSON_FILE,
@@ -393,6 +399,15 @@ def generate(force_regenerate: bool = False) -> None:
     else:
         print("== Generating boats...")
         write_json_file(BOATS_JSON_FILE, generate_boats())
+
+    if path.exists(HELPER_TASKS_JSON_FILE) and not force_regenerate:
+        print("== Skipping helper data")
+    else:
+        print("== Generating helpers data (categories, tasks, helpers)...")
+        write_json_file(
+            HELPER_TASK_CATEGORIES_JSON_FILE, generate_helper_task_categories()
+        )
+        write_json_file(HELPER_TASKS_JSON_FILE, generate_helper_tasks())
 
 
 def regenerate() -> None:

@@ -61,6 +61,7 @@ class HelpersController:
     async def subscribe_as_captain(task_id: int, member_id: int) -> None:
         task = await __class__.get_task_by_id(task_id, published=True)
 
+        # TODO check cannot subscribe to task with deadline/start in the past
         await __class__._check_not_already_subscribed(task, member_id)
         if task.captain:
             raise ControllerConflictException("Task already has a captain")
@@ -102,6 +103,7 @@ class HelpersController:
     async def subscribe_as_helper(task_id: int, member_id: int) -> None:
         task = await __class__.get_task_by_id(task_id, published=True)
 
+        # TODO check cannot subscribe to task with deadline/start in the past
         await __class__._check_not_already_subscribed(task, member_id)
         if len(task.helpers) >= task.helpers_max_count:
             raise ControllerConflictException("Task helper limit reached")

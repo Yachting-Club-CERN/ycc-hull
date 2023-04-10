@@ -13,6 +13,8 @@ BOATS_JSON_FILE = f"{_SCRIPT_DIR}/generated/Boats.json"
 BOATS_EXPORTED_JSON_FILE = f"{_SCRIPT_DIR}/exported/BOATS_DATA_TABLE.json-formatted"
 ENTRANCE_FEE_RECORDS_JSON_FILE = f"{_SCRIPT_DIR}/generated/EntranceFeeRecords.json"
 FEE_RECORDS_JSON_FILE = f"{_SCRIPT_DIR}/generated/FeeRecords.json"
+HELPER_TASK_CATEGORIES_JSON_FILE = f"{_SCRIPT_DIR}/generated/HelperTaskCategories.json"
+HELPER_TASKS_JSON_FILE = f"{_SCRIPT_DIR}/generated/HelperTasks.json"
 INFOLICENCES_EXPORTED_JSON_FILE = (
     f"{_SCRIPT_DIR}/exported/INFOLICENCES_DATA_TABLE.json-formatted"
 )
