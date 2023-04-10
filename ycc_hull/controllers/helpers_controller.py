@@ -53,8 +53,7 @@ class HelpersController:
         task = await cls.find_task_by_id(task_id, published)
         if task:
             return task
-        else:
-            raise ControllerNotFoundException("Task not found")
+        raise ControllerNotFoundException("Task not found")
 
     @classmethod
     async def subscribe_as_captain(
