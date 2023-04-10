@@ -9,7 +9,6 @@ import aiofiles
 from fastapi import APIRouter
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from generated_entities.entities_generated import HelperTaskHelpers
 
 from ycc_hull.db.engine import get_db_engine, query_count
 from ycc_hull.db.entities import (

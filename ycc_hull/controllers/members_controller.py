@@ -3,11 +3,13 @@ Members controller.
 """
 from typing import Optional, Sequence
 
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, or_, select, func
 
-from ycc_hull.db.engine import query_all
+from sqlalchemy.orm import Session
+from ycc_hull.db.engine import get_db_engine, query_all
 from ycc_hull.db.entities import (
     FeeRecordEntity,
+    LicenceEntity,
     MemberEntity,
     MembershipTypeEntity,
     UserEntity,

@@ -13,21 +13,6 @@ from legacy_password_hashing.password_hashing import (
     hash_ycc_password,
     verify_ycc_password,
 )
-from test_data.utils.helpers import (
-    generate_helper_task_helpers,
-    generate_helper_tasks,
-    generate_helper_task_categories,
-)
-from ycc_hull.db.entities import (
-    BaseEntity,
-    BoatEntity,
-    EntranceFeeRecordEntity,
-    FeeRecordEntity,
-    LicenceEntity,
-    MemberEntity,
-    UserEntity,
-)
-
 from test_data.generator_config import (
     BOATS_EXPORTED_JSON_FILE,
     BOATS_JSON_FILE,
@@ -42,7 +27,21 @@ from test_data.generator_config import (
     MEMBERS_JSON_FILE,
     USERS_JSON_FILE,
 )
+from test_data.utils.helpers import (
+    generate_helper_task_categories,
+    generate_helper_task_helpers,
+    generate_helper_tasks,
+)
 from test_data.utils.licences import generate_licences
+from ycc_hull.db.entities import (
+    BaseEntity,
+    BoatEntity,
+    EntranceFeeRecordEntity,
+    FeeRecordEntity,
+    LicenceEntity,
+    MemberEntity,
+    UserEntity,
+)
 
 MemberInfo = NamedTuple(
     "MemberInfo",
@@ -348,6 +347,34 @@ def _did_not_pay_fee_current_year(member_info: MemberInfo) -> bool:
     return not _paid_fee_current_year(member_info)
 
 
+def get_members_with_licence(
+    member_infos: List[MemberInfo], licence_info_id: int
+) -> Iterator[MemberInfo]:
+    return filter(
+        lambda member_info: _has_licence(member_info, licence_info_id), member_infos
+    )
+
+
+def get_members_without_licence(
+    member_infos: List[MemberInfo], licence_info_id: int
+) -> Iterator[MemberInfo]:
+    return filter(
+        lambda member_info: _lacks_licence(member_info, licence_info_id), member_infos
+    )
+
+
+def _has_licence(member_info: MemberInfo, licence_info_id: int) -> bool:
+    search = filter(
+        lambda licence: licence.licence_id == licence_info_id,
+        member_info.licences,
+    )
+    return any(search)
+
+
+def _lacks_licence(member_info: MemberInfo, licence_info_id: int) -> bool:
+    return not _has_licence(member_info, licence_info_id)
+
+
 def generate(force_regenerate: bool = False) -> None:
     if path.exists(MEMBERS_JSON_FILE) and not force_regenerate:
         print("== Skipping members")
@@ -394,6 +421,14 @@ def generate(force_regenerate: bool = False) -> None:
             + next(
                 get_members_without_payment_current_year(member_infos[100:])
             ).user.logon_id
+        )
+        print(
+            "Has M key: "
+            + next(get_members_with_licence(member_infos[100:], 9)).user.logon_id
+        )
+        print(
+            "Lacks M key: "
+            + next(get_members_without_licence(member_infos[100:], 9)).user.logon_id
         )
 
     if path.exists(BOATS_JSON_FILE) and not force_regenerate:
