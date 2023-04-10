@@ -978,24 +978,32 @@ class HelperTasks(Base):
     __tablename__ = "helper_tasks"
     __table_args__ = (
         CheckConstraint(
-            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL)\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL) ',
-            name="sys_c009886",
+            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
+            name="helper_tasks_check_timing",
         ),
         CheckConstraint(
-            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL)\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL) ',
-            name="sys_c009886",
+            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
+            name="helper_tasks_check_timing",
         ),
         CheckConstraint(
-            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL)\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL) ',
-            name="sys_c009886",
-        ),
-        CheckConstraint(
-            " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
-            name="sys_c009885",
+            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
+            name="helper_tasks_check_timing",
         ),
         CheckConstraint(
             " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
-            name="sys_c009885",
+            name="helper_tasks_check_captain_fields",
+        ),
+        CheckConstraint(
+            " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
+            name="helper_tasks_check_captain_fields",
+        ),
+        CheckConstraint(
+            "helpers_min_count <= helpers_max_count",
+            name="helper_tasks_check_helpers_min_max_count",
+        ),
+        CheckConstraint(
+            "helpers_min_count <= helpers_max_count",
+            name="helper_tasks_check_helpers_min_max_count",
         ),
         ForeignKeyConstraint(
             ["captain_id"], ["members.id"], name="helper_tasks_captain_fk"
@@ -1035,9 +1043,9 @@ class HelperTasks(Base):
     short_description = Column(VARCHAR(200), nullable=False)
     contact_id = Column(NUMBER(asdecimal=False), nullable=False)
     urgent = Column(NUMBER(1, 0, False), nullable=False)
-    published = Column(NUMBER(1, 0, False), nullable=False)
     helpers_min_count = Column(NUMBER(asdecimal=False), nullable=False)
     helpers_max_count = Column(NUMBER(asdecimal=False), nullable=False)
+    published = Column(NUMBER(1, 0, False), nullable=False)
     long_description = Column(Text)
     START = Column(DateTime)
     end = Column(DateTime)
@@ -1056,9 +1064,7 @@ class HelperTasks(Base):
     contact = relationship(
         "Members", foreign_keys=[contact_id], back_populates="helper_tasks_"
     )
-    helper_task_helpers = relationship(
-        "HelperTaskHelpers", back_populates="helper_task"
-    )
+    helper_task_helpers = relationship("HelperTaskHelpers", back_populates="task")
 
 
 class Keys(Base):
@@ -1147,22 +1153,20 @@ class HelperTaskHelpers(Base):
     __tablename__ = "helper_task_helpers"
     __table_args__ = (
         ForeignKeyConstraint(
-            ["helper_task_id"], ["helper_tasks.id"], name="helper_task_helpers_task_fk"
-        ),
-        ForeignKeyConstraint(
             ["member_id"], ["members.id"], name="helper_task_helpers_member_fk"
         ),
-        PrimaryKeyConstraint(
-            "helper_task_id", "member_id", name="helper_task_helpers_pk"
+        ForeignKeyConstraint(
+            ["task_id"], ["helper_tasks.id"], name="helper_task_helpers_task_fk"
         ),
+        PrimaryKeyConstraint("task_id", "member_id", name="helper_task_helpers_pk"),
     )
 
-    helper_task_id = Column(NUMBER(asdecimal=False), nullable=False)
+    task_id = Column(NUMBER(asdecimal=False), nullable=False)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     subscribed_at = Column(DateTime, nullable=False)
 
-    helper_task = relationship("HelperTasks", back_populates="helper_task_helpers")
     member = relationship("Members", back_populates="helper_task_helpers")
+    task = relationship("HelperTasks", back_populates="helper_task_helpers")
 
 
 class Keyslog(Base):
