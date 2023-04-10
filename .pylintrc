@@ -4,7 +4,7 @@ max-line-length=160
 extension-pkg-allow-list=pydantic
 
 [MESSAGES CONTROL]
-# C0116: allow functions/class methods without a docstring
-# C0301: black takes care of the formatting
-# R0903: generates too much noise for model classes
+# C0116[missing-function-docstring]: allow functions/class methods without a docstring
+# C0301[line-too-long]: black takes care of the formatting
+# R0903[too-few-public-methods]: generates too much noise for model classes
 disable=C0116, C0301, R0903
