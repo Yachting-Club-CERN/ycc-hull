@@ -20,7 +20,7 @@ jobs:
         run: poetry install
       - name: Build
         run: poetry build
-      - name: Test test data generator
+      - name: Run test data generator
         run: |
           poetry run regenerate-test-data
           git status
