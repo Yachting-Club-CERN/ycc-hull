@@ -12,8 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for DB entities: licences, helpers
 - Add DTOs: helpers
 - Add test data: helpers
-- Add API endpoints: GET helper task categories, GET helper tasks
-- Add API endpoints: POST subscribe as captain and helper to a helper task
+- Add controller: helpers
+- Add API endpoints:
+  - GET helper task categories
+  - GET helper tasks
+  - GET helper task by ID
+  - POST subscribe as captain to a helper task
+  - POST subscribe as helper to a helper task
 
 ## [0.1.0] - 2023-04-05
 
