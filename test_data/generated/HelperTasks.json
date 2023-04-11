@@ -90,7 +90,7 @@
     "deadline": null,
     "end": {
       "@type": "datetime",
-      "@value": "2023-12-03T20:20:00"
+      "@value": "2023-12-03T20:30:00"
     },
     "helpers_max_count": 2,
     "helpers_min_count": 1,

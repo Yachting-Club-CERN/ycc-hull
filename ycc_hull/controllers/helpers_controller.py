@@ -122,6 +122,9 @@ class HelpersController:
 
     @staticmethod
     async def _check_can_subscribe(task: HelperTaskDto, member_id: int) -> None:
+        if not task.published:
+            raise ControllerConflictException("Cannot subscribe to an unpublished task")
+
         now = datetime.now()
         if (task.start and task.start < now) or (task.deadline and task.deadline < now):
             raise ControllerConflictException("Cannot subscribe to a task in the past")
