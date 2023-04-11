@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add support for DB entities: licences, helpers
-- Add DTOs: helpers
+- Add DTOs: licence info, helpers
 - Add test data: helpers
 - Add controller: helpers
 - Add API endpoints:
