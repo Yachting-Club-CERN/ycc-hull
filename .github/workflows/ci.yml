@@ -20,16 +20,20 @@ jobs:
         run: poetry install
       - name: Build
         run: poetry build
-      - name: Test test data generator
+      - name: Run test data generator
         run: |
           poetry run regenerate-test-data
           git status
-      - name: Lint
+      - name: Quick Lint
         run: |
           set -x
           poetry run black .
           git status
           poetry run mypy .
           poetry run flake8 .
-          poetry run pylint legacy_password_hashing test_data ycc_hull
+          set +x
+      - name: Pylint
+        run: |
+          set -x
+          poetry run pylint --jobs 0 legacy_password_hashing test_data ycc_hull
           set +x

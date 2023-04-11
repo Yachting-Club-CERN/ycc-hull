@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Any, Dict, List
 
 from sqlalchemy import ForeignKey, Index, PrimaryKeyConstraint, text
-from sqlalchemy.dialects.oracle import BLOB, CHAR, DATE, NUMBER, VARCHAR2
+from sqlalchemy.dialects.oracle import BLOB, CHAR, CLOB, DATE, NUMBER, VARCHAR2
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -119,6 +119,94 @@ class FeeRecordEntity(BaseEntity):
     paymentid: Mapped[int] = mapped_column(NUMBER)
 
 
+class HelperTaskCategoryEntity(BaseEntity):
+    """
+    Represents a helper task category.
+    """
+
+    __tablename__ = "helper_task_categories"
+
+    id: Mapped[int] = mapped_column(NUMBER, primary_key=True)
+    title: Mapped[str] = mapped_column(VARCHAR2(50), nullable=False)
+    short_description: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
+    long_description: Mapped[str] = mapped_column(CLOB)
+
+    tasks: Mapped[List["HelperTaskEntity"]] = relationship(back_populates="category")
+
+
+class HelperTaskEntity(BaseEntity):
+    """
+    Represents a helper task.
+    """
+
+    __tablename__ = "helper_tasks"
+
+    id: Mapped[int] = mapped_column(NUMBER, primary_key=True)
+    category_id: Mapped[int] = mapped_column(
+        NUMBER, ForeignKey("helper_task_categories.id"), nullable=False
+    )
+    title: Mapped[str] = mapped_column(VARCHAR2(50), nullable=False)
+    short_description: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
+    long_description: Mapped[str] = mapped_column(CLOB)
+    contact_id: Mapped[int] = mapped_column(
+        NUMBER, ForeignKey("members.id"), nullable=False
+    )
+    # Either start+end is specified or the deadline
+    start: Mapped[datetime] = mapped_column("START", DATE)
+    end: Mapped[datetime] = mapped_column(DATE)
+    deadline: Mapped[datetime] = mapped_column(DATE)
+    urgent: Mapped[bool] = mapped_column(NUMBER(1, 0, False), nullable=False)
+    captain_required_licence_info_id: Mapped[int] = mapped_column(
+        NUMBER, ForeignKey("infolicences.infoid")
+    )
+    helpers_min_count: Mapped[int] = mapped_column(NUMBER, nullable=False)
+    helpers_max_count: Mapped[int] = mapped_column(NUMBER, nullable=False)
+    published: Mapped[bool] = mapped_column(NUMBER(1, 0, False), nullable=False)
+    captain_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("members.id"))
+    captain_subscribed_at: Mapped[datetime] = mapped_column(DATE)
+
+    category: Mapped["HelperTaskCategoryEntity"] = relationship(
+        back_populates="tasks", lazy="joined"
+    )
+    contact: Mapped["MemberEntity"] = relationship(
+        foreign_keys=contact_id, back_populates="helper_tasks_as_contact", lazy="joined"
+    )
+    captain_required_licence_info: Mapped["LicenceInfoEntity"] = relationship(
+        lazy="joined"
+    )
+    captain: Mapped["MemberEntity"] = relationship(
+        foreign_keys=captain_id,
+        back_populates="helper_tasks_as_captain",
+        lazy="joined",
+    )
+    helpers: Mapped[List["HelperTaskHelperEntity"]] = relationship(
+        back_populates="helper_task", lazy="joined"
+    )
+
+
+class HelperTaskHelperEntity(BaseEntity):
+    """
+    Association between helper tasks and helpers.
+    """
+
+    __tablename__ = "helper_task_helpers"
+
+    task_id: Mapped[int] = mapped_column(
+        NUMBER, ForeignKey("helper_tasks.id"), primary_key=True
+    )
+    member_id: Mapped[int] = mapped_column(
+        NUMBER, ForeignKey("members.id"), primary_key=True
+    )
+    subscribed_at: Mapped[datetime] = mapped_column(DATE, nullable=False)
+
+    helper_task: Mapped["HelperTaskEntity"] = relationship(
+        back_populates="helpers", lazy="joined"
+    )
+    member: Mapped["MemberEntity"] = relationship(
+        back_populates="helper_tasks_as_helper", lazy="joined"
+    )
+
+
 class HolidayEntity(BaseEntity):
     """
     Represents a holiday. Holidays are usually the CERN holidays and are used for boat booking rules.
@@ -146,7 +234,7 @@ class LicenceEntity(BaseEntity):
     )
 
     member_id: Mapped[int] = mapped_column(
-        NUMBER(), ForeignKey("members.id"), nullable=False
+        NUMBER, ForeignKey("members.id"), nullable=False
     )
     licence_id: Mapped[int] = mapped_column(
         NUMBER(2, 0), ForeignKey("infolicences.infoid"), nullable=False
@@ -156,7 +244,7 @@ class LicenceEntity(BaseEntity):
     # Most often "Registered by Firstname LASTNAME"
     lcomments: Mapped[str] = mapped_column(VARCHAR2(100))
     # This should be linked to tests when they are supported, see issue #27
-    test_id: Mapped[int] = mapped_column(NUMBER())
+    test_id: Mapped[int] = mapped_column(NUMBER)
     # 0 = inactive, 1 = active, no idea why NUMBER(4,0) in the DB
     status: Mapped[int] = mapped_column(NUMBER(4, 0))
 
@@ -252,6 +340,15 @@ class MemberEntity(BaseEntity):
     # Code-only foreign key, not in DB
     fee_records: Mapped[List["FeeRecordEntity"]] = relationship(
         order_by="FeeRecordEntity.paid_date"
+    )
+    helper_tasks_as_contact: Mapped[List["HelperTaskEntity"]] = relationship(
+        foreign_keys="HelperTaskEntity.contact_id", back_populates="contact"
+    )
+    helper_tasks_as_captain: Mapped[List["HelperTaskEntity"]] = relationship(
+        foreign_keys="HelperTaskEntity.captain_id", back_populates="captain"
+    )
+    helper_tasks_as_helper: Mapped[List["HelperTaskHelperEntity"]] = relationship(
+        back_populates="member"
     )
     licences: Mapped[List["LicenceEntity"]] = relationship()
     # This could be many to many when away from Perl (and maybe APEX too)

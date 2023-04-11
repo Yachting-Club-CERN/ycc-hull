@@ -4,11 +4,13 @@ Member API endpoints.
 from datetime import date
 from typing import Optional, Sequence
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from ycc_hull.auth import AuthInfo, auth
 
 from ycc_hull.controllers.members_controller import MembersController
-from ycc_hull.error import raise_401
+from ycc_hull.api.errors import (
+    create_http_exception_403,
+)
 from ycc_hull.models.dtos import MemberPublicInfoDto, MembershipTypeDto, UserDto
 
 api_members = APIRouter(dependencies=[Depends(auth)])
@@ -21,9 +23,8 @@ async def members_get(
     current_year = date.today().year
 
     if year != current_year and not (auth_info.admin or auth_info.committee_member):
-        raise HTTPException(
-            status_code=403,
-            detail=f"You do not have permission to list members for {year}",
+        raise create_http_exception_403(
+            f"You do not have permission to list members for {year}"
         )
 
     return await MembersController.find_all_public_infos(year)
@@ -37,6 +38,6 @@ async def membership_types_get() -> Sequence[MembershipTypeDto]:
 @api_members.get("/api/v0/users")
 async def users_get(auth_info: AuthInfo = Depends(auth)) -> Sequence[UserDto]:
     if not auth_info.admin:
-        raise raise_401()
+        raise create_http_exception_403("You do not have permission to list users")
 
     return await MembersController.find_all_users()

@@ -11,7 +11,7 @@ from keycloak.exceptions import KeycloakAuthenticationError, KeycloakInvalidToke
 from pydantic import BaseModel
 
 from ycc_hull.config import CONFIG
-from ycc_hull.error import raise_401
+from ycc_hull.api.errors import create_http_exception_401
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -90,6 +90,11 @@ class AuthInfo(BaseModel):
     token_info: dict
 
     @property
+    def member_id(self) -> int:
+        # 292 is YCC DB ID from sub 'f:a9b693ac-d9aa-43c7-8b68-b3bb7d30cc8e:292'
+        return int(self.user_info["sub"].split(":")[-1])
+
+    @property
     def user_name(self) -> str:
         return self.user_info["preferred_username"]
 
@@ -162,14 +167,14 @@ async def auth(token: str = Depends(oauth2_scheme)) -> AuthInfo:
 
         if not token_info["active"]:
             logger.warning("Authentication failed")
-            raise raise_401(_INACTIVE_USER)
+            raise create_http_exception_401(_INACTIVE_USER)
 
         info = AuthInfo(user_info=user_info, token_info=token_info)
         logger.debug("Authentication succeeded: %s", info)
 
         if not info.active_member:
             logger.info("Inactive member: %s, roles: %s", info.user_name, info.roles)
-            raise raise_401(_INACTIVE_MEMBER)
+            raise create_http_exception_401(_INACTIVE_MEMBER)
 
         logger.info(
             "Active member: %s, roles: %s",
@@ -179,4 +184,6 @@ async def auth(token: str = Depends(oauth2_scheme)) -> AuthInfo:
         return info
     except (KeycloakAuthenticationError, KeycloakInvalidTokenError) as exc:
         logger.warning("Authentication failed: %s: %s", exc.__class__.__qualname__, exc)
-        raise raise_401(_AUTHENTICATION_FAILED)  # pylint: disable=raise-missing-from
+        raise create_http_exception_401(  # pylint: disable=raise-missing-from
+            _AUTHENTICATION_FAILED
+        )

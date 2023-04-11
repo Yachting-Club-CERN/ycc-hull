@@ -1,0 +1,158 @@
+[
+  {
+    "category_id": 2,
+    "contact_id": 1,
+    "deadline": null,
+    "end": {
+      "@type": "datetime",
+      "@value": "2023-01-04T18:00:00"
+    },
+    "helpers_max_count": 2,
+    "helpers_min_count": 1,
+    "id": 2011,
+    "published": true,
+    "short_description": "Go to BA5 and do something",
+    "start": {
+      "@type": "datetime",
+      "@value": "2023-01-04T15:00:00"
+    },
+    "title": "Winter Maintenance J80",
+    "urgent": false
+  },
+  {
+    "captain_id": 1,
+    "captain_subscribed_at": {
+      "@type": "datetime",
+      "@value": "2023-01-04T18:23:46"
+    },
+    "category_id": 2,
+    "contact_id": 1,
+    "deadline": {
+      "@type": "datetime",
+      "@value": "2023-01-05T20:00:00"
+    },
+    "end": null,
+    "helpers_max_count": 2,
+    "helpers_min_count": 2,
+    "id": 2012,
+    "published": true,
+    "short_description": "Go to BA5 and do something",
+    "start": null,
+    "title": "Winter Maintenance J70",
+    "urgent": false
+  },
+  {
+    "captain_required_licence_info_id": 9,
+    "category_id": 1,
+    "contact_id": 1,
+    "deadline": null,
+    "end": {
+      "@type": "datetime",
+      "@value": "2023-12-01T20:30:00"
+    },
+    "helpers_max_count": 2,
+    "helpers_min_count": 1,
+    "id": 2021,
+    "published": true,
+    "short_description": "Fictional December D/Y practice",
+    "start": {
+      "@type": "datetime",
+      "@value": "2023-12-01T18:00:00"
+    },
+    "title": "Surveillance",
+    "urgent": false
+  },
+  {
+    "captain_required_licence_info_id": 9,
+    "category_id": 1,
+    "contact_id": 1,
+    "deadline": null,
+    "end": {
+      "@type": "datetime",
+      "@value": "2023-12-02T20:30:00"
+    },
+    "helpers_max_count": 2,
+    "helpers_min_count": 1,
+    "id": 2022,
+    "published": true,
+    "short_description": "Fictional December D/Y practice",
+    "start": {
+      "@type": "datetime",
+      "@value": "2023-12-02T18:00:00"
+    },
+    "title": "Surveillance",
+    "urgent": false
+  },
+  {
+    "captain_required_licence_info_id": 9,
+    "category_id": 1,
+    "contact_id": 1,
+    "deadline": null,
+    "end": {
+      "@type": "datetime",
+      "@value": "2023-12-03T20:30:00"
+    },
+    "helpers_max_count": 2,
+    "helpers_min_count": 1,
+    "id": 2023,
+    "published": false,
+    "short_description": "This one is not published",
+    "start": {
+      "@type": "datetime",
+      "@value": "2023-12-03T18:00:00"
+    },
+    "title": "Surveillance",
+    "urgent": false
+  },
+  {
+    "category_id": 2,
+    "contact_id": 3,
+    "deadline": {
+      "@type": "datetime",
+      "@value": "2023-12-04T20:00:00"
+    },
+    "end": null,
+    "helpers_max_count": 3,
+    "helpers_min_count": 2,
+    "id": 2031,
+    "published": true,
+    "short_description": "Hull cleaning",
+    "start": null,
+    "title": "Maintenance J70",
+    "urgent": false
+  },
+  {
+    "category_id": 2,
+    "contact_id": 3,
+    "deadline": {
+      "@type": "datetime",
+      "@value": "2023-12-04T20:00:00"
+    },
+    "end": null,
+    "helpers_max_count": 1,
+    "helpers_min_count": 1,
+    "id": 2032,
+    "published": true,
+    "short_description": "Replace jib sheets",
+    "start": null,
+    "title": "Maintenance J80",
+    "urgent": true
+  },
+  {
+    "category_id": 2,
+    "contact_id": 3,
+    "deadline": {
+      "@type": "datetime",
+      "@value": "2023-12-04T20:00:00"
+    },
+    "end": null,
+    "helpers_max_count": 0,
+    "helpers_min_count": 0,
+    "id": 2033,
+    "published": true,
+    "short_description": "Buy a new winch and put in the boat",
+    "start": null,
+    "title": "Easy Maintenance J80",
+    "urgent": true
+  }
+]

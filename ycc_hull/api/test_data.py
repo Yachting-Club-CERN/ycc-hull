@@ -16,6 +16,9 @@ from ycc_hull.db.entities import (
     BoatEntity,
     EntranceFeeRecordEntity,
     FeeRecordEntity,
+    HelperTaskCategoryEntity,
+    HelperTaskEntity,
+    HelperTaskHelperEntity,
     HolidayEntity,
     LicenceEntity,
     LicenceInfoEntity,
@@ -37,24 +40,32 @@ class TestDataImporter:
         self._directory = directory
         self._session = session
 
-    async def import_exported(self, file_path: str, cls: type) -> List:
+    async def import_exported(
+        self, file_path: str, cls: type, commit_on_each: bool = False
+    ) -> List:
         async with aiofiles.open(
             f"{self._directory}/exported/{file_path}", "r", encoding="utf-8"
         ) as file:
             data = json.loads(await file.read())
-            return self._import(cls, data["results"][0]["items"])
+            return self._import(
+                cls, data["results"][0]["items"], commit_on_each=commit_on_each
+            )
 
-    async def import_generated(self, file_path: str, cls: type) -> list:
+    async def import_generated(
+        self, file_path: str, cls: type, commit_on_each: bool = False
+    ) -> list:
         async with aiofiles.open(
             f"{self._directory}/generated/{file_path}", "r", encoding="utf-8"
         ) as file:
             data = json.loads(await file.read())
-            return self._import(cls, data)
+            return self._import(cls, data, commit_on_each=commit_on_each)
 
-    def _import(self, cls: type, entries: list) -> list:
+    def _import(self, cls: type, entries: list, commit_on_each: bool) -> list:
         for entry in entries:
             entry = self._prepare(entry)
             self._session.add(cls(**entry))
+            if commit_on_each:
+                self._session.commit()
         return entries
 
     def _prepare(self, entry: dict) -> dict:
@@ -134,6 +145,33 @@ async def populate() -> List[str]:
             entries = await importer.import_generated("Licences.json", LicenceEntity)
             log.append(f"Add {len(entries)} licences")
 
+        if query_count(HelperTaskCategoryEntity):
+            log.append("Skipping helper task categories")
+        else:
+            entries = await importer.import_generated(
+                "HelperTaskCategories.json", HelperTaskCategoryEntity
+            )
+            log.append(f"Add {len(entries)} helper task categories")
+
+        if query_count(HelperTaskEntity):
+            log.append("Skipping helper tasks")
+        else:
+            entries = await importer.import_generated(
+                "HelperTasks.json", HelperTaskEntity
+            )
+            log.append(f"Add {len(entries)} helper tasks")
+
+        session.commit()
+        log.append("Commit")
+
+        if query_count(HelperTaskHelperEntity):
+            log.append("Skipping helper task helpers")
+        else:
+            entries = await importer.import_generated(
+                "HelperTaskHelpers.json", HelperTaskHelperEntity, commit_on_each=True
+            )
+            log.append(f"Add {len(entries)} helper task helpers (COMMIT on each)")
+
         session.commit()
         log.append("Commit")
 
@@ -144,6 +182,10 @@ async def populate() -> List[str]:
 async def clear() -> List[str]:
     log: List[str] = []
     classes = (
+        # Helpers
+        HelperTaskHelperEntity,
+        HelperTaskEntity,
+        HelperTaskCategoryEntity,
         # Boats
         BoatEntity,
         # Licences,

@@ -8,8 +8,12 @@ from typing import FrozenSet, Optional
 
 from ycc_hull.models.base import CamelisedBaseModel
 
+CONFIG_FILE = (
+    "conf/config-dev.json"
+    if os.path.exists("conf/config-dev.json")
+    else "conf/config.json"
+)
 
-CONFIG_FILE = "conf/config.json"
 LOGGING_CONFIG_FILE = "conf/logging.conf"
 
 

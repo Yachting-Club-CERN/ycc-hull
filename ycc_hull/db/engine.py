@@ -3,7 +3,7 @@ DB Engine.
 """
 from typing import Any, Callable, Optional, Sequence, TypeVar
 
-from sqlalchemy import Select, create_engine
+from sqlalchemy import Select, create_engine, func, select
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
@@ -38,7 +38,9 @@ T = TypeVar("T")
 
 
 def query_all(
-    statement: Select, row_transformer: Optional[Callable[[Any], T]] = None
+    statement: Select,
+    row_transformer: Optional[Callable[[Any], T]] = None,
+    unique: bool = False,
 ) -> Sequence[T]:
     """
     Queries all results for the specified statement from the database.
@@ -52,9 +54,17 @@ def query_all(
     """
     transformer = row_transformer or (lambda x: x)
     with Session(get_db_engine()) as session:
-        return [transformer(row) for row in session.scalars(statement)]
+        result = session.scalars(statement)
+        if unique:
+            result = result.unique()
+
+        return [transformer(row) for row in result]
 
 
 def query_count(entity_class: type) -> int:
     with Session(get_db_engine()) as session:
-        return session.query(entity_class).count()
+        return session.scalar(
+            select(func.count()).select_from(  # pylint: disable=not-callable
+                entity_class
+            )
+        )  # type: ignore

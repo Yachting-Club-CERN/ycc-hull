@@ -8,6 +8,7 @@ from sqlalchemy import (
     Column,
     DateTime,
     ForeignKeyConstraint,
+    Identity,
     Index,
     Integer,
     LargeBinary,
@@ -195,6 +196,31 @@ t_feesrecords = Table(
 )
 
 
+class HelperTaskCategories(Base):
+    __tablename__ = "helper_task_categories"
+    __table_args__ = (PrimaryKeyConstraint("id", name="helper_task_categories_pk"),)
+
+    id = Column(
+        NUMBER(asdecimal=False),
+        Identity(
+            always=True,
+            on_null=False,
+            start=1,
+            increment=1,
+            minvalue=1,
+            maxvalue=9999999999999999999999999999,
+            cycle=False,
+            cache=20,
+            order=False,
+        ),
+    )
+    title = Column(VARCHAR(50), nullable=False)
+    short_description = Column(VARCHAR(200), nullable=False)
+    long_description = Column(Text)
+
+    helper_tasks = relationship("HelperTasks", back_populates="category")
+
+
 t_holidays = Table(
     "holidays",
     metadata,
@@ -238,6 +264,10 @@ class Infolicences(Base):
     course_name = Column(VARCHAR(30))
     course_active = Column(CHAR(1))
     course_level = Column(NUMBER(1, 0, False))
+
+    helper_tasks = relationship(
+        "HelperTasks", back_populates="captain_required_licence_info"
+    )
 
 
 class InterestLevels(Base):
@@ -368,8 +398,15 @@ class Members(Base):
     )
     committee = relationship("Committee", back_populates="member")
     courses_obs = relationship("CoursesObs", back_populates="member")
+    helper_tasks = relationship(
+        "HelperTasks", foreign_keys="[HelperTasks.captain_id]", back_populates="captain"
+    )
+    helper_tasks_ = relationship(
+        "HelperTasks", foreign_keys="[HelperTasks.contact_id]", back_populates="contact"
+    )
     keys = relationship("Keys", back_populates="member")
     licences = relationship("Licences", back_populates="member")
+    helper_task_helpers = relationship("HelperTaskHelpers", back_populates="member")
     regatta_participation = relationship(
         "RegattaParticipation", back_populates="member"
     )
@@ -937,6 +974,99 @@ class Employees(Base):
     dep = relationship("Departments", back_populates="employees")
 
 
+class HelperTasks(Base):
+    __tablename__ = "helper_tasks"
+    __table_args__ = (
+        CheckConstraint(
+            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
+            name="helper_tasks_check_timing",
+        ),
+        CheckConstraint(
+            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
+            name="helper_tasks_check_timing",
+        ),
+        CheckConstraint(
+            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
+            name="helper_tasks_check_timing",
+        ),
+        CheckConstraint(
+            " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
+            name="helper_tasks_check_captain_fields",
+        ),
+        CheckConstraint(
+            " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
+            name="helper_tasks_check_captain_fields",
+        ),
+        CheckConstraint(
+            "helpers_min_count <= helpers_max_count",
+            name="helper_tasks_check_helpers_min_max_count",
+        ),
+        CheckConstraint(
+            "helpers_min_count <= helpers_max_count",
+            name="helper_tasks_check_helpers_min_max_count",
+        ),
+        ForeignKeyConstraint(
+            ["captain_id"], ["members.id"], name="helper_tasks_captain_fk"
+        ),
+        ForeignKeyConstraint(
+            ["captain_required_licence_info_id"],
+            ["infolicences.infoid"],
+            name="helper_tasks_captain_required_licence_info_fk",
+        ),
+        ForeignKeyConstraint(
+            ["category_id"],
+            ["helper_task_categories.id"],
+            name="helper_tasks_category_fk",
+        ),
+        ForeignKeyConstraint(
+            ["contact_id"], ["members.id"], name="helper_tasks_contact_fk"
+        ),
+        PrimaryKeyConstraint("id", name="helper_tasks_pk"),
+    )
+
+    id = Column(
+        NUMBER(asdecimal=False),
+        Identity(
+            always=True,
+            on_null=False,
+            start=3000,
+            increment=1,
+            minvalue=1,
+            maxvalue=9999999999999999999999999999,
+            cycle=False,
+            cache=20,
+            order=False,
+        ),
+    )
+    category_id = Column(NUMBER(asdecimal=False), nullable=False)
+    title = Column(VARCHAR(50), nullable=False)
+    short_description = Column(VARCHAR(200), nullable=False)
+    contact_id = Column(NUMBER(asdecimal=False), nullable=False)
+    urgent = Column(NUMBER(1, 0, False), nullable=False)
+    helpers_min_count = Column(NUMBER(asdecimal=False), nullable=False)
+    helpers_max_count = Column(NUMBER(asdecimal=False), nullable=False)
+    published = Column(NUMBER(1, 0, False), nullable=False)
+    long_description = Column(Text)
+    START = Column(DateTime)
+    end = Column(DateTime)
+    deadline = Column(DateTime)
+    captain_required_licence_info_id = Column(NUMBER(asdecimal=False))
+    captain_id = Column(NUMBER(asdecimal=False))
+    captain_subscribed_at = Column(DateTime)
+
+    captain = relationship(
+        "Members", foreign_keys=[captain_id], back_populates="helper_tasks"
+    )
+    captain_required_licence_info = relationship(
+        "Infolicences", back_populates="helper_tasks"
+    )
+    category = relationship("HelperTaskCategories", back_populates="helper_tasks")
+    contact = relationship(
+        "Members", foreign_keys=[contact_id], back_populates="helper_tasks_"
+    )
+    helper_task_helpers = relationship("HelperTaskHelpers", back_populates="task")
+
+
 class Keys(Base):
     __tablename__ = "keys"
     __table_args__ = (
@@ -1017,6 +1147,26 @@ class WebLogon(Members):
     pass_reset_key = Column(VARCHAR(128))
     pass_reset_exp = Column(DateTime)
     last_changed = Column(DateTime)
+
+
+class HelperTaskHelpers(Base):
+    __tablename__ = "helper_task_helpers"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["member_id"], ["members.id"], name="helper_task_helpers_member_fk"
+        ),
+        ForeignKeyConstraint(
+            ["task_id"], ["helper_tasks.id"], name="helper_task_helpers_task_fk"
+        ),
+        PrimaryKeyConstraint("task_id", "member_id", name="helper_task_helpers_pk"),
+    )
+
+    task_id = Column(NUMBER(asdecimal=False), nullable=False)
+    member_id = Column(NUMBER(asdecimal=False), nullable=False)
+    subscribed_at = Column(DateTime, nullable=False)
+
+    member = relationship("Members", back_populates="helper_task_helpers")
+    task = relationship("HelperTasks", back_populates="helper_task_helpers")
 
 
 class Keyslog(Base):
