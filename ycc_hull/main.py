@@ -93,7 +93,7 @@ def start() -> None:
         MembersController.find_all_membership_types()
     )
 
-    print("[init] DB connection successful, membership types: %s", membership_types)
+    print("[init] DB connection successful, membership types: ", membership_types)
 
     if not os.path.exists("log"):
         os.makedirs("log")
