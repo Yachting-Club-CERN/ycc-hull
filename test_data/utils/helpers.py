@@ -99,7 +99,7 @@ def generate_helper_tasks() -> List[HelperTaskEntity]:
             short_description="This one is not published",
             contact_id=1,
             start=datetime(CURRENT_YEAR, 12, 3, 18, 0),
-            end=datetime(CURRENT_YEAR, 12, 3, 20, 20),
+            end=datetime(CURRENT_YEAR, 12, 3, 20, 30),
             deadline=None,
             helpers_min_count=1,
             helpers_max_count=2,

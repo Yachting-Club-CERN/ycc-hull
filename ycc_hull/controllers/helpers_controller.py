@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Optional, Sequence, Tuple
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session, joinedload, lazyload
+from sqlalchemy.orm import Session, lazyload
 
 from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
@@ -101,7 +101,7 @@ class HelpersController:
     async def _find_tasks(
         task_id: Optional[int], published: Optional[bool]
     ) -> Sequence[HelperTaskDto]:
-        query = select(HelperTaskEntity).options(joinedload(HelperTaskEntity.category))
+        query = select(HelperTaskEntity)
 
         if task_id is not None:
             query = query.where(HelperTaskEntity.id == task_id)
@@ -111,7 +111,7 @@ class HelpersController:
         query = query.order_by(
             func.coalesce(  # pylint: disable=not-callable
                 HelperTaskEntity.start, HelperTaskEntity.deadline
-            ).desc()
+            ).asc()
         )
 
         return query_all(

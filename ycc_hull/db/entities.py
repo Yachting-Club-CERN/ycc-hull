@@ -165,7 +165,9 @@ class HelperTaskEntity(BaseEntity):
     captain_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("members.id"))
     captain_subscribed_at: Mapped[datetime] = mapped_column(DATE)
 
-    category: Mapped["HelperTaskCategoryEntity"] = relationship(back_populates="tasks")
+    category: Mapped["HelperTaskCategoryEntity"] = relationship(
+        back_populates="tasks", lazy="joined"
+    )
     contact: Mapped["MemberEntity"] = relationship(
         foreign_keys=contact_id, back_populates="helper_tasks_as_contact", lazy="joined"
     )
