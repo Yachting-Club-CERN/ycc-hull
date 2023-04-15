@@ -7,6 +7,7 @@ from sqlalchemy import (
     CheckConstraint,
     Column,
     DateTime,
+    Enum,
     ForeignKeyConstraint,
     Identity,
     Index,
@@ -58,6 +59,33 @@ t_agenda_empty = Table(
     Column("text", VARCHAR(500)),
     Column("url", VARCHAR(100)),
     Column("image_url", VARCHAR(100)),
+)
+
+
+t_audit_log = Table(
+    "audit_log",
+    metadata,
+    Column(
+        "id",
+        NUMBER(asdecimal=False),
+        Identity(
+            always=True,
+            on_null=False,
+            start=1,
+            increment=1,
+            minvalue=1,
+            maxvalue=9999999999999999999999999999,
+            cycle=False,
+            cache=20,
+            order=False,
+        ),
+        nullable=False,
+    ),
+    Column("DATE", DateTime, nullable=False, server_default=text("SYSDATE ")),
+    Column("application", VARCHAR(200), nullable=False),
+    Column("USER", VARCHAR(200), nullable=False),
+    Column("short_description", VARCHAR(200), nullable=False),
+    Column("long_description", Text),
 )
 
 
@@ -203,9 +231,8 @@ class HelperTaskCategories(Base):
     id = Column(
         NUMBER(asdecimal=False),
         Identity(
-            always=True,
             on_null=False,
-            start=1,
+            start=10,
             increment=1,
             minvalue=1,
             maxvalue=9999999999999999999999999999,
@@ -978,6 +1005,14 @@ class HelperTasks(Base):
     __tablename__ = "helper_tasks"
     __table_args__ = (
         CheckConstraint(
+            " (                 0 <= helpers_min_count )\n            AND ( helpers_min_count <= helpers_max_count ) ",
+            name="helper_tasks_check_helpers_min_max_count",
+        ),
+        CheckConstraint(
+            " (                 0 <= helpers_min_count )\n            AND ( helpers_min_count <= helpers_max_count ) ",
+            name="helper_tasks_check_helpers_min_max_count",
+        ),
+        CheckConstraint(
             ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
             name="helper_tasks_check_timing",
         ),
@@ -996,14 +1031,6 @@ class HelperTasks(Base):
         CheckConstraint(
             " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
             name="helper_tasks_check_captain_fields",
-        ),
-        CheckConstraint(
-            "helpers_min_count <= helpers_max_count",
-            name="helper_tasks_check_helpers_min_max_count",
-        ),
-        CheckConstraint(
-            "helpers_min_count <= helpers_max_count",
-            name="helper_tasks_check_helpers_min_max_count",
         ),
         ForeignKeyConstraint(
             ["captain_id"], ["members.id"], name="helper_tasks_captain_fk"
@@ -1027,7 +1054,6 @@ class HelperTasks(Base):
     id = Column(
         NUMBER(asdecimal=False),
         Identity(
-            always=True,
             on_null=False,
             start=3000,
             increment=1,
@@ -1065,6 +1091,19 @@ class HelperTasks(Base):
         "Members", foreign_keys=[contact_id], back_populates="helper_tasks_"
     )
     helper_task_helpers = relationship("HelperTaskHelpers", back_populates="task")
+
+
+class HelpersAppPermissions(Members):
+    __tablename__ = "helpers_app_permissions"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["member_id"], ["members.id"], name="helpers_app_permissions_member_fk"
+        ),
+        PrimaryKeyConstraint("member_id", name="helpers_app_permissions_pk"),
+    )
+
+    member_id = Column(NUMBER(asdecimal=False))
+    permission = Column(Enum("ADMIN", "EDITOR"), nullable=False)
 
 
 class Keys(Base):
