@@ -1,11 +1,11 @@
 """
 Holiday API endpoints.
 """
-from typing import Sequence
+from collections.abc import Sequence
 
 from fastapi import APIRouter, Depends
-from ycc_hull.auth import auth
 
+from ycc_hull.auth import auth
 from ycc_hull.controllers.holidays_controller import HolidaysController
 from ycc_hull.models.dtos import HolidayDto
 

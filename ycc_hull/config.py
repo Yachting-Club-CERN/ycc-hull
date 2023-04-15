@@ -4,7 +4,7 @@ Application configuration.
 import json
 import os
 from enum import Enum
-from typing import FrozenSet, Optional
+from typing import Optional
 
 from ycc_hull.models.base import CamelisedBaseModel
 
@@ -35,7 +35,7 @@ class Config(CamelisedBaseModel):
 
     environment: Environment
     db_url: str
-    cors_origins: FrozenSet[str]
+    cors_origins: frozenset[str]
     keycloak_server_url: str
     keycloak_realm: str
     keycloak_client: str

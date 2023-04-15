@@ -1,7 +1,7 @@
 """
 Boats controller.
 """
-from typing import Sequence
+from collections.abc import Sequence
 from sqlalchemy import select
 from ycc_hull.db.engine import query_all
 from ycc_hull.db.entities import BoatEntity

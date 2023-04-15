@@ -1,8 +1,7 @@
 """
 Boat API endpoints.
 """
-from typing import Sequence
-
+from collections.abc import Sequence
 from fastapi import APIRouter, Depends
 from ycc_hull.auth import auth
 
