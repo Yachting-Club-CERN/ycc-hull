@@ -3,19 +3,20 @@ Test Data API endpoints.
 """
 import json
 from datetime import date, datetime
-from typing import List
 
 import aiofiles
 from fastapi import APIRouter
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 
-from ycc_hull.db.engine import get_db_engine, query_count
+from ycc_hull.db.engine import create_db_session, get_db_engine, query_count
 from ycc_hull.db.entities import (
+    AuditLogEntryEntity,
     BaseEntity,
     BoatEntity,
     EntranceFeeRecordEntity,
     FeeRecordEntity,
+    HelpersAppPermissionEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
     HelperTaskHelperEntity,
@@ -42,7 +43,7 @@ class TestDataImporter:
 
     async def import_exported(
         self, file_path: str, cls: type, commit_on_each: bool = False
-    ) -> List:
+    ) -> list:
         async with aiofiles.open(
             f"{self._directory}/exported/{file_path}", "r", encoding="utf-8"
         ) as file:
@@ -83,10 +84,10 @@ class TestDataImporter:
 
 
 @api_test_data.post("/api/v0/test-data/populate")
-async def populate() -> List[str]:
-    log: List[str] = []
+async def populate() -> list[str]:
+    log: list[str] = []
 
-    with Session(get_db_engine()) as session:
+    with create_db_session():
         importer = TestDataImporter(directory="test_data/", session=session)
 
         if query_count(HolidayEntity):
@@ -144,6 +145,16 @@ async def populate() -> List[str]:
         else:
             entries = await importer.import_generated("Licences.json", LicenceEntity)
             log.append(f"Add {len(entries)} licences")
+        session.commit()
+        log.append("Commit")
+
+        if query_count(HelpersAppPermissionEntity):
+            log.append("Skipping helpers app permissions")
+        else:
+            entries = await importer.import_generated(
+                "HelpersAppPermissions.json", HelpersAppPermissionEntity
+            )
+            log.append(f"Add {len(entries)} helpers app permissions")
 
         if query_count(HelperTaskCategoryEntity):
             log.append("Skipping helper task categories")
@@ -179,10 +190,11 @@ async def populate() -> List[str]:
 
 
 @api_test_data.post("/api/v0/test-data/clear")
-async def clear() -> List[str]:
-    log: List[str] = []
+async def clear() -> list[str]:
+    log: list[str] = []
     classes = (
         # Helpers
+        HelpersAppPermissionEntity,
         HelperTaskHelperEntity,
         HelperTaskEntity,
         HelperTaskCategoryEntity,
@@ -197,6 +209,7 @@ async def clear() -> List[str]:
         UserEntity,
         MemberEntity,
         # General
+        AuditLogEntryEntity,
         MembershipTypeEntity,
         HolidayEntity,
     )
@@ -211,7 +224,7 @@ async def clear() -> List[str]:
             f"Some entity classes are not handled: {unhandled_class_names}"
         )
 
-    with Session(get_db_engine()) as session:
+    with create_db_session() as session:
         for cls in classes:
             log.append(f"Deleting {cls.__qualname__} entities")
             session.execute(delete(cls))
@@ -223,8 +236,8 @@ async def clear() -> List[str]:
 
 
 @api_test_data.post("/api/v0/test-data/repopulate")
-async def repopulate() -> List[str]:
-    log: List[str] = []
+async def repopulate() -> list[str]:
+    log: list[str] = []
 
     log.extend(await clear())
     log.extend(await populate())

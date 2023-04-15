@@ -8,7 +8,7 @@ Note 2: The existing DB is inconsistent in spelling "licence" vs "license". Try 
 Note 3: The existing DB is inconsistent in boolean fields. Sometimes they are NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
 """
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 from sqlalchemy import ForeignKey, Index, PrimaryKeyConstraint, text
 from sqlalchemy.dialects.oracle import BLOB, CHAR, CLOB, DATE, NUMBER, VARCHAR2
@@ -20,11 +20,28 @@ class BaseEntity(DeclarativeBase):
     Base class for DB entities.
     """
 
-    def dict(self) -> Dict[str, Any]:
+    def dict(self) -> dict[str, Any]:
         return {k: v for k, v in sorted(self.__dict__.items()) if not k.startswith("_")}
 
     def __repr__(self) -> str:
         return f"{self.__class__.__qualname__}{self.dict()}"
+
+
+class AuditLogEntryEntity(BaseEntity):
+    """
+    Represents an audit log entry.
+    """
+
+    __tablename__ = "audit_log"
+
+    id: Mapped[int] = mapped_column(NUMBER, primary_key=True)
+    date: Mapped[datetime] = mapped_column(
+        "DATE", DATE, nullable=False, server_default=text("sysdate")
+    )
+    application: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
+    user: Mapped[str] = mapped_column("USER", VARCHAR2(200), nullable=False)
+    short_description: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
+    long_description: Mapped[str] = mapped_column(CLOB)
 
 
 class BoatEntity(BaseEntity):
@@ -34,7 +51,7 @@ class BoatEntity(BaseEntity):
 
     __tablename__ = "boats"
 
-    boat_id: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, primary_key=True)
+    boat_id: Mapped[int] = mapped_column(NUMBER(3, 0), primary_key=True)
     name: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False, unique=True)
     type: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
     ycc_num: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, unique=True)
@@ -67,7 +84,7 @@ class EntranceFeeRecordEntity(BaseEntity):
 
     # Code-only foreign key, not in DB
     member_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), nullable=False, primary_key=True
+        NUMBER, ForeignKey("members.id"), primary_key=True
     )
     """
     This field is nullable, however, it is only null for some members who joined 2010 or before. (Lajos, 2023-03)
@@ -119,6 +136,19 @@ class FeeRecordEntity(BaseEntity):
     paymentid: Mapped[int] = mapped_column(NUMBER)
 
 
+class HelpersAppPermissionEntity(BaseEntity):
+    """
+    Represents a Helpers App permission.
+    """
+
+    __tablename__ = "helpers_app_permissions"
+
+    member_id: Mapped[int] = mapped_column(
+        NUMBER, ForeignKey("members.id"), primary_key=True
+    )
+    permission: Mapped[str] = mapped_column(VARCHAR2, nullable=False)
+
+
 class HelperTaskCategoryEntity(BaseEntity):
     """
     Represents a helper task category.
@@ -131,7 +161,7 @@ class HelperTaskCategoryEntity(BaseEntity):
     short_description: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
     long_description: Mapped[str] = mapped_column(CLOB)
 
-    tasks: Mapped[List["HelperTaskEntity"]] = relationship(back_populates="category")
+    tasks: Mapped[list["HelperTaskEntity"]] = relationship(back_populates="category")
 
 
 class HelperTaskEntity(BaseEntity):
@@ -179,7 +209,7 @@ class HelperTaskEntity(BaseEntity):
         back_populates="helper_tasks_as_captain",
         lazy="joined",
     )
-    helpers: Mapped[List["HelperTaskHelperEntity"]] = relationship(
+    helpers: Mapped[list["HelperTaskHelperEntity"]] = relationship(
         back_populates="helper_task", lazy="joined"
     )
 
@@ -262,7 +292,7 @@ class LicenceInfoEntity(BaseEntity):
     __tablename__ = "infolicences"
 
     # Can be negative
-    infoid: Mapped[int] = mapped_column(NUMBER, nullable=False, primary_key=True)
+    infoid: Mapped[int] = mapped_column(NUMBER, primary_key=True)
     description = mapped_column(VARCHAR2(50), nullable=False)
     # Course identifier, e.g., "GS", sometimes NULL
     ncourse: Mapped[str] = mapped_column(VARCHAR2(2))
@@ -289,7 +319,7 @@ class MemberEntity(BaseEntity):
 
     __tablename__ = "members"
 
-    id: Mapped[int] = mapped_column(NUMBER, nullable=False, primary_key=True)
+    id: Mapped[int] = mapped_column(NUMBER, primary_key=True)
     name: Mapped[str] = mapped_column(VARCHAR2(25), nullable=False)
     firstname: Mapped[str] = mapped_column(VARCHAR2(25), nullable=False)
     birthday: Mapped[datetime] = mapped_column(DATE)
@@ -338,26 +368,26 @@ class MemberEntity(BaseEntity):
     # Code-only foreign key, not in DB
     entrance_fee_record: Mapped["EntranceFeeRecordEntity"] = relationship()
     # Code-only foreign key, not in DB
-    fee_records: Mapped[List["FeeRecordEntity"]] = relationship(
+    fee_records: Mapped[list["FeeRecordEntity"]] = relationship(
         order_by="FeeRecordEntity.paid_date"
     )
-    helper_tasks_as_contact: Mapped[List["HelperTaskEntity"]] = relationship(
+    helper_tasks_as_contact: Mapped[list["HelperTaskEntity"]] = relationship(
         foreign_keys="HelperTaskEntity.contact_id", back_populates="contact"
     )
-    helper_tasks_as_captain: Mapped[List["HelperTaskEntity"]] = relationship(
+    helper_tasks_as_captain: Mapped[list["HelperTaskEntity"]] = relationship(
         foreign_keys="HelperTaskEntity.captain_id", back_populates="captain"
     )
-    helper_tasks_as_helper: Mapped[List["HelperTaskHelperEntity"]] = relationship(
+    helper_tasks_as_helper: Mapped[list["HelperTaskHelperEntity"]] = relationship(
         back_populates="member"
     )
-    licences: Mapped[List["LicenceEntity"]] = relationship()
+    licences: Mapped[list["LicenceEntity"]] = relationship()
     # This could be many to many when away from Perl (and maybe APEX too)
-    maintained_boats1: Mapped[List["BoatEntity"]] = relationship(
+    maintained_boats1: Mapped[list["BoatEntity"]] = relationship(
         foreign_keys="BoatEntity.maintainer_id",
         order_by="BoatEntity.name",
         back_populates="maintainer1",
     )
-    maintained_boats2: Mapped[List["BoatEntity"]] = relationship(
+    maintained_boats2: Mapped[list["BoatEntity"]] = relationship(
         foreign_keys="BoatEntity.maintainer_id2",
         order_by="BoatEntity.name",
         back_populates="maintainer2",
@@ -397,7 +427,7 @@ class UserEntity(BaseEntity):
     __tablename__ = "web_logon"
 
     member_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), nullable=False, primary_key=True
+        NUMBER, ForeignKey("members.id"), primary_key=True
     )
     logon_id: Mapped[str] = mapped_column(VARCHAR2(25), nullable=False, unique=True)
     session_id: Mapped[int] = mapped_column(NUMBER)

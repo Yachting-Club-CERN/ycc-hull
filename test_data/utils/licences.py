@@ -2,7 +2,6 @@
 Test data generator component for licences.
 """
 import json
-from typing import Dict, List, Set
 
 from faker import Faker
 
@@ -10,7 +9,7 @@ from test_data.generator_config import CURRENT_YEAR, INFOLICENCES_EXPORTED_JSON_
 from ycc_hull.db.entities import LicenceEntity, MemberEntity
 
 
-def _create_licences_to_ids() -> Dict[str, int]:
+def _create_licences_to_ids() -> dict[str, int]:
     with open(INFOLICENCES_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
         return {
             licence_info["nlicence"]: licence_info["infoid"]
@@ -25,7 +24,7 @@ _LICENCES_LEVEL3 = ["D3"]
 _LICENCES_OTHER = ["M"]
 
 
-def generate_licences(faker: Faker, member: MemberEntity) -> List[LicenceEntity]:
+def generate_licences(faker: Faker, member: MemberEntity) -> list[LicenceEntity]:
     return [
         _create_licence(faker, member, _LICENCES_TO_IDS[licence])
         for licence in sorted(_generate_licence_list(faker, member))
@@ -45,13 +44,13 @@ def _create_licence(
     )
 
 
-def _generate_licence_list(faker: Faker, member: MemberEntity) -> Set[str]:
+def _generate_licence_list(faker: Faker, member: MemberEntity) -> set[str]:
     member_entrance = int(member.member_entrance)
 
     if member_entrance >= CURRENT_YEAR or faker.pybool(truth_probability=10):
         return set()
 
-    licences: Set[str] = set()
+    licences: set[str] = set()
     if member_entrance < CURRENT_YEAR - 5 and faker.pybool(truth_probability=10):
         return set(
             _LICENCES_LEVEL1 + _LICENCES_LEVEL2 + _LICENCES_LEVEL3 + _LICENCES_OTHER
@@ -68,7 +67,7 @@ def _generate_licence_list(faker: Faker, member: MemberEntity) -> Set[str]:
     return licences
 
 
-def _maybe_add_level1(faker: Faker, licences: Set[str]) -> None:
+def _maybe_add_level1(faker: Faker, licences: set[str]) -> None:
     if faker.pybool(truth_probability=40):
         licences.add("Y")
     if faker.pybool(truth_probability=40):
@@ -77,7 +76,7 @@ def _maybe_add_level1(faker: Faker, licences: Set[str]) -> None:
         licences.add("CC")
 
 
-def _maybe_add_level2_keelboat(faker: Faker, licences: Set[str]) -> None:
+def _maybe_add_level2_keelboat(faker: Faker, licences: set[str]) -> None:
     if "Y" not in licences or len(licences) < 2:
         return
 
@@ -89,7 +88,7 @@ def _maybe_add_level2_keelboat(faker: Faker, licences: Set[str]) -> None:
         licences.add("GS")
 
 
-def _maybe_add_level2_29er_cat(faker: Faker, licences: Set[str]) -> None:
+def _maybe_add_level2_29er_cat(faker: Faker, licences: set[str]) -> None:
     if "D" not in licences:
         return
 
@@ -102,7 +101,7 @@ def _maybe_add_level2_29er_cat(faker: Faker, licences: Set[str]) -> None:
         licences.add("ED")
 
 
-def _maybe_add_j_j7_d3(faker: Faker, licences: Set[str]) -> None:
+def _maybe_add_j_j7_d3(faker: Faker, licences: set[str]) -> None:
     if "SU" in licences:
         if faker.pybool(truth_probability=90):
             licences.add("J")

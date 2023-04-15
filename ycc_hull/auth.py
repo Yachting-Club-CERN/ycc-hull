@@ -2,19 +2,17 @@
 Keycloak authentication components.
 """
 import logging
-from typing import Tuple
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from keycloak import KeycloakOpenID
 from keycloak.exceptions import KeycloakAuthenticationError, KeycloakInvalidTokenError
-from pydantic import BaseModel
 
-from ycc_hull.config import CONFIG
 from ycc_hull.api.errors import create_http_exception_401
+from ycc_hull.config import CONFIG
+from ycc_hull.models.user import User
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 _AUTHENTICATION_FAILED = (
     "Missing or invalid token. Please log in. If you are logged in, "
@@ -23,103 +21,57 @@ _AUTHENTICATION_FAILED = (
 _INACTIVE_USER = "Inactive user. Please contact the club."
 _INACTIVE_MEMBER = "Inactive member. Please contact the club."
 
-_YCC_ADMIN_ROLE = "ycc-admin"
-_YCC_ACTIVE_MEMBER_ROLE = "ycc-member-active"
-_YCC_COMMITTEE_MEMBER_ROLE = "ycc-member-committee"
 
-
-class AuthInfo(BaseModel):
-    """
-    Authentication info.
-    """
-
+def _create_user(user_info: dict, token_info: dict) -> User:
+    # User info:
+    #
     # {
-    #   "sub": "f1d54a64-2f67-4a49-860e-6d74cfa1e319",
-    #   "email_verified": false,
-    #   "name": "Lajos",
-    #   "preferred_username": "lajos",
-    #   "given_name": "Lajos",
-    #   "family_name": ""
-    # }
-    user_info: dict
-    # {
-    #   "exp": 1677017737,
-    #   "iat": 1677017437,
-    #   "auth_time": 1677015164,
-    #   "jti": "536b6610-d1e2-4744-8452-22c64a804baa",
-    #   "iss": "http://localhost:10301/realms/Demo",
-    #   "aud": "account",
-    #   "sub": "f1d54a64-2f67-4a49-860e-6d74cfa1e319",
-    #   "typ": "Bearer",
-    #   "azp": "frontend",
-    #   "nonce": "22a5f02b-dcda-4a41-b354-8f7903c1f1aa",
-    #   "session_state": "86c1e8f9-8170-4357-8415-abe55af37aff",
-    #   "name": "Lajos",
-    #   "given_name": "Lajos",
-    #   "family_name": "",
-    #   "preferred_username": "lajos",
-    #   "email_verified": false,
-    #   "acr": "0",
-    #   "allowed-origins": [
-    #     "http://localhost:10300"
-    #   ],
-    #   "realm_access": {
-    #     "roles": [
-    #       "offline_access",
-    #       "admin",
-    #       "default-roles-demo",
-    #       "uma_authorization",
-    #       "demo"
-    #     ]
-    #   },
-    #   "resource_access": {
-    #     "account": {
-    #       "roles": [
-    #         "manage-account",
-    #         "manage-account-links",
-    #         "view-profile"
-    #       ]
-    #     }
-    #   },
-    #   "scope": "openid profile email",
-    #   "sid": "86c1e8f9-8170-4357-8415-abe55af37aff",
-    #   "client_id": "frontend",
-    #   "username": "lajos",
-    #   "active": true
-    # }
-    token_info: dict
+    # 'sub': 'f:034bfedc-ed3d-4169-be68-9fd337eddff2:1',
+    # 'email_verified': False,
+    # 'roles': ['ycc-member-active', 'offline_access', 'ycc-helpers-app-admin', 'uma_authorization'],
+    # 'name': 'Michele Huff',
+    # 'groups': ['ycc-members-all-past-and-present'],
+    # 'preferred_username': 'MHUFF',
+    # 'given_name': 'Michele',
+    # 'family_name': 'Huff',
+    # 'email': 'Michele.Huff@mailinator.com'}
 
-    @property
-    def member_id(self) -> int:
+    # Token info:
+    #
+    # {
+    # 'exp': 1681553258,
+    # 'iat': 1681549658,
+    # 'jti': 'c4e866ab-3ec0-4c35-a8ea-a2fc789204ad',
+    # 'iss': 'http://localhost:8080/realms/YCC-LOCAL',
+    # 'aud': 'account',
+    # 'sub': 'f:034bfedc-ed3d-4169-be68-9fd337eddff2:1',
+    # 'typ': 'Bearer',
+    # 'azp': 'ycc-hull-local-swagger',
+    # 'session_state': '0b1bdf08-7d0d-4a50-9804-9faffb6daa88',
+    # 'name': 'Michele Huff',
+    # 'given_name': 'Michele',
+    # 'family_name': 'Huff',
+    # 'preferred_username': 'MHUFF',
+    # 'email': 'Michele.Huff@mailinator.com',
+    # 'email_verified': False,
+    # 'acr': '1',
+    # 'allowed-origins': ['http://localhost:8000'],
+    # 'realm_access': {'roles': ['ycc-member-active', 'offline_access', 'ycc-helpers-app-admin', 'uma_authorization']},
+    # 'resource_access': {'account': {'roles': ['manage-account', 'manage-account-links', 'view-profile']}},
+    # 'scope': 'openid profile ycc-client-groups-and-roles email',
+    # 'sid': '0b1bdf08-7d0d-4a50-9804-9faffb6daa88',
+    # 'client_id': 'ycc-hull-local-swagger',
+    # 'username': 'MHUFF',
+    # 'active': True
+    # }
+
+    return User(
         # 292 is YCC DB ID from sub 'f:a9b693ac-d9aa-43c7-8b68-b3bb7d30cc8e:292'
-        return int(self.user_info["sub"].split(":")[-1])
-
-    @property
-    def user_name(self) -> str:
-        return self.user_info["preferred_username"]
-
-    @property
-    def roles(self) -> Tuple[str]:
-        return tuple(self.user_info["roles"])  # type: ignore
-
-    @property
-    def active_member(self) -> bool:
-        return _YCC_ACTIVE_MEMBER_ROLE in self.roles
-
-    @property
-    def admin(self) -> bool:
-        return _YCC_ADMIN_ROLE in self.roles
-
-    @property
-    def committee_member(self) -> bool:
-        return _YCC_COMMITTEE_MEMBER_ROLE in self.roles
-
-    class Config:
-        """
-        Immutable config.
-        """
-
-        allow_mutation = False
+        member_id=int(user_info["sub"].split(":")[-1]),
+        username=user_info["preferred_username"],
+        groups=tuple(user_info.get("groups", [])),
+        roles=tuple(user_info.get("roles", [])),
+    )
 
 
 def init_oauth2_scheme() -> OAuth2PasswordBearer:
@@ -143,7 +95,7 @@ keycloak = KeycloakOpenID(
 oauth2_scheme = init_oauth2_scheme()
 
 
-async def auth(token: str = Depends(oauth2_scheme)) -> AuthInfo:
+async def auth(token: str = Depends(oauth2_scheme)) -> User:
     """
     Authentication dependency.
 
@@ -154,7 +106,7 @@ async def auth(token: str = Depends(oauth2_scheme)) -> AuthInfo:
         HTTPException: 401 Unauthorized
 
     Returns:
-        AuthInfo: authentication info
+        User: user object
     """
     logger.debug("Authenticating...")
     try:
@@ -169,19 +121,21 @@ async def auth(token: str = Depends(oauth2_scheme)) -> AuthInfo:
             logger.warning("Authentication failed")
             raise create_http_exception_401(_INACTIVE_USER)
 
-        info = AuthInfo(user_info=user_info, token_info=token_info)
-        logger.debug("Authentication succeeded: %s", info)
+        user = _create_user(user_info=user_info, token_info=token_info)
+        logger.debug("Authentication succeeded: %s", user)
 
-        if not info.active_member:
-            logger.info("Inactive member: %s, roles: %s", info.user_name, info.roles)
+        if not user.active_member:
+            logger.info("Inactive member: %s, roles: %s", user.username, user.roles)
             raise create_http_exception_401(_INACTIVE_MEMBER)
 
         logger.info(
-            "Active member: %s, roles: %s",
-            info.user_name,
-            info.roles,
+            "Active member: %s (%d), groups: %s, roles: %s",
+            user.username,
+            user.member_id,
+            user.groups,
+            user.roles,
         )
-        return info
+        return user
     except (KeycloakAuthenticationError, KeycloakInvalidTokenError) as exc:
         logger.warning("Authentication failed: %s: %s", exc.__class__.__qualname__, exc)
         raise create_http_exception_401(  # pylint: disable=raise-missing-from

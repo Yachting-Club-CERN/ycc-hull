@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+TODO testing
+TODO run tests on CI
+TODO coverage on CI?
+
+### Added
+
+- Add support for DB entities: audit log entry, Helpers App permissions
+- Add test data: Helpers App permissions
+- Add to helpers controller: create helper task
+- Add API endpoints:
+  - POST create helper task
+
+### Changed
+
+- Replies contain unpublished tasks if the user has the permission to see them
+- Use Python 3.9 type annotations where possible
+- Extract the User entity from the auth module to facilitate testing
+
 ## [0.2.0] - 2023-04-12
 
 ### Added

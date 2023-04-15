@@ -1,8 +1,11 @@
 """
 Helpers API DTO classes.
 """
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Optional, Sequence
+from typing import Optional
+
+from pydantic import root_validator, validator
 
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
@@ -34,6 +37,53 @@ class HelperTaskCategoryDto(CamelisedBaseModel):
         )
 
 
+class HelperTaskCreationRequestDto(CamelisedBaseModel):
+    """
+    DTO for helper task creation.
+    """
+
+    category_id: int
+    title: str
+    short_description: str
+    long_description: Optional[str]
+    contact_id: int
+    start: Optional[datetime]
+    end: Optional[datetime]
+    deadline: Optional[datetime]
+    urgent: bool
+    captain_required_licence_info_id: Optional[int]
+    helpers_min_count: int
+    helpers_max_count: int
+    published: bool
+
+    @validator("title", "short_description")
+    def check_not_black(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Field must not be blank")
+        return value
+
+    @root_validator
+    def check_timing(cls, values: dict) -> dict:
+        start: Optional[datetime] = values.get("start")
+        end: Optional[datetime] = values.get("end")
+        deadline: Optional[datetime] = values.get("deadline")
+
+        if (start and end and not deadline and start < end) or (
+            not start and not end and deadline
+        ):
+            return values
+        raise ValueError("Invalid timing")
+
+    @root_validator
+    def check_helpers_min_max_count(cls, values: dict) -> dict:
+        helpers_min_count: int = values.get("helpers_min_count")
+        helpers_max_count: int = values.get("helpers_max_count")
+
+        if 0 <= helpers_min_count <= helpers_max_count:
+            return values
+        raise ValueError("Invalid minimum/maximum helper count")
+
+
 class HelperTaskDto(CamelisedBaseModel):
     """
     DTO for a helper task.
@@ -49,7 +99,7 @@ class HelperTaskDto(CamelisedBaseModel):
     end: Optional[datetime]
     deadline: Optional[datetime]
     urgent: bool
-    captain_required_licence: Optional[LicenceInfoDto]
+    captain_required_licence_info: Optional[LicenceInfoDto]
     helpers_min_count: int
     helpers_max_count: int
     published: bool
@@ -79,7 +129,7 @@ class HelperTaskDto(CamelisedBaseModel):
             end=task.end,
             deadline=task.deadline,
             urgent=task.urgent,
-            captain_required_licence=LicenceInfoDto.create(
+            captain_required_licence_info=LicenceInfoDto.create(
                 task.captain_required_licence_info
             )
             if task.captain_required_licence_info

@@ -109,7 +109,7 @@ Upgrade to latest versions:
 poetry run black .
 poetry run mypy .
 poetry run flake8 .
-poetry run pylint --jobs 0 legacy_password_hashing test_data ycc_hull
+poetry run pylint --jobs 0 legacy_password_hashing test_data tests ycc_hull
 ```
 
 ### Database Schema Upgrade

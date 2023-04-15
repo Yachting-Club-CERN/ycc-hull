@@ -3,9 +3,10 @@ Test data generator. Some data can be directly used as it was exported, some nee
 """
 import copy
 import json
+from collections.abc import Iterator, Sequence
 from datetime import date, datetime, timedelta
 from os import path
-from typing import Any, Iterator, List, NamedTuple, Optional, Sequence, Set, Type
+from typing import Any, NamedTuple, Optional
 
 from faker import Faker
 
@@ -19,6 +20,7 @@ from test_data.generator_config import (
     CURRENT_YEAR,
     ENTRANCE_FEE_RECORDS_JSON_FILE,
     FEE_RECORDS_JSON_FILE,
+    HELPERS_APP_PERMISSIONS_JSON_FILE,
     HELPER_TASK_CATEGORIES_JSON_FILE,
     HELPER_TASK_HELPERS_JSON_FILE,
     HELPER_TASKS_JSON_FILE,
@@ -28,6 +30,7 @@ from test_data.generator_config import (
     USERS_JSON_FILE,
 )
 from test_data.utils.helpers import (
+    generate_helpers_app_permissions,
     generate_helper_task_categories,
     generate_helper_task_helpers,
     generate_helper_tasks,
@@ -49,15 +52,15 @@ MemberInfo = NamedTuple(
         ("member", MemberEntity),
         ("user", UserEntity),
         ("entrance_fee_record", Optional[EntranceFeeRecordEntity]),
-        ("fee_records", List[FeeRecordEntity]),
-        ("licences", List[LicenceEntity]),
+        ("fee_records", list[FeeRecordEntity]),
+        ("licences", list[LicenceEntity]),
     ],
 )
 
 faker: Faker = Faker()
 Faker.seed(2021)
 
-assigned_usernames: Set[str] = set()
+assigned_usernames: set[str] = set()
 
 
 def fake_username(first_name: str, last_name: str) -> str:
@@ -87,7 +90,7 @@ def _fake_username_collision(first_name: str, last_name: str) -> str:
     )
 
 
-def generate_member_infos(count: int) -> List[MemberInfo]:
+def generate_member_infos(count: int) -> list[MemberInfo]:
     return [generate_member_info(i + 1) for i in range(0, count)]
 
 
@@ -224,8 +227,8 @@ def generate_member_entrance_fee_record(
     )
 
 
-def generate_member_fee_records(member: MemberEntity) -> List[FeeRecordEntity]:
-    fee_records: List[FeeRecordEntity] = []
+def generate_member_fee_records(member: MemberEntity) -> list[FeeRecordEntity]:
+    fee_records: list[FeeRecordEntity] = []
     if member.id == 2:
         # Fixed honorary member without any payments
         return fee_records
@@ -272,7 +275,7 @@ def generate_paid_mode() -> Optional[str]:
     return None
 
 
-def generate_boats() -> List[BoatEntity]:
+def generate_boats() -> list[BoatEntity]:
     # Remove maintainers from the exported file
     with open(BOATS_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
         return [generate_boat(boat) for boat in json.load(file)["results"][0]["items"]]
@@ -297,7 +300,7 @@ def to_json_dict(obj: Any) -> dict:
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
 
-def read_json_file(file_path: str, cls: Type[BaseEntity]) -> Sequence[BaseEntity]:
+def read_json_file(file_path: str, cls: type[BaseEntity]) -> Sequence[BaseEntity]:
     print(f"== Reading from {file_path} ...")
     with open(file_path, "r", encoding="utf-8") as file:
         return [cls(**entry) for entry in json.load(file)]
@@ -314,20 +317,20 @@ def write_json_file(file_path: str, entries: Sequence[BaseEntity]) -> None:
         )
 
 
-def get_member_info_by_id(member_id: int, member_infos: List[MemberInfo]) -> MemberInfo:
+def get_member_info_by_id(member_id: int, member_infos: list[MemberInfo]) -> MemberInfo:
     return next(
         filter(lambda member_info: member_info.member.id == member_id, member_infos)
     )
 
 
 def get_members_with_payment_current_year(
-    member_infos: List[MemberInfo],
+    member_infos: list[MemberInfo],
 ) -> Iterator[MemberInfo]:
     return filter(_paid_fee_current_year, member_infos)
 
 
 def get_members_without_payment_current_year(
-    member_infos: List[MemberInfo],
+    member_infos: list[MemberInfo],
 ) -> Iterator[MemberInfo]:
     return filter(
         _did_not_pay_fee_current_year,
@@ -348,7 +351,7 @@ def _did_not_pay_fee_current_year(member_info: MemberInfo) -> bool:
 
 
 def get_members_with_licence(
-    member_infos: List[MemberInfo], licence_info_id: int
+    member_infos: list[MemberInfo], licence_info_id: int
 ) -> Iterator[MemberInfo]:
     return filter(
         lambda member_info: _has_licence(member_info, licence_info_id), member_infos
@@ -356,7 +359,7 @@ def get_members_with_licence(
 
 
 def get_members_without_licence(
-    member_infos: List[MemberInfo], licence_info_id: int
+    member_infos: list[MemberInfo], licence_info_id: int
 ) -> Iterator[MemberInfo]:
     return filter(
         lambda member_info: _lacks_licence(member_info, licence_info_id), member_infos
@@ -406,8 +409,16 @@ def generate(force_regenerate: bool = False) -> None:
         write_json_file(LICENCES_JSON_FILE, licences)
 
         print(
-            "Member with id=2 (honorary, no fee paid): "
+            "Member with id=1 (honorary, Helpers App admin): "
+            + get_member_info_by_id(1, member_infos).user.logon_id
+        )
+        print(
+            "Member with id=2 (honorary, no fee paid, Helpers App editor): "
             + get_member_info_by_id(2, member_infos).user.logon_id
+        )
+        print(
+            "Member with id=3 (honorary, Helpers App editor): "
+            + get_member_info_by_id(3, member_infos).user.logon_id
         )
 
         print(
@@ -441,6 +452,9 @@ def generate(force_regenerate: bool = False) -> None:
         print("== Skipping helper data")
     else:
         print("== Generating helpers data (categories, tasks, helpers)...")
+        write_json_file(
+            HELPERS_APP_PERMISSIONS_JSON_FILE, generate_helpers_app_permissions()
+        )
         write_json_file(
             HELPER_TASK_CATEGORIES_JSON_FILE, generate_helper_task_categories()
         )

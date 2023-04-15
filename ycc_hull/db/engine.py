@@ -1,7 +1,8 @@
 """
 DB Engine.
 """
-from typing import Any, Callable, Optional, Sequence, TypeVar
+from typing import Any, Optional, TypeVar
+from collections.abc import Callable, Sequence
 
 from sqlalchemy import Select, create_engine, func, select
 from sqlalchemy.engine import Engine
@@ -34,6 +35,10 @@ def get_db_engine() -> Engine:
     return _ENGINE
 
 
+def create_db_session() -> Session:
+    return Session(get_db_engine())
+
+
 T = TypeVar("T")
 
 
@@ -53,7 +58,7 @@ def query_all(
         Sequence[T]: _description_
     """
     transformer = row_transformer or (lambda x: x)
-    with Session(get_db_engine()) as session:
+    with create_db_session() as session:
         result = session.scalars(statement)
         if unique:
             result = result.unique()
@@ -62,7 +67,7 @@ def query_all(
 
 
 def query_count(entity_class: type) -> int:
-    with Session(get_db_engine()) as session:
+    with create_db_session() as session:
         return session.scalar(
             select(func.count()).select_from(  # pylint: disable=not-callable
                 entity_class
