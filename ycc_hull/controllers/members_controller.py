@@ -5,8 +5,8 @@ from collections.abc import Sequence
 from typing import Optional
 
 from sqlalchemy import and_, or_, select
+from ycc_hull.controllers.base_controller import BaseController
 
-from ycc_hull.db.engine import query_all
 from ycc_hull.db.entities import (
     FeeRecordEntity,
     MemberEntity,
@@ -20,13 +20,13 @@ from ycc_hull.models.dtos import (
 )
 
 
-class MembersController:
+class MembersController(BaseController):
     """
     Members controller. Returns DTO objects.
     """
 
-    @staticmethod
     async def find_all_public_infos(
+        self,
         year: Optional[int] = None,
     ) -> Sequence[MemberPublicInfoDto]:
         query = select(MemberEntity)
@@ -46,20 +46,18 @@ class MembersController:
                 .distinct()
             )
 
-        return query_all(
+        return self.database_context.query_all(
             query.order_by(MemberEntity.name, MemberEntity.firstname),
             MemberPublicInfoDto.create,
         )
 
-    @staticmethod
-    async def find_all_membership_types() -> Sequence[MembershipTypeDto]:
-        return query_all(
+    async def find_all_membership_types(self) -> Sequence[MembershipTypeDto]:
+        return self.database_context.query_all(
             select(MembershipTypeEntity).order_by(MembershipTypeEntity.e_desc),
             MembershipTypeDto.create,
         )
 
-    @staticmethod
-    async def find_all_users() -> Sequence[UserDto]:
-        return query_all(
+    async def find_all_users(self) -> Sequence[UserDto]:
+        return self.database_context.query_all(
             select(UserEntity).order_by(UserEntity.logon_id), UserDto.create
         )

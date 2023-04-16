@@ -90,7 +90,7 @@ def start() -> None:
     # Poke the DB, or fail early if the connection is wrong.
     print("[init] Testing DB connection...")
     membership_types = asyncio.get_event_loop().run_until_complete(
-        MembersController.find_all_membership_types()
+        MembersController().find_all_membership_types()
     )
 
     print("[init] DB connection successful, membership types: ", membership_types)

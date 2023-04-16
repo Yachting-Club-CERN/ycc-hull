@@ -18,12 +18,17 @@ TODO coverage on CI?
 - Add to helpers controller: create helper task
 - Add API endpoints:
   - POST create helper task
+- Add support for SQLite database
+  - Streamline entity declarations
+  - Streamline test data generation
+- Add testing facilities: fake authentication, test database
 
 ### Changed
 
 - Replies contain unpublished tasks if the user has the permission to see them
 - Use Python 3.9 type annotations where possible
 - Extract the User entity from the auth module to facilitate testing
+- Rename configuration property `dbUrl` to `databaseUrl`
 
 ## [0.2.0] - 2023-04-12
 

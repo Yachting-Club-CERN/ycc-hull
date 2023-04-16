@@ -57,7 +57,7 @@ class HelperTaskCreationRequestDto(CamelisedBaseModel):
     published: bool
 
     @validator("title", "short_description")
-    def check_not_black(cls, value: str) -> str:
+    def check_not_blank(cls, value: str) -> str:
         if not value.strip():
             raise ValueError("Field must not be blank")
         return value
@@ -68,16 +68,17 @@ class HelperTaskCreationRequestDto(CamelisedBaseModel):
         end: Optional[datetime] = values.get("end")
         deadline: Optional[datetime] = values.get("deadline")
 
-        if (start and end and not deadline and start < end) or (
-            not start and not end and deadline
-        ):
+        valid_shift = start and end and not deadline and start < end
+        valid_deadline = not start and not end and deadline
+
+        if valid_shift or valid_deadline:
             return values
         raise ValueError("Invalid timing")
 
     @root_validator
     def check_helpers_min_max_count(cls, values: dict) -> dict:
-        helpers_min_count: int = values.get("helpers_min_count")
-        helpers_max_count: int = values.get("helpers_max_count")
+        helpers_min_count: int = values.get("helpers_min_count")  # type: ignore
+        helpers_max_count: int = values.get("helpers_max_count")  # type: ignore
 
         if 0 <= helpers_min_count <= helpers_max_count:
             return values
@@ -111,7 +112,9 @@ class HelperTaskDto(CamelisedBaseModel):
     def create(task: HelperTaskEntity) -> "HelperTaskDto":
         captain = (
             HelperTaskHelperDto.create_from_member_entity(
-                task.captain, task.captain_subscribed_at
+                # Either both or none are present
+                task.captain,
+                task.captain_subscribed_at,  # type: ignore
             )
             if task.captain
             else None

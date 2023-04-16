@@ -2,13 +2,15 @@
 Audit log. Persisted in the DB.
 """
 import json
+from datetime import date, datetime
 from typing import Any, Optional
 
 from pydantic import BaseModel
+
 from ycc_hull.auth import User
 from ycc_hull.config import CONFIG, Environment
 from ycc_hull.db.entities import AuditLogEntryEntity, BaseEntity
-from datetime import datetime, date
+from ycc_hull.utils import full_type_name
 
 _APPLICATION = (
     "YCC Hull"
@@ -19,11 +21,13 @@ _APPLICATION = (
 
 def _to_json_dict(obj: Any) -> dict:
     if isinstance(obj, datetime):
-        return {"@type": "datetime", "@value": obj.isoformat()}
+        return {"@type": "datetime", "value": obj.isoformat()}
     if isinstance(obj, date):
-        return {"@type": "date", "@value": obj.isoformat()}
-    if isinstance(obj, BaseEntity) or isinstance(obj, BaseModel):
-        return obj.dict()
+        return {"@type": "date", "value": obj.isoformat()}
+    if isinstance(obj, (BaseEntity, BaseModel)):
+        data = obj.dict()
+        data["@type"] = full_type_name(obj.__class__)
+        return data
 
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
@@ -33,13 +37,11 @@ def _to_pretty_json(obj: Any) -> str:
 
 
 def create_audit_entry(
-    user: User, short_description: str, long_description: Optional[dict] = None
+    user: User, description: str, data: Optional[dict] = None
 ) -> AuditLogEntryEntity:
     return AuditLogEntryEntity(
         application=_APPLICATION,
         user=user.username,
-        short_description=short_description,
-        long_description=_to_pretty_json(long_description)
-        if long_description
-        else None,
+        description=description,
+        data=_to_pretty_json(data) if data else None,
     )

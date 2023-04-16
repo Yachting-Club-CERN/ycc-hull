@@ -2,9 +2,10 @@
 Playground.
 """
 from sqlalchemy import ScalarResult, func, select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import joinedload
+from ycc_hull.config import CONFIG
+from ycc_hull.db.context import DatabaseContext
 
-from ycc_hull.db.engine import _create_db_engine, query_count
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -13,11 +14,15 @@ from ycc_hull.db.entities import (
 )
 from ycc_hull.models.dtos import MemberSensitiveInfoDto
 
-engine = _create_db_engine(db_engine_echo=True)
+database_context = DatabaseContext(database_url=CONFIG.database_url, echo=True)
+
+
+def _username(member: MemberEntity) -> str:
+    return member.user.logon_id if member.user else f"<No user for ID {member.id}>"
 
 
 def dump_members_and_fees() -> None:
-    with Session(engine) as session:
+    with database_context.create_session() as session:
         members: ScalarResult[MemberEntity] = session.scalars(
             select(MemberEntity).order_by(MemberEntity.id)
         ).unique()
@@ -25,7 +30,7 @@ def dump_members_and_fees() -> None:
         for member in members:
             print("=" * 80)
             print(">")
-            print(f"> {member.user.logon_id}")
+            print(f"> {_username(member)}")
             print(">")
             print()
             dto = MemberSensitiveInfoDto.create(member)
@@ -45,7 +50,7 @@ def dump_members_and_fees() -> None:
 
 
 def dump_members_and_licences() -> None:
-    with Session(engine) as session:
+    with database_context.create_session() as session:
         print("=" * 80)
         members: ScalarResult[MemberEntity] = session.scalars(
             select(MemberEntity)
@@ -65,16 +70,20 @@ def dump_members_and_licences() -> None:
                 if not licence.status
             ]
             print(
-                f"> {member.user.logon_id}: {active_licences} (inactive: {inactive_licences}))"
+                f"> {_username(member)}: {active_licences} (inactive: {inactive_licences}))"
             )
 
 
 def dump_helper_tasks() -> None:
-    print(f"COUNT(HelperTaskCategoryEntity): {query_count(HelperTaskCategoryEntity)}")
-    print(f"COUNT(HelperTaskEntity): {query_count(HelperTaskEntity)}")
-    print(f"COUNT(HelperTaskHelperEntity): {query_count(HelperTaskHelperEntity)}")
+    print(
+        f"COUNT(HelperTaskCategoryEntity): {database_context.query_count(HelperTaskCategoryEntity)}"
+    )
+    print(f"COUNT(HelperTaskEntity): {database_context.query_count(HelperTaskEntity)}")
+    print(
+        f"COUNT(HelperTaskHelperEntity): {database_context.query_count(HelperTaskHelperEntity)}"
+    )
 
-    with Session(engine) as session:
+    with database_context.create_session() as session:
         helper_tasks: ScalarResult[HelperTaskEntity] = session.scalars(
             select(HelperTaskEntity)
             .options(joinedload(HelperTaskEntity.category))
@@ -110,7 +119,7 @@ def dump_helper_tasks() -> None:
 
             print("Helpers:")
             for helper in helper_task.helpers:
-                print(f"- {helper.member.user.logon_id} / {helper.subscribed_at}")
+                print(f"- {_username(helper.member)} / {helper.subscribed_at}")
 
             print()
             print()

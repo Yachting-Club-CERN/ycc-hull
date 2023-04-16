@@ -1,9 +1,12 @@
+"""
+Helpers DTO tests.
+"""
 from pydantic import ValidationError
 import pytest
 from ycc_hull.models.helpers_dtos import HelperTaskCreationRequestDto
 
 
-def test_creation_valid_shift():
+def test_creation_valid_shift() -> None:
     HelperTaskCreationRequestDto(
         category_id=1,
         title="Test Task",
@@ -19,7 +22,7 @@ def test_creation_valid_shift():
     )
 
 
-def test_creation_valid_deadline():
+def test_creation_valid_deadline() -> None:
     HelperTaskCreationRequestDto(
         category_id=1,
         title="Test Task",
@@ -34,7 +37,7 @@ def test_creation_valid_deadline():
     )
 
 
-def test_creation_must_specify_timing():
+def test_creation_must_specify_timing() -> None:
     with pytest.raises(ValidationError) as exc_info:
         HelperTaskCreationRequestDto(
             category_id=1,
@@ -51,7 +54,7 @@ def test_creation_must_specify_timing():
     assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
 
 
-def test_creation_must_not_specify_all_timing_fields():
+def test_creation_must_not_specify_all_timing_fields() -> None:
     with pytest.raises(ValidationError) as exc_info:
         HelperTaskCreationRequestDto(
             category_id=1,
@@ -71,7 +74,7 @@ def test_creation_must_not_specify_all_timing_fields():
     assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
 
 
-def test_creation_must_not_specify_start_with_deadline():
+def test_creation_must_not_specify_start_with_deadline() -> None:
     with pytest.raises(ValidationError) as exc_info:
         HelperTaskCreationRequestDto(
             category_id=1,
@@ -90,7 +93,7 @@ def test_creation_must_not_specify_start_with_deadline():
     assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
 
 
-def test_creation_must_not_specify_end_with_deadline():
+def test_creation_must_not_specify_end_with_deadline() -> None:
     with pytest.raises(ValidationError) as exc_info:
         HelperTaskCreationRequestDto(
             category_id=1,
@@ -109,7 +112,7 @@ def test_creation_must_not_specify_end_with_deadline():
     assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
 
 
-def test_creation_must_not_specify_start_after_end():
+def test_creation_must_not_specify_start_after_end() -> None:
     with pytest.raises(ValidationError) as exc_info:
         HelperTaskCreationRequestDto(
             category_id=1,
@@ -128,7 +131,7 @@ def test_creation_must_not_specify_start_after_end():
     assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
 
 
-def test_creation_must_have_consistent_helper_counts():
+def test_creation_must_have_consistent_helper_counts() -> None:
     with pytest.raises(ValidationError) as exc_info:
         HelperTaskCreationRequestDto(
             category_id=1,

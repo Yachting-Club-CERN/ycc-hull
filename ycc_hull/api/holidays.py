@@ -10,8 +10,9 @@ from ycc_hull.controllers.holidays_controller import HolidaysController
 from ycc_hull.models.dtos import HolidayDto
 
 api_holidays = APIRouter(dependencies=[Depends(auth)])
+controller = HolidaysController()
 
 
 @api_holidays.get("/api/v0/holidays")
 async def holidays_get() -> Sequence[HolidayDto]:
-    return await HolidaysController.find_all()
+    return await controller.find_all()

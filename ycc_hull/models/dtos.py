@@ -14,6 +14,8 @@ from ycc_hull.db.entities import (
 )
 from ycc_hull.models.base import CamelisedBaseModel
 
+_UNKNOWN = "<unknown>"
+
 
 class BoatDto(CamelisedBaseModel):
     """
@@ -96,7 +98,7 @@ class MemberPublicInfoDto(CamelisedBaseModel):
     ) -> "MemberPublicInfoDto":
         return MemberPublicInfoDto(
             id=member.id,
-            username=member.user.logon_id,
+            username=member.user.logon_id if member.user else _UNKNOWN,
             first_name=member.firstname,
             last_name=member.name,
             email=member.e_mail,

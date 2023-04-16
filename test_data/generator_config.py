@@ -9,6 +9,12 @@ _SCRIPT_DIR = path.dirname(path.realpath(__file__))
 CURRENT_YEAR = date.today().year
 MEMBER_COUNT = 300
 
+# Holidays
+HOLIDAYS_EXPORTED_JSON_FILE = (
+    f"{_SCRIPT_DIR}/exported/HOLIDAYS_DATA_TABLE.json-formatted"
+)
+HOLIDAYS_JSON_FILE = f"{_SCRIPT_DIR}/generated/Holidays.json"
+
 # Members & Licences
 ENTRANCE_FEE_RECORDS_JSON_FILE = f"{_SCRIPT_DIR}/generated/EntranceFeeRecords.json"
 FEE_RECORDS_JSON_FILE = f"{_SCRIPT_DIR}/generated/FeeRecords.json"
@@ -17,6 +23,9 @@ INFOLICENCES_EXPORTED_JSON_FILE = (
 )
 LICENCES_JSON_FILE = f"{_SCRIPT_DIR}/generated/Licences.json"
 MEMBERS_JSON_FILE = f"{_SCRIPT_DIR}/generated/Members.json"
+MEMBERSHIP_EXPORTED_JSON_FILE = (
+    f"{_SCRIPT_DIR}/exported/MEMBERSHIP_DATA_TABLE.json-formatted"
+)
 USERS_JSON_FILE = f"{_SCRIPT_DIR}/generated/Users.json"
 
 # Boats
