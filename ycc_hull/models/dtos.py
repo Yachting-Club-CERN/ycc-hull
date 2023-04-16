@@ -78,6 +78,23 @@ class LicenceInfoDto(CamelisedBaseModel):
         return LicenceInfoDto(id=licence_info.infoid, licence=licence_info.nlicence)
 
 
+class LicenceDetailedInfoDto(LicenceInfoDto):
+    """
+    DTO for a YCC licence detailed info.
+    """
+
+    description: str
+    licence: str
+
+    @staticmethod
+    def create(
+        licence_info: LicenceInfoEntity,
+    ) -> "LicenceDetailedInfoDto":
+        props = LicenceInfoDto.create(licence_info).dict()
+        props["description"] = licence_info.description
+        return LicenceDetailedInfoDto(**props)
+
+
 class MemberPublicInfoDto(CamelisedBaseModel):
     """
     DTO for a member, containing information public to all active members.

@@ -16,8 +16,10 @@ TODO coverage on CI?
 - Add support for DB entities: audit log entry, Helpers App permissions
 - Add test data: Helpers App permissions
 - Add to helpers controller: create helper task
+- Add controller: licences
 - Add API endpoints:
   - POST create helper task
+  - GET licence infos
 - Add support for SQLite database
   - Streamline entity declarations
   - Streamline test data generation
