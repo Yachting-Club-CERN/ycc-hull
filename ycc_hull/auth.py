@@ -2,7 +2,6 @@
 Keycloak authentication components.
 """
 import logging
-from typing import Optional
 
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -24,9 +23,6 @@ _INACTIVE_USER = "Inactive user. Please contact the club."
 _INACTIVE_MEMBER = "Inactive member. Please contact the club."
 
 
-_OAUTH2_SCHEME: Optional[OAuth2PasswordBearer] = None
-
-
 _KEYCLOAK = KeycloakOpenID(
     server_url=CONFIG.keycloak_server_url,
     realm_name=CONFIG.keycloak_realm,
@@ -35,23 +31,10 @@ _KEYCLOAK = KeycloakOpenID(
 )
 
 
-def _get_oauth2_scheme() -> OAuth2PasswordBearer:
-    """
-    Returns OAuth 2 scheme.
-
-    Returns:
-        OAuth2PasswordBearer: bearer
-    """
-    global _OAUTH2_SCHEME  # pylint: disable=global-statement
-
-    if not _OAUTH2_SCHEME:
-        token_endpoint = _KEYCLOAK.well_known()["token_endpoint"]
-        logger.info(
-            "Initialising OAuth 2 scheme with token endpoint: %s", token_endpoint
-        )
-        _OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=token_endpoint)
-
-    return _OAUTH2_SCHEME
+# Programmatic access to the token endpoint: _KEYCLOAK.well_known()["token_endpoint"]
+token_endpoint = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
+logger.info("Initialising OAuth 2 scheme with token endpoint: %s", token_endpoint)
+_OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=token_endpoint)
 
 
 def _create_user(user_info: dict, token_info: dict) -> User:
@@ -127,7 +110,7 @@ def _create_user(user_info: dict, token_info: dict) -> User:
     )
 
 
-async def auth(token: str = Depends(_get_oauth2_scheme)) -> User:
+async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
     """
     Authentication dependency.
 
