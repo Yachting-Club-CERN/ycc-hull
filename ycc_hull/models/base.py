@@ -1,7 +1,6 @@
 """
 Base model.
 """
-from os import kill
 from typing import Generic, Optional, TypeVar
 
 from humps import camelize
