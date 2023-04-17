@@ -165,8 +165,14 @@ def test_sanitise() -> None:
         short_description="\t\nThe Club needs your help!\t<!-- Test -->\n",
         long_description=(
             "<em>Really!</em> It <notatag>is</notatag> very \nimportant "
-            "<!-- Test -->to get this <script>alert('XSS')</script>done!<blink><p>Thank you!"
-            "<table>NO TABLES!</table>"
+            "<!-- Test -->to get this <script>alert('XSS')</script>done!<blink><p>Thank you!<p>\n"
+            '<a href="http://example.com">Hyperlinks are OK</a>\n'
+            '<img src="images-are-ok.jpg">\n'
+            "<table>NO TABLES!</table> <form>NO FORMS!</form> <input> <button>NO BUTTONS!</button>\n"
+            "<object>NO OBJECTS!</object> <embed>NO EMBEDS!</embed>\n"
+            "<svg>NO SVGs!</svg> <canvas>NO CANVASES!</canvas>\n"
+            "<head>NO HEADS!</head> <title>NO TITLES!</title>\n"
+            "<base> <meta> <link> <style>NO STYLES!</style>\n"
         ),
         contact_id=1,
         start="2023-05-01T18:00:00",
@@ -180,7 +186,10 @@ def test_sanitise() -> None:
 
     assert request.title == "Test Task"
     assert request.short_description == "The Club needs your help!"
-    assert (
-        request.long_description
-        == "<div><em>Really!</em> It is very \nimportant to get this done!<p>Thank you!</p>NO TABLES!</div>"
+    assert request.long_description == (
+        "<div><em>Really!</em> It is very \nimportant to get this done!<p>Thank you!</p><p>\n"
+        '<a href="http://example.com">Hyperlinks are OK</a>\n'
+        '<img src="images-are-ok.jpg">\n'
+        "</p>NO TABLES! NO FORMS!  \n \n \n"
+        "NO HEADS! NO TITLES!\n   \n</div>"
     )

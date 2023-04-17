@@ -1,6 +1,7 @@
 """
 Base model.
 """
+from os import kill
 from typing import Generic, Optional, TypeVar
 
 from humps import camelize
@@ -84,6 +85,14 @@ def sanitise_html_input(html: Optional[str]) -> Optional[str]:
         frames=True,
         forms=True,
         annoying_tags=True,
+        kill_tags=[
+            "base",
+            "canvas",
+            "embed",
+            "iframe",
+            "object",
+            "svg",
+        ],
         remove_tags=["table", "tbody", "thead", "tfoot", "tr", "th", "td"],
         remove_unknown_tags=True,
     )
