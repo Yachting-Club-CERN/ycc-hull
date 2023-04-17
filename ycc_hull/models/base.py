@@ -4,11 +4,12 @@ Base model.
 from typing import Generic, Optional, TypeVar
 
 from humps import camelize
+from lxml import etree
+from lxml.html import fromstring
 from lxml.html.clean import Cleaner
 from pydantic import BaseModel, Extra, Field
-from lxml.html import fromstring
+
 from ycc_hull.utils import full_type_name
-from lxml import etree
 
 EntityT = TypeVar("EntityT")
 
@@ -43,19 +44,6 @@ class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
                 f"No entity is associated with this model: {full_type_name(self.__class__)}{self.dict()}"
             )
         return self.entity
-
-
-def _stringify_children(node):
-    from lxml.etree import tostring
-    from itertools import chain
-
-    parts = (
-        [node.text]
-        + list(chain(*([c.text, tostring(c), c.tail] for c in node.getchildren())))
-        + [node.tail]
-    )
-    # filter removes possible Nones in texts and tails
-    return "".join(filter(None, parts))
 
 
 def sanitise_text_input(text: Optional[str]) -> Optional[str]:
