@@ -1,7 +1,7 @@
 [MAIN]
 fail-under=9
 max-line-length=160
-extension-pkg-allow-list=pydantic
+extension-pkg-allow-list=lxml,pydantic
 load-plugins=pylint_pydantic
 
 [MESSAGES CONTROL]

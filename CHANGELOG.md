@@ -19,7 +19,9 @@ TODO coverage on CI?
 - Add controller: licences
 - Add API endpoints:
   - POST create helper task
+  - PUT update helper task
   - GET licence infos
+- Sanitise inputs, allow controlled HTML inputs
 - Add support for SQLite database
   - Streamline entity declarations
   - Streamline test data generation
