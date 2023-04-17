@@ -31,6 +31,7 @@ NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
 from datetime import datetime
 from typing import Any, Optional
 
+from collections.abc import Sequence
 from sqlalchemy import (
     BLOB,
     CHAR,
@@ -72,7 +73,7 @@ class AuditLogEntryEntity(BaseEntity):
         "DATE",
         DateTime,
         # SYSDATE in Oracle, this is for SQLite (for Oracle it's DB first approach)
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=text("(DATETIME('now','localtime'))"),
     )
     application: Mapped[str] = mapped_column(VARCHAR(200))
     user: Mapped[str] = mapped_column("USER", VARCHAR(200))
@@ -167,7 +168,7 @@ class FeeRecordEntity(BaseEntity):
     entered_date: Mapped[Optional[datetime]] = mapped_column(
         DateTime,
         # SYSDATE in Oracle, this is for SQLite (for Oracle it's DB first approach)
-        server_default=text("CURRENT_TIMESTAMP"),
+        server_default=text("(DATETIME('now','localtime'))"),
     )
     # Nullable in DB, but filled by a trigger
     # Code-only primary key, not in DB; autoincrement=True added for SQLite (de-facto unique in Oracle & managed by a trigger)
@@ -434,6 +435,24 @@ class MemberEntity(BaseEntity):
     user: Mapped[Optional["UserEntity"]] = relationship(
         back_populates="member", lazy="joined"
     )
+
+    @property
+    def all_licence_infos(self) -> Sequence["LicenceInfoEntity"]:
+        """
+        Returns all licences, including expired ones.
+        """
+        return [licence.licence_info for licence in self.licences]
+
+    @property
+    def active_licence_infos(self) -> Sequence["LicenceInfoEntity"]:
+        """
+        Returns all active licences.
+        """
+        return [
+            licence.licence_info
+            for licence in self.licences
+            if licence.status and licence.status > 0
+        ]
 
 
 class MembershipTypeEntity(BaseEntity):

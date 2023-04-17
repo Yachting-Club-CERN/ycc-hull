@@ -13,7 +13,7 @@ from ycc_hull.config import CONFIG
 from ycc_hull.models.user import User
 from ycc_hull.utils import full_type_name
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 _AUTHENTICATION_FAILED = (
     "Missing or invalid token. Please log in. If you are logged in, "
@@ -33,7 +33,7 @@ _KEYCLOAK = KeycloakOpenID(
 
 # Programmatic access to the token endpoint: _KEYCLOAK.well_known()["token_endpoint"]
 token_endpoint = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
-logger.info("Initialising OAuth 2 scheme with token endpoint: %s", token_endpoint)
+_logger.info("Initialising OAuth 2 scheme with token endpoint: %s", token_endpoint)
 _OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=token_endpoint)
 
 
@@ -123,27 +123,27 @@ async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
     Returns:
         User: user object
     """
-    logger.debug("Authenticating...")
+    _logger.debug("Authenticating...")
     try:
-        logger.debug("Token: %s", token)
+        _logger.debug("Token: %s", token)
 
         user_info = _KEYCLOAK.userinfo(token)  # cspell:disable-line
-        logger.debug("User info: %s", user_info)
+        _logger.debug("User info: %s", user_info)
         token_info = _KEYCLOAK.introspect(token)
-        logger.debug("Token info: %s", token_info)
+        _logger.debug("Token info: %s", token_info)
 
         if not token_info["active"]:
-            logger.warning("Authentication failed")
+            _logger.warning("Authentication failed")
             raise create_http_exception_401(_INACTIVE_USER)
 
         user = _create_user(user_info=user_info, token_info=token_info)
-        logger.debug("Authentication succeeded: %s", user)
+        _logger.debug("Authentication succeeded: %s", user)
 
         if not user.active_member:
-            logger.info("Inactive member: %s, roles: %s", user.username, user.roles)
+            _logger.info("Inactive member: %s, roles: %s", user.username, user.roles)
             raise create_http_exception_401(_INACTIVE_MEMBER)
 
-        logger.info(
+        _logger.info(
             "Active member: %s (%d), groups: %s, roles: %s",
             user.username,
             user.member_id,
@@ -152,7 +152,7 @@ async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
         )
         return user
     except (KeycloakAuthenticationError, KeycloakInvalidTokenError) as exc:
-        logger.warning(
+        _logger.warning(
             "Authentication failed: %s: %s", full_type_name(exc.__class__), exc
         )
         raise create_http_exception_401(  # pylint: disable=raise-missing-from

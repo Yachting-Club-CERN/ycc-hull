@@ -8,6 +8,7 @@ authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 python = "~3.9"
 # General
 aiofiles = "^23.1.0"
+lxml = "^4.9.2"
 pyhumps = "^3.8.0"
 # Auth
 python-keycloak = "^2.15.3"
@@ -33,6 +34,7 @@ pytest-cov = "^4.0.0"
 pytest-html = "^3.2.0"
 pytest-mock = "^3.10.0"
 types-aiofiles = "^23.1.0.1"
+types-lxml = "^2023.3.28"
 types-passlib = "^1.7.7.11"
 
 [tool.poetry.scripts]

@@ -25,7 +25,7 @@ jobs:
           poetry run regenerate-test-data
           git status
       - name: Test
-        run: poetry run pytest --cov=ycc_hull
+        run: poetry run pytest --cov=ycc_hull --cov-branch
       - name: Quick Lint
         run: |
           set -x

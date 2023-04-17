@@ -1,13 +1,16 @@
 """
 Helpers DTO tests.
 """
-from pydantic import ValidationError
+from datetime import datetime
+
 import pytest
-from ycc_hull.models.helpers_dtos import HelperTaskCreationRequestDto
+from pydantic import ValidationError
+
+from ycc_hull.models.helpers_dtos import HelperTaskMutationRequestDto
 
 
 def test_creation_valid_shift() -> None:
-    HelperTaskCreationRequestDto(
+    request = HelperTaskMutationRequestDto(
         category_id=1,
         title="Test Task",
         short_description="The Club needs your help!",
@@ -21,9 +24,12 @@ def test_creation_valid_shift() -> None:
         published=False,
     )
 
+    assert isinstance(request.start, datetime)
+    assert isinstance(request.end, datetime)
+
 
 def test_creation_valid_deadline() -> None:
-    HelperTaskCreationRequestDto(
+    request = HelperTaskMutationRequestDto(
         category_id=1,
         title="Test Task",
         short_description="The Club needs your help!",
@@ -36,10 +42,12 @@ def test_creation_valid_deadline() -> None:
         published=True,
     )
 
+    assert isinstance(request.deadline, datetime)
+
 
 def test_creation_must_specify_timing() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskCreationRequestDto(
+        HelperTaskMutationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -56,7 +64,7 @@ def test_creation_must_specify_timing() -> None:
 
 def test_creation_must_not_specify_all_timing_fields() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskCreationRequestDto(
+        HelperTaskMutationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -76,7 +84,7 @@ def test_creation_must_not_specify_all_timing_fields() -> None:
 
 def test_creation_must_not_specify_start_with_deadline() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskCreationRequestDto(
+        HelperTaskMutationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -95,7 +103,7 @@ def test_creation_must_not_specify_start_with_deadline() -> None:
 
 def test_creation_must_not_specify_end_with_deadline() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskCreationRequestDto(
+        HelperTaskMutationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -114,7 +122,7 @@ def test_creation_must_not_specify_end_with_deadline() -> None:
 
 def test_creation_must_not_specify_start_after_end() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskCreationRequestDto(
+        HelperTaskMutationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -133,7 +141,7 @@ def test_creation_must_not_specify_start_after_end() -> None:
 
 def test_creation_must_have_consistent_helper_counts() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskCreationRequestDto(
+        HelperTaskMutationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -148,3 +156,31 @@ def test_creation_must_have_consistent_helper_counts() -> None:
         )
 
     assert exc_info.value.errors()[0]["msg"] == "Invalid minimum/maximum helper count"
+
+
+def test_sanitise() -> None:
+    request = HelperTaskMutationRequestDto(
+        category_id=1,
+        title="  <em>Test Task</em>  ",
+        short_description="\t\nThe Club needs your help!\t<!-- Test -->\n",
+        long_description=(
+            "<em>Really!</em> It <notatag>is</notatag> very \nimportant "
+            "<!-- Test -->to get this <script>alert('XSS')</script>done!<blink><p>Thank you!"
+            "<table>NO TABLES!</table>"
+        ),
+        contact_id=1,
+        start="2023-05-01T18:00:00",
+        end="2023-05-01T20:30:00",
+        urgent=False,
+        captain_required_licence_info_id=9,
+        helpers_min_count=1,
+        helpers_max_count=2,
+        published=False,
+    )
+
+    assert request.title == "Test Task"
+    assert request.short_description == "The Club needs your help!"
+    assert (
+        request.long_description
+        == "<div><em>Really!</em> It is very \nimportant to get this done!<p>Thank you!</p>NO TABLES!</div>"
+    )

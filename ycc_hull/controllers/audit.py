@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from ycc_hull.auth import User
 from ycc_hull.config import CONFIG, Environment
-from ycc_hull.db.entities import AuditLogEntryEntity, BaseEntity
+from ycc_hull.db.entities import AuditLogEntryEntity
 from ycc_hull.utils import full_type_name
 
 _APPLICATION = (
@@ -24,16 +24,15 @@ def _to_json_dict(obj: Any) -> dict:
         return {"@type": "datetime", "value": obj.isoformat()}
     if isinstance(obj, date):
         return {"@type": "date", "value": obj.isoformat()}
-    if isinstance(obj, (BaseEntity, BaseModel)):
-        data = obj.dict()
-        data["@type"] = full_type_name(obj.__class__)
-        return data
+    if isinstance(obj, BaseModel):
+        return {"@type": full_type_name(obj.__class__), **obj.dict(by_alias=True)}
+    # Note: entities are not allowed since it is much better to audit the DTOs
 
     raise TypeError(f"Cannot serialize type: {type(obj)}")
 
 
 def _to_pretty_json(obj: Any) -> str:
-    return json.dumps(obj, indent=2, sort_keys=True, default=_to_json_dict)
+    return json.dumps(obj, indent=2, default=_to_json_dict)
 
 
 def create_audit_entry(

@@ -106,7 +106,7 @@ Upgrade to latest versions:
 ### Basic QA
 
 ```sh
-poetry run pytest --cov=ycc_hull --cov-report=html
+poetry run pytest --cov=ycc_hull --cov-branch --cov-report=html
 
 poetry run black .
 poetry run mypy .

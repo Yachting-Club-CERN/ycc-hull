@@ -16,7 +16,7 @@ def _create_hasher() -> PrefixWrapper:
     return ldap_pbkdf2_sha1.using(rounds=20000, salt_size=16)
 
 
-_LOG = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 # In Python format:
 # {PBKDF2}20000$2/u/l7J2zpnTmlMqBQDgnA$89AeSFShUfrxB6guLEi7CUiTL8c
@@ -76,7 +76,7 @@ def _hash_to_perl(python_hash: str) -> str:
         python_hash.replace(".", "+")
     )
     if not match:
-        _LOG.debug("The Python hash seems invalid: %s", python_hash)
+        _logger.debug("The Python hash seems invalid: %s", python_hash)
         raise ValueError("The Python hash seems invalid")
 
     rounds: str = _pack(int(match.group(1))).replace(
@@ -92,7 +92,7 @@ def _hash_to_python(perl_hash: str) -> str:
     # . => +: from LDAP BASE64 format
     match: Optional[Match] = _PERL_HASH_FORMAT_RE.search(perl_hash.replace("+", "."))
     if not match:
-        _LOG.debug("The Perl hash seems invalid: %s", perl_hash)
+        _logger.debug("The Perl hash seems invalid: %s", perl_hash)
         raise ValueError("The Perl hash seems invalid")
 
     rounds: int = _unpack_int(match.group(1) + "==")  # Legacy code removes padding

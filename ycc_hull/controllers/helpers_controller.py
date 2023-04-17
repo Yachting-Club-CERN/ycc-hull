@@ -3,12 +3,11 @@ Helpers controller.
 """
 from collections.abc import Sequence
 from datetime import datetime
-import logging
 from typing import Optional
 
 from sqlalchemy import func, select
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import lazyload
+from sqlalchemy.exc import DatabaseError
+from sqlalchemy.orm import Session, lazyload
 
 from ycc_hull.controllers.audit import create_audit_entry
 from ycc_hull.controllers.base_controller import BaseController
@@ -23,12 +22,10 @@ from ycc_hull.db.entities import (
 )
 from ycc_hull.models.helpers_dtos import (
     HelperTaskCategoryDto,
-    HelperTaskCreationRequestDto,
     HelperTaskDto,
+    HelperTaskMutationRequestDto,
 )
 from ycc_hull.models.user import User
-
-logger = logging.getLogger(__name__)
 
 
 class HelpersController(BaseController):
@@ -51,8 +48,7 @@ class HelpersController(BaseController):
     async def find_task_by_id(
         self, task_id: int, published: Optional[bool] = None
     ) -> Optional[HelperTaskDto]:
-        tasks = await self._find_tasks(task_id, published)
-        return tasks[0] if tasks else None
+        return await self._find_task_by_id(task_id, published)
 
     async def get_task_by_id(
         self, task_id: int, published: Optional[bool] = None
@@ -62,21 +58,118 @@ class HelpersController(BaseController):
             return task
         raise ControllerNotFoundException("Task not found")
 
-    async def subscribe_as_captain(self, task_id: int, user: User) -> None:
-        task = await self.get_task_by_id(task_id, published=True)
+    async def create_task(
+        self, task_mutation_request: HelperTaskMutationRequestDto, user: User
+    ) -> HelperTaskDto:
+        with self.database_context.create_session() as session:
+            try:
+                task_entity = HelperTaskEntity(**task_mutation_request.dict())
+                session.add(task_entity)
+                session.commit()
 
-        await self._check_can_subscribe(task, user.member_id)
-        if task.captain:
-            raise ControllerConflictException("Task already has a captain")
+                task = HelperTaskDto.create(task_entity)
+                self._logger.info("Created task: %s, user: %s", task, user)
 
-        if task.captain_required_licence_info:
-            required_licence = task.captain_required_licence_info.licence
-            if not user.has_licence(required_licence):
-                raise ControllerConflictException(
-                    f"Task captain needs licence: {required_licence}"
+                session.add(
+                    create_audit_entry(user, "Helpers/Tasks/Create", {"new": task})
+                )
+                session.commit()
+
+                return task
+            except DatabaseError as exc:
+                raise self._handle_database_error(  # pylint: disable=raising-bad-type
+                    exc, "create task", user, task_mutation_request
                 )
 
+    async def update_task(
+        self,
+        task_id: int,
+        task_mutation_request: HelperTaskMutationRequestDto,
+        user: User,
+    ) -> HelperTaskDto:
         with self.database_context.create_session() as session:
+            old_task = await self._get_task_by_id(task_id, session=session)
+
+            # Check: cannot change timing if anyone has subscribed
+            if old_task.captain or old_task.helpers:
+                if (
+                    task_mutation_request.start != old_task.start
+                    or task_mutation_request.end != old_task.end
+                    or task_mutation_request.deadline != old_task.deadline
+                ):
+                    raise ControllerConflictException(
+                        "Cannot change timing after anyone has subscribed"
+                    )
+                if not task_mutation_request.published:
+                    raise ControllerConflictException(
+                        "You must publish a task after anyone has subscribed"
+                    )
+
+            # Check: if a captain has subscribed then the new licence must be active for the captain
+            if (
+                old_task.captain
+                and task_mutation_request.captain_required_licence_info_id
+                != (
+                    old_task.captain_required_licence_info.id
+                    if old_task.captain_required_licence_info
+                    else None
+                )
+            ):
+                captain_entity = old_task.captain.member.get_entity()
+                if not any(
+                    licence_info_entity.infoid
+                    == task_mutation_request.captain_required_licence_info_id
+                    for licence_info_entity in captain_entity.active_licence_infos
+                ):
+                    raise ControllerConflictException(
+                        "Cannot change captain required licence info because the subscribed captain does not have the newly specified licence"
+                    )
+
+            # Check: cannot decrease helpers maximum count below subscribed helpers count
+            if task_mutation_request.helpers_max_count < len(old_task.helpers):
+                raise ControllerConflictException(
+                    "Cannot decrease helpers maximum count below subscribed helpers count"
+                )
+
+            try:
+                task_entity = old_task.get_entity()
+                old_task = HelperTaskDto.create(task_entity)
+                self._update_entity_from_dto(task_entity, task_mutation_request)
+                session.commit()
+
+                new_task = HelperTaskDto.create(task_entity)
+                self._logger.info("Created task: %s, user: %s", old_task, user)
+
+                session.add(
+                    create_audit_entry(
+                        user,
+                        f"Helpers/Tasks/Update/{task_id}",
+                        {"old": old_task, "new": new_task},
+                    )
+                )
+                session.commit()
+
+                return new_task
+            except DatabaseError as exc:
+                raise self._handle_database_error(  # pylint: disable=raising-bad-type
+                    exc, "update task", user, task_mutation_request
+                )
+
+    async def subscribe_as_captain(self, task_id: int, user: User) -> None:
+        with self.database_context.create_session() as session:
+            task = await self._get_task_by_id(task_id, published=True, session=session)
+
+            await self._check_can_subscribe(task, user.member_id)
+            if task.captain:
+                raise ControllerConflictException("Task already has a captain")
+
+            if task.captain_required_licence_info:
+                required_licence = task.captain_required_licence_info.licence
+                if not user.has_licence(required_licence):
+                    raise ControllerConflictException(
+                        f"Task captain needs licence: {required_licence}"
+                    )
+
             task_entity = session.scalars(
                 select(HelperTaskEntity)
                 .options(lazyload("*"))
@@ -106,47 +199,11 @@ class HelpersController(BaseController):
             )
             session.commit()
 
-    async def create_task(
-        self, task_creation_request: HelperTaskCreationRequestDto, user: User
-    ) -> HelperTaskDto:
-        with self.database_context.create_session() as session:
-            try:
-                task = HelperTaskEntity(**task_creation_request.dict())
-                session.add(task)
-                session.add(
-                    create_audit_entry(user, "Helpers/Tasks/Create", {"new": task})
-                )
-                session.commit()
-                created_task = HelperTaskDto.create(task)
-                logger.info("Created task: %s, user: %s", created_task, user)
-                return created_task
-            except IntegrityError as exc:
-                logger.info(
-                    "Failed to create task: %s, user: %s, task_creation_request: %s",
-                    exc,
-                    user,
-                    task_creation_request,
-                )
-                message = str(exc)
-
-                user_message = None
-                if "violated - parent key not found" in message:
-                    if "HELPER_TASKS_CATEGORY_FK" in message:
-                        user_message = "Invalid category"
-                    if "HELPER_TASKS_CONTACT_FK" in message:
-                        user_message = "Invalid contact"
-                    if "HELPER_TASKS_CAPTAIN_REQUIRED_LICENCE_INFO_FK" in message:
-                        user_message = "Invalid captain required licence info"
-
-                if user_message:
-                    raise ControllerConflictException(  # pylint: disable=raise-missing-from
-                        user_message
-                    )
-
-                raise exc
-
     async def _find_tasks(
-        self, task_id: Optional[int], published: Optional[bool]
+        self,
+        task_id: Optional[int],
+        published: Optional[bool],
+        session: Optional[Session] = None,
     ) -> Sequence[HelperTaskDto]:
         query = select(HelperTaskEntity)
 
@@ -166,7 +223,25 @@ class HelpersController(BaseController):
             query,
             HelperTaskDto.create,
             unique=True,
+            session=session,
         )
+
+    async def _find_task_by_id(
+        self, task_id: int, published: Optional[bool], session: Optional[Session] = None
+    ) -> Optional[HelperTaskDto]:
+        tasks = await self._find_tasks(task_id, published, session=session)
+        return tasks[0] if tasks else None
+
+    async def _get_task_by_id(
+        self,
+        task_id: int,
+        published: Optional[bool] = None,
+        session: Optional[Session] = None,
+    ) -> HelperTaskDto:
+        task = await self._find_task_by_id(task_id, published, session=session)
+        if task:
+            return task
+        raise ControllerNotFoundException("Task not found")
 
     async def _check_can_subscribe(self, task: HelperTaskDto, member_id: int) -> None:
         if not task.published:

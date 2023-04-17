@@ -11,7 +11,7 @@ from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.models.helpers_dtos import (
     HelperTaskCategoryDto,
-    HelperTaskCreationRequestDto,
+    HelperTaskMutationRequestDto,
     HelperTaskDto,
 )
 
@@ -42,41 +42,45 @@ async def helper_tasks_get_by_id(
 
 @api_helpers.post("/api/v0/helpers/tasks")
 async def helper_tasks_create(
-    task: HelperTaskCreationRequestDto, user: User = Depends(auth)
+    task_mutation_request: HelperTaskMutationRequestDto, user: User = Depends(auth)
 ) -> HelperTaskDto:
     if not user.helpers_app_admin and not user.helpers_app_editor:
         raise create_http_exception_403(
             "You do not have permission to create helper tasks"
         )
-    if user.helpers_app_editor and not task.contact_id == user.member_id:
+    if (
+        not user.helpers_app_admin
+        and task_mutation_request.contact_id != user.member_id
+    ):
         raise create_http_exception_403(
             "You have to be the contact for the tasks you create"
         )
 
-    return await controller.create_task(task, user)
+    return await controller.create_task(task_mutation_request, user)
 
 
-# TODO WIP
-# @api.helpers.put("/api/v0/helpers/tasks/{task_id}")
-# async def helper_tasks_update(
-#     task_id: int, task: HelperTaskDto, user: User = Depends(auth)
-# ) -> HelperTaskDto:
-#     if not user.helpers_app_admin and not user.helpers_app_editor:
-#         raise create_http_exception_403(
-#             "You do not have permission to update helper tasks"
-#         )
+@api_helpers.put("/api/v0/helpers/tasks/{task_id}")
+async def helper_tasks_update(
+    task_id: int,
+    task_mutation_request: HelperTaskMutationRequestDto,
+    user: User = Depends(auth),
+) -> HelperTaskDto:
+    if not user.helpers_app_admin and not user.helpers_app_editor:
+        raise create_http_exception_403(
+            "You do not have permission to update helper tasks"
+        )
 
-#     if (
-#         user.helpers_app_editor
-#         and controller.get_task_by_id(task_id, published=None).contact.id
-#         != user.member_id
-#     ):
-#         raise create_http_exception_403(
-#             "You do not have permission to update this helper task"
-#         )
+    existing_task = await helper_tasks_get_by_id(task_id, user)
 
-#     task = await controller.update ??? task(task, user)
-#     return task
+    if user.helpers_app_editor and (
+        task_mutation_request.contact_id != user.member_id
+        or existing_task.contact.id != user.member_id
+    ):
+        raise create_http_exception_403(
+            "You have to be the contact for the tasks you update"
+        )
+
+    return await controller.update_task(task_id, task_mutation_request, user)
 
 
 @api_helpers.post("/api/v0/helpers/tasks/{task_id}/subscribe-as-captain")

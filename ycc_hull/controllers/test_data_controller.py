@@ -95,6 +95,8 @@ class TestDataController(BaseController):
     Test data controller.
     """
 
+    __test__ = False
+
     async def populate(self) -> list[str]:
         log: list[str] = []
 
