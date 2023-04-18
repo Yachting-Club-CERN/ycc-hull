@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-TODO testing
-TODO run tests on CI
-TODO coverage on CI?
-
 ### Added
 
 - Add support for DB entities: audit log entry, Helpers App permissions
