@@ -27,7 +27,8 @@ class CamelisedBaseModel(BaseModel):
     def sanitise_strings(cls, values: dict) -> dict:
         for key, value in values.items():
             if isinstance(value, str):
-                if cls.__fields__.get(key).field_info.extra.get("html"):
+                field_info = cls.__fields__.get(key).field_info
+                if field_info and field_info.extra.get("html"):
                     values[key] = sanitise_html_input(value)
                 else:
                     values[key] = sanitise_text_input(value)
