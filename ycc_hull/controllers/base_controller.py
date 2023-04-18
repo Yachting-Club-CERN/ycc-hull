@@ -10,7 +10,7 @@ from sqlalchemy.exc import DatabaseError
 from ycc_hull.controllers.exceptions import ControllerConflictException
 from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
 from ycc_hull.db.entities import BaseEntity
-from ycc_hull.models.base import CamelisedBaseModelWithEntity
+from ycc_hull.models.base import CamelisedBaseModel
 from ycc_hull.models.user import User
 from ycc_hull.utils import full_type_name
 
@@ -62,7 +62,7 @@ class BaseController(metaclass=ABCMeta):
         raise exc
 
     def _update_entity_from_dto(
-        self, entity: BaseEntity, request: CamelisedBaseModelWithEntity
+        self, entity: BaseEntity, request: CamelisedBaseModel
     ) -> None:
         for field, value in request.__dict__.items():
             setattr(entity, field, value)

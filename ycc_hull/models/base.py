@@ -7,7 +7,7 @@ from humps import camelize
 from lxml import etree
 from lxml.html import fromstring
 from lxml.html.clean import Cleaner
-from pydantic import BaseModel, Extra, Field
+from pydantic import BaseModel, Extra, Field, root_validator
 
 from ycc_hull.utils import full_type_name
 
@@ -18,6 +18,20 @@ class CamelisedBaseModel(BaseModel):
     """
     Base class for all model classes which will convert snake_case attributes to camelCase when converting to JSON.
     """
+
+    # We are fighting XSS attacks here, so we need to sanitise all HTML input/output.
+    # If you want to mark a field as HTML, use the following syntax:
+    #
+    # long_description: Optional[str] = Field(html=True)
+    @root_validator
+    def sanitise_strings(cls, values: dict) -> dict:
+        for key, value in values.items():
+            if isinstance(value, str):
+                if cls.__fields__.get(key).field_info.extra.get("html"):
+                    values[key] = sanitise_html_input(value)
+                else:
+                    values[key] = sanitise_text_input(value)
+        return values
 
     class Config:
         """
@@ -48,15 +62,16 @@ class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
 
 def sanitise_text_input(text: Optional[str]) -> Optional[str]:
     if not text:
-        return text
+        return None
 
     element = fromstring(text)
-    return Cleaner().clean_html(element).text_content().strip()
+    clean_text = Cleaner().clean_html(element).text_content().strip()
+    return clean_text if clean_text else None
 
 
 def sanitise_html_input(html: Optional[str]) -> Optional[str]:
-    if not html:
-        return html
+    if not html or not sanitise_text_input(html):
+        return None
 
     cleaner = Cleaner(
         scripts=True,

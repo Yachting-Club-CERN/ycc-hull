@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from datetime import datetime
 from typing import Optional
 
-from pydantic import root_validator, validator
+from pydantic import Field, root_validator, validator
 
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
@@ -14,9 +14,8 @@ from ycc_hull.db.entities import (
     MemberEntity,
 )
 from ycc_hull.models.base import (
+    CamelisedBaseModel,
     CamelisedBaseModelWithEntity,
-    sanitise_html_input,
-    sanitise_text_input,
 )
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
@@ -29,7 +28,7 @@ class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntit
     id: int
     title: str
     short_description: str
-    long_description: Optional[str]
+    long_description: Optional[str] = Field(html=True)
 
     @staticmethod
     def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
@@ -51,7 +50,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     category: HelperTaskCategoryDto
     title: str
     short_description: str
-    long_description: Optional[str]
+    long_description: Optional[str] = Field(html=True)
     contact: MemberPublicInfoDto
     start: Optional[datetime]
     end: Optional[datetime]
@@ -103,7 +102,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
         )
 
 
-class HelperTaskMutationRequestDto(CamelisedBaseModelWithEntity):
+class HelperTaskMutationRequestDto(CamelisedBaseModel):
     """
     Mutation request DTO for helper task.
     """
@@ -111,7 +110,7 @@ class HelperTaskMutationRequestDto(CamelisedBaseModelWithEntity):
     category_id: int
     title: str
     short_description: str
-    long_description: Optional[str]
+    long_description: Optional[str] = Field(html=True)
     contact_id: int
     start: Optional[datetime]
     end: Optional[datetime]
@@ -149,16 +148,6 @@ class HelperTaskMutationRequestDto(CamelisedBaseModelWithEntity):
         if 0 <= helpers_min_count <= helpers_max_count:
             return values
         raise ValueError("Invalid minimum/maximum helper count")
-
-    @root_validator
-    def sanitise_strings(cls, values: dict) -> dict:
-        for key, value in values.items():
-            if isinstance(value, str):
-                if key == "long_description":
-                    values[key] = sanitise_html_input(value)
-                else:
-                    values[key] = sanitise_text_input(value)
-        return values
 
 
 class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
