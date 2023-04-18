@@ -84,8 +84,8 @@ t_audit_log = Table(
     Column("DATE", DateTime, nullable=False, server_default=text("SYSDATE ")),
     Column("application", VARCHAR(200), nullable=False),
     Column("USER", VARCHAR(200), nullable=False),
-    Column("short_description", VARCHAR(200), nullable=False),
-    Column("long_description", Text),
+    Column("description", VARCHAR(200), nullable=False),
+    Column("data", Text),
 )
 
 
