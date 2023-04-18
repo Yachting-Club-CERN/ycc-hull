@@ -71,7 +71,7 @@ def sanitise_text_input(text: Optional[str]) -> Optional[str]:
 
 
 def sanitise_html_input(html: Optional[str]) -> Optional[str]:
-    if not html or not sanitise_text_input(html):
+    if not html:
         return None
 
     cleaner = Cleaner(
