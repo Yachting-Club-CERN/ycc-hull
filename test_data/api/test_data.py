@@ -2,7 +2,7 @@
 Test Data API endpoints.
 """
 from fastapi import APIRouter
-from ycc_hull.controllers.test_data_controller import TestDataController
+from test_data.controllers.test_data_controller import TestDataController
 
 
 # No auth needed for local development
