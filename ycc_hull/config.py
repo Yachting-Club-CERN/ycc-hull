@@ -6,7 +6,7 @@ import os
 from enum import Enum
 from typing import Optional
 
-from ycc_hull.models.base import CamelisedBaseModelWithEntity
+from ycc_hull.models.base import CamelisedBaseModel
 
 CONFIG_FILE = (
     "conf/config-dev.json"
@@ -28,7 +28,7 @@ class Environment(str, Enum):
     LOCAL = "LOCAL"
 
 
-class Config(CamelisedBaseModelWithEntity):
+class Config(CamelisedBaseModel):
     """
     Application configuration.
     """
