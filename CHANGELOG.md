@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for DB entities: audit log entry, Helpers App permissions
+- Add support for DB entities: audit log entries, Helpers App permissions
 - Add test data: Helpers App permissions
 - Add to helpers controller: create helper task
 - Add controller: licences
