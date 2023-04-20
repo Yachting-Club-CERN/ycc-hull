@@ -1,18 +1,52 @@
 """
-Handwritten entities containing only the relevant tables and using Oracle dialect types.
+Handwritten Database entities containing only the relevant tables.
 
-Note 1: SQLAlchemy requires all tables with PK, but sometimes they are not in the database. These are marked with comments.
+For mapping use SQLAlchemy types, so we can also use the entities for
+testing/local development with SQLite. The generated DDL is not used for Oracle
+(that is database-first approach).
 
-Note 2: The existing DB is inconsistent in spelling "licence" vs "license". Try to always the British spellings in this project ('c' instead of 's').
+For `mapped_column(...)` declarations do not use `nullable`, use `Optional`
+instead for nullable fields.
 
-Note 3: The existing DB is inconsistent in boolean fields. Sometimes they are NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
+Type mapping from Oracle to SQLAlchemy (so we can use SQLite for testing):
+
+```
+BLOB -> BLOB
+CHAR -> CHAR
+CLOB -> CLOB
+NUMBER -> Integer (or Numeric for non-integers)
+DATE - > DateTime
+VARCHAR2 -> VARCHAR
+```
+
+Note 1: SQLAlchemy requires all tables with PK, but sometimes they are not in
+the database. These are marked with comments.
+
+Note 2: The existing DB is inconsistent in spelling "licence" vs "license". Try
+to always the British spellings in this project ('c' instead of 's').
+
+Note 3: The existing DB is inconsistent in boolean fields. Sometimes they are
+NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
 """
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Optional
 
-from sqlalchemy import ForeignKey, Index, PrimaryKeyConstraint, text
-from sqlalchemy.dialects.oracle import BLOB, CHAR, CLOB, DATE, NUMBER, VARCHAR2
+from collections.abc import Sequence
+from sqlalchemy import (
+    BLOB,
+    CHAR,
+    CLOB,
+    VARCHAR,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    PrimaryKeyConstraint,
+    text,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
+from ycc_hull.utils import short_type_name
 
 
 class BaseEntity(DeclarativeBase):
@@ -20,11 +54,31 @@ class BaseEntity(DeclarativeBase):
     Base class for DB entities.
     """
 
-    def dict(self) -> Dict[str, Any]:
+    def dict(self) -> dict[str, Any]:
         return {k: v for k, v in sorted(self.__dict__.items()) if not k.startswith("_")}
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__qualname__}{self.dict()}"
+        return f"{short_type_name(self.__class__)}{self.dict()}"
+
+
+class AuditLogEntryEntity(BaseEntity):
+    """
+    Represents an audit log entry.
+    """
+
+    __tablename__ = "audit_log"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    date: Mapped[datetime] = mapped_column(
+        "DATE",
+        DateTime,
+        # SYSDATE in Oracle, this is for SQLite (for Oracle it's DB first approach)
+        server_default=text("(DATETIME('now','localtime'))"),
+    )
+    application: Mapped[str] = mapped_column(VARCHAR(200))
+    user: Mapped[str] = mapped_column("USER", VARCHAR(200))
+    description: Mapped[str] = mapped_column(VARCHAR(200))
+    data: Mapped[Optional[str]] = mapped_column(CLOB)
 
 
 class BoatEntity(BaseEntity):
@@ -34,24 +88,31 @@ class BoatEntity(BaseEntity):
 
     __tablename__ = "boats"
 
-    boat_id: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, primary_key=True)
-    name: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False, unique=True)
-    type: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
-    ycc_num: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, unique=True)
-    license: Mapped[str] = mapped_column(VARCHAR2(5), nullable=False)
-    class_: Mapped[str] = mapped_column("class", VARCHAR2(5), nullable=False)
-    table_pos: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False, unique=True)
+    # NUMBER(3, 0) in DB
+    boat_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(VARCHAR(20), unique=True)
+    type: Mapped[str] = mapped_column(VARCHAR(20))
+    # NUMBER(3, 0) in DB
+    ycc_num: Mapped[int] = mapped_column(Integer, unique=True)
+    license: Mapped[str] = mapped_column(VARCHAR(5))
+    class_: Mapped[str] = mapped_column("class", VARCHAR(5))
+    # NUMBER(3, 0) in DB
+    table_pos: Mapped[int] = mapped_column(Integer, unique=True)
     # Maintainer and maintainer2 are used for sending e-mails to maintainers, e.g., upon Warning/Out of order log entries
-    maintainer_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("members.id"))
-    ext_reg_cat: Mapped[str] = mapped_column(VARCHAR2(2))
-    maintainer_id2: Mapped[int] = mapped_column(NUMBER, ForeignKey("members.id"))
-    registration_pdf: Mapped[Any] = mapped_column(BLOB)
+    maintainer_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("members.id")
+    )
+    ext_reg_cat: Mapped[Optional[str]] = mapped_column(VARCHAR(2))
+    maintainer_id2: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("members.id")
+    )
+    registration_pdf: Mapped[Optional[Any]] = mapped_column(BLOB)
 
     # This could be many to many when away from Perl (and maybe APEX too)
-    maintainer1: Mapped["MemberEntity"] = relationship(
+    maintainer1: Mapped[Optional["MemberEntity"]] = relationship(
         foreign_keys=maintainer_id, back_populates="maintained_boats1"
     )
-    maintainer2: Mapped["MemberEntity"] = relationship(
+    maintainer2: Mapped[Optional["MemberEntity"]] = relationship(
         foreign_keys=maintainer_id2,
         back_populates="maintained_boats2",
     )
@@ -67,7 +128,7 @@ class EntranceFeeRecordEntity(BaseEntity):
 
     # Code-only foreign key, not in DB
     member_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), nullable=False, primary_key=True
+        Integer, ForeignKey("members.id"), primary_key=True
     )
     """
     This field is nullable, however, it is only null for some members who joined 2010 or before. (Lajos, 2023-03)
@@ -84,7 +145,8 @@ class EntranceFeeRecordEntity(BaseEntity):
     WHERE efr.YEAR_F IS NULL
     ORDER BY m.MEMBER_ENTRANCE DESC, m.NAME ASC;
     """
-    year_f: Mapped[int] = mapped_column(NUMBER(4, 0), nullable=True)
+    # NUMBER(4, 0) in DB
+    year_f: Mapped[Optional[int]] = mapped_column(Integer)
 
 
 class FeeRecordEntity(BaseEntity):
@@ -94,29 +156,38 @@ class FeeRecordEntity(BaseEntity):
 
     # Note: FEESRECORDS_TRG trigger may fill entered_date and paymentid
     __tablename__ = "feesrecords"
-    __table_args__ = (
-        # Code-only primary key, not in DB
-        PrimaryKeyConstraint(
-            "member_id",
-            "year_f",
-            "paid_date",
-            "paid_mode",
-            "fee",
-            "entered_date",
-            "paymentid",
-        ),
-    )
 
     # Code-only foreign key, not in DB
-    member_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), nullable=False
+    member_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
+    # NUMBER(4, 0) in DB
+    year_f: Mapped[int] = mapped_column(Integer)
+    paid_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    paid_mode: Mapped[Optional[str]] = mapped_column(VARCHAR(4))
+    # NUMBER(4, 0) in DB
+    fee: Mapped[int] = mapped_column(Integer)
+    entered_date: Mapped[Optional[datetime]] = mapped_column(
+        DateTime,
+        # SYSDATE in Oracle, this is for SQLite (for Oracle it's DB first approach)
+        server_default=text("(DATETIME('now','localtime'))"),
     )
-    year_f: Mapped[int] = mapped_column(NUMBER(4, 0), nullable=False)
-    paid_date: Mapped[datetime] = mapped_column(DATE)
-    paid_mode: Mapped[str] = mapped_column(VARCHAR2(4))
-    fee: Mapped[int] = mapped_column(NUMBER(3, 0), nullable=False)
-    entered_date: Mapped[datetime] = mapped_column(DATE, server_default=text("sysdate"))
-    paymentid: Mapped[int] = mapped_column(NUMBER)
+    # Nullable in DB, but filled by a trigger
+    # Code-only primary key, not in DB; autoincrement=True added for SQLite (de-facto unique in Oracle & managed by a trigger)
+    paymentid: Mapped[Optional[int]] = mapped_column(
+        Integer, primary_key=True, autoincrement=True
+    )
+
+
+class HelpersAppPermissionEntity(BaseEntity):
+    """
+    Represents a Helpers App permission.
+    """
+
+    __tablename__ = "helpers_app_permissions"
+
+    member_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("members.id"), primary_key=True
+    )
+    permission: Mapped[str] = mapped_column(VARCHAR)
 
 
 class HelperTaskCategoryEntity(BaseEntity):
@@ -126,12 +197,12 @@ class HelperTaskCategoryEntity(BaseEntity):
 
     __tablename__ = "helper_task_categories"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True)
-    title: Mapped[str] = mapped_column(VARCHAR2(50), nullable=False)
-    short_description: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
-    long_description: Mapped[str] = mapped_column(CLOB)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(VARCHAR(50))
+    short_description: Mapped[str] = mapped_column(VARCHAR(200))
+    long_description: Mapped[Optional[str]] = mapped_column(CLOB)
 
-    tasks: Mapped[List["HelperTaskEntity"]] = relationship(back_populates="category")
+    tasks: Mapped[list["HelperTaskEntity"]] = relationship(back_populates="category")
 
 
 class HelperTaskEntity(BaseEntity):
@@ -141,29 +212,29 @@ class HelperTaskEntity(BaseEntity):
 
     __tablename__ = "helper_tasks"
 
-    id: Mapped[int] = mapped_column(NUMBER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     category_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("helper_task_categories.id"), nullable=False
+        Integer, ForeignKey("helper_task_categories.id")
     )
-    title: Mapped[str] = mapped_column(VARCHAR2(50), nullable=False)
-    short_description: Mapped[str] = mapped_column(VARCHAR2(200), nullable=False)
-    long_description: Mapped[str] = mapped_column(CLOB)
-    contact_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), nullable=False
-    )
+    title: Mapped[str] = mapped_column(VARCHAR(50))
+    short_description: Mapped[str] = mapped_column(VARCHAR(200))
+    long_description: Mapped[Optional[str]] = mapped_column(CLOB)
+    contact_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
     # Either start+end is specified or the deadline
-    start: Mapped[datetime] = mapped_column("START", DATE)
-    end: Mapped[datetime] = mapped_column(DATE)
-    deadline: Mapped[datetime] = mapped_column(DATE)
-    urgent: Mapped[bool] = mapped_column(NUMBER(1, 0, False), nullable=False)
-    captain_required_licence_info_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("infolicences.infoid")
+    start: Mapped[Optional[datetime]] = mapped_column("START", DateTime)
+    end: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    deadline: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    # NUMBER(1, 0) in DB
+    urgent: Mapped[bool] = mapped_column(Integer)
+    captain_required_licence_info_id: Mapped[Optional[int]] = mapped_column(
+        Integer, ForeignKey("infolicences.infoid")
     )
-    helpers_min_count: Mapped[int] = mapped_column(NUMBER, nullable=False)
-    helpers_max_count: Mapped[int] = mapped_column(NUMBER, nullable=False)
-    published: Mapped[bool] = mapped_column(NUMBER(1, 0, False), nullable=False)
-    captain_id: Mapped[int] = mapped_column(NUMBER, ForeignKey("members.id"))
-    captain_subscribed_at: Mapped[datetime] = mapped_column(DATE)
+    helpers_min_count: Mapped[int] = mapped_column(Integer)
+    helpers_max_count: Mapped[int] = mapped_column(Integer)
+    # NUMBER(1, 0) in DB
+    published: Mapped[bool] = mapped_column(Integer)
+    captain_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("members.id"))
+    captain_subscribed_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
     category: Mapped["HelperTaskCategoryEntity"] = relationship(
         back_populates="tasks", lazy="joined"
@@ -171,15 +242,15 @@ class HelperTaskEntity(BaseEntity):
     contact: Mapped["MemberEntity"] = relationship(
         foreign_keys=contact_id, back_populates="helper_tasks_as_contact", lazy="joined"
     )
-    captain_required_licence_info: Mapped["LicenceInfoEntity"] = relationship(
+    captain_required_licence_info: Mapped[Optional["LicenceInfoEntity"]] = relationship(
         lazy="joined"
     )
-    captain: Mapped["MemberEntity"] = relationship(
+    captain: Mapped[Optional["MemberEntity"]] = relationship(
         foreign_keys=captain_id,
         back_populates="helper_tasks_as_captain",
         lazy="joined",
     )
-    helpers: Mapped[List["HelperTaskHelperEntity"]] = relationship(
+    helpers: Mapped[list["HelperTaskHelperEntity"]] = relationship(
         back_populates="helper_task", lazy="joined"
     )
 
@@ -192,12 +263,12 @@ class HelperTaskHelperEntity(BaseEntity):
     __tablename__ = "helper_task_helpers"
 
     task_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("helper_tasks.id"), primary_key=True
+        Integer, ForeignKey("helper_tasks.id"), primary_key=True
     )
     member_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), primary_key=True
+        Integer, ForeignKey("members.id"), primary_key=True
     )
-    subscribed_at: Mapped[datetime] = mapped_column(DATE, nullable=False)
+    subscribed_at: Mapped[datetime] = mapped_column(DateTime)
 
     helper_task: Mapped["HelperTaskEntity"] = relationship(
         back_populates="helpers", lazy="joined"
@@ -215,12 +286,11 @@ class HolidayEntity(BaseEntity):
     __tablename__ = "holidays"
 
     day: Mapped[datetime] = mapped_column(
-        DATE,
-        nullable=False,
+        DateTime,
         # Code-only primary key, not in DB
         primary_key=True,
     )
-    label: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
+    label: Mapped[str] = mapped_column(VARCHAR(20))
 
 
 class LicenceEntity(BaseEntity):
@@ -233,20 +303,18 @@ class LicenceEntity(BaseEntity):
         PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
     )
 
-    member_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), nullable=False
-    )
-    licence_id: Mapped[int] = mapped_column(
-        NUMBER(2, 0), ForeignKey("infolicences.infoid"), nullable=False
-    )
+    member_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
+    # NUMBER(2, 0) in DB
+    licence_id: Mapped[int] = mapped_column(Integer, ForeignKey("infolicences.infoid"))
     # Year when the licence was issued
-    lyear: Mapped[int] = mapped_column(NUMBER(4, 0), nullable=False)
+    # NUMBER(4, 0) in DB
+    lyear: Mapped[int] = mapped_column(Integer)
     # Most often "Registered by Firstname LASTNAME"
-    lcomments: Mapped[str] = mapped_column(VARCHAR2(100))
+    lcomments: Mapped[Optional[str]] = mapped_column(VARCHAR(100))
     # This should be linked to tests when they are supported, see issue #27
-    test_id: Mapped[int] = mapped_column(NUMBER)
-    # 0 = inactive, 1 = active, no idea why NUMBER(4,0) in the DB
-    status: Mapped[int] = mapped_column(NUMBER(4, 0))
+    test_id: Mapped[Optional[int]] = mapped_column(Integer)
+    # 0 = inactive, 1 = active (NUMBER(4,0) in the DB)
+    status: Mapped[Optional[int]] = mapped_column(Integer)
 
     licence_info: Mapped["LicenceInfoEntity"] = relationship(lazy="joined")
     member: Mapped["MemberEntity"] = relationship(back_populates="licences")
@@ -262,24 +330,24 @@ class LicenceInfoEntity(BaseEntity):
     __tablename__ = "infolicences"
 
     # Can be negative
-    infoid: Mapped[int] = mapped_column(NUMBER, nullable=False, primary_key=True)
-    description = mapped_column(VARCHAR2(50), nullable=False)
+    infoid: Mapped[int] = mapped_column(Integer, primary_key=True)
     # Course identifier, e.g., "GS", sometimes NULL
-    ncourse: Mapped[str] = mapped_column(VARCHAR2(2))
+    ncourse: Mapped[Optional[str]] = mapped_column(VARCHAR(2))
     # This is actually the licence ID, same as BoatEntity.license (note the inconsistency in the spelling).
     # However, boats do not have licence in their table what is here, for example Laser is listed as L here,
     # but for booking a Laser one needs a D licence (at least as of 2023)
-    nlicence: Mapped[str] = mapped_column(VARCHAR2(2))
+    nlicence: Mapped[Optional[str]] = mapped_column(VARCHAR(2))
     # Probably we can ignore this one, often NULLm especially for new entries
-    nkey: Mapped[str] = mapped_column(VARCHAR2(2))
-    # NULL, 0, 90, 170, ...
-    coursefee: Mapped[int] = mapped_column(NUMBER(4, 0))
+    nkey: Mapped[Optional[str]] = mapped_column(VARCHAR(2))
+    description: Mapped[str] = mapped_column(VARCHAR(50))
+    # NULL, 0, 90, 170, ... (NUMBER(4, 0) in DB)
+    coursefee: Mapped[Optional[int]] = mapped_column(Integer)
     # NULL, "Cabin keel-boat", ...
-    course_name: Mapped[str] = mapped_column(VARCHAR2(30))
+    course_name: Mapped[Optional[str]] = mapped_column(VARCHAR(30))
     # NULL, Y, N
-    course_active: Mapped[str] = mapped_column(CHAR(1))
-    # NULL, 1, 2, 3
-    course_level: Mapped[int] = mapped_column(NUMBER(1, 0))
+    course_active: Mapped[Optional[str]] = mapped_column(CHAR(1))
+    # NULL, 1, 2, 3 (NUMBER(1, 0) in DB)
+    course_level: Mapped[Optional[int]] = mapped_column(Integer)
 
 
 class MemberEntity(BaseEntity):
@@ -289,80 +357,102 @@ class MemberEntity(BaseEntity):
 
     __tablename__ = "members"
 
-    id: Mapped[int] = mapped_column(NUMBER, nullable=False, primary_key=True)
-    name: Mapped[str] = mapped_column(VARCHAR2(25), nullable=False)
-    firstname: Mapped[str] = mapped_column(VARCHAR2(25), nullable=False)
-    birthday: Mapped[datetime] = mapped_column(DATE)
-    nationality: Mapped[str] = mapped_column(VARCHAR2(3))
-    membership: Mapped[str] = mapped_column(VARCHAR2(2), nullable=False)
-    temp_memb: Mapped[int] = mapped_column(NUMBER(1, 0))
-    lang1: Mapped[str] = mapped_column(VARCHAR2(3))
-    lang2: Mapped[str] = mapped_column(VARCHAR2(3))
-    category: Mapped[str] = mapped_column(VARCHAR2(1))
-    work_address1: Mapped[str] = mapped_column(VARCHAR2(50))
-    work_address2: Mapped[str] = mapped_column(VARCHAR2(50))
-    work_towncode: Mapped[str] = mapped_column(VARCHAR2(7))
-    work_town: Mapped[str] = mapped_column(VARCHAR2(25))
-    work_state: Mapped[str] = mapped_column(VARCHAR2(5))
-    work_phone: Mapped[str] = mapped_column(VARCHAR2(25))
-    e_mail: Mapped[str] = mapped_column(VARCHAR2(50))
-    home_addr: Mapped[str] = mapped_column(VARCHAR2(50), nullable=False)
-    home_towncode: Mapped[str] = mapped_column(VARCHAR2(7))
-    home_town: Mapped[str] = mapped_column(VARCHAR2(25))
-    home_state: Mapped[str] = mapped_column(VARCHAR2(5))
-    home_phone: Mapped[str] = mapped_column(VARCHAR2(25))
-    mail_preference: Mapped[str] = mapped_column(VARCHAR2(1))
-    favourite_mailing_post: Mapped[str] = mapped_column(VARCHAR2(1))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(VARCHAR(25))
+    firstname: Mapped[str] = mapped_column(VARCHAR(25))
+    birthday: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    nationality: Mapped[Optional[str]] = mapped_column(VARCHAR(3))
+    membership: Mapped[str] = mapped_column(VARCHAR(2))
+    # NUMBER(1, 0) in DB
+    temp_memb: Mapped[Optional[int]] = mapped_column(Integer)
+    lang1: Mapped[Optional[str]] = mapped_column(VARCHAR(3))
+    lang2: Mapped[Optional[str]] = mapped_column(VARCHAR(3))
+    category: Mapped[Optional[str]] = mapped_column(VARCHAR(1))
+    work_address1: Mapped[Optional[str]] = mapped_column(VARCHAR(50))
+    work_address2: Mapped[Optional[str]] = mapped_column(VARCHAR(50))
+    work_towncode: Mapped[Optional[str]] = mapped_column(VARCHAR(7))
+    work_town: Mapped[Optional[str]] = mapped_column(VARCHAR(25))
+    work_state: Mapped[Optional[str]] = mapped_column(VARCHAR(5))
+    work_phone: Mapped[Optional[str]] = mapped_column(VARCHAR(25))
+    e_mail: Mapped[Optional[str]] = mapped_column(VARCHAR(50))
+    home_addr: Mapped[str] = mapped_column(VARCHAR(50))
+    home_towncode: Mapped[Optional[str]] = mapped_column(VARCHAR(7))
+    home_town: Mapped[Optional[str]] = mapped_column(VARCHAR(25))
+    home_state: Mapped[Optional[str]] = mapped_column(VARCHAR(5))
+    home_phone: Mapped[Optional[str]] = mapped_column(VARCHAR(25))
+    mail_preference: Mapped[Optional[str]] = mapped_column(VARCHAR(1))
+    favourite_mailing_post: Mapped[Optional[str]] = mapped_column(VARCHAR(1))
     # Note: it is VARCHAR2(4 BYTE) in the DB
-    member_entrance: Mapped[str] = mapped_column(VARCHAR2(4), nullable=False)
-    cell_phone: Mapped[str] = mapped_column(VARCHAR2(25))
-    gender: Mapped[str] = mapped_column(VARCHAR2(2))
-    valid_until_date: Mapped[datetime] = mapped_column(DATE)
-    last_updated_date: Mapped[datetime] = mapped_column(DATE)
-    valid_from_date: Mapped[datetime] = mapped_column(DATE)
-    interest_in_fibreglass: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_woodwork: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_ropework: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_paintwork: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_motors: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_organising_social: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_organising_regattas: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_teaching_dinghies: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_teaching_cats: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_teaching_keelboats: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_teaching_motorboats: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_surveillance: Mapped[int] = mapped_column(NUMBER(1, 0))
-    interest_in_towing_on_land: Mapped[int] = mapped_column(NUMBER(1, 0))
-    special_talents: Mapped[str] = mapped_column(VARCHAR2(1000))
+    member_entrance: Mapped[str] = mapped_column(VARCHAR(4))
+    cell_phone: Mapped[Optional[str]] = mapped_column(VARCHAR(25))
+    gender: Mapped[Optional[str]] = mapped_column(VARCHAR(2))
+    valid_until_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    last_updated_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    valid_from_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    # interest_in* are NUMBER(1,0) in DB
+    interest_in_fibreglass: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_woodwork: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_ropework: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_paintwork: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_motors: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_organising_social: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_organising_regattas: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_teaching_dinghies: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_teaching_cats: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_teaching_keelboats: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_teaching_motorboats: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_surveillance: Mapped[Optional[int]] = mapped_column(Integer)
+    interest_in_towing_on_land: Mapped[Optional[int]] = mapped_column(Integer)
+    special_talents: Mapped[Optional[str]] = mapped_column(VARCHAR(1000))
 
     # Code-only foreign key, not in DB
-    entrance_fee_record: Mapped["EntranceFeeRecordEntity"] = relationship()
+    entrance_fee_record: Mapped[Optional["EntranceFeeRecordEntity"]] = relationship()
     # Code-only foreign key, not in DB
-    fee_records: Mapped[List["FeeRecordEntity"]] = relationship(
+    fee_records: Mapped[list["FeeRecordEntity"]] = relationship(
         order_by="FeeRecordEntity.paid_date"
     )
-    helper_tasks_as_contact: Mapped[List["HelperTaskEntity"]] = relationship(
+    helper_tasks_as_contact: Mapped[list["HelperTaskEntity"]] = relationship(
         foreign_keys="HelperTaskEntity.contact_id", back_populates="contact"
     )
-    helper_tasks_as_captain: Mapped[List["HelperTaskEntity"]] = relationship(
+    helper_tasks_as_captain: Mapped[list["HelperTaskEntity"]] = relationship(
         foreign_keys="HelperTaskEntity.captain_id", back_populates="captain"
     )
-    helper_tasks_as_helper: Mapped[List["HelperTaskHelperEntity"]] = relationship(
+    helper_tasks_as_helper: Mapped[list["HelperTaskHelperEntity"]] = relationship(
         back_populates="member"
     )
-    licences: Mapped[List["LicenceEntity"]] = relationship()
+    licences: Mapped[list["LicenceEntity"]] = relationship()
     # This could be many to many when away from Perl (and maybe APEX too)
-    maintained_boats1: Mapped[List["BoatEntity"]] = relationship(
+    maintained_boats1: Mapped[list["BoatEntity"]] = relationship(
         foreign_keys="BoatEntity.maintainer_id",
         order_by="BoatEntity.name",
         back_populates="maintainer1",
     )
-    maintained_boats2: Mapped[List["BoatEntity"]] = relationship(
+    maintained_boats2: Mapped[list["BoatEntity"]] = relationship(
         foreign_keys="BoatEntity.maintainer_id2",
         order_by="BoatEntity.name",
         back_populates="maintainer2",
     )
-    user: Mapped["UserEntity"] = relationship(back_populates="member", lazy="joined")
+    user: Mapped[Optional["UserEntity"]] = relationship(
+        back_populates="member", lazy="joined"
+    )
+
+    @property
+    def all_licence_infos(self) -> Sequence["LicenceInfoEntity"]:
+        """
+        Returns all licences, including expired ones.
+        """
+        return [licence.licence_info for licence in self.licences]
+
+    @property
+    def active_licence_infos(self) -> Sequence["LicenceInfoEntity"]:
+        """
+        Returns all active licences.
+        """
+        return [
+            licence.licence_info
+            for licence in self.licences
+            if licence.status and licence.status > 0
+        ]
 
 
 class MembershipTypeEntity(BaseEntity):
@@ -372,21 +462,20 @@ class MembershipTypeEntity(BaseEntity):
 
     __tablename__ = "membership"
 
+    # NUMBER(2, 0) in DB
     mb_id: Mapped[int] = mapped_column(
-        NUMBER(2, 0),
-        nullable=False,
+        Integer,
         # Code-only primary key, not in DB
         primary_key=True,
     )
     mb_name: Mapped[str] = mapped_column(
-        VARCHAR2(2),
-        nullable=False,
+        VARCHAR(2),
         # Code-only unique key, not in DB
         unique=True,
     )
-    e_desc: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
-    f_desc: Mapped[str] = mapped_column(VARCHAR2(20), nullable=False)
-    comments: Mapped[str] = mapped_column(VARCHAR2(100))
+    e_desc: Mapped[str] = mapped_column(VARCHAR(20))
+    f_desc: Mapped[str] = mapped_column(VARCHAR(20))
+    comments: Mapped[Optional[str]] = mapped_column(VARCHAR(100))
 
 
 class UserEntity(BaseEntity):
@@ -397,14 +486,14 @@ class UserEntity(BaseEntity):
     __tablename__ = "web_logon"
 
     member_id: Mapped[int] = mapped_column(
-        NUMBER, ForeignKey("members.id"), nullable=False, primary_key=True
+        Integer, ForeignKey("members.id"), primary_key=True
     )
-    logon_id: Mapped[str] = mapped_column(VARCHAR2(25), nullable=False, unique=True)
-    session_id: Mapped[int] = mapped_column(NUMBER)
-    session_date: Mapped[datetime] = mapped_column(DATE)
-    logon_pass2: Mapped[str] = mapped_column(VARCHAR2(128))
-    pass_reset_key: Mapped[str] = mapped_column(VARCHAR2(128))
-    pass_reset_exp: Mapped[datetime] = mapped_column(DATE)
-    last_changed: Mapped[datetime] = mapped_column(DATE)
+    logon_id: Mapped[str] = mapped_column(VARCHAR(25), unique=True)
+    session_id: Mapped[Optional[int]] = mapped_column(Integer)
+    session_date: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    logon_pass2: Mapped[Optional[str]] = mapped_column(VARCHAR(128))
+    pass_reset_key: Mapped[Optional[str]] = mapped_column(VARCHAR(128))
+    pass_reset_exp: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    last_changed: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
     member: Mapped["MemberEntity"] = relationship(back_populates="user", lazy="joined")

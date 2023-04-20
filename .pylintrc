@@ -1,7 +1,8 @@
 [MAIN]
 fail-under=9
 max-line-length=160
-extension-pkg-allow-list=pydantic
+extension-pkg-allow-list=lxml,pydantic
+load-plugins=pylint_pydantic
 
 [MESSAGES CONTROL]
 # C0116[missing-function-docstring]: allow functions/class methods without a docstring

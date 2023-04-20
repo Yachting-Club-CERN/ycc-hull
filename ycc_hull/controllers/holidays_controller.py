@@ -1,22 +1,21 @@
 """
 Holidays controller.
 """
-from typing import Sequence
+from collections.abc import Sequence
 
 from sqlalchemy import select
+from ycc_hull.controllers.base_controller import BaseController
 
-from ycc_hull.db.engine import query_all
 from ycc_hull.db.entities import HolidayEntity
 from ycc_hull.models.dtos import HolidayDto
 
 
-class HolidaysController:
+class HolidaysController(BaseController):
     """
     Holidays controller. Returns DTO objects.
     """
 
-    @staticmethod
-    async def find_all() -> Sequence[HolidayDto]:
-        return query_all(
+    async def find_all(self) -> Sequence[HolidayDto]:
+        return self.database_context.query_all(
             select(HolidayEntity).order_by(HolidayEntity.day), HolidayDto.create
         )

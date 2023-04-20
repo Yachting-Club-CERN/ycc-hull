@@ -1,0 +1,14 @@
+[
+  {
+    "member_id": 1,
+    "permission": "ADMIN"
+  },
+  {
+    "member_id": 2,
+    "permission": "EDITOR"
+  },
+  {
+    "member_id": 3,
+    "permission": "EDITOR"
+  }
+]

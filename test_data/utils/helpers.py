@@ -2,17 +2,25 @@
 Test data generator component for helpers.
 """
 from datetime import datetime
-from typing import List
 
 from test_data.generator_config import CURRENT_YEAR
 from ycc_hull.db.entities import (
+    HelpersAppPermissionEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
     HelperTaskHelperEntity,
 )
 
 
-def generate_helper_task_categories() -> List[HelperTaskCategoryEntity]:
+def generate_helpers_app_permissions() -> list[HelpersAppPermissionEntity]:
+    return [
+        HelpersAppPermissionEntity(member_id=1, permission="ADMIN"),
+        HelpersAppPermissionEntity(member_id=2, permission="EDITOR"),
+        HelpersAppPermissionEntity(member_id=3, permission="EDITOR"),
+    ]
+
+
+def generate_helper_task_categories() -> list[HelperTaskCategoryEntity]:
     return [
         HelperTaskCategoryEntity(
             id=1, title="Surveillance", short_description="Q-boat surveillance"
@@ -23,7 +31,7 @@ def generate_helper_task_categories() -> List[HelperTaskCategoryEntity]:
     ]
 
 
-def generate_helper_tasks() -> List[HelperTaskEntity]:
+def generate_helper_tasks() -> list[HelperTaskEntity]:
     # Past: to test that one cannot subscribe
     # Present: to test subscribe
     return [
@@ -155,7 +163,7 @@ def generate_helper_tasks() -> List[HelperTaskEntity]:
     ]
 
 
-def generate_helper_task_helpers() -> List[HelperTaskHelperEntity]:
+def generate_helper_task_helpers() -> list[HelperTaskHelperEntity]:
     return [
         HelperTaskHelperEntity(
             task_id=2012,

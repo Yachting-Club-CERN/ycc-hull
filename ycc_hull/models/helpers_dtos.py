@@ -1,8 +1,11 @@
 """
 Helpers API DTO classes.
 """
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Optional, Sequence
+from typing import Optional
+
+from pydantic import Field, root_validator, validator
 
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
@@ -10,11 +13,14 @@ from ycc_hull.db.entities import (
     HelperTaskHelperEntity,
     MemberEntity,
 )
-from ycc_hull.models.base import CamelisedBaseModel
+from ycc_hull.models.base import (
+    CamelisedBaseModel,
+    CamelisedBaseModelWithEntity,
+)
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
 
-class HelperTaskCategoryDto(CamelisedBaseModel):
+class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntity]):
     """
     DTO for a helper task category.
     """
@@ -22,11 +28,12 @@ class HelperTaskCategoryDto(CamelisedBaseModel):
     id: int
     title: str
     short_description: str
-    long_description: Optional[str]
+    long_description: Optional[str] = Field(html=True)
 
     @staticmethod
     def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
         return HelperTaskCategoryDto(
+            entity=category,
             id=category.id,
             title=category.title,
             short_description=category.short_description,
@@ -34,7 +41,7 @@ class HelperTaskCategoryDto(CamelisedBaseModel):
         )
 
 
-class HelperTaskDto(CamelisedBaseModel):
+class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     """
     DTO for a helper task.
     """
@@ -43,13 +50,13 @@ class HelperTaskDto(CamelisedBaseModel):
     category: HelperTaskCategoryDto
     title: str
     short_description: str
-    long_description: Optional[str]
+    long_description: Optional[str] = Field(html=True)
     contact: MemberPublicInfoDto
     start: Optional[datetime]
     end: Optional[datetime]
     deadline: Optional[datetime]
     urgent: bool
-    captain_required_licence: Optional[LicenceInfoDto]
+    captain_required_licence_info: Optional[LicenceInfoDto]
     helpers_min_count: int
     helpers_max_count: int
     published: bool
@@ -61,7 +68,9 @@ class HelperTaskDto(CamelisedBaseModel):
     def create(task: HelperTaskEntity) -> "HelperTaskDto":
         captain = (
             HelperTaskHelperDto.create_from_member_entity(
-                task.captain, task.captain_subscribed_at
+                # Either both or none are present
+                task.captain,
+                task.captain_subscribed_at,  # type: ignore
             )
             if task.captain
             else None
@@ -69,6 +78,7 @@ class HelperTaskDto(CamelisedBaseModel):
         helpers = [HelperTaskHelperDto.create(helper) for helper in task.helpers]
 
         return HelperTaskDto(
+            entity=task,
             id=task.id,
             category=HelperTaskCategoryDto.create(task.category),
             title=task.title,
@@ -79,7 +89,7 @@ class HelperTaskDto(CamelisedBaseModel):
             end=task.end,
             deadline=task.deadline,
             urgent=task.urgent,
-            captain_required_licence=LicenceInfoDto.create(
+            captain_required_licence_info=LicenceInfoDto.create(
                 task.captain_required_licence_info
             )
             if task.captain_required_licence_info
@@ -92,7 +102,55 @@ class HelperTaskDto(CamelisedBaseModel):
         )
 
 
-class HelperTaskHelperDto(CamelisedBaseModel):
+class HelperTaskMutationRequestDto(CamelisedBaseModel):
+    """
+    Mutation request DTO for helper task.
+    """
+
+    category_id: int
+    title: str
+    short_description: str
+    long_description: Optional[str] = Field(html=True)
+    contact_id: int
+    start: Optional[datetime]
+    end: Optional[datetime]
+    deadline: Optional[datetime]
+    urgent: bool
+    captain_required_licence_info_id: Optional[int]
+    helpers_min_count: int
+    helpers_max_count: int
+    published: bool
+
+    @validator("title", "short_description")
+    def check_not_blank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Field must not be blank")
+        return value
+
+    @root_validator
+    def check_timing(cls, values: dict) -> dict:
+        start: Optional[datetime] = values.get("start")
+        end: Optional[datetime] = values.get("end")
+        deadline: Optional[datetime] = values.get("deadline")
+
+        valid_shift = start and end and not deadline and start < end
+        valid_deadline = not start and not end and deadline
+
+        if valid_shift or valid_deadline:
+            return values
+        raise ValueError("Invalid timing")
+
+    @root_validator
+    def check_helpers_min_max_count(cls, values: dict) -> dict:
+        helpers_min_count: int = values.get("helpers_min_count")  # type: ignore
+        helpers_max_count: int = values.get("helpers_max_count")  # type: ignore
+
+        if 0 <= helpers_min_count <= helpers_max_count:
+            return values
+        raise ValueError("Invalid minimum/maximum helper count")
+
+
+class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
     """
     DTO for helper task helper.
     """
@@ -104,8 +162,10 @@ class HelperTaskHelperDto(CamelisedBaseModel):
     def create(
         helper: HelperTaskHelperEntity,
     ) -> "HelperTaskHelperDto":
-        return HelperTaskHelperDto.create_from_member_entity(
-            helper.member, helper.subscribed_at
+        return HelperTaskHelperDto(
+            entity=None,
+            member=MemberPublicInfoDto.create(helper.member),
+            subscribed_at=helper.subscribed_at,
         )
 
     @staticmethod
@@ -113,6 +173,7 @@ class HelperTaskHelperDto(CamelisedBaseModel):
         member: MemberEntity, subscribed_at: datetime
     ) -> "HelperTaskHelperDto":
         return HelperTaskHelperDto(
+            entity=None,
             member=MemberPublicInfoDto.create(member),
             subscribed_at=subscribed_at,
         )
@@ -120,6 +181,5 @@ class HelperTaskHelperDto(CamelisedBaseModel):
 
 HelperTaskCategoryDto.update_forward_refs()
 HelperTaskDto.update_forward_refs()
+HelperTaskMutationRequestDto.update_forward_refs()
 HelperTaskHelperDto.update_forward_refs()
-
-# TODO Add validators for request DTO objects (also validate the task timing fields)

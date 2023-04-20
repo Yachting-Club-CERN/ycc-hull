@@ -12,10 +12,12 @@ from ycc_hull.db.entities import (
     MembershipTypeEntity,
     UserEntity,
 )
-from ycc_hull.models.base import CamelisedBaseModel
+from ycc_hull.models.base import CamelisedBaseModelWithEntity
+
+_UNKNOWN = "<unknown>"
 
 
-class BoatDto(CamelisedBaseModel):
+class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
     """
     DTO for a boat.
     """
@@ -33,6 +35,7 @@ class BoatDto(CamelisedBaseModel):
         boat: BoatEntity,
     ) -> "BoatDto":
         return BoatDto(
+            entity=boat,
             id=boat.boat_id,
             name=boat.name,
             type=boat.type,
@@ -43,7 +46,7 @@ class BoatDto(CamelisedBaseModel):
         )
 
 
-class HolidayDto(CamelisedBaseModel):
+class HolidayDto(CamelisedBaseModelWithEntity[HolidayEntity]):
     """
     DTO for a holiday.
     """
@@ -56,12 +59,13 @@ class HolidayDto(CamelisedBaseModel):
         holiday: HolidayEntity,
     ) -> "HolidayDto":
         return HolidayDto(
+            entity=holiday,
             date=holiday.day.date(),
             label=holiday.label,
         )
 
 
-class LicenceInfoDto(CamelisedBaseModel):
+class LicenceInfoDto(CamelisedBaseModelWithEntity[LicenceInfoEntity]):
     """
     DTO for a YCC licence info.
     """
@@ -73,10 +77,31 @@ class LicenceInfoDto(CamelisedBaseModel):
     def create(
         licence_info: LicenceInfoEntity,
     ) -> "LicenceInfoDto":
-        return LicenceInfoDto(id=licence_info.infoid, licence=licence_info.nlicence)
+        return LicenceInfoDto(
+            entity=licence_info,
+            id=licence_info.infoid,
+            licence=licence_info.nlicence,
+        )
 
 
-class MemberPublicInfoDto(CamelisedBaseModel):
+class LicenceDetailedInfoDto(LicenceInfoDto):
+    """
+    DTO for a YCC licence detailed info.
+    """
+
+    description: str
+    licence: str
+
+    @staticmethod
+    def create(
+        licence_info: LicenceInfoEntity,
+    ) -> "LicenceDetailedInfoDto":
+        props = LicenceInfoDto.create(licence_info).dict()
+        props["description"] = licence_info.description
+        return LicenceDetailedInfoDto(**props)
+
+
+class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
     """
     DTO for a member, containing information public to all active members.
     """
@@ -95,8 +120,9 @@ class MemberPublicInfoDto(CamelisedBaseModel):
         member: MemberEntity,
     ) -> "MemberPublicInfoDto":
         return MemberPublicInfoDto(
+            entity=member,
             id=member.id,
-            username=member.user.logon_id,
+            username=member.user.logon_id if member.user else _UNKNOWN,
             first_name=member.firstname,
             last_name=member.name,
             email=member.e_mail,
@@ -124,7 +150,7 @@ class MemberSensitiveInfoDto(MemberPublicInfoDto):
         return MemberSensitiveInfoDto(**props)
 
 
-class MembershipTypeDto(CamelisedBaseModel):
+class MembershipTypeDto(CamelisedBaseModelWithEntity[MembershipTypeEntity]):
     """
     DTO for a membership type.
     """
@@ -140,6 +166,7 @@ class MembershipTypeDto(CamelisedBaseModel):
         membership_type: MembershipTypeEntity,
     ) -> "MembershipTypeDto":
         return MembershipTypeDto(
+            entity=membership_type,
             id=membership_type.mb_id,
             name=membership_type.mb_name,
             description_en=membership_type.e_desc,
@@ -148,7 +175,7 @@ class MembershipTypeDto(CamelisedBaseModel):
         )
 
 
-class UserDto(CamelisedBaseModel):
+class UserDto(CamelisedBaseModelWithEntity[UserEntity]):
     """
     DTO for a user.
     """
@@ -161,7 +188,8 @@ class UserDto(CamelisedBaseModel):
         user: UserEntity,
     ) -> "UserDto":
         return UserDto(
+            entity=user,
             id=user.member_id,
-            username=user.logon_id
+            username=user.logon_id,
             # Ignore sensitive info
         )

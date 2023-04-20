@@ -7,9 +7,11 @@ YCC backend service.
 - Install Python 3.9
 - Install Poetry & [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
   - `pipx install poetry && pipx inject poetry poetry-plugin-up`
-- Install Docker & Docker Compose
+- Optionally install Docker & Docker Compose if you want to run the full stack locally
 
 ## Run Application Locally
+
+_Note: these instructions guide you to run everything locally. But you can also have a "thin" local development environment with the DEV DB and Keycloak (you need a CERN account) or with a local SQLite DB and DEV Keycloak (no CERN account needed). In either case, you would need to update `conf/config.json` ._
 
 Initialise environment:
 
@@ -106,10 +108,12 @@ Upgrade to latest versions:
 ### Basic QA
 
 ```sh
+poetry run pytest --cov=ycc_hull --cov-branch --cov-report=html
+
 poetry run black .
 poetry run mypy .
 poetry run flake8 .
-poetry run pylint --jobs 0 legacy_password_hashing test_data ycc_hull
+poetry run pylint --jobs 0 legacy_password_hashing test_data tests ycc_hull
 ```
 
 ### Database Schema Upgrade

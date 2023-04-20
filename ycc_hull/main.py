@@ -16,6 +16,7 @@ from ycc_hull.api.errors import (
 )
 from ycc_hull.api.helpers import api_helpers
 from ycc_hull.api.holidays import api_holidays
+from ycc_hull.api.licences import api_licences
 from ycc_hull.api.members import api_members
 from ycc_hull.api.test_data import api_test_data
 from ycc_hull.config import CONFIG, LOGGING_CONFIG_FILE
@@ -75,6 +76,7 @@ if CONFIG.api_docs_enabled:
 app.include_router(api_boats)
 app.include_router(api_helpers)
 app.include_router(api_holidays)
+app.include_router(api_licences)
 app.include_router(api_members)
 
 if CONFIG.local:
@@ -90,7 +92,7 @@ def start() -> None:
     # Poke the DB, or fail early if the connection is wrong.
     print("[init] Testing DB connection...")
     membership_types = asyncio.get_event_loop().run_until_complete(
-        MembersController.find_all_membership_types()
+        MembersController().find_all_membership_types()
     )
 
     print("[init] DB connection successful, membership types: ", membership_types)

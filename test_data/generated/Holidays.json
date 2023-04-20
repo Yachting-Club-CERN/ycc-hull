@@ -1,0 +1,639 @@
+[
+  {
+    "day": {
+      "@type": "date",
+      "value": "2003-04-18"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2003-04-21"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2003-05-01"
+    },
+    "label": "1st May)"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2003-05-29"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2003-06-09"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2003-09-11"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2004-04-09"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2004-04-12"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2004-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2004-05-20"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2004-05-21"
+    },
+    "label": "(2)1st of May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2004-05-31"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2004-09-09"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2006-04-14"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2006-04-17"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2006-05-01"
+    },
+    "label": "Comp 1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2006-05-25"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2006-06-05"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2006-09-07"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2005-03-25"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2005-03-28"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2005-05-06"
+    },
+    "label": "Comp 1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2005-05-05"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2005-05-16"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2005-09-08"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2007-04-06"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2007-04-09"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2007-05-01"
+    },
+    "label": "Comp 1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2007-05-17"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2007-05-28"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2007-09-06"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2008-03-21"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2008-03-24"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2008-05-02"
+    },
+    "label": "Comp 1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2008-05-01"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2008-05-12"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2008-09-11"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2009-04-10"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2009-04-13"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2009-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2009-05-21"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2009-06-01"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2009-09-10"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2012-04-06"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2012-04-09"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2012-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2012-05-17"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2012-05-28"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2012-09-06"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2013-03-29"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2013-04-01"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2013-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2013-05-09"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2013-05-20"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2013-09-05"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2014-04-18"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2014-04-21"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2014-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2014-05-29"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2014-06-09"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2014-09-11"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2015-04-03"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2015-04-06"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2015-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2015-05-14"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2015-05-25"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2015-09-10"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2019-04-19"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2019-04-22"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2019-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2019-05-30"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2019-06-10"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2019-09-05"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2020-04-10"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2020-04-13"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2020-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2020-05-21"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2020-06-01"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2020-09-10"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2021-04-02"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2021-04-05"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2021-04-30"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2021-05-13"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2021-05-24"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2021-09-09"
+    },
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2022-04-15"
+    },
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2022-04-18"
+    },
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2022-05-01"
+    },
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2022-05-26"
+    },
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2022-06-06"
+    },
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2022-09-08"
+    },
+    "label": "Jeune genevois"
+  }
+]
