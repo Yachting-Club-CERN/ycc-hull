@@ -138,7 +138,7 @@ class HelpersController(BaseController):
                 session.commit()
 
                 new_task = HelperTaskDto.create(task_entity)
-                self._logger.info("Created task: %s, user: %s", old_task, user)
+                self._logger.info("Updated task: %s, user: %s", new_task, user)
 
                 session.add(
                     create_audit_entry(
