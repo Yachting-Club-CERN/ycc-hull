@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - ???
+
+### Changed
+
+- Streamline DB field naming, apply new naming to entities, model and API
+
 ## [0.3.0] - 2023-05-01
 
 ### Added
@@ -44,8 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GET helper task categories
   - GET helper tasks
   - GET helper task by ID
-  - POST subscribe as captain to a helper task
-  - POST subscribe as helper to a helper task
+  - POST sign up as captain to a helper task
+  - POST sign up as helper to a helper task
 
 ## [0.1.0] - 2023-04-05
 

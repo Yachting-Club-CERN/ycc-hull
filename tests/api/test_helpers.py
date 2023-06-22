@@ -3,6 +3,7 @@ Helpers API tests.
 """
 import json
 
+from datetime import datetime, timedelta
 from fastapi.testclient import TestClient
 
 from tests.main_test import FakeAuth, app_test, init_test_database
@@ -14,17 +15,19 @@ from ycc_hull.models.helpers_dtos import HelperTaskDto
 app_test.include_router(api_helpers)
 client = TestClient(app_test)
 
+future_day = (datetime.now().date() + timedelta(days=5)).strftime("%Y-%m-%d")
+
 task_mutation_shift = {
     "categoryId": 1,
     "title": "Test Task",
     "shortDescription": "The Club needs your help for this shift!",
     "contactId": 2,
-    "start": "2023-05-01T18:00:00",
-    "end": "2023-05-01T20:30:00",
+    "startsAt": f"{future_day}T18:00:00",
+    "endsAt": f"{future_day}T20:30:00",
     "urgent": False,
     "captainRequiredLicenceInfoId": 9,
-    "helpersMinCount": 1,
-    "helpersMaxCount": 2,
+    "helperMinCount": 1,
+    "helperMaxCount": 2,
     "published": False,
 }
 
@@ -35,9 +38,9 @@ task_mutation_deadline = {
     "longDescription": "Really! It is very important to get this done!",
     "contactId": 1,
     "urgent": True,
-    "deadline": "2023-05-02T20:00:00",
-    "helpersMinCount": 2,
-    "helpersMaxCount": 2,
+    "deadline": f"{future_day}T20:00:00",
+    "helperMinCount": 2,
+    "helperMaxCount": 2,
     "published": True,
 }
 
@@ -50,13 +53,13 @@ audit_keys = set(
         "shortDescription",
         "longDescription",
         "contact",
-        "start",
-        "end",
+        "startsAt",
+        "endsAt",
         "deadline",
         "urgent",
         "captainRequiredLicenceInfo",
-        "helpersMinCount",
-        "helpersMaxCount",
+        "helperMinCount",
+        "helperMaxCount",
         "published",
         "captain",
         "helpers",
@@ -81,7 +84,7 @@ def get_last_audit_log_entry() -> AuditLogEntryEntity:
 def verify_creation_audit_log_entry(short_description: str) -> None:
     audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
-    assert audit.user == "testuser"
+    assert audit.principal == "testuser"
     assert audit.description == "Helpers/Tasks/Create"
     assert audit.data is not None
 
@@ -99,7 +102,7 @@ def verify_update_audit_log_entry(
 ) -> None:
     audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
-    assert audit.user == "testuser"
+    assert audit.principal == "testuser"
     assert audit.description == f"Helpers/Tasks/Update/{task_id}"
     assert audit.data is not None
 
@@ -235,7 +238,7 @@ def test_update_task_fails_if_editor_but_not_contact() -> None:
     }
 
 
-def test_update_task_if_anyone_subscribed() -> None:
+def test_update_task_if_anyone_signed_up() -> None:
     # Given
     task_mutation = task_mutation_shift.copy()
     task_mutation["published"] = True
@@ -244,7 +247,7 @@ def test_update_task_if_anyone_subscribed() -> None:
 
     FakeAuth.set_member()
     assert (
-        client.post(f"/api/v0/helpers/tasks/{task_id}/subscribe-as-helper").status_code
+        client.post(f"/api/v0/helpers/tasks/{task_id}/sign-up-as-helper").status_code
         == 200
     )
 
@@ -266,7 +269,7 @@ def test_update_task_if_anyone_subscribed() -> None:
     )
 
 
-def test_update_task_cannot_change_timing_if_anyone_subscribed() -> None:
+def test_update_task_cannot_change_timing_if_anyone_signed_up() -> None:
     # Given
     task_mutation = task_mutation_shift.copy()
     task_mutation["published"] = True
@@ -275,23 +278,23 @@ def test_update_task_cannot_change_timing_if_anyone_subscribed() -> None:
 
     FakeAuth.set_member()
     assert (
-        client.post(f"/api/v0/helpers/tasks/{task_id}/subscribe-as-helper").status_code
+        client.post(f"/api/v0/helpers/tasks/{task_id}/sign-up-as-helper").status_code
         == 200
     )
 
     FakeAuth.set_helpers_app_admin()
 
     # When
-    task_mutation["end"] = "2023-05-01T21:00:00"
+    task_mutation["endsAt"] = f"{future_day}T21:00:00"
     response = client.put(f"/api/v0/helpers/tasks/{task_id}", json=task_mutation)
 
     # Then
     assert response.status_code == 409 and response.json() == {
-        "detail": "Cannot change timing after anyone has subscribed"
+        "detail": "Cannot change timing after anyone has signed up"
     }
 
 
-def test_update_task_cannot_unpublish_if_anyone_subscribed() -> None:
+def test_update_task_cannot_unpublish_if_anyone_signed_up() -> None:
     # Given
     task_mutation = task_mutation_deadline.copy()
     task_mutation["published"] = True
@@ -300,7 +303,7 @@ def test_update_task_cannot_unpublish_if_anyone_subscribed() -> None:
 
     FakeAuth.set_member()
     assert (
-        client.post(f"/api/v0/helpers/tasks/{task_id}/subscribe-as-captain").status_code
+        client.post(f"/api/v0/helpers/tasks/{task_id}/sign-up-as-captain").status_code
         == 200
     )
 
@@ -312,5 +315,5 @@ def test_update_task_cannot_unpublish_if_anyone_subscribed() -> None:
 
     # Then
     assert response.status_code == 409 and response.json() == {
-        "detail": "You must publish a task after anyone has subscribed"
+        "detail": "You must publish a task after anyone has signed up"
     }

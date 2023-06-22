@@ -15,17 +15,17 @@ def test_creation_valid_shift() -> None:
         title="Test Task",
         short_description="The Club needs your help!",
         contact_id=1,
-        start="2023-05-01T18:00:00",
-        end="2023-05-01T20:30:00",
+        starts_at="2023-05-01T18:00:00",
+        ends_at="2023-05-01T20:30:00",
         urgent=False,
         captain_required_licence_info_id=9,
-        helpers_min_count=1,
-        helpers_max_count=2,
+        helper_min_count=1,
+        helper_max_count=2,
         published=False,
     )
 
-    assert isinstance(request.start, datetime)
-    assert isinstance(request.end, datetime)
+    assert isinstance(request.starts_at, datetime)
+    assert isinstance(request.ends_at, datetime)
 
 
 def test_creation_valid_deadline() -> None:
@@ -37,8 +37,8 @@ def test_creation_valid_deadline() -> None:
         contact_id=2,
         deadline="2023-05-02T20:00:00",
         urgent=True,
-        helpers_min_count=2,
-        helpers_max_count=2,
+        helper_min_count=2,
+        helper_max_count=2,
         published=True,
     )
 
@@ -54,8 +54,8 @@ def test_creation_must_specify_timing() -> None:
             contact_id=1,
             urgent=False,
             captain_required_licence_info_id=9,
-            helpers_min_count=1,
-            helpers_max_count=2,
+            helper_min_count=1,
+            helper_max_count=2,
             published=False,
         )
 
@@ -69,13 +69,13 @@ def test_creation_must_not_specify_all_timing_fields() -> None:
             title="Test Task",
             short_description="The Club needs your help!",
             contact_id=1,
-            start="2023-05-01T18:00:00",
-            end="2023-05-01T20:30:00",
+            starts_at="2023-05-01T18:00:00",
+            ends_at="2023-05-01T20:30:00",
             deadline="2023-05-02T20:00:00",
             urgent=False,
             captain_required_licence_info_id=9,
-            helpers_min_count=1,
-            helpers_max_count=2,
+            helper_min_count=1,
+            helper_max_count=2,
             published=False,
         )
 
@@ -89,12 +89,12 @@ def test_creation_must_not_specify_start_with_deadline() -> None:
             title="Test Task",
             short_description="The Club needs your help!",
             contact_id=1,
-            start="2023-05-01T18:00:00",
+            starts_at="2023-05-01T18:00:00",
             deadline="2023-05-02T20:00:00",
             urgent=False,
             captain_required_licence_info_id=9,
-            helpers_min_count=1,
-            helpers_max_count=2,
+            helper_min_count=1,
+            helper_max_count=2,
             published=False,
         )
 
@@ -108,12 +108,12 @@ def test_creation_must_not_specify_end_with_deadline() -> None:
             title="Test Task",
             short_description="The Club needs your help!",
             contact_id=1,
-            end="2023-05-01T20:30:00",
+            ends_at="2023-05-01T20:30:00",
             deadline="2023-05-02T20:00:00",
             urgent=False,
             captain_required_licence_info_id=9,
-            helpers_min_count=1,
-            helpers_max_count=2,
+            helper_min_count=1,
+            helper_max_count=2,
             published=False,
         )
 
@@ -127,12 +127,12 @@ def test_creation_must_not_specify_start_after_end() -> None:
             title="Test Task",
             short_description="The Club needs your help!",
             contact_id=1,
-            start="2023-05-01T20:30:00",
-            end="2023-05-01T18:00:00",
+            starts_at="2023-05-01T20:30:00",
+            ends_at="2023-05-01T18:00:00",
             urgent=False,
             captain_required_licence_info_id=9,
-            helpers_min_count=1,
-            helpers_max_count=2,
+            helper_min_count=1,
+            helper_max_count=2,
             published=False,
         )
 
@@ -146,12 +146,12 @@ def test_creation_must_have_consistent_helper_counts() -> None:
             title="Test Task",
             short_description="The Club needs your help!",
             contact_id=1,
-            start="2023-05-01T18:00:00",
-            end="2023-05-01T20:30:00",
+            starts_at="2023-05-01T18:00:00",
+            ends_at="2023-05-01T20:30:00",
             urgent=False,
             captain_required_licence_info_id=9,
-            helpers_min_count=3,
-            helpers_max_count=2,
+            helper_min_count=3,
+            helper_max_count=2,
             published=False,
         )
 
@@ -175,12 +175,12 @@ def test_sanitise() -> None:
             "<base> <meta> <link> <style>NO STYLES!</style>\n"
         ),
         contact_id=1,
-        start="2023-05-01T18:00:00",
-        end="2023-05-01T20:30:00",
+        starts_at="2023-05-01T18:00:00",
+        ends_at="2023-05-01T20:30:00",
         urgent=False,
         captain_required_licence_info_id=9,
-        helpers_min_count=1,
-        helpers_max_count=2,
+        helper_min_count=1,
+        helper_max_count=2,
         published=False,
     )
 

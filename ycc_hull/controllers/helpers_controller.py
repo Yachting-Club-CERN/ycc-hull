@@ -90,22 +90,22 @@ class HelpersController(BaseController):
         with self.database_context.create_session() as session:
             old_task = await self._get_task_by_id(task_id, session=session)
 
-            # Check: cannot change timing if anyone has subscribed
+            # Check: cannot change timing if anyone has signed up
             if old_task.captain or old_task.helpers:
                 if (
-                    task_mutation_request.start != old_task.start
-                    or task_mutation_request.end != old_task.end
+                    task_mutation_request.starts_at != old_task.starts_at
+                    or task_mutation_request.ends_at != old_task.ends_at
                     or task_mutation_request.deadline != old_task.deadline
                 ):
                     raise ControllerConflictException(
-                        "Cannot change timing after anyone has subscribed"
+                        "Cannot change timing after anyone has signed up"
                     )
                 if not task_mutation_request.published:
                     raise ControllerConflictException(
-                        "You must publish a task after anyone has subscribed"
+                        "You must publish a task after anyone has signed up"
                     )
 
-            # Check: if a captain has subscribed then the new licence must be active for the captain
+            # Check: if a captain has signed up then the new licence must be active for the captain
             if (
                 old_task.captain
                 and task_mutation_request.captain_required_licence_info_id
@@ -122,13 +122,13 @@ class HelpersController(BaseController):
                     for licence_info_entity in captain_entity.active_licence_infos
                 ):
                     raise ControllerConflictException(
-                        "Cannot change captain required licence info because the subscribed captain does not have the newly specified licence"
+                        "Cannot change captain required licence info because the signed up captain does not have the newly specified licence"
                     )
 
-            # Check: cannot decrease helpers maximum count below subscribed helpers count
-            if task_mutation_request.helpers_max_count < len(old_task.helpers):
+            # Check: cannot decrease helpers maximum count below signed up helpers count
+            if task_mutation_request.helper_max_count < len(old_task.helpers):
                 raise ControllerConflictException(
-                    "Cannot decrease helpers maximum count below subscribed helpers count"
+                    "Cannot decrease helpers maximum count below signed up helpers count"
                 )
 
             try:
@@ -155,11 +155,11 @@ class HelpersController(BaseController):
                     exc, "update task", user, task_mutation_request
                 )
 
-    async def subscribe_as_captain(self, task_id: int, user: User) -> None:
+    async def sign_up_as_captain(self, task_id: int, user: User) -> None:
         with self.database_context.create_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            await self._check_can_subscribe(task, user.member_id)
+            await self._check_can_sign_up(task, user.member_id)
             if task.captain:
                 raise ControllerConflictException("Task already has a captain")
 
@@ -176,26 +176,26 @@ class HelpersController(BaseController):
                 .where(HelperTaskEntity.id == task_id)
             ).one()
             task_entity.captain_id = user.member_id
-            task_entity.captain_subscribed_at = datetime.now()
+            task_entity.captain_signed_up_at = datetime.now()
             session.add(
-                create_audit_entry(user, f"Helpers/Tasks/SubscribeAsCaptain/{task_id}")
+                create_audit_entry(user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
             )
             session.commit()
 
-    async def subscribe_as_helper(self, task_id: int, user: User) -> None:
+    async def sign_up_as_helper(self, task_id: int, user: User) -> None:
         task = await self.get_task_by_id(task_id, published=True)
 
-        await self._check_can_subscribe(task, user.member_id)
-        if len(task.helpers) >= task.helpers_max_count:
+        await self._check_can_sign_up(task, user.member_id)
+        if len(task.helpers) >= task.helper_max_count:
             raise ControllerConflictException("Task helper limit reached")
 
         with self.database_context.create_session() as session:
             helper = HelperTaskHelperEntity(
-                task_id=task.id, member_id=user.member_id, subscribed_at=datetime.now()
+                task_id=task.id, member_id=user.member_id, signed_up_at=datetime.now()
             )
             session.add(helper)
             session.add(
-                create_audit_entry(user, f"Helpers/Tasks/SubscribeAsHelper/{task_id}")
+                create_audit_entry(user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
             )
             session.commit()
 
@@ -215,7 +215,7 @@ class HelpersController(BaseController):
         query = query.order_by(
             HelperTaskEntity.urgent.desc(),
             func.coalesce(  # pylint: disable=not-callable
-                HelperTaskEntity.start, HelperTaskEntity.deadline
+                HelperTaskEntity.starts_at, HelperTaskEntity.deadline
             ).asc(),
         )
 
@@ -243,15 +243,17 @@ class HelpersController(BaseController):
             return task
         raise ControllerNotFoundException("Task not found")
 
-    async def _check_can_subscribe(self, task: HelperTaskDto, member_id: int) -> None:
+    async def _check_can_sign_up(self, task: HelperTaskDto, member_id: int) -> None:
         if not task.published:
-            raise ControllerConflictException("Cannot subscribe to an unpublished task")
+            raise ControllerConflictException("Cannot sign up to an unpublished task")
 
         now = datetime.now()
-        if (task.start and task.start < now) or (task.deadline and task.deadline < now):
-            raise ControllerConflictException("Cannot subscribe to a task in the past")
+        if (task.starts_at and task.starts_at < now) or (
+            task.deadline and task.deadline < now
+        ):
+            raise ControllerConflictException("Cannot sign up to a task in the past")
 
         if task.captain and task.captain.member.id == member_id:
-            raise ControllerConflictException("Already subscribed as captain")
+            raise ControllerConflictException("Already signed up as captain")
         if any(helper.member.id == member_id for helper in task.helpers):
-            raise ControllerConflictException("Already subscribed as helper")
+            raise ControllerConflictException("Already signed up as helper")

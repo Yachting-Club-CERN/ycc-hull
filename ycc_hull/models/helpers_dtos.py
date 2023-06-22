@@ -52,13 +52,13 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     short_description: str
     long_description: Optional[str] = Field(html=True)
     contact: MemberPublicInfoDto
-    start: Optional[datetime]
-    end: Optional[datetime]
+    starts_at: Optional[datetime]
+    ends_at: Optional[datetime]
     deadline: Optional[datetime]
     urgent: bool
     captain_required_licence_info: Optional[LicenceInfoDto]
-    helpers_min_count: int
-    helpers_max_count: int
+    helper_min_count: int
+    helper_max_count: int
     published: bool
 
     captain: Optional["HelperTaskHelperDto"]
@@ -70,7 +70,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
             HelperTaskHelperDto.create_from_member_entity(
                 # Either both or none are present
                 task.captain,
-                task.captain_subscribed_at,  # type: ignore
+                task.captain_signed_up_at,  # type: ignore
             )
             if task.captain
             else None
@@ -85,8 +85,8 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
             short_description=task.short_description,
             long_description=task.long_description,
             contact=MemberPublicInfoDto.create(task.contact),
-            start=task.start,
-            end=task.end,
+            starts_at=task.starts_at,
+            ends_at=task.ends_at,
             deadline=task.deadline,
             urgent=task.urgent,
             captain_required_licence_info=LicenceInfoDto.create(
@@ -94,8 +94,8 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
             )
             if task.captain_required_licence_info
             else None,
-            helpers_min_count=task.helpers_min_count,
-            helpers_max_count=task.helpers_max_count,
+            helper_min_count=task.helper_min_count,
+            helper_max_count=task.helper_max_count,
             published=task.published,
             captain=captain,
             helpers=helpers,
@@ -112,13 +112,13 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
     short_description: str
     long_description: Optional[str] = Field(html=True)
     contact_id: int
-    start: Optional[datetime]
-    end: Optional[datetime]
+    starts_at: Optional[datetime]
+    ends_at: Optional[datetime]
     deadline: Optional[datetime]
     urgent: bool
     captain_required_licence_info_id: Optional[int]
-    helpers_min_count: int
-    helpers_max_count: int
+    helper_min_count: int
+    helper_max_count: int
     published: bool
 
     @validator("title", "short_description")
@@ -129,23 +129,23 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
 
     @root_validator
     def check_timing(cls, values: dict) -> dict:
-        start: Optional[datetime] = values.get("start")
-        end: Optional[datetime] = values.get("end")
+        starts_at: Optional[datetime] = values.get("starts_at")
+        ends_at: Optional[datetime] = values.get("ends_at")
         deadline: Optional[datetime] = values.get("deadline")
 
-        valid_shift = start and end and not deadline and start < end
-        valid_deadline = not start and not end and deadline
+        valid_shift = starts_at and ends_at and not deadline and starts_at < ends_at
+        valid_deadline = not starts_at and not ends_at and deadline
 
         if valid_shift or valid_deadline:
             return values
         raise ValueError("Invalid timing")
 
     @root_validator
-    def check_helpers_min_max_count(cls, values: dict) -> dict:
-        helpers_min_count: int = values.get("helpers_min_count")  # type: ignore
-        helpers_max_count: int = values.get("helpers_max_count")  # type: ignore
+    def check_helper_min_max_count(cls, values: dict) -> dict:
+        helper_min_count: int = values.get("helper_min_count")  # type: ignore
+        helper_max_count: int = values.get("helper_max_count")  # type: ignore
 
-        if 0 <= helpers_min_count <= helpers_max_count:
+        if 0 <= helper_min_count <= helper_max_count:
             return values
         raise ValueError("Invalid minimum/maximum helper count")
 
@@ -156,7 +156,7 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
     """
 
     member: MemberPublicInfoDto
-    subscribed_at: datetime
+    signed_up_at: datetime
 
     @staticmethod
     def create(
@@ -165,17 +165,17 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
         return HelperTaskHelperDto(
             entity=None,
             member=MemberPublicInfoDto.create(helper.member),
-            subscribed_at=helper.subscribed_at,
+            signed_up_at=helper.signed_up_at,
         )
 
     @staticmethod
     def create_from_member_entity(
-        member: MemberEntity, subscribed_at: datetime
+        member: MemberEntity, signed_up_at: datetime
     ) -> "HelperTaskHelperDto":
         return HelperTaskHelperDto(
             entity=None,
             member=MemberPublicInfoDto.create(member),
-            subscribed_at=subscribed_at,
+            signed_up_at=signed_up_at,
         )
 
 

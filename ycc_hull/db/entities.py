@@ -69,14 +69,13 @@ class AuditLogEntryEntity(BaseEntity):
     __tablename__ = "audit_log"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    date: Mapped[datetime] = mapped_column(
-        "DATE",
+    created_at: Mapped[datetime] = mapped_column(
         DateTime,
         # SYSDATE in Oracle, this is for SQLite (for Oracle it's DB first approach)
         server_default=text("(DATETIME('now','localtime'))"),
     )
     application: Mapped[str] = mapped_column(VARCHAR(200))
-    user: Mapped[str] = mapped_column("USER", VARCHAR(200))
+    principal: Mapped[str] = mapped_column(VARCHAR(200))
     description: Mapped[str] = mapped_column(VARCHAR(200))
     data: Mapped[Optional[str]] = mapped_column(CLOB)
 
@@ -221,20 +220,20 @@ class HelperTaskEntity(BaseEntity):
     long_description: Mapped[Optional[str]] = mapped_column(CLOB)
     contact_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
     # Either start+end is specified or the deadline
-    start: Mapped[Optional[datetime]] = mapped_column("START", DateTime)
-    end: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    starts_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    ends_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
     deadline: Mapped[Optional[datetime]] = mapped_column(DateTime)
     # NUMBER(1, 0) in DB
     urgent: Mapped[bool] = mapped_column(Integer)
     captain_required_licence_info_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("infolicences.infoid")
     )
-    helpers_min_count: Mapped[int] = mapped_column(Integer)
-    helpers_max_count: Mapped[int] = mapped_column(Integer)
+    helper_min_count: Mapped[int] = mapped_column(Integer)
+    helper_max_count: Mapped[int] = mapped_column(Integer)
     # NUMBER(1, 0) in DB
     published: Mapped[bool] = mapped_column(Integer)
     captain_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("members.id"))
-    captain_subscribed_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    captain_signed_up_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
     category: Mapped["HelperTaskCategoryEntity"] = relationship(
         back_populates="tasks", lazy="joined"
@@ -268,7 +267,7 @@ class HelperTaskHelperEntity(BaseEntity):
     member_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("members.id"), primary_key=True
     )
-    subscribed_at: Mapped[datetime] = mapped_column(DateTime)
+    signed_up_at: Mapped[datetime] = mapped_column(DateTime)
 
     helper_task: Mapped["HelperTaskEntity"] = relationship(
         back_populates="helpers", lazy="joined"

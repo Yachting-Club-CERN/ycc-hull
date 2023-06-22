@@ -40,7 +40,7 @@ def create_audit_entry(
 ) -> AuditLogEntryEntity:
     return AuditLogEntryEntity(
         application=_APPLICATION,
-        user=user.username,
+        principal=user.username,
         description=description,
         data=_to_pretty_json(data) if data else None,
     )
