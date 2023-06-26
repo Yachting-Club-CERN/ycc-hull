@@ -83,17 +83,17 @@ async def helper_tasks_update(
     return await controller.update_task(task_id, task_mutation_request, user)
 
 
-@api_helpers.post("/api/v0/helpers/tasks/{task_id}/subscribe-as-captain")
-async def helper_tasks_subscribe_as_captain(
+@api_helpers.post("/api/v0/helpers/tasks/{task_id}/sign-up-as-captain")
+async def helper_tasks_sign_up_as_captain(
     task_id: int, user: User = Depends(auth)
 ) -> HelperTaskDto:
-    await controller.subscribe_as_captain(task_id, user)
+    await controller.sign_up_as_captain(task_id, user)
     return await controller.get_task_by_id(task_id, published=True)
 
 
-@api_helpers.post("/api/v0/helpers/tasks/{task_id}/subscribe-as-helper")
-async def helper_tasks_subscribe_as_helper(
+@api_helpers.post("/api/v0/helpers/tasks/{task_id}/sign-up-as-helper")
+async def helper_tasks_sign_up_as_helper(
     task_id: int, user: User = Depends(auth)
 ) -> HelperTaskDto:
-    await controller.subscribe_as_helper(task_id, user)
+    await controller.sign_up_as_helper(task_id, user)
     return await controller.get_task_by_id(task_id, published=True)

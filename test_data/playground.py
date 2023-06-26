@@ -89,7 +89,7 @@ def dump_helper_tasks() -> None:
             .options(joinedload(HelperTaskEntity.category))
             .order_by(
                 func.coalesce(  # pylint: disable=not-callable
-                    HelperTaskEntity.start, HelperTaskEntity.deadline
+                    HelperTaskEntity.starts_at, HelperTaskEntity.deadline
                 )
             )
         ).unique()
@@ -99,7 +99,7 @@ def dump_helper_tasks() -> None:
             print(">")
             print(f"> {helper_task.category.title} / {helper_task.title}")
             print(
-                f">   Timing: {helper_task.start} / {helper_task.end} / {helper_task.deadline}"
+                f">   Timing: {helper_task.starts_at} / {helper_task.ends_at} / {helper_task.deadline}"
             )
 
             if helper_task.captain_required_licence_info:
@@ -107,19 +107,19 @@ def dump_helper_tasks() -> None:
                     f">   Required licence: {helper_task.captain_required_licence_info.nlicence}"
                 )
             print(
-                f">   Helpers needed: {helper_task.helpers_min_count} - {helper_task.helpers_max_count}"
+                f">   Helpers needed: {helper_task.helper_min_count} - {helper_task.helper_max_count}"
             )
             print(">")
             print()
 
             print(
-                f"Captain: {helper_task.captain} / {helper_task.captain_subscribed_at}"
+                f"Captain: {helper_task.captain} / {helper_task.captain_signed_up_at}"
             )
             print()
 
             print("Helpers:")
             for helper in helper_task.helpers:
-                print(f"- {_username(helper.member)} / {helper.subscribed_at}")
+                print(f"- {_username(helper.member)} / {helper.signed_up_at}")
 
             print()
             print()

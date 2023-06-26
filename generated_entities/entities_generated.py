@@ -81,9 +81,9 @@ t_audit_log = Table(
         ),
         nullable=False,
     ),
-    Column("DATE", DateTime, nullable=False, server_default=text("SYSDATE ")),
+    Column("created_at", DateTime, nullable=False, server_default=text("SYSDATE ")),
     Column("application", VARCHAR(200), nullable=False),
-    Column("USER", VARCHAR(200), nullable=False),
+    Column("principal", VARCHAR(200), nullable=False),
     Column("description", VARCHAR(200), nullable=False),
     Column("data", Text),
 )
@@ -1005,32 +1005,32 @@ class HelperTasks(Base):
     __tablename__ = "helper_tasks"
     __table_args__ = (
         CheckConstraint(
-            " (                 0 <= helpers_min_count )\n            AND ( helpers_min_count <= helpers_max_count ) ",
-            name="helper_tasks_check_helpers_min_max_count",
+            " (                0 <= helper_min_count )\n            AND ( helper_min_count <= helper_max_count ) ",
+            name="helper_tasks_check_helper_min_max_count",
         ),
         CheckConstraint(
-            " (                 0 <= helpers_min_count )\n            AND ( helpers_min_count <= helpers_max_count ) ",
-            name="helper_tasks_check_helpers_min_max_count",
+            " (                0 <= helper_min_count )\n            AND ( helper_min_count <= helper_max_count ) ",
+            name="helper_tasks_check_helper_min_max_count",
         ),
         CheckConstraint(
-            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
-            name="helper_tasks_check_timing",
-        ),
-        CheckConstraint(
-            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
-            name="helper_tasks_check_timing",
-        ),
-        CheckConstraint(
-            ' ( "START" IS NOT NULL AND end IS NOT NULL AND deadline IS     NULL and "START" < end )\n             OR ( "START" IS     NULL AND end IS     NULL AND deadline IS NOT NULL                   ) ',
-            name="helper_tasks_check_timing",
-        ),
-        CheckConstraint(
-            " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
+            " ( captain_id IS     NULL AND captain_signed_up_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_signed_up_at IS NOT NULL ) ",
             name="helper_tasks_check_captain_fields",
         ),
         CheckConstraint(
-            " ( captain_id IS     NULL AND captain_subscribed_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_subscribed_at IS NOT NULL ) ",
+            " ( captain_id IS     NULL AND captain_signed_up_at IS     NULL )\n             OR ( captain_id IS NOT NULL AND captain_signed_up_at IS NOT NULL ) ",
             name="helper_tasks_check_captain_fields",
+        ),
+        CheckConstraint(
+            " ( starts_at IS NOT NULL AND ends_at IS NOT NULL AND deadline IS     NULL and starts_at < ends_at )\n             OR ( starts_at IS     NULL AND ends_at IS     NULL AND deadline IS NOT NULL                         ) ",
+            name="helper_tasks_check_timing",
+        ),
+        CheckConstraint(
+            " ( starts_at IS NOT NULL AND ends_at IS NOT NULL AND deadline IS     NULL and starts_at < ends_at )\n             OR ( starts_at IS     NULL AND ends_at IS     NULL AND deadline IS NOT NULL                         ) ",
+            name="helper_tasks_check_timing",
+        ),
+        CheckConstraint(
+            " ( starts_at IS NOT NULL AND ends_at IS NOT NULL AND deadline IS     NULL and starts_at < ends_at )\n             OR ( starts_at IS     NULL AND ends_at IS     NULL AND deadline IS NOT NULL                         ) ",
+            name="helper_tasks_check_timing",
         ),
         ForeignKeyConstraint(
             ["captain_id"], ["members.id"], name="helper_tasks_captain_fk"
@@ -1069,16 +1069,16 @@ class HelperTasks(Base):
     short_description = Column(VARCHAR(200), nullable=False)
     contact_id = Column(NUMBER(asdecimal=False), nullable=False)
     urgent = Column(NUMBER(1, 0, False), nullable=False)
-    helpers_min_count = Column(NUMBER(asdecimal=False), nullable=False)
-    helpers_max_count = Column(NUMBER(asdecimal=False), nullable=False)
+    helper_min_count = Column(NUMBER(asdecimal=False), nullable=False)
+    helper_max_count = Column(NUMBER(asdecimal=False), nullable=False)
     published = Column(NUMBER(1, 0, False), nullable=False)
     long_description = Column(Text)
-    START = Column(DateTime)
-    end = Column(DateTime)
+    starts_at = Column(DateTime)
+    ends_at = Column(DateTime)
     deadline = Column(DateTime)
     captain_required_licence_info_id = Column(NUMBER(asdecimal=False))
     captain_id = Column(NUMBER(asdecimal=False))
-    captain_subscribed_at = Column(DateTime)
+    captain_signed_up_at = Column(DateTime)
 
     captain = relationship(
         "Members", foreign_keys=[captain_id], back_populates="helper_tasks"
@@ -1202,7 +1202,7 @@ class HelperTaskHelpers(Base):
 
     task_id = Column(NUMBER(asdecimal=False), nullable=False)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
-    subscribed_at = Column(DateTime, nullable=False)
+    signed_up_at = Column(DateTime, nullable=False)
 
     member = relationship("Members", back_populates="helper_task_helpers")
     task = relationship("HelperTasks", back_populates="helper_task_helpers")
