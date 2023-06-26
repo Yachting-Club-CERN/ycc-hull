@@ -7,7 +7,7 @@ from typing import Optional
 
 from sqlalchemy import func, select
 from sqlalchemy.exc import DatabaseError
-from sqlalchemy.orm import Session, lazyload
+from sqlalchemy.orm import Session, defer, lazyload
 
 from ycc_hull.controllers.audit import create_audit_entry
 from ycc_hull.controllers.base_controller import BaseController
@@ -40,8 +40,7 @@ class HelpersController(BaseController):
         )
 
     async def find_all_tasks(
-        self,
-        published: Optional[bool] = None,
+        self, published: Optional[bool] = None
     ) -> Sequence[HelperTaskDto]:
         return await self._find_tasks(None, published)
 
@@ -207,6 +206,13 @@ class HelpersController(BaseController):
     ) -> Sequence[HelperTaskDto]:
         query = select(HelperTaskEntity)
 
+        exclude_long_description: bool = task_id is None
+
+        if exclude_long_description:
+            query = query.options(
+                defer(HelperTaskEntity.long_description, raiseload=True)
+            )
+
         if task_id is not None:
             query = query.where(HelperTaskEntity.id == task_id)
         if published is not None:
@@ -221,7 +227,9 @@ class HelpersController(BaseController):
 
         return self.database_context.query_all(
             query,
-            HelperTaskDto.create,
+            HelperTaskDto.create_without_long_description
+            if exclude_long_description
+            else HelperTaskDto.create,
             unique=True,
             session=session,
         )

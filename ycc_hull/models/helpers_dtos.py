@@ -64,8 +64,18 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     captain: Optional["HelperTaskHelperDto"]
     helpers: Sequence["HelperTaskHelperDto"]
 
+    @classmethod
+    def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
+        return cls._create(task, task.long_description)
+
+    @classmethod
+    def create_without_long_description(cls, task: HelperTaskEntity) -> "HelperTaskDto":
+        return cls._create(task, None)
+
     @staticmethod
-    def create(task: HelperTaskEntity) -> "HelperTaskDto":
+    def _create(
+        task: HelperTaskEntity, long_description: Optional[str]
+    ) -> "HelperTaskDto":
         captain = (
             HelperTaskHelperDto.create_from_member_entity(
                 # Either both or none are present
@@ -83,7 +93,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
             category=HelperTaskCategoryDto.create(task.category),
             title=task.title,
             short_description=task.short_description,
-            long_description=task.long_description,
+            long_description=long_description,
             contact=MemberPublicInfoDto.create(task.contact),
             starts_at=task.starts_at,
             ends_at=task.ends_at,
