@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Do not send long description on the task list API endpoint
+
 ## [0.4.0] - 2023-06-26
 
 ### Changed
