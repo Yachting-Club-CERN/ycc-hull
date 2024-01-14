@@ -91,12 +91,12 @@ class BoatEntity(BaseEntity):
     boat_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(VARCHAR(20), unique=True)
     type: Mapped[str] = mapped_column(VARCHAR(20))
-    # NUMBER(3, 0) in DB
-    ycc_num: Mapped[int] = mapped_column(Integer, unique=True)
     license: Mapped[str] = mapped_column(VARCHAR(5))
     class_: Mapped[str] = mapped_column("class", VARCHAR(5))
-    # NUMBER(3, 0) in DB
+    # NUMBER(5, 0) in DB
     table_pos: Mapped[int] = mapped_column(Integer, unique=True)
+    # NUMBER(3, 0) in DB
+    ycc_num: Mapped[int] = mapped_column(Integer, unique=True)
     # Maintainer and maintainer2 are used for sending e-mails to maintainers, e.g., upon Warning/Out of order log entries
     maintainer_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("members.id")
@@ -284,12 +284,9 @@ class HolidayEntity(BaseEntity):
 
     __tablename__ = "holidays"
 
-    day: Mapped[datetime] = mapped_column(
-        DateTime,
-        # Code-only primary key, not in DB
-        primary_key=True,
-    )
+    day: Mapped[datetime] = mapped_column(DateTime)
     label: Mapped[str] = mapped_column(VARCHAR(20))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
 
 class LicenceEntity(BaseEntity):
@@ -494,5 +491,6 @@ class UserEntity(BaseEntity):
     pass_reset_key: Mapped[Optional[str]] = mapped_column(VARCHAR(128))
     pass_reset_exp: Mapped[Optional[datetime]] = mapped_column(DateTime)
     last_changed: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    rf_uid: Mapped[Optional[str]] = mapped_column(VARCHAR(10))
 
     member: Mapped["MemberEntity"] = relationship(back_populates="user", lazy="joined")

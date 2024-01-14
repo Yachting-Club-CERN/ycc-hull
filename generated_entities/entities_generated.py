@@ -111,7 +111,7 @@ class BoatKeys(Base):
 
 class Buvette(Base):
     __tablename__ = "buvette"
-    __table_args__ = (PrimaryKeyConstraint("res_id", name="sys_c008875"),)
+    __table_args__ = (PrimaryKeyConstraint("res_id", name="sys_c009274"),)
 
     res_id = Column(NUMBER(asdecimal=False))
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
@@ -123,15 +123,38 @@ class Buvette(Base):
 
 class Countries(Base):
     __tablename__ = "countries"
-    __table_args__ = (PrimaryKeyConstraint("country_code", name="sys_c008846"),)
+    __table_args__ = (PrimaryKeyConstraint("country_code", name="sys_c009250"),)
 
     country_name = Column(VARCHAR(50), nullable=False)
     country_code = Column(VARCHAR(2))
 
 
+class DbEdits(Base):
+    __tablename__ = "db_edits"
+    __table_args__ = (PrimaryKeyConstraint("id", name="db_edits_pk"),)
+
+    id = Column(
+        NUMBER(asdecimal=False),
+        Identity(
+            always=True,
+            on_null=False,
+            start=1,
+            increment=1,
+            minvalue=1,
+            maxvalue=9999999999999999999999999999,
+            cycle=False,
+            cache=20,
+            order=False,
+        ),
+    )
+    table_name = Column(VARCHAR(50), nullable=False)
+    row_id = Column(NUMBER(asdecimal=False), nullable=False)
+    time_stamp = Column(DateTime, nullable=False)
+
+
 class DeletedMemberApps(Base):
     __tablename__ = "deleted_member_apps"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009012"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009443"),)
 
     id = Column(NUMBER(asdecimal=False))
     name = Column(VARCHAR(25), nullable=False)
@@ -140,7 +163,7 @@ class DeletedMemberApps(Base):
 
 class Departments(Base):
     __tablename__ = "departments"
-    __table_args__ = (PrimaryKeyConstraint("dep_id", name="sys_c008951"),)
+    __table_args__ = (PrimaryKeyConstraint("dep_id", name="sys_c009380"),)
 
     dep_id = Column(NUMBER(10, 0, False))
     dep_name = Column(VARCHAR(50))
@@ -151,7 +174,7 @@ class Departments(Base):
 class EmailQueueTable(Base):
     __tablename__ = "email_queue_table"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c008912"),
+        PrimaryKeyConstraint("id", name="sys_c009304"),
         Index("i_email_queue_table_status", "status"),
     )
 
@@ -167,7 +190,7 @@ class EmailQueueTable(Base):
 
 class EmailTemplates(Base):
     __tablename__ = "email_templates"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c008881"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009275"),)
 
     id = Column(NUMBER(4, 0, False))
     body = Column(VARCHAR(4000))
@@ -253,13 +276,14 @@ t_holidays = Table(
     metadata,
     Column("day", DateTime, nullable=False),
     Column("label", VARCHAR(20), nullable=False),
+    Column("id", NUMBER(asdecimal=False)),
 )
 
 
 class ImportantDates(Base):
     __tablename__ = "important_dates"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c008978"),
+        PrimaryKeyConstraint("id", name="sys_c009390"),
         Index("important_dates_uq", "what", unique=True),
     )
 
@@ -270,7 +294,7 @@ class ImportantDates(Base):
 
 class ImportantValues(Base):
     __tablename__ = "important_values"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c008834"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009223"),)
 
     id = Column(NUMBER(10, 0, False))
     what = Column(VARCHAR(50), nullable=False)
@@ -299,7 +323,7 @@ class Infolicences(Base):
 
 class InterestLevels(Base):
     __tablename__ = "interest_levels"
-    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c009013"),)
+    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c009417"),)
 
     interest_level = Column(NUMBER(1, 0, False))
     description = Column(VARCHAR(100))
@@ -308,7 +332,7 @@ class InterestLevels(Base):
 class Lottery(Base):
     __tablename__ = "lottery"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c009023"),
+        PrimaryKeyConstraint("id", name="sys_c009450"),
         Index("lottery_uq", "year", "member_id", unique=True),
     )
 
@@ -323,7 +347,7 @@ class Lottery(Base):
 
 class LotteryPlaces(Base):
     __tablename__ = "lottery_places"
-    __table_args__ = (PrimaryKeyConstraint("key", name="sys_c009030"),)
+    __table_args__ = (PrimaryKeyConstraint("key", name="sys_c009426"),)
 
     key = Column(VARCHAR(2))
     places = Column(NUMBER(asdecimal=False))
@@ -332,7 +356,7 @@ class LotteryPlaces(Base):
 class LotteryResults(Base):
     __tablename__ = "lottery_results"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c008940"),
+        PrimaryKeyConstraint("id", name="sys_c009317"),
         Index("lottery_results_uq1", "member_id", "year", unique=True),
         Index("lottery_results_uq2", "drawn_seq", "year", unique=True),
     )
@@ -360,6 +384,177 @@ t_lottery_results_archive = Table(
     Column("withdrawn", VARCHAR(1)),
     Column("wd_comment", VARCHAR(1000)),
     Column("course_day", VARCHAR(25)),
+)
+
+
+class MdApplicationfiles(Base):
+    __tablename__ = "md_applicationfiles"
+    __table_args__ = (
+        PrimaryKeyConstraint("id", name="md_applicationfiles_pk"),
+        Index("md_app_file_type_idx", "type", "id"),
+        Index("md_state_type__id", "state", "type", "id"),
+        {
+            "comment": "Holds a tuple for each file that is being processed whether it is "
+            "changed or not."
+        },
+    )
+
+    id = Column(NUMBER(asdecimal=False))
+    applications_id_fk = Column(NUMBER(asdecimal=False), nullable=False)
+    name = Column(VARCHAR(200), nullable=False, comment="file name  //OBJECTNAME")
+    uri = Column(
+        VARCHAR(4000),
+        nullable=False,
+        comment="The uri is the part of the file url after the base dir has been removed.  See MD_APPLICATION for base dir",
+    )
+    type = Column(
+        VARCHAR(100),
+        nullable=False,
+        comment="This will denote the type of file we have, including DIR, FILE (text), BINARY, IGNORE (where we choose to ignore files)",
+    )
+    state = Column(
+        VARCHAR(100),
+        nullable=False,
+        comment="State will be how this file is operated on.  For example. it will be OPEN, NEW, FIXED, IGNORED, REVIEWED, COMPLETE",
+    )
+    security_group_id = Column(
+        NUMBER(asdecimal=False),
+        nullable=False,
+        server_default=text("0"),
+        comment="APEX",
+    )
+    created_on = Column(
+        DateTime, nullable=False, server_default=text("sysdate"), comment="APEX"
+    )
+    language = Column(
+        VARCHAR(100), comment="Language of the file that has been processed."
+    )
+    loc = Column(NUMBER(asdecimal=False))
+    created_by = Column(VARCHAR(4000), comment="APEX")
+    updated_on = Column(DateTime, comment="APEX")
+    updated_by = Column(VARCHAR(4000), comment="APEX")
+
+
+class MdApplications(Base):
+    __tablename__ = "md_applications"
+    __table_args__ = (
+        PrimaryKeyConstraint("id", name="md_applications_pk"),
+        {
+            "comment": "This is the base table for application projects.  It holds the "
+            "base information for applications associated with a database"
+        },
+    )
+
+    id = Column(NUMBER(asdecimal=False), comment="Primary Key")
+    project_id_fk = Column(
+        NUMBER(asdecimal=False),
+        nullable=False,
+        comment="project of the database(s) this application relates to",
+    )
+    security_group_id = Column(
+        NUMBER(asdecimal=False), nullable=False, server_default=text("0")
+    )
+    created_on = Column(DateTime, nullable=False, server_default=text("sysdate"))
+    name = Column(VARCHAR(4000), comment="Name of the application suite  //OBJECTNAME")
+    description = Column(
+        VARCHAR(4000), comment="Overview of what the application does."
+    )
+    base_dir = Column(
+        VARCHAR(4000),
+        comment="This is the base src directory for the application.  It could be an svn checkout, a clearcase view or something similar",
+    )
+    output_dir = Column(
+        VARCHAR(4000),
+        comment="This is the output directory where the scanner will present the converted files, if there are converted or modified.",
+    )
+    backup_dir = Column(
+        VARCHAR(4000),
+        comment="This is the directory in which the application files are backed up if a backp is chosen",
+    )
+    inplace = Column(
+        NUMBER(asdecimal=False),
+        comment="Designates whether the changes have been made inplace, in the source directory or not",
+    )
+    created_by = Column(VARCHAR(255))
+    last_updated_on = Column(DateTime)
+    last_updated_by = Column(VARCHAR(255))
+
+
+class MdFileArtifacts(Base):
+    __tablename__ = "md_file_artifacts"
+    __table_args__ = (
+        PrimaryKeyConstraint("id", name="md_file_artifacts_pk"),
+        {
+            "comment": "Holds a tuple for each interesting thing the scanner finds in a "
+            "file"
+        },
+    )
+
+    id = Column(NUMBER(asdecimal=False))
+    applicationfiles_id = Column(NUMBER(asdecimal=False), nullable=False)
+    security_group_id = Column(VARCHAR(20), nullable=False, server_default=text("'0'"))
+    created_on = Column(DateTime, nullable=False, server_default=text("sysdate"))
+    pattern = Column(
+        VARCHAR(4000),
+        comment="Pattern used to search source file for interesting artifiacts",
+    )
+    string_found = Column(
+        VARCHAR(4000), comment="String found in source from the pattern supplied"
+    )
+    string_replaced = Column(
+        VARCHAR(4000),
+        comment="This is the string which replace the string found if it was replaced.",
+    )
+    type = Column(
+        VARCHAR(200),
+        comment="This is the type of the replacement.  It could be a straight replace from a replacement pattern, or we could have passed the string to a translator which would change the string depending on the database.",
+    )
+    status = Column(
+        VARCHAR(4000),
+        comment="Pattern used to search source file for interesting artifiacts",
+    )
+    line = Column(NUMBER(asdecimal=False))
+    pattern_start = Column(NUMBER(asdecimal=False))
+    pattern_end = Column(NUMBER(asdecimal=False))
+    due_date = Column(
+        DateTime,
+        comment="Due date is used by the TODO mechanism to manage the validation and work to complete this change",
+    )
+    db_type = Column(VARCHAR(100), comment="Source database calls type")
+    code_type = Column(VARCHAR(1000), comment="Source code db api, like dblib, jdbc")
+    description = Column(
+        VARCHAR(4000),
+        comment="This is a description of the artifact which will have a default generated by the scanner and then can be modified by the user to be more appropriate for their use",
+    )
+    priority = Column(
+        Integer,
+        comment="The priority is set for the TODOs so they can be managed by the user",
+    )
+    created_by = Column(VARCHAR(4000))
+    last_updated = Column(DateTime)
+    last_updated_by = Column(VARCHAR(4000))
+
+
+t_md_tablespaces = Table(
+    "md_tablespaces",
+    metadata,
+    Column("id", NUMBER(asdecimal=False), nullable=False, comment="Primary Key"),
+    Column("schema_id_fk", NUMBER(asdecimal=False), nullable=False),
+    Column("tablespace_name", VARCHAR(4000)),
+    Column("native_sql", Text),
+    Column("native_key", VARCHAR(4000)),
+    Column("comments", VARCHAR(4000)),
+    Column(
+        "security_group_id",
+        NUMBER(asdecimal=False),
+        nullable=False,
+        server_default=text("0"),
+    ),
+    Column("created_on", DateTime, nullable=False, server_default=text("sysdate")),
+    Column("created_by", VARCHAR(255)),
+    Column("last_updated_on", DateTime),
+    Column("last_updated_by", VARCHAR(255)),
+    comment="For storing information about tablespaces.",
 )
 
 
@@ -698,7 +893,7 @@ t_r_members = Table(
 
 class RegattaSeriesExt(Base):
     __tablename__ = "regatta_series_ext"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c008915"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009334"),)
 
     id = Column(NUMBER(asdecimal=False))
     name = Column(VARCHAR(50), nullable=False)
@@ -713,7 +908,7 @@ class RegattaSeriesExt(Base):
 class RegattasExt(Base):
     __tablename__ = "regattas_ext"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c008869"),
+        PrimaryKeyConstraint("id", name="sys_c009282"),
         Index("regattas_ext_date_from", "date_from"),
     )
 
@@ -779,7 +974,7 @@ t_t_members_obsolete = Table(
 
 class Teachers(Base):
     __tablename__ = "teachers"
-    __table_args__ = (PrimaryKeyConstraint("teacher_id", name="sys_c008945"),)
+    __table_args__ = (PrimaryKeyConstraint("teacher_id", name="sys_c009375"),)
 
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     license = Column(VARCHAR(5), nullable=False)
@@ -817,7 +1012,7 @@ t_tempmembers_lastemtry2005_obs = Table(
 
 class Tests(Base):
     __tablename__ = "tests"
-    __table_args__ = (PrimaryKeyConstraint("test_id", name="sys_c008854"),)
+    __table_args__ = (PrimaryKeyConstraint("test_id", name="sys_c009264"),)
 
     test_id = Column(NUMBER(asdecimal=False))
     test_type = Column(VARCHAR(5), nullable=False)
@@ -845,7 +1040,7 @@ t_userlist = Table(
     metadata,
     Column("username", VARCHAR(8)),
     Column("password", VARCHAR(10)),
-    Index("sys_c008946", "username", unique=True),
+    Index("sys_c009356", "username", unique=True),
 )
 
 
@@ -890,20 +1085,20 @@ t_ba5assign_obsolete = Table(
 class Boats(Base):
     __tablename__ = "boats"
     __table_args__ = (
-        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c009054"),
-        PrimaryKeyConstraint("boat_id", name="sys_c008965"),
-        Index("sys_c008966", "name", unique=True),
-        Index("sys_c008967", "ycc_num", unique=True),
-        Index("sys_c008968", "table_pos", unique=True),
+        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c009479"),
+        PrimaryKeyConstraint("boat_id", name="sys_c009369"),
+        Index("sys_c009370", "name", unique=True),
+        Index("sys_c009371", "ycc_num", unique=True),
+        Index("sys_c009372", "table_pos", unique=True),
     )
 
     boat_id = Column(NUMBER(3, 0, False))
     name = Column(VARCHAR(20), nullable=False)
     type = Column(VARCHAR(20), nullable=False)
-    ycc_num = Column(NUMBER(3, 0, False), nullable=False)
     license = Column(VARCHAR(5), nullable=False)
     class_ = Column("class", VARCHAR(5), nullable=False)
-    table_pos = Column(NUMBER(3, 0, False), nullable=False)
+    table_pos = Column(NUMBER(5, 0, False), nullable=False)
+    ycc_num = Column(NUMBER(3, 0, False))
     maintainer_id = Column(NUMBER(asdecimal=False))
     ext_reg_cat = Column(VARCHAR(2))
     maintainer_id2 = Column(NUMBER(asdecimal=False))
@@ -957,7 +1152,7 @@ class Committee(Base):
     __table_args__ = (
         ForeignKeyConstraint(["member_id"], ["members.id"], name="committee_member_fk"),
         PrimaryKeyConstraint("member_id", "cyear", name="committee_pk"),
-        Index("sys_c009029", "commid", unique=True),
+        Index("sys_c009425", "commid", unique=True),
     )
 
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
@@ -990,8 +1185,8 @@ class CoursesObs(Base):
 class Employees(Base):
     __tablename__ = "employees"
     __table_args__ = (
-        ForeignKeyConstraint(["dep_id"], ["departments.dep_id"], name="sys_c009059"),
-        PrimaryKeyConstraint("emp_id", name="sys_c008991"),
+        ForeignKeyConstraint(["dep_id"], ["departments.dep_id"], name="sys_c009484"),
+        PrimaryKeyConstraint("emp_id", name="sys_c009412"),
     )
 
     emp_id = Column(NUMBER(10, 0, False))
@@ -1109,7 +1304,7 @@ class HelpersAppPermissions(Members):
 class Keys(Base):
     __tablename__ = "keys"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009060"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009485"),
         PrimaryKeyConstraint("key_id", "member_id", "kyear", name="keys_pk"),
     )
 
@@ -1123,7 +1318,7 @@ class Keys(Base):
 class Licences(Base):
     __tablename__ = "licences"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009062"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009487"),
         PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
     )
 
@@ -1146,7 +1341,7 @@ t_regatta_profiles = Table(
     Column("licence", VARCHAR(10)),
     Column("club", VARCHAR(25)),
     Column("experience", VARCHAR(1000), nullable=False),
-    ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009069"),
+    ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009494"),
     Index("ref_prof_mem_id", "member_id"),
 )
 
@@ -1154,11 +1349,11 @@ t_regatta_profiles = Table(
 class RegattasInSeries(Base):
     __tablename__ = "regattas_in_series"
     __table_args__ = (
-        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c009063"),
+        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c009488"),
         ForeignKeyConstraint(
-            ["series_id"], ["regatta_series_ext.id"], name="sys_c009064"
+            ["series_id"], ["regatta_series_ext.id"], name="sys_c009489"
         ),
-        PrimaryKeyConstraint("regatta_in_series_id", name="sys_c008919"),
+        PrimaryKeyConstraint("regatta_in_series_id", name="sys_c009338"),
         Index("regattas_in_series_uq", "regatta_id", "series_id", unique=True),
     )
 
@@ -1173,9 +1368,9 @@ class RegattasInSeries(Base):
 class WebLogon(Members):
     __tablename__ = "web_logon"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009072"),
-        PrimaryKeyConstraint("member_id", name="sys_c009019"),
-        Index("sys_c009020", "logon_id", unique=True),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009497"),
+        PrimaryKeyConstraint("member_id", name="sys_c009446"),
+        Index("sys_c009447", "logon_id", unique=True),
     )
 
     member_id = Column(NUMBER(asdecimal=False))
@@ -1186,6 +1381,7 @@ class WebLogon(Members):
     pass_reset_key = Column(VARCHAR(128))
     pass_reset_exp = Column(DateTime)
     last_changed = Column(DateTime)
+    rf_uid = Column(VARCHAR(10))
 
 
 class HelperTaskHelpers(Base):
@@ -1211,8 +1407,8 @@ class HelperTaskHelpers(Base):
 class Keyslog(Base):
     __tablename__ = "keyslog"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009061"),
-        PrimaryKeyConstraint("keyslog_id", name="sys_c008976"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009486"),
+        PrimaryKeyConstraint("keyslog_id", name="sys_c009388"),
     )
 
     keyslog_id = Column(NUMBER(asdecimal=False))
@@ -1230,12 +1426,12 @@ class RegattaParticipation(Base):
     __tablename__ = "regatta_participation"
     __table_args__ = (
         ForeignKeyConstraint(
-            ["assigned_boat_id"], ["boats.boat_id"], name="sys_c009065"
+            ["assigned_boat_id"], ["boats.boat_id"], name="sys_c009490"
         ),
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009068"),
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009066"),
-        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c009067"),
-        PrimaryKeyConstraint("id", name="sys_c008829"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009493"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009491"),
+        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c009492"),
+        PrimaryKeyConstraint("id", name="sys_c009237"),
         Index("reg_part_mem_id", "member_id"),
         Index("reg_part_reg_id", "regatta_id"),
         Index("regatta_particip_uq", "member_id", "regatta_id", unique=True),
@@ -1266,8 +1462,8 @@ class RegattaParticipation(Base):
 class Reservations(Base):
     __tablename__ = "reservations"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009070"),
-        PrimaryKeyConstraint("res_id", name="sys_c008999"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009495"),
+        PrimaryKeyConstraint("res_id", name="sys_c009434"),
     )
 
     res_id = Column(NUMBER(asdecimal=False))
@@ -1294,16 +1490,16 @@ t_status = Table(
     Column("s_end", DateTime),
     Column("status", NUMBER(1, 0, False), nullable=False),
     Column("modified", DateTime, nullable=False),
-    ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009071"),
+    ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009496"),
 )
 
 
 class Ycclog(Base):
     __tablename__ = "ycclog"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009073"),
-        ForeignKeyConstraint(["owner_id"], ["members.id"], name="sys_c009074"),
-        PrimaryKeyConstraint("modified", name="sys_c009044"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009498"),
+        ForeignKeyConstraint(["owner_id"], ["members.id"], name="sys_c009499"),
+        PrimaryKeyConstraint("modified", name="sys_c009465"),
     )
 
     boat_id = Column(NUMBER(3, 0, False), nullable=False)
@@ -1313,6 +1509,9 @@ class Ycclog(Base):
     log_id = Column(NUMBER(asdecimal=False), nullable=False)
     keyslog_id = Column(NUMBER(asdecimal=False))
     log_comment = Column(Text)
+    skipper = Column(VARCHAR(50))
+    crew = Column(VARCHAR(200))
+    wind = Column(VARCHAR(50))
 
     boat = relationship("Boats", back_populates="ycclog")
     owner = relationship("Members", back_populates="ycclog")
