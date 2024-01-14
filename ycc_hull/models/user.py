@@ -1,6 +1,7 @@
 """
 User model.
 """
+from pydantic import ConfigDict
 from ycc_hull.models.base import CamelisedBaseModel
 
 _YCC_ADMIN_ROLE = "ycc-admin"
@@ -24,6 +25,8 @@ class User(CamelisedBaseModel):
     """
     User model.
     """
+
+    model_config = ConfigDict(frozen=True)
 
     member_id: int
     username: str
@@ -56,10 +59,3 @@ class User(CamelisedBaseModel):
 
     def has_licence(self, licence: str) -> bool:
         return _get_licence_role(licence) in self.roles
-
-    class Config:
-        """
-        Immutable config.
-        """
-
-        allow_mutation = False

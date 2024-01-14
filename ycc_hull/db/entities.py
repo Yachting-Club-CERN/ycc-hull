@@ -1,3 +1,4 @@
+# pylint: disable=unsubscriptable-object
 """
 Handwritten Database entities containing only the relevant tables.
 
@@ -171,7 +172,7 @@ class FeeRecordEntity(BaseEntity):
     )
     # Nullable in DB, but filled by a trigger
     # Code-only primary key, not in DB; autoincrement=True added for SQLite (de-facto unique in Oracle & managed by a trigger)
-    paymentid: Mapped[Optional[int]] = mapped_column(
+    paymentid: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True
     )
 

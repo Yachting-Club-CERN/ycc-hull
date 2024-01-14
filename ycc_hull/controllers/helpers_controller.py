@@ -62,7 +62,7 @@ class HelpersController(BaseController):
     ) -> HelperTaskDto:
         with self.database_context.create_session() as session:
             try:
-                task_entity = HelperTaskEntity(**task_mutation_request.dict())
+                task_entity = HelperTaskEntity(**task_mutation_request.model_dump())
                 session.add(task_entity)
                 session.commit()
 

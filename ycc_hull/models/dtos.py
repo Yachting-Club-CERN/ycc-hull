@@ -96,7 +96,7 @@ class LicenceDetailedInfoDto(LicenceInfoDto):
     def create(
         licence_info: LicenceInfoEntity,
     ) -> "LicenceDetailedInfoDto":
-        props = LicenceInfoDto.create(licence_info).dict()
+        props = LicenceInfoDto.create(licence_info).model_dump()
         props["description"] = licence_info.description
         return LicenceDetailedInfoDto(**props)
 
@@ -144,7 +144,7 @@ class MemberSensitiveInfoDto(MemberPublicInfoDto):
     def create(
         member: MemberEntity,
     ) -> "MemberSensitiveInfoDto":
-        props = MemberPublicInfoDto.create(member).dict()
+        props = MemberPublicInfoDto.create(member).model_dump()
         props["id"] = member.id
         props["membership_type"] = member.membership
         return MemberSensitiveInfoDto(**props)

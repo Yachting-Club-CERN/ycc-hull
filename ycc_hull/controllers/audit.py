@@ -25,7 +25,7 @@ def _to_json_dict(obj: Any) -> dict:
     if isinstance(obj, date):
         return {"@type": "date", "value": obj.isoformat()}
     if isinstance(obj, BaseModel):
-        return {"@type": full_type_name(obj.__class__), **obj.dict(by_alias=True)}
+        return {"@type": full_type_name(obj.__class__), **obj.model_dump(by_alias=True)}
     # Note: entities are not allowed since it is much better to audit the DTOs
 
     raise TypeError(f"Cannot serialize type: {type(obj)}")

@@ -103,7 +103,7 @@ class BoatKeys(Base):
     __tablename__ = "boat_keys"
     __table_args__ = (PrimaryKeyConstraint("boat_id", name="boat_keys_pk"),)
 
-    boat_id = Column(NUMBER(3, 0, False))
+    boat_id = Column(NUMBER(3, 0, False), primary_key=True)
     key_nr = Column(NUMBER(3, 0, False), nullable=False)
     locked = Column(NUMBER(1, 0, False))
     virtual = Column(NUMBER(1, 0, False))
@@ -113,7 +113,7 @@ class Buvette(Base):
     __tablename__ = "buvette"
     __table_args__ = (PrimaryKeyConstraint("res_id", name="sys_c009274"),)
 
-    res_id = Column(NUMBER(asdecimal=False))
+    res_id = Column(NUMBER(asdecimal=False), primary_key=True)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     day = Column(DateTime, nullable=False)
     quantity = Column(NUMBER(2, 0, False), nullable=False)
@@ -126,7 +126,7 @@ class Countries(Base):
     __table_args__ = (PrimaryKeyConstraint("country_code", name="sys_c009250"),)
 
     country_name = Column(VARCHAR(50), nullable=False)
-    country_code = Column(VARCHAR(2))
+    country_code = Column(VARCHAR(2), primary_key=True)
 
 
 class DbEdits(Base):
@@ -146,6 +146,7 @@ class DbEdits(Base):
             cache=20,
             order=False,
         ),
+        primary_key=True,
     )
     table_name = Column(VARCHAR(50), nullable=False)
     row_id = Column(NUMBER(asdecimal=False), nullable=False)
@@ -156,7 +157,7 @@ class DeletedMemberApps(Base):
     __tablename__ = "deleted_member_apps"
     __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009443"),)
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     name = Column(VARCHAR(25), nullable=False)
     firstname = Column(VARCHAR(25), nullable=False)
 
@@ -165,7 +166,7 @@ class Departments(Base):
     __tablename__ = "departments"
     __table_args__ = (PrimaryKeyConstraint("dep_id", name="sys_c009380"),)
 
-    dep_id = Column(NUMBER(10, 0, False))
+    dep_id = Column(NUMBER(10, 0, False), primary_key=True)
     dep_name = Column(VARCHAR(50))
 
     employees = relationship("Employees", back_populates="dep")
@@ -178,7 +179,7 @@ class EmailQueueTable(Base):
         Index("i_email_queue_table_status", "status"),
     )
 
-    id = Column(NUMBER(6, 0, False))
+    id = Column(NUMBER(6, 0, False), primary_key=True)
     from_field = Column(VARCHAR(100))
     to_field = Column(VARCHAR(4000))
     subject = Column(VARCHAR(200))
@@ -192,7 +193,7 @@ class EmailTemplates(Base):
     __tablename__ = "email_templates"
     __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009275"),)
 
-    id = Column(NUMBER(4, 0, False))
+    id = Column(NUMBER(4, 0, False), primary_key=True)
     body = Column(VARCHAR(4000))
     description = Column(VARCHAR(60))
 
@@ -204,7 +205,7 @@ class EntranceFeesrecords(Base):
         Index("entrance_fee_uq", "member_id", "year_f", unique=True),
     )
 
-    member_id = Column(NUMBER(asdecimal=False))
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True)
     year_f = Column(NUMBER(asdecimal=False))
 
 
@@ -215,7 +216,7 @@ class Fees(Base):
         PrimaryKeyConstraint("cat_id", name="cat_pk"),
     )
 
-    cat_id = Column(VARCHAR(2))
+    cat_id = Column(VARCHAR(2), primary_key=True)
     description = Column(VARCHAR(25), nullable=False)
     entrance_fee = Column(NUMBER(asdecimal=False), nullable=False)
     annual_fee = Column(NUMBER(asdecimal=False), nullable=False)
@@ -263,6 +264,7 @@ class HelperTaskCategories(Base):
             cache=20,
             order=False,
         ),
+        primary_key=True,
     )
     title = Column(VARCHAR(50), nullable=False)
     short_description = Column(VARCHAR(200), nullable=False)
@@ -287,7 +289,7 @@ class ImportantDates(Base):
         Index("important_dates_uq", "what", unique=True),
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     what = Column(VARCHAR(50), nullable=False)
     datetime = Column(DateTime)
 
@@ -296,7 +298,7 @@ class ImportantValues(Base):
     __tablename__ = "important_values"
     __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009223"),)
 
-    id = Column(NUMBER(10, 0, False))
+    id = Column(NUMBER(10, 0, False), primary_key=True)
     what = Column(VARCHAR(50), nullable=False)
     val = Column(VARCHAR(50), nullable=False)
     last_modified = Column(DateTime, nullable=False)
@@ -306,7 +308,7 @@ class Infolicences(Base):
     __tablename__ = "infolicences"
     __table_args__ = (PrimaryKeyConstraint("infoid", name="licinfo_pk"),)
 
-    infoid = Column(NUMBER(asdecimal=False))
+    infoid = Column(NUMBER(asdecimal=False), primary_key=True)
     description = Column(VARCHAR(50), nullable=False)
     ncourse = Column(VARCHAR(2))
     nlicence = Column(VARCHAR(2))
@@ -325,7 +327,7 @@ class InterestLevels(Base):
     __tablename__ = "interest_levels"
     __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c009417"),)
 
-    interest_level = Column(NUMBER(1, 0, False))
+    interest_level = Column(NUMBER(1, 0, False), primary_key=True)
     description = Column(VARCHAR(100))
 
 
@@ -336,7 +338,7 @@ class Lottery(Base):
         Index("lottery_uq", "year", "member_id", unique=True),
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     year = Column(NUMBER(4, 0, False), nullable=False)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     course1 = Column(VARCHAR(2))
@@ -349,7 +351,7 @@ class LotteryPlaces(Base):
     __tablename__ = "lottery_places"
     __table_args__ = (PrimaryKeyConstraint("key", name="sys_c009426"),)
 
-    key = Column(VARCHAR(2))
+    key = Column(VARCHAR(2), primary_key=True)
     places = Column(NUMBER(asdecimal=False))
 
 
@@ -361,7 +363,7 @@ class LotteryResults(Base):
         Index("lottery_results_uq2", "drawn_seq", "year", unique=True),
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     year = Column(
         NUMBER(4, 0, False),
@@ -399,7 +401,7 @@ class MdApplicationfiles(Base):
         },
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     applications_id_fk = Column(NUMBER(asdecimal=False), nullable=False)
     name = Column(VARCHAR(200), nullable=False, comment="file name  //OBJECTNAME")
     uri = Column(
@@ -445,7 +447,7 @@ class MdApplications(Base):
         },
     )
 
-    id = Column(NUMBER(asdecimal=False), comment="Primary Key")
+    id = Column(NUMBER(asdecimal=False), primary_key=True, comment="Primary Key")
     project_id_fk = Column(
         NUMBER(asdecimal=False),
         nullable=False,
@@ -490,7 +492,7 @@ class MdFileArtifacts(Base):
         },
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     applicationfiles_id = Column(NUMBER(asdecimal=False), nullable=False)
     security_group_id = Column(VARCHAR(20), nullable=False, server_default=text("'0'"))
     created_on = Column(DateTime, nullable=False, server_default=text("sysdate"))
@@ -562,7 +564,7 @@ class Members(Base):
     __tablename__ = "members"
     __table_args__ = (PrimaryKeyConstraint("id", name="members_pk"),)
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     name = Column(VARCHAR(25), nullable=False)
     firstname = Column(VARCHAR(25), nullable=False)
     membership = Column(VARCHAR(2), nullable=False)
@@ -641,13 +643,13 @@ class MembersDataHistory(Base):
         PrimaryKeyConstraint("id", "valid_until_date", name="members_dc_pk"),
     )
 
-    id = Column(NUMBER(asdecimal=False), nullable=False)
+    id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
     name = Column(VARCHAR(25), nullable=False)
     firstname = Column(VARCHAR(25), nullable=False)
     membership = Column(VARCHAR(2), nullable=False)
     home_addr = Column(VARCHAR(50), nullable=False)
     member_entrance = Column(VARCHAR(4), nullable=False)
-    valid_until_date = Column(DateTime, nullable=False)
+    valid_until_date = Column(DateTime, primary_key=True, nullable=False)
     birthday = Column(DateTime)
     nationality = Column(VARCHAR(3))
     temp_memb = Column(NUMBER(1, 0, False))
@@ -676,7 +678,7 @@ class MembersXxEmpty(Base):
     __tablename__ = "members_xx_empty"
     __table_args__ = (PrimaryKeyConstraint("id", name="members_xx_pk"),)
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     name = Column(VARCHAR(25), nullable=False)
     firstname = Column(VARCHAR(25), nullable=False)
     membership = Column(VARCHAR(2), nullable=False)
@@ -717,7 +719,7 @@ class MembershipApplications(Base):
         Index("new_member_logon_id_unique", "logon_id", unique=True),
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     name = Column(VARCHAR(25), nullable=False)
     firstname = Column(VARCHAR(25), nullable=False)
     birthday = Column(DateTime, nullable=False)
@@ -895,7 +897,7 @@ class RegattaSeriesExt(Base):
     __tablename__ = "regatta_series_ext"
     __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009334"),)
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     name = Column(VARCHAR(50), nullable=False)
     year = Column(NUMBER(4, 0, False), nullable=False)
     url_rules = Column(VARCHAR(200))
@@ -912,7 +914,7 @@ class RegattasExt(Base):
         Index("regattas_ext_date_from", "date_from"),
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     date_from = Column(DateTime, nullable=False)
     name = Column(VARCHAR(50), nullable=False)
     ycc_boat_category = Column(VARCHAR(20), nullable=False)
@@ -978,7 +980,7 @@ class Teachers(Base):
 
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     license = Column(VARCHAR(5), nullable=False)
-    teacher_id = Column(NUMBER(asdecimal=False))
+    teacher_id = Column(NUMBER(asdecimal=False), primary_key=True)
     active = Column(NUMBER(1, 0, False))
     since = Column(NUMBER(4, 0, False))
 
@@ -1014,7 +1016,7 @@ class Tests(Base):
     __tablename__ = "tests"
     __table_args__ = (PrimaryKeyConstraint("test_id", name="sys_c009264"),)
 
-    test_id = Column(NUMBER(asdecimal=False))
+    test_id = Column(NUMBER(asdecimal=False), primary_key=True)
     test_type = Column(VARCHAR(5), nullable=False)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     tester_id = Column(NUMBER(asdecimal=False), nullable=False)
@@ -1092,7 +1094,7 @@ class Boats(Base):
         Index("sys_c009372", "table_pos", unique=True),
     )
 
-    boat_id = Column(NUMBER(3, 0, False))
+    boat_id = Column(NUMBER(3, 0, False), primary_key=True)
     name = Column(VARCHAR(20), nullable=False)
     type = Column(VARCHAR(20), nullable=False)
     license = Column(VARCHAR(5), nullable=False)
@@ -1130,10 +1132,10 @@ class ClassesObsolete2001(Base):
         ),
     )
 
-    class_id = Column(NUMBER(asdecimal=False), nullable=False)
+    class_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
     course_id = Column(NUMBER(2, 0, False), nullable=False)
-    teacher_id = Column(NUMBER(asdecimal=False), nullable=False)
-    course_year = Column(NUMBER(4, 0, False), nullable=False)
+    teacher_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
+    course_year = Column(NUMBER(4, 0, False), primary_key=True, nullable=False)
     helper_id = Column(NUMBER(asdecimal=False))
     day_class = Column(VARCHAR(3))
     lang = Column(VARCHAR(2))
@@ -1155,8 +1157,8 @@ class Committee(Base):
         Index("sys_c009425", "commid", unique=True),
     )
 
-    member_id = Column(NUMBER(asdecimal=False), nullable=False)
-    cyear = Column(NUMBER(4, 0, False), nullable=False)
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
+    cyear = Column(NUMBER(4, 0, False), primary_key=True, nullable=False)
     commid = Column(NUMBER(10, 0, False), nullable=False)
     lcomments = Column(VARCHAR(100))
     photo = Column(VARCHAR(50))
@@ -1173,8 +1175,8 @@ class CoursesObs(Base):
         PrimaryKeyConstraint("member_id", "class_id", name="courses_pk"),
     )
 
-    member_id = Column(NUMBER(asdecimal=False), nullable=False)
-    class_id = Column(NUMBER(asdecimal=False), nullable=False)
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
+    class_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
     pref_days = Column(VARCHAR(20))
     pref_lang = Column(VARCHAR(10))
     notes = Column(VARCHAR(50))
@@ -1189,7 +1191,7 @@ class Employees(Base):
         PrimaryKeyConstraint("emp_id", name="sys_c009412"),
     )
 
-    emp_id = Column(NUMBER(10, 0, False))
+    emp_id = Column(NUMBER(10, 0, False), primary_key=True)
     emp_name = Column(VARCHAR(50))
     dep_id = Column(NUMBER(10, 0, False))
 
@@ -1258,6 +1260,7 @@ class HelperTasks(Base):
             cache=20,
             order=False,
         ),
+        primary_key=True,
     )
     category_id = Column(NUMBER(asdecimal=False), nullable=False)
     title = Column(VARCHAR(50), nullable=False)
@@ -1297,7 +1300,7 @@ class HelpersAppPermissions(Members):
         PrimaryKeyConstraint("member_id", name="helpers_app_permissions_pk"),
     )
 
-    member_id = Column(NUMBER(asdecimal=False))
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True)
     permission = Column(Enum("ADMIN", "EDITOR"), nullable=False)
 
 
@@ -1308,9 +1311,9 @@ class Keys(Base):
         PrimaryKeyConstraint("key_id", "member_id", "kyear", name="keys_pk"),
     )
 
-    member_id = Column(NUMBER(asdecimal=False), nullable=False)
-    key_id = Column(NUMBER(asdecimal=False), nullable=False)
-    kyear = Column(NUMBER(asdecimal=False), nullable=False)
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
+    key_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
+    kyear = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
 
     member = relationship("Members", back_populates="keys")
 
@@ -1322,8 +1325,8 @@ class Licences(Base):
         PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
     )
 
-    member_id = Column(NUMBER(asdecimal=False), nullable=False)
-    licence_id = Column(NUMBER(2, 0, False), nullable=False)
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
+    licence_id = Column(NUMBER(2, 0, False), primary_key=True, nullable=False)
     lyear = Column(NUMBER(4, 0, False), nullable=False)
     lcomments = Column(VARCHAR(100))
     test_id = Column(NUMBER(asdecimal=False))
@@ -1357,7 +1360,7 @@ class RegattasInSeries(Base):
         Index("regattas_in_series_uq", "regatta_id", "series_id", unique=True),
     )
 
-    regatta_in_series_id = Column(NUMBER(asdecimal=False))
+    regatta_in_series_id = Column(NUMBER(asdecimal=False), primary_key=True)
     regatta_id = Column(NUMBER(asdecimal=False), nullable=False)
     series_id = Column(NUMBER(asdecimal=False), nullable=False)
 
@@ -1373,7 +1376,7 @@ class WebLogon(Members):
         Index("sys_c009447", "logon_id", unique=True),
     )
 
-    member_id = Column(NUMBER(asdecimal=False))
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True)
     logon_id = Column(VARCHAR(25), nullable=False)
     session_id = Column(NUMBER(asdecimal=False))
     session_date = Column(DateTime)
@@ -1396,8 +1399,8 @@ class HelperTaskHelpers(Base):
         PrimaryKeyConstraint("task_id", "member_id", name="helper_task_helpers_pk"),
     )
 
-    task_id = Column(NUMBER(asdecimal=False), nullable=False)
-    member_id = Column(NUMBER(asdecimal=False), nullable=False)
+    task_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
+    member_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
     signed_up_at = Column(DateTime, nullable=False)
 
     member = relationship("Members", back_populates="helper_task_helpers")
@@ -1411,7 +1414,7 @@ class Keyslog(Base):
         PrimaryKeyConstraint("keyslog_id", name="sys_c009388"),
     )
 
-    keyslog_id = Column(NUMBER(asdecimal=False))
+    keyslog_id = Column(NUMBER(asdecimal=False), primary_key=True)
     boat_id = Column(NUMBER(3, 0, False), nullable=False)
     taken_by = Column(NUMBER(asdecimal=False), nullable=False)
     taken = Column(DateTime, nullable=False)
@@ -1437,7 +1440,7 @@ class RegattaParticipation(Base):
         Index("regatta_particip_uq", "member_id", "regatta_id", unique=True),
     )
 
-    id = Column(NUMBER(asdecimal=False))
+    id = Column(NUMBER(asdecimal=False), primary_key=True)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     regatta_id = Column(NUMBER(asdecimal=False), nullable=False)
     preference = Column(VARCHAR(15), nullable=False)
@@ -1466,7 +1469,7 @@ class Reservations(Base):
         PrimaryKeyConstraint("res_id", name="sys_c009434"),
     )
 
-    res_id = Column(NUMBER(asdecimal=False))
+    res_id = Column(NUMBER(asdecimal=False), primary_key=True)
     boat_id = Column(NUMBER(3, 0, False), nullable=False)
     owner_id = Column(NUMBER(asdecimal=False), nullable=False)
     label = Column(VARCHAR(25), nullable=False)
@@ -1505,7 +1508,7 @@ class Ycclog(Base):
     boat_id = Column(NUMBER(3, 0, False), nullable=False)
     owner_id = Column(NUMBER(asdecimal=False), nullable=False)
     status = Column(VARCHAR(10), nullable=False)
-    modified = Column(DateTime)
+    modified = Column(DateTime, primary_key=True)
     log_id = Column(NUMBER(asdecimal=False), nullable=False)
     keyslog_id = Column(NUMBER(asdecimal=False))
     log_comment = Column(Text)

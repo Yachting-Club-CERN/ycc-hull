@@ -8,10 +8,10 @@ authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 python = "~3.9"
 # oracledb is not supported yet with SQLAlchemy 1.x
 cx-Oracle = "^8.3.0"
-SQLAlchemy = "^1.4.47"
+SQLAlchemy = "^1.4.51"
 
 [tool.poetry.dev-dependencies]
-sqlacodegen = "^3.0.0rc2"
+sqlacodegen = "^3.0.0rc3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
