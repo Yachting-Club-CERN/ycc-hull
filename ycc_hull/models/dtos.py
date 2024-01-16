@@ -31,7 +31,7 @@ class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
     table_position: int
 
     @staticmethod
-    def create(
+    async def create(
         boat: BoatEntity,
     ) -> "BoatDto":
         return BoatDto(
@@ -55,7 +55,7 @@ class HolidayDto(CamelisedBaseModelWithEntity[HolidayEntity]):
     label: str
 
     @staticmethod
-    def create(
+    async def create(
         holiday: HolidayEntity,
     ) -> "HolidayDto":
         return HolidayDto(
@@ -74,7 +74,7 @@ class LicenceInfoDto(CamelisedBaseModelWithEntity[LicenceInfoEntity]):
     licence: str
 
     @staticmethod
-    def create(
+    async def create(
         licence_info: LicenceInfoEntity,
     ) -> "LicenceInfoDto":
         return LicenceInfoDto(
@@ -93,10 +93,10 @@ class LicenceDetailedInfoDto(LicenceInfoDto):
     licence: str
 
     @staticmethod
-    def create(
+    async def create(
         licence_info: LicenceInfoEntity,
     ) -> "LicenceDetailedInfoDto":
-        props = LicenceInfoDto.create(licence_info).model_dump()
+        props = (await LicenceInfoDto.create(licence_info)).model_dump()
         props["description"] = licence_info.description
         return LicenceDetailedInfoDto(**props)
 
@@ -116,7 +116,7 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
     work_phone: Optional[str]
 
     @staticmethod
-    def create(
+    async def create(
         member: MemberEntity,
     ) -> "MemberPublicInfoDto":
         return MemberPublicInfoDto(
@@ -141,10 +141,10 @@ class MemberSensitiveInfoDto(MemberPublicInfoDto):
     membership_type: str
 
     @staticmethod
-    def create(
+    async def create(
         member: MemberEntity,
     ) -> "MemberSensitiveInfoDto":
-        props = MemberPublicInfoDto.create(member).model_dump()
+        props = (await MemberPublicInfoDto.create(member)).model_dump()
         props["id"] = member.id
         props["membership_type"] = member.membership
         return MemberSensitiveInfoDto(**props)
@@ -162,7 +162,7 @@ class MembershipTypeDto(CamelisedBaseModelWithEntity[MembershipTypeEntity]):
     comments: Optional[str]
 
     @staticmethod
-    def create(
+    async def create(
         membership_type: MembershipTypeEntity,
     ) -> "MembershipTypeDto":
         return MembershipTypeDto(
@@ -184,7 +184,7 @@ class UserDto(CamelisedBaseModelWithEntity[UserEntity]):
     username: str
 
     @staticmethod
-    def create(
+    async def create(
         user: UserEntity,
     ) -> "UserDto":
         return UserDto(

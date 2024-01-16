@@ -31,7 +31,7 @@ class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntit
     long_description: Optional[str] = Field(json_schema_extra={"html": True})
 
     @staticmethod
-    def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
+    async def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
         return HelperTaskCategoryDto(
             entity=category,
             id=category.id,
@@ -65,50 +65,61 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     helpers: Sequence["HelperTaskHelperDto"]
 
     @classmethod
-    def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
-        return cls._create(task, task.long_description)
+    async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
+        return await cls._create(task, await task.awaitable_attrs.long_description)
 
     @classmethod
-    def create_without_long_description(cls, task: HelperTaskEntity) -> "HelperTaskDto":
-        return cls._create(task, None)
+    async def create_without_long_description(
+        cls, task: HelperTaskEntity
+    ) -> "HelperTaskDto":
+        return await cls._create(task, None)
 
     @staticmethod
-    def _create(
+    async def _create(
         task: HelperTaskEntity, long_description: Optional[str]
     ) -> "HelperTaskDto":
-        captain = (
-            HelperTaskHelperDto.create_from_member_entity(
-                # Either both or none are present
-                task.captain,
-                task.captain_signed_up_at,  # type: ignore
-            )
-            if task.captain
-            else None
+        captain = await task.awaitable_attrs.captain
+        captain_required_licence_info = (
+            await task.awaitable_attrs.captain_required_licence_info
         )
-        helpers = [HelperTaskHelperDto.create(helper) for helper in task.helpers]
 
         return HelperTaskDto(
             entity=task,
             id=task.id,
-            category=HelperTaskCategoryDto.create(task.category),
+            category=await HelperTaskCategoryDto.create(
+                await task.awaitable_attrs.category
+            ),
             title=task.title,
             short_description=task.short_description,
             long_description=long_description,
-            contact=MemberPublicInfoDto.create(task.contact),
+            contact=await MemberPublicInfoDto.create(
+                await task.awaitable_attrs.contact
+            ),
             starts_at=task.starts_at,
             ends_at=task.ends_at,
             deadline=task.deadline,
             urgent=task.urgent,
-            captain_required_licence_info=LicenceInfoDto.create(
-                task.captain_required_licence_info
+            captain_required_licence_info=await LicenceInfoDto.create(
+                captain_required_licence_info
             )
-            if task.captain_required_licence_info
+            if captain_required_licence_info
             else None,
             helper_min_count=task.helper_min_count,
             helper_max_count=task.helper_max_count,
             published=task.published,
-            captain=captain,
-            helpers=helpers,
+            captain=(
+                await HelperTaskHelperDto.create_from_member_entity(
+                    # Either both or none are present
+                    captain,
+                    task.captain_signed_up_at,  # type: ignore
+                )
+                if task.captain
+                else None
+            ),
+            helpers=[
+                await HelperTaskHelperDto.create(helper)
+                for helper in await task.awaitable_attrs.helpers
+            ],
         )
 
 
@@ -168,22 +179,22 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
     signed_up_at: datetime
 
     @staticmethod
-    def create(
+    async def create(
         helper: HelperTaskHelperEntity,
     ) -> "HelperTaskHelperDto":
         return HelperTaskHelperDto(
             entity=None,
-            member=MemberPublicInfoDto.create(helper.member),
+            member=await MemberPublicInfoDto.create(helper.member),
             signed_up_at=helper.signed_up_at,
         )
 
     @staticmethod
-    def create_from_member_entity(
+    async def create_from_member_entity(
         member: MemberEntity, signed_up_at: datetime
     ) -> "HelperTaskHelperDto":
         return HelperTaskHelperDto(
             entity=None,
-            member=MemberPublicInfoDto.create(member),
+            member=await MemberPublicInfoDto.create(member),
             signed_up_at=signed_up_at,
         )
 

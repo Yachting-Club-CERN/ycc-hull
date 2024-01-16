@@ -2,9 +2,12 @@
 Helpers API tests.
 """
 import json
-
 from datetime import datetime, timedelta
+
+import pytest
+import pytest_asyncio
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 
 from tests.main_test import FakeAuth, app_test, init_test_database
 from ycc_hull.api.helpers import api_helpers
@@ -71,23 +74,24 @@ audit_keys = set(
     ]
 )
 
-init_test_database(__name__)
+
+@pytest_asyncio.fixture(scope="module", autouse=True)
+async def init_database() -> None:
+    await init_test_database(__name__)
 
 
-def get_last_audit_log_entry() -> AuditLogEntryEntity:
-    with DatabaseContextHolder.context.create_session() as session:
-        result = (
-            session.query(AuditLogEntryEntity)
-            .order_by(AuditLogEntryEntity.id.desc())
-            .limit(1)
-            .one()
+async def get_last_audit_log_entry() -> AuditLogEntryEntity:
+    async with DatabaseContextHolder.context.async_session() as session:
+        entry = await session.scalar(
+            select(AuditLogEntryEntity).order_by(AuditLogEntryEntity.id.desc()).limit(1)
         )
+        if not entry:
+            raise AssertionError("No audit log entry found")
+        return entry
 
-        return result
 
-
-def verify_creation_audit_log_entry(short_description: str) -> None:
-    audit = get_last_audit_log_entry()
+async def verify_creation_audit_log_entry(short_description: str) -> None:
+    audit = await get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
     assert audit.principal == "testuser"
     assert audit.description == "Helpers/Tasks/Create"
@@ -102,10 +106,10 @@ def verify_creation_audit_log_entry(short_description: str) -> None:
     assert audit_data["new"].keys() == audit_keys
 
 
-def verify_update_audit_log_entry(
+async def verify_update_audit_log_entry(
     task_id: int, old_short_description: str, new_short_description: str
 ) -> None:
-    audit = get_last_audit_log_entry()
+    audit = await get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
     assert audit.principal == "testuser"
     assert audit.description == f"Helpers/Tasks/Update/{task_id}"
@@ -126,7 +130,8 @@ def verify_update_audit_log_entry(
     assert audit_data["new"].keys() == audit_keys
 
 
-def test_create_task_as_editor() -> None:
+@pytest.mark.asyncio
+async def test_create_task_as_editor() -> None:
     # Given
     FakeAuth.set_helpers_app_editor()
 
@@ -138,10 +143,11 @@ def test_create_task_as_editor() -> None:
     response_dto = HelperTaskDto(**response.json())
     assert task_mutation_shift["shortDescription"] == response_dto.short_description
 
-    verify_creation_audit_log_entry(response_dto.short_description)
+    await verify_creation_audit_log_entry(response_dto.short_description)
 
 
-def test_create_task_as_admin() -> None:
+@pytest.mark.asyncio
+async def test_create_task_as_admin() -> None:
     # Given
     FakeAuth.set_helpers_app_admin()
 
@@ -153,7 +159,7 @@ def test_create_task_as_admin() -> None:
     response_dto = HelperTaskDto(**response.json())
     assert task_mutation_deadline["shortDescription"] == response_dto.short_description
 
-    verify_creation_audit_log_entry(response_dto.short_description)
+    await verify_creation_audit_log_entry(response_dto.short_description)
 
 
 def test_create_task_fails_if_not_admin_nor_editor() -> None:
@@ -182,7 +188,8 @@ def test_create_task_fails_if_editor_but_not_contact() -> None:
     }
 
 
-def test_update_task_as_editor() -> None:
+@pytest.mark.asyncio
+async def test_update_task_as_editor() -> None:
     # Given
     FakeAuth.set_helpers_app_editor()
     task_mutation = task_mutation_shift.copy()
@@ -200,7 +207,7 @@ def test_update_task_as_editor() -> None:
     assert task_id == response_dto.id
     assert task_mutation_deadline["shortDescription"] == response_dto.short_description
 
-    verify_update_audit_log_entry(
+    await verify_update_audit_log_entry(
         task_id,
         str(task_mutation_shift["shortDescription"]),
         response_dto.short_description,

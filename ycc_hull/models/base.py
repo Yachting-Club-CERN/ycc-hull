@@ -30,6 +30,8 @@ class CamelisedBaseModel(BaseModel):
     # If you want to mark a field as HTML, use the following syntax:
     #
     # long_description: Optional[str] = Field(json_schema_extra={"html": True})
+    #
+    # No @classmethod to make it run for subclasses.
     @model_validator(mode="before")
     def sanitise_strings(cls, values: dict) -> dict:
         for key, value in values.items():

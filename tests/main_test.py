@@ -1,8 +1,6 @@
 """
 Test app & utilities.
 """
-
-import asyncio
 import os
 
 from fastapi import FastAPI, Request, Response
@@ -105,14 +103,15 @@ class FakeAuth:
         app_test.dependency_overrides[auth] = cls._create_helpers_app_editor
 
 
-def init_test_database(name: str) -> None:
+async def init_test_database(name: str) -> None:
     if not os.path.exists("tmp"):
         os.makedirs("tmp", exist_ok=True)
     DatabaseContextHolder.context = DatabaseContext(
-        database_url=f"sqlite+pysqlite:///tmp/test-{name}.db", echo=False
+        database_url=f"sqlite+aiosqlite:///tmp/test-{name}.db", echo=False
     )
     engine = DatabaseContextHolder.context._engine  # pylint: disable=protected-access
-    BaseEntity.metadata.drop_all(engine)
-    BaseEntity.metadata.create_all(engine)
+    async with engine.begin() as connection:
+        await connection.run_sync(BaseEntity.metadata.drop_all)
+        await connection.run_sync(BaseEntity.metadata.create_all)
 
-    asyncio.run(TestDataController().repopulate())
+    await TestDataController().repopulate()

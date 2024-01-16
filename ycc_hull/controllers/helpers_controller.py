@@ -7,7 +7,8 @@ from typing import Optional
 
 from sqlalchemy import func, select
 from sqlalchemy.exc import DatabaseError
-from sqlalchemy.orm import Session, defer, lazyload
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import defer, lazyload
 
 from ycc_hull.controllers.audit import create_audit_entry
 from ycc_hull.controllers.base_controller import BaseController
@@ -34,9 +35,9 @@ class HelpersController(BaseController):
     """
 
     async def find_all_task_categories(self) -> Sequence[HelperTaskCategoryDto]:
-        return self.database_context.query_all(
+        return await self.database_context.query_all(
             select(HelperTaskCategoryEntity).order_by(HelperTaskCategoryEntity.title),
-            HelperTaskCategoryDto.create,
+            async_transformer=HelperTaskCategoryDto.create,
         )
 
     async def find_all_tasks(
@@ -60,19 +61,19 @@ class HelpersController(BaseController):
     async def create_task(
         self, task_mutation_request: HelperTaskMutationRequestDto, user: User
     ) -> HelperTaskDto:
-        with self.database_context.create_session() as session:
+        async with self.database_context.async_session() as session:
             try:
                 task_entity = HelperTaskEntity(**task_mutation_request.model_dump())
                 session.add(task_entity)
-                session.commit()
+                await session.commit()
 
-                task = HelperTaskDto.create(task_entity)
+                task = await HelperTaskDto.create(task_entity)
                 self._logger.info("Created task: %s, user: %s", task, user)
 
                 session.add(
                     create_audit_entry(user, "Helpers/Tasks/Create", {"new": task})
                 )
-                session.commit()
+                await session.commit()
 
                 return task
             except DatabaseError as exc:
@@ -86,7 +87,7 @@ class HelpersController(BaseController):
         task_mutation_request: HelperTaskMutationRequestDto,
         user: User,
     ) -> HelperTaskDto:
-        with self.database_context.create_session() as session:
+        async with self.database_context.async_session() as session:
             old_task = await self._get_task_by_id(task_id, session=session)
 
             # Check: cannot change timing if anyone has signed up
@@ -132,11 +133,11 @@ class HelpersController(BaseController):
 
             try:
                 task_entity = old_task.get_entity()
-                old_task = HelperTaskDto.create(task_entity)
+                old_task = await HelperTaskDto.create(task_entity)
                 self._update_entity_from_dto(task_entity, task_mutation_request)
-                session.commit()
+                await session.commit()
 
-                new_task = HelperTaskDto.create(task_entity)
+                new_task = await HelperTaskDto.create(task_entity)
                 self._logger.info("Updated task: %s, user: %s", new_task, user)
 
                 session.add(
@@ -146,7 +147,7 @@ class HelpersController(BaseController):
                         {"old": old_task, "new": new_task},
                     )
                 )
-                session.commit()
+                await session.commit()
 
                 return new_task
             except DatabaseError as exc:
@@ -155,7 +156,7 @@ class HelpersController(BaseController):
                 )
 
     async def sign_up_as_captain(self, task_id: int, user: User) -> None:
-        with self.database_context.create_session() as session:
+        async with self.database_context.async_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
             await self._check_can_sign_up(task, user.member_id)
@@ -169,17 +170,21 @@ class HelpersController(BaseController):
                         f"Task captain needs licence: {required_licence}"
                     )
 
-            task_entity = session.scalars(
-                select(HelperTaskEntity)
-                .options(lazyload("*"))
-                .where(HelperTaskEntity.id == task_id)
+            task_entity = (
+                await session.scalars(
+                    select(HelperTaskEntity)
+                    .options(lazyload("*"))
+                    .where(HelperTaskEntity.id == task_id)
+                )
             ).one()
             task_entity.captain_id = user.member_id
             task_entity.captain_signed_up_at = datetime.now()
+            await session.commit()
+
             session.add(
                 create_audit_entry(user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
             )
-            session.commit()
+            await session.commit()
 
     async def sign_up_as_helper(self, task_id: int, user: User) -> None:
         task = await self.get_task_by_id(task_id, published=True)
@@ -188,21 +193,23 @@ class HelpersController(BaseController):
         if len(task.helpers) >= task.helper_max_count:
             raise ControllerConflictException("Task helper limit reached")
 
-        with self.database_context.create_session() as session:
+        async with self.database_context.async_session() as session:
             helper = HelperTaskHelperEntity(
                 task_id=task.id, member_id=user.member_id, signed_up_at=datetime.now()
             )
             session.add(helper)
+            await session.commit()
+
             session.add(
                 create_audit_entry(user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
             )
-            session.commit()
+            await session.commit()
 
     async def _find_tasks(
         self,
         task_id: Optional[int],
         published: Optional[bool],
-        session: Optional[Session] = None,
+        session: Optional[AsyncSession] = None,
     ) -> Sequence[HelperTaskDto]:
         query = select(HelperTaskEntity)
 
@@ -225,9 +232,9 @@ class HelpersController(BaseController):
             ).asc(),
         )
 
-        return self.database_context.query_all(
+        return await self.database_context.query_all(
             query,
-            HelperTaskDto.create_without_long_description
+            async_transformer=HelperTaskDto.create_without_long_description
             if exclude_long_description
             else HelperTaskDto.create,
             unique=True,
@@ -235,7 +242,10 @@ class HelpersController(BaseController):
         )
 
     async def _find_task_by_id(
-        self, task_id: int, published: Optional[bool], session: Optional[Session] = None
+        self,
+        task_id: int,
+        published: Optional[bool],
+        session: Optional[AsyncSession] = None,
     ) -> Optional[HelperTaskDto]:
         tasks = await self._find_tasks(task_id, published, session=session)
         return tasks[0] if tasks else None
@@ -244,7 +254,7 @@ class HelpersController(BaseController):
         self,
         task_id: int,
         published: Optional[bool] = None,
-        session: Optional[Session] = None,
+        session: Optional[AsyncSession] = None,
     ) -> HelperTaskDto:
         task = await self._find_task_by_id(task_id, published, session=session)
         if task:

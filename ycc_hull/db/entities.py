@@ -45,12 +45,13 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     text,
 )
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from ycc_hull.utils import short_type_name
 
 
-class BaseEntity(DeclarativeBase):
+class BaseEntity(AsyncAttrs, DeclarativeBase):
     """
     Base class for DB entities.
     """
