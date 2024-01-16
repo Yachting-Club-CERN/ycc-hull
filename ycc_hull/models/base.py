@@ -7,7 +7,7 @@ from humps import camelize
 from lxml import etree
 from lxml.html import fromstring
 from lxml.html.clean import Cleaner
-from pydantic import BaseModel, Extra, Field, root_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from ycc_hull.utils import full_type_name
 
@@ -19,30 +19,33 @@ class CamelisedBaseModel(BaseModel):
     Base class for all model classes which will convert snake_case attributes to camelCase when converting to JSON.
     """
 
+    model_config = ConfigDict(
+        alias_generator=camelize,
+        extra="forbid",
+        frozen=True,
+        populate_by_name=True,
+    )
+
     # We are fighting XSS attacks here, so we need to sanitise all HTML input/output.
     # If you want to mark a field as HTML, use the following syntax:
     #
-    # long_description: Optional[str] = Field(html=True)
-    @root_validator
+    # long_description: Optional[str] = Field(json_schema_extra={"html": True})
+    #
+    # No @classmethod to make it run for subclasses.
+    @model_validator(mode="before")
     def sanitise_strings(cls, values: dict) -> dict:
         for key, value in values.items():
             if isinstance(value, str):
-                field = cls.__fields__.get(key)
-                if field and field.field_info.extra.get("html"):
+                field_info = cls.model_fields.get(key)
+                if (
+                    field_info
+                    and field_info.json_schema_extra
+                    and field_info.json_schema_extra.get("html")  # type: ignore
+                ):
                     values[key] = sanitise_html_input(value)
                 else:
                     values[key] = sanitise_text_input(value)
         return values
-
-    class Config:
-        """
-        Base config.
-        """
-
-        alias_generator = camelize
-        allow_population_by_field_name = True
-        allow_mutation = False
-        extra = Extra.forbid
 
 
 class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
@@ -50,13 +53,15 @@ class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
     Base class for all model classes related to entities.
     """
 
-    entity: Optional[EntityT] = Field(exclude=True)
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    entity: Optional[EntityT] = Field(exclude=True, default=None)
     """The entity associated with this model, if available. This allows to write model-oriented code, but still have access to the underlying entity."""
 
     def get_entity(self) -> EntityT:
         if not self.entity:
             raise ValueError(
-                f"No entity is associated with this model: {full_type_name(self.__class__)}{self.dict()}"
+                f"No entity is associated with this model: {full_type_name(self.__class__)}{self.model_dump()}"
             )
         return self.entity
 

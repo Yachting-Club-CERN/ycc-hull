@@ -6,6 +6,8 @@ import os
 from enum import Enum
 from typing import Optional
 
+from pydantic import ConfigDict
+
 from ycc_hull.models.base import CamelisedBaseModel
 
 CONFIG_FILE = (
@@ -33,6 +35,8 @@ class Config(CamelisedBaseModel):
     Application configuration.
     """
 
+    model_config = ConfigDict(frozen=True)
+
     environment: Environment
     database_url: str
     cors_origins: frozenset[str]
@@ -50,13 +54,6 @@ class Config(CamelisedBaseModel):
     @property
     def api_docs_enabled(self) -> bool:
         return self.environment in (Environment.LOCAL, Environment.DEVELOPMENT)
-
-    class Config:
-        """
-        Immutable config.
-        """
-
-        allow_mutation = False
 
 
 CONFIG: Config

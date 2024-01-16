@@ -14,9 +14,11 @@ def test_creation_valid_shift() -> None:
         category_id=1,
         title="Test Task",
         short_description="The Club needs your help!",
+        long_description=None,
         contact_id=1,
         starts_at="2023-05-01T18:00:00",
         ends_at="2023-05-01T20:30:00",
+        deadline=None,
         urgent=False,
         captain_required_licence_info_id=9,
         helper_min_count=1,
@@ -35,8 +37,11 @@ def test_creation_valid_deadline() -> None:
         short_description="The Club needs your help!",
         long_description="Really! It is very important to get this done!",
         contact_id=2,
+        starts_at=None,
+        ends_at=None,
         deadline="2023-05-02T20:00:00",
         urgent=True,
+        captain_required_licence_info_id=None,
         helper_min_count=2,
         helper_max_count=2,
         published=True,
@@ -51,7 +56,11 @@ def test_creation_must_specify_timing() -> None:
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
+            long_description=None,
             contact_id=1,
+            starts_at=None,
+            ends_at=None,
+            deadline=None,
             urgent=False,
             captain_required_licence_info_id=9,
             helper_min_count=1,
@@ -59,7 +68,7 @@ def test_creation_must_specify_timing() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
+    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
 
 
 def test_creation_must_not_specify_all_timing_fields() -> None:
@@ -68,6 +77,7 @@ def test_creation_must_not_specify_all_timing_fields() -> None:
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
+            long_description=None,
             contact_id=1,
             starts_at="2023-05-01T18:00:00",
             ends_at="2023-05-01T20:30:00",
@@ -79,7 +89,7 @@ def test_creation_must_not_specify_all_timing_fields() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
+    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
 
 
 def test_creation_must_not_specify_start_with_deadline() -> None:
@@ -88,8 +98,10 @@ def test_creation_must_not_specify_start_with_deadline() -> None:
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
+            long_description=None,
             contact_id=1,
             starts_at="2023-05-01T18:00:00",
+            ends_at=None,
             deadline="2023-05-02T20:00:00",
             urgent=False,
             captain_required_licence_info_id=9,
@@ -98,7 +110,7 @@ def test_creation_must_not_specify_start_with_deadline() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
+    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
 
 
 def test_creation_must_not_specify_end_with_deadline() -> None:
@@ -107,7 +119,9 @@ def test_creation_must_not_specify_end_with_deadline() -> None:
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
+            long_description=None,
             contact_id=1,
+            starts_at=None,
             ends_at="2023-05-01T20:30:00",
             deadline="2023-05-02T20:00:00",
             urgent=False,
@@ -117,7 +131,7 @@ def test_creation_must_not_specify_end_with_deadline() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
+    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
 
 
 def test_creation_must_not_specify_start_after_end() -> None:
@@ -126,9 +140,11 @@ def test_creation_must_not_specify_start_after_end() -> None:
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
+            long_description=None,
             contact_id=1,
             starts_at="2023-05-01T20:30:00",
             ends_at="2023-05-01T18:00:00",
+            deadline=None,
             urgent=False,
             captain_required_licence_info_id=9,
             helper_min_count=1,
@@ -136,7 +152,7 @@ def test_creation_must_not_specify_start_after_end() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Invalid timing"
+    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
 
 
 def test_creation_must_have_consistent_helper_counts() -> None:
@@ -145,9 +161,11 @@ def test_creation_must_have_consistent_helper_counts() -> None:
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
+            long_description=None,
             contact_id=1,
             starts_at="2023-05-01T18:00:00",
             ends_at="2023-05-01T20:30:00",
+            deadline=None,
             urgent=False,
             captain_required_licence_info_id=9,
             helper_min_count=3,
@@ -155,7 +173,10 @@ def test_creation_must_have_consistent_helper_counts() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Invalid minimum/maximum helper count"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid minimum/maximum helper count"
+    )
 
 
 def test_sanitise() -> None:
@@ -177,6 +198,7 @@ def test_sanitise() -> None:
         contact_id=1,
         starts_at="2023-05-01T18:00:00",
         ends_at="2023-05-01T20:30:00",
+        deadline=None,
         urgent=False,
         captain_required_licence_info_id=9,
         helper_min_count=1,

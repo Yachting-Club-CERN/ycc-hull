@@ -5,7 +5,7 @@ from collections.abc import Sequence
 from datetime import datetime
 from typing import Optional
 
-from pydantic import Field, root_validator, validator
+from pydantic import Field, field_validator, model_validator
 
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
@@ -28,10 +28,10 @@ class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntit
     id: int
     title: str
     short_description: str
-    long_description: Optional[str] = Field(html=True)
+    long_description: Optional[str] = Field(json_schema_extra={"html": True})
 
     @staticmethod
-    def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
+    async def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
         return HelperTaskCategoryDto(
             entity=category,
             id=category.id,
@@ -50,7 +50,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     category: HelperTaskCategoryDto
     title: str
     short_description: str
-    long_description: Optional[str] = Field(html=True)
+    long_description: Optional[str] = Field(json_schema_extra={"html": True})
     contact: MemberPublicInfoDto
     starts_at: Optional[datetime]
     ends_at: Optional[datetime]
@@ -65,50 +65,61 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     helpers: Sequence["HelperTaskHelperDto"]
 
     @classmethod
-    def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
-        return cls._create(task, task.long_description)
+    async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
+        return await cls._create(task, await task.awaitable_attrs.long_description)
 
     @classmethod
-    def create_without_long_description(cls, task: HelperTaskEntity) -> "HelperTaskDto":
-        return cls._create(task, None)
+    async def create_without_long_description(
+        cls, task: HelperTaskEntity
+    ) -> "HelperTaskDto":
+        return await cls._create(task, None)
 
     @staticmethod
-    def _create(
+    async def _create(
         task: HelperTaskEntity, long_description: Optional[str]
     ) -> "HelperTaskDto":
-        captain = (
-            HelperTaskHelperDto.create_from_member_entity(
-                # Either both or none are present
-                task.captain,
-                task.captain_signed_up_at,  # type: ignore
-            )
-            if task.captain
-            else None
+        captain = await task.awaitable_attrs.captain
+        captain_required_licence_info = (
+            await task.awaitable_attrs.captain_required_licence_info
         )
-        helpers = [HelperTaskHelperDto.create(helper) for helper in task.helpers]
 
         return HelperTaskDto(
             entity=task,
             id=task.id,
-            category=HelperTaskCategoryDto.create(task.category),
+            category=await HelperTaskCategoryDto.create(
+                await task.awaitable_attrs.category
+            ),
             title=task.title,
             short_description=task.short_description,
             long_description=long_description,
-            contact=MemberPublicInfoDto.create(task.contact),
+            contact=await MemberPublicInfoDto.create(
+                await task.awaitable_attrs.contact
+            ),
             starts_at=task.starts_at,
             ends_at=task.ends_at,
             deadline=task.deadline,
             urgent=task.urgent,
-            captain_required_licence_info=LicenceInfoDto.create(
-                task.captain_required_licence_info
+            captain_required_licence_info=await LicenceInfoDto.create(
+                captain_required_licence_info
             )
-            if task.captain_required_licence_info
+            if captain_required_licence_info
             else None,
             helper_min_count=task.helper_min_count,
             helper_max_count=task.helper_max_count,
             published=task.published,
-            captain=captain,
-            helpers=helpers,
+            captain=(
+                await HelperTaskHelperDto.create_from_member_entity(
+                    # Either both or none are present
+                    captain,
+                    task.captain_signed_up_at,  # type: ignore
+                )
+                if task.captain
+                else None
+            ),
+            helpers=[
+                await HelperTaskHelperDto.create(helper)
+                for helper in await task.awaitable_attrs.helpers
+            ],
         )
 
 
@@ -120,7 +131,7 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
     category_id: int
     title: str
     short_description: str
-    long_description: Optional[str] = Field(html=True)
+    long_description: Optional[str] = Field(json_schema_extra={"html": True})
     contact_id: int
     starts_at: Optional[datetime]
     ends_at: Optional[datetime]
@@ -131,32 +142,31 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
     helper_max_count: int
     published: bool
 
-    @validator("title", "short_description")
+    @field_validator("title", "short_description")
+    @classmethod
     def check_not_blank(cls, value: str) -> str:
         if not value.strip():
             raise ValueError("Field must not be blank")
         return value
 
-    @root_validator
-    def check_timing(cls, values: dict) -> dict:
-        starts_at: Optional[datetime] = values.get("starts_at")
-        ends_at: Optional[datetime] = values.get("ends_at")
-        deadline: Optional[datetime] = values.get("deadline")
-
-        valid_shift = starts_at and ends_at and not deadline and starts_at < ends_at
-        valid_deadline = not starts_at and not ends_at and deadline
+    @model_validator(mode="after")
+    def check_timing(self) -> "HelperTaskMutationRequestDto":
+        valid_shift = (
+            self.starts_at
+            and self.ends_at
+            and not self.deadline
+            and self.starts_at < self.ends_at
+        )
+        valid_deadline = not self.starts_at and not self.ends_at and self.deadline
 
         if valid_shift or valid_deadline:
-            return values
+            return self
         raise ValueError("Invalid timing")
 
-    @root_validator
-    def check_helper_min_max_count(cls, values: dict) -> dict:
-        helper_min_count: int = values.get("helper_min_count")  # type: ignore
-        helper_max_count: int = values.get("helper_max_count")  # type: ignore
-
-        if 0 <= helper_min_count <= helper_max_count:
-            return values
+    @model_validator(mode="after")
+    def check_helper_min_max_count(self) -> "HelperTaskMutationRequestDto":
+        if 0 <= self.helper_min_count <= self.helper_max_count:
+            return self
         raise ValueError("Invalid minimum/maximum helper count")
 
 
@@ -169,27 +179,27 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
     signed_up_at: datetime
 
     @staticmethod
-    def create(
+    async def create(
         helper: HelperTaskHelperEntity,
     ) -> "HelperTaskHelperDto":
         return HelperTaskHelperDto(
             entity=None,
-            member=MemberPublicInfoDto.create(helper.member),
+            member=await MemberPublicInfoDto.create(helper.member),
             signed_up_at=helper.signed_up_at,
         )
 
     @staticmethod
-    def create_from_member_entity(
+    async def create_from_member_entity(
         member: MemberEntity, signed_up_at: datetime
     ) -> "HelperTaskHelperDto":
         return HelperTaskHelperDto(
             entity=None,
-            member=MemberPublicInfoDto.create(member),
+            member=await MemberPublicInfoDto.create(member),
             signed_up_at=signed_up_at,
         )
 
 
-HelperTaskCategoryDto.update_forward_refs()
-HelperTaskDto.update_forward_refs()
-HelperTaskMutationRequestDto.update_forward_refs()
-HelperTaskHelperDto.update_forward_refs()
+HelperTaskCategoryDto.model_rebuild()
+HelperTaskDto.model_rebuild()
+HelperTaskMutationRequestDto.model_rebuild()
+HelperTaskHelperDto.model_rebuild()

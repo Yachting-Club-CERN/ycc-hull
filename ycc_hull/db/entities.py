@@ -1,3 +1,4 @@
+# pylint: disable=unsubscriptable-object
 """
 Handwritten Database entities containing only the relevant tables.
 
@@ -44,12 +45,13 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     text,
 )
+from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from ycc_hull.utils import short_type_name
 
 
-class BaseEntity(DeclarativeBase):
+class BaseEntity(AsyncAttrs, DeclarativeBase):
     """
     Base class for DB entities.
     """
@@ -171,7 +173,7 @@ class FeeRecordEntity(BaseEntity):
     )
     # Nullable in DB, but filled by a trigger
     # Code-only primary key, not in DB; autoincrement=True added for SQLite (de-facto unique in Oracle & managed by a trigger)
-    paymentid: Mapped[Optional[int]] = mapped_column(
+    paymentid: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True
     )
 

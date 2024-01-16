@@ -5,7 +5,7 @@ import json
 from collections.abc import Sequence
 from datetime import date, datetime
 from os import path
-from typing import Any, NamedTuple, Optional
+from typing import Any
 
 from faker import Faker
 
@@ -40,25 +40,7 @@ from test_data.utils.members import (
     get_members_without_licence,
     get_members_without_payment_current_year,
 )
-from ycc_hull.db.entities import (
-    BaseEntity,
-    EntranceFeeRecordEntity,
-    FeeRecordEntity,
-    LicenceEntity,
-    MemberEntity,
-    UserEntity,
-)
-
-MemberInfo = NamedTuple(
-    "MemberInfo",
-    [
-        ("member", MemberEntity),
-        ("user", UserEntity),
-        ("entrance_fee_record", Optional[EntranceFeeRecordEntity]),
-        ("fee_records", list[FeeRecordEntity]),
-        ("licences", list[LicenceEntity]),
-    ],
-)
+from ycc_hull.db.entities import BaseEntity
 
 faker: Faker = Faker()
 Faker.seed(2021)

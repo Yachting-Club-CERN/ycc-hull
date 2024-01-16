@@ -14,7 +14,7 @@ class LicencesController(BaseController):
     """
 
     async def find_all_licence_infos(self) -> Sequence[LicenceDetailedInfoDto]:
-        return self.database_context.query_all(
+        return await self.database_context.query_all(
             select(LicenceInfoEntity).order_by(LicenceInfoEntity.nlicence),
-            LicenceDetailedInfoDto.create,
+            async_transformer=LicenceDetailedInfoDto.create,
         )

@@ -1,6 +1,8 @@
 """
 Playground.
 """
+import asyncio
+
 from sqlalchemy import ScalarResult, func, select
 from sqlalchemy.orm import joinedload
 from ycc_hull.config import CONFIG
@@ -21,10 +23,10 @@ def _username(member: MemberEntity) -> str:
     return member.user.logon_id if member.user else f"<No user for ID {member.id}>"
 
 
-def dump_members_and_fees() -> None:
-    with database_context.create_session() as session:
-        members: ScalarResult[MemberEntity] = session.scalars(
-            select(MemberEntity).order_by(MemberEntity.id)
+async def dump_members_and_fees() -> None:
+    async with database_context.async_session() as session:
+        members: ScalarResult[MemberEntity] = (
+            await session.scalars(select(MemberEntity).order_by(MemberEntity.id))
         ).unique()
 
         for member in members:
@@ -33,40 +35,42 @@ def dump_members_and_fees() -> None:
             print(f"> {_username(member)}")
             print(">")
             print()
-            dto = MemberSensitiveInfoDto.create(member)
+            dto = await MemberSensitiveInfoDto.create(member)
             print(f"xx = {dto}")
 
+            entrance_fee_record = await member.awaitable_attrs.entrance_fee_record
             print(
-                member.entrance_fee_record.dict()
-                if member.entrance_fee_record
+                entrance_fee_record.dict()
+                if entrance_fee_record
                 else "<No entrance fee>"
             )
             print()
 
-            for fee_record in member.fee_records:
+            for fee_record in await member.awaitable_attrs.fee_records:
                 print(fee_record.dict())
             print()
             print()
 
 
-def dump_members_and_licences() -> None:
-    with database_context.create_session() as session:
+async def dump_members_and_licences() -> None:
+    async with database_context.async_session() as session:
         print("=" * 80)
-        members: ScalarResult[MemberEntity] = session.scalars(
-            select(MemberEntity)
-            .options(joinedload(MemberEntity.licences))
-            .order_by(MemberEntity.id)
+        members: ScalarResult[MemberEntity] = (
+            await session.scalars(
+                select(MemberEntity)
+                .options(joinedload(MemberEntity.licences))
+                .order_by(MemberEntity.id)
+            )
         ).unique()
 
         for member in members:
+            licences = await member.awaitable_attrs.licences
             active_licences = [
-                licence.licence_info.nlicence
-                for licence in member.licences
-                if licence.status
+                licence.licence_info.nlicence for licence in licences if licence.status
             ]
             inactive_licences = [
                 licence.licence_info.nlicence
-                for licence in member.licences
+                for licence in licences
                 if not licence.status
             ]
             print(
@@ -74,22 +78,26 @@ def dump_members_and_licences() -> None:
             )
 
 
-def dump_helper_tasks() -> None:
+async def dump_helper_tasks() -> None:
     print(
-        f"COUNT(HelperTaskCategoryEntity): {database_context.query_count(HelperTaskCategoryEntity)}"
+        f"COUNT(HelperTaskCategoryEntity): {await database_context.query_count(HelperTaskCategoryEntity)}"
     )
-    print(f"COUNT(HelperTaskEntity): {database_context.query_count(HelperTaskEntity)}")
     print(
-        f"COUNT(HelperTaskHelperEntity): {database_context.query_count(HelperTaskHelperEntity)}"
+        f"COUNT(HelperTaskEntity): {await database_context.query_count(HelperTaskEntity)}"
+    )
+    print(
+        f"COUNT(HelperTaskHelperEntity): {await database_context.query_count(HelperTaskHelperEntity)}"
     )
 
-    with database_context.create_session() as session:
-        helper_tasks: ScalarResult[HelperTaskEntity] = session.scalars(
-            select(HelperTaskEntity)
-            .options(joinedload(HelperTaskEntity.category))
-            .order_by(
-                func.coalesce(  # pylint: disable=not-callable
-                    HelperTaskEntity.starts_at, HelperTaskEntity.deadline
+    async with database_context.async_session() as session:
+        helper_tasks: ScalarResult[HelperTaskEntity] = (
+            await session.scalars(
+                select(HelperTaskEntity)
+                .options(joinedload(HelperTaskEntity.category))
+                .order_by(
+                    func.coalesce(  # pylint: disable=not-callable
+                        HelperTaskEntity.starts_at, HelperTaskEntity.deadline
+                    )
                 )
             )
         ).unique()
@@ -102,10 +110,11 @@ def dump_helper_tasks() -> None:
                 f">   Timing: {helper_task.starts_at} / {helper_task.ends_at} / {helper_task.deadline}"
             )
 
-            if helper_task.captain_required_licence_info:
-                print(
-                    f">   Required licence: {helper_task.captain_required_licence_info.nlicence}"
-                )
+            captain_required_licence_info = (
+                await helper_task.awaitable_attrs.captain_required_licence_info
+            )
+            if captain_required_licence_info:
+                print(f">   Required licence: {captain_required_licence_info.nlicence}")
             print(
                 f">   Helpers needed: {helper_task.helper_min_count} - {helper_task.helper_max_count}"
             )
@@ -118,28 +127,32 @@ def dump_helper_tasks() -> None:
             print()
 
             print("Helpers:")
-            for helper in helper_task.helpers:
+            for helper in await helper_task.awaitable_attrs.helpers:
                 print(f"- {_username(helper.member)} / {helper.signed_up_at}")
 
             print()
             print()
 
 
-def run() -> None:
-    dump_members_and_fees()
+async def run() -> None:
+    await dump_members_and_fees()
 
     print("=" * 80)
     print("=" * 80)
     print("=" * 80)
 
-    dump_members_and_licences()
+    await dump_members_and_licences()
 
     print("=" * 80)
     print("=" * 80)
     print("=" * 80)
 
-    dump_helper_tasks()
+    await dump_helper_tasks()
+
+
+def main() -> None:
+    asyncio.run(run())
 
 
 if __name__ == "__main__":
-    run()
+    main()

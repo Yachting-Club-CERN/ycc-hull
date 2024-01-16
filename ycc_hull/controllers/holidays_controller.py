@@ -16,6 +16,7 @@ class HolidaysController(BaseController):
     """
 
     async def find_all(self) -> Sequence[HolidayDto]:
-        return self.database_context.query_all(
-            select(HolidayEntity).order_by(HolidayEntity.day), HolidayDto.create
+        return await self.database_context.query_all(
+            select(HolidayEntity).order_by(HolidayEntity.day),
+            async_transformer=HolidayDto.create,
         )

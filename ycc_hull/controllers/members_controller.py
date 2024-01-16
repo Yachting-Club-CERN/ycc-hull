@@ -46,18 +46,19 @@ class MembersController(BaseController):
                 .distinct()
             )
 
-        return self.database_context.query_all(
+        return await self.database_context.query_all(
             query.order_by(MemberEntity.name, MemberEntity.firstname),
-            MemberPublicInfoDto.create,
+            async_transformer=MemberPublicInfoDto.create,
         )
 
     async def find_all_membership_types(self) -> Sequence[MembershipTypeDto]:
-        return self.database_context.query_all(
+        return await self.database_context.query_all(
             select(MembershipTypeEntity).order_by(MembershipTypeEntity.e_desc),
-            MembershipTypeDto.create,
+            async_transformer=MembershipTypeDto.create,
         )
 
     async def find_all_users(self) -> Sequence[UserDto]:
-        return self.database_context.query_all(
-            select(UserEntity).order_by(UserEntity.logon_id), UserDto.create
+        return await self.database_context.query_all(
+            select(UserEntity).order_by(UserEntity.logon_id),
+            async_transformer=UserDto.create,
         )

@@ -6,7 +6,7 @@ from datetime import date, datetime
 
 import aiofiles
 from sqlalchemy import delete
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from test_data.generator_config import (
     BOATS_JSON_FILE,
     ENTRANCE_FEE_RECORDS_JSON_FILE,
@@ -49,7 +49,7 @@ class _TestDataImporter:
     Test data importer. Able to import data from exported and generated files.
     """
 
-    def __init__(self, session: Session):
+    def __init__(self, session: AsyncSession):
         self._session = session
 
     async def import_exported(
@@ -57,7 +57,7 @@ class _TestDataImporter:
     ) -> list:
         async with aiofiles.open(file_path, "r", encoding="utf-8") as file:
             data = json.loads(await file.read())
-            return self._import(
+            return await self._import(
                 cls, data["results"][0]["items"], commit_on_each=commit_on_each
             )
 
@@ -66,14 +66,14 @@ class _TestDataImporter:
     ) -> list:
         async with aiofiles.open(file_path, "r", encoding="utf-8") as file:
             data = json.loads(await file.read())
-            return self._import(cls, data, commit_on_each=commit_on_each)
+            return await self._import(cls, data, commit_on_each=commit_on_each)
 
-    def _import(self, cls: type, entries: list, commit_on_each: bool) -> list:
+    async def _import(self, cls: type, entries: list, commit_on_each: bool) -> list:
         for entry in entries:
             entry = self._prepare(entry)
             self._session.add(cls(**entry))
             if commit_on_each:
-                self._session.commit()
+                await self._session.commit()
         return entries
 
     def _prepare(self, entry: dict) -> dict:
@@ -100,7 +100,7 @@ class TestDataController(BaseController):
     async def populate(self) -> list[str]:
         log: list[str] = []
 
-        with self.database_context.create_session() as session:
+        async with self.database_context.async_session() as session:
             importer = _TestDataImporter(session=session)
 
             log.extend(await self._populate_holidays(session, importer))
@@ -108,7 +108,7 @@ class TestDataController(BaseController):
             log.extend(await self._populate_boats(session, importer))
             log.extend(await self._populate_licences(session, importer))
 
-            session.commit()
+            await session.commit()
             log.append("Commit")
 
             log.extend(await self._populate_helpers(session, importer))
@@ -116,11 +116,11 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_holidays(
-        self, session: Session, importer: _TestDataImporter
+        self, session: AsyncSession, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
-        if self.database_context.query_count(HolidayEntity, session=session):
+        if await self.database_context.query_count(HolidayEntity, session=session):
             log.append("Skipping holidays")
         else:
             entries = await importer.import_generated(HOLIDAYS_JSON_FILE, HolidayEntity)
@@ -129,11 +129,13 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_members(
-        self, session: Session, importer: _TestDataImporter
+        self, session: AsyncSession, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
-        if self.database_context.query_count(MembershipTypeEntity, session=session):
+        if await self.database_context.query_count(
+            MembershipTypeEntity, session=session
+        ):
             log.append("Skipping membership types")
         else:
             entries = await importer.import_exported(
@@ -142,7 +144,7 @@ class TestDataController(BaseController):
 
             log.extend(f"Add membership type {entry['mb_name']}" for entry in entries)
 
-        if self.database_context.query_count(MemberEntity, session=session):
+        if await self.database_context.query_count(MemberEntity, session=session):
             log.append("Skipping members and related entities")
         else:
             entries = await importer.import_generated(
@@ -164,11 +166,11 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_boats(
-        self, session: Session, importer: _TestDataImporter
+        self, session: AsyncSession, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
-        if self.database_context.query_count(BoatEntity, session=session):
+        if await self.database_context.query_count(BoatEntity, session=session):
             log.append("Skipping boats")
         else:
             entries = await importer.import_generated(BOATS_JSON_FILE, BoatEntity)
@@ -177,11 +179,11 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_licences(
-        self, session: Session, importer: _TestDataImporter
+        self, session: AsyncSession, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
-        if self.database_context.query_count(LicenceInfoEntity, session=session):
+        if await self.database_context.query_count(LicenceInfoEntity, session=session):
             log.append("Skipping licence infos")
         else:
             entries = await importer.import_exported(
@@ -189,7 +191,7 @@ class TestDataController(BaseController):
             )
             log.append(f"Add {len(entries)} licence infos")
 
-        if self.database_context.query_count(LicenceEntity, session=session):
+        if await self.database_context.query_count(LicenceEntity, session=session):
             log.append("Skipping licences")
         else:
             entries = await importer.import_generated(LICENCES_JSON_FILE, LicenceEntity)
@@ -198,11 +200,11 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_helpers(
-        self, session: Session, importer: _TestDataImporter
+        self, session: AsyncSession, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
-        if self.database_context.query_count(
+        if await self.database_context.query_count(
             HelpersAppPermissionEntity, session=session
         ):
             log.append("Skipping helpers app permissions")
@@ -212,7 +214,9 @@ class TestDataController(BaseController):
             )
             log.append(f"Add {len(entries)} helpers app permissions")
 
-        if self.database_context.query_count(HelperTaskCategoryEntity, session=session):
+        if await self.database_context.query_count(
+            HelperTaskCategoryEntity, session=session
+        ):
             log.append("Skipping helper task categories")
         else:
             entries = await importer.import_generated(
@@ -220,7 +224,7 @@ class TestDataController(BaseController):
             )
             log.append(f"Add {len(entries)} helper task categories")
 
-        if self.database_context.query_count(HelperTaskEntity, session=session):
+        if await self.database_context.query_count(HelperTaskEntity, session=session):
             log.append("Skipping helper tasks")
         else:
             entries = await importer.import_generated(
@@ -228,10 +232,12 @@ class TestDataController(BaseController):
             )
             log.append(f"Add {len(entries)} helper tasks")
 
-        session.commit()
+        await session.commit()
         log.append("Commit")
 
-        if self.database_context.query_count(HelperTaskHelperEntity, session=session):
+        if await self.database_context.query_count(
+            HelperTaskHelperEntity, session=session
+        ):
             log.append("Skipping helper task helpers")
         else:
             entries = await importer.import_generated(
@@ -241,7 +247,7 @@ class TestDataController(BaseController):
             )
             log.append(f"Add {len(entries)} helper task helpers (COMMIT on each)")
 
-        session.commit()
+        await session.commit()
         log.append("Commit")
 
         return log
@@ -280,12 +286,12 @@ class TestDataController(BaseController):
                 f"Some entity classes are not handled: {unhandled_class_names}"
             )
 
-        with self.database_context.create_session() as session:
+        async with self.database_context.async_session() as session:
             for cls in classes:
                 log.append(f"Deleting {short_type_name(cls)} entities")
-                session.execute(delete(cls))
+                await session.execute(delete(cls))
 
-            session.commit()
+            await session.commit()
             log.append("Commit")
 
         return log

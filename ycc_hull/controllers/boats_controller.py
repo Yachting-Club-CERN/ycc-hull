@@ -14,6 +14,7 @@ class BoatsController(BaseController):
     """
 
     async def find_all(self) -> Sequence[BoatDto]:
-        return self.database_context.query_all(
-            select(BoatEntity).order_by(BoatEntity.table_pos), BoatDto.create
+        return await self.database_context.query_all(
+            select(BoatEntity).order_by(BoatEntity.table_pos),
+            async_transformer=BoatDto.create,
         )

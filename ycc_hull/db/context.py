@@ -1,12 +1,16 @@
 """
 Database context.
 """
-from typing import Any, Optional, TypeVar
+from typing import Any, Awaitable, Optional, TypeVar
 from collections.abc import Callable, Sequence
 
-from sqlalchemy import Select, create_engine, func, select
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
+from sqlalchemy import Select, func, select
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    create_async_engine,
+    AsyncSession,
+    async_sessionmaker,
+)
 
 from ycc_hull.config import CONFIG, Environment
 
@@ -19,17 +23,17 @@ class DatabaseContext:
     """
 
     def __init__(self, database_url: str, echo: Optional[bool] = None) -> None:
-        self._engine: Engine = create_engine(database_url, echo=echo)
+        self._engine: AsyncEngine = create_async_engine(database_url, echo=echo)
+        self.async_session = async_sessionmaker(self._engine)
 
-    def create_session(self) -> Session:
-        return Session(self._engine)
-
-    def query_all(
+    async def query_all(  # pylint: disable=too-many-arguments
         self,
         statement: Select,
+        *,
         transformer: Optional[Callable[[Any], T]] = None,
+        async_transformer: Optional[Callable[[Any], Awaitable[T]]] = None,
         unique: bool = False,
-        session: Optional[Session] = None,
+        session: Optional[AsyncSession] = None,
     ) -> Sequence[T]:
         """
         Queries all results for the specified statement from the database.
@@ -41,24 +45,33 @@ class DatabaseContext:
         Returns:
             Sequence[T]: _description_
         """
-        transformer_to_use = transformer or (lambda x: x)
-        session_to_use = session or self.create_session()
+        if transformer and async_transformer:
+            raise AssertionError(
+                "Only one of transformer and async_transformer can be specified"
+            )
+        session_to_use = session or self.async_session()
 
         try:
-            result = session_to_use.scalars(statement)
+            result = await session_to_use.scalars(statement)
             if unique:
                 result = result.unique()
 
-            return [transformer_to_use(row) for row in result]
+            if transformer:
+                return [transformer(row) for row in result]
+            if async_transformer:
+                return [await async_transformer(row) for row in result]
+            return result.all()
         finally:
             if not session:
-                session_to_use.close()
+                await session_to_use.close()
 
-    def query_count(self, entity_class: type, session: Optional[Session] = None) -> int:
-        session_to_use = session or self.create_session()
+    async def query_count(
+        self, entity_class: type, *, session: Optional[AsyncSession] = None
+    ) -> int:
+        session_to_use = session or self.async_session()
 
         try:
-            result = session_to_use.scalar(
+            result = await session_to_use.scalar(
                 select(func.count()).select_from(  # pylint: disable=not-callable
                     entity_class
                 )
@@ -68,7 +81,7 @@ class DatabaseContext:
             return result
         finally:
             if not session:
-                session_to_use.close()
+                await session_to_use.close()
 
 
 class _DatabaseContextHolder:
