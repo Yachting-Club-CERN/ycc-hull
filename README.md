@@ -4,7 +4,7 @@ YCC backend service.
 
 ## Prerequisites
 
-- Install Python 3.9
+- Install Python 3.11
 - Install Poetry & [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
   - `pipx install poetry && pipx inject poetry poetry-plugin-up`
 - Optionally install Docker & Docker Compose if you want to run the full stack locally
@@ -81,7 +81,7 @@ You can regenerate entities using the following commands:
 
 ```sh
 cd generated_entities
-poetry install
+poetry install --no-root
 poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile entities_generated.py
 ```
 

@@ -5,7 +5,7 @@ description = "YCC Hull Backend Service"
 authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = "~3.9"
+python = "~3.11"
 # General
 aiofiles = "^23.2.1"
 lxml = "^5.1.0"

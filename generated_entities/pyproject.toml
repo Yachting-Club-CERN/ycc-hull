@@ -5,7 +5,7 @@ description = "YCC Hull Backend Service - Generated Entities"
 authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = "~3.9"
+python = "~3.11"
 # oracledb is not supported yet with SQLAlchemy 1.x
 cx-Oracle = "^8.3.0"
 SQLAlchemy = "^1.4.51"
