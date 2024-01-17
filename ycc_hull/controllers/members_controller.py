@@ -2,7 +2,6 @@
 Members controller.
 """
 from collections.abc import Sequence
-from typing import Optional
 
 from sqlalchemy import and_, or_, select
 from ycc_hull.controllers.base_controller import BaseController
@@ -27,7 +26,7 @@ class MembersController(BaseController):
 
     async def find_all_public_infos(
         self,
-        year: Optional[int] = None,
+        year: int | None = None,
     ) -> Sequence[MemberPublicInfoDto]:
         query = select(MemberEntity)
 

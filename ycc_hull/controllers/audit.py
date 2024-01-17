@@ -3,7 +3,7 @@ Audit log. Persisted in the DB.
 """
 import json
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -36,7 +36,7 @@ def _to_pretty_json(obj: Any) -> str:
 
 
 def create_audit_entry(
-    user: User, description: str, data: Optional[dict] = None
+    user: User, description: str, data: dict | None = None
 ) -> AuditLogEntryEntity:
     return AuditLogEntryEntity(
         application=_APPLICATION,

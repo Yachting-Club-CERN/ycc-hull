@@ -3,7 +3,6 @@ Helpers API DTO classes.
 """
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Optional
 
 from pydantic import Field, field_validator, model_validator
 
@@ -28,7 +27,7 @@ class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntit
     id: int
     title: str
     short_description: str
-    long_description: Optional[str] = Field(json_schema_extra={"html": True})
+    long_description: str | None = Field(json_schema_extra={"html": True})
 
     @staticmethod
     async def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
@@ -50,18 +49,18 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     category: HelperTaskCategoryDto
     title: str
     short_description: str
-    long_description: Optional[str] = Field(json_schema_extra={"html": True})
+    long_description: str | None = Field(json_schema_extra={"html": True})
     contact: MemberPublicInfoDto
-    starts_at: Optional[datetime]
-    ends_at: Optional[datetime]
-    deadline: Optional[datetime]
+    starts_at: datetime | None
+    ends_at: datetime | None
+    deadline: datetime | None
     urgent: bool
-    captain_required_licence_info: Optional[LicenceInfoDto]
+    captain_required_licence_info: LicenceInfoDto | None
     helper_min_count: int
     helper_max_count: int
     published: bool
 
-    captain: Optional["HelperTaskHelperDto"]
+    captain: "HelperTaskHelperDto | None"
     helpers: Sequence["HelperTaskHelperDto"]
 
     @classmethod
@@ -76,7 +75,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     @staticmethod
     async def _create(
-        task: HelperTaskEntity, long_description: Optional[str]
+        task: HelperTaskEntity, long_description: str | None
     ) -> "HelperTaskDto":
         captain = await task.awaitable_attrs.captain
         captain_required_licence_info = (
@@ -131,13 +130,13 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
     category_id: int
     title: str
     short_description: str
-    long_description: Optional[str] = Field(json_schema_extra={"html": True})
+    long_description: str | None = Field(json_schema_extra={"html": True})
     contact_id: int
-    starts_at: Optional[datetime]
-    ends_at: Optional[datetime]
-    deadline: Optional[datetime]
+    starts_at: datetime | None
+    ends_at: datetime | None
+    deadline: datetime | None
     urgent: bool
-    captain_required_licence_info_id: Optional[int]
+    captain_required_licence_info_id: int | None
     helper_min_count: int
     helper_max_count: int
     published: bool

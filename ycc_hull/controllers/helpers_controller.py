@@ -3,7 +3,6 @@ Helpers controller.
 """
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Optional
 
 from sqlalchemy import func, select
 from sqlalchemy.exc import DatabaseError
@@ -41,17 +40,17 @@ class HelpersController(BaseController):
         )
 
     async def find_all_tasks(
-        self, published: Optional[bool] = None
+        self, published: bool | None = None
     ) -> Sequence[HelperTaskDto]:
         return await self._find_tasks(None, published)
 
     async def find_task_by_id(
-        self, task_id: int, published: Optional[bool] = None
-    ) -> Optional[HelperTaskDto]:
+        self, task_id: int, published: bool | None = None
+    ) -> HelperTaskDto | None:
         return await self._find_task_by_id(task_id, published)
 
     async def get_task_by_id(
-        self, task_id: int, published: Optional[bool] = None
+        self, task_id: int, published: bool | None = None
     ) -> HelperTaskDto:
         task = await self.find_task_by_id(task_id, published)
         if task:
@@ -207,9 +206,9 @@ class HelpersController(BaseController):
 
     async def _find_tasks(
         self,
-        task_id: Optional[int],
-        published: Optional[bool],
-        session: Optional[AsyncSession] = None,
+        task_id: int | None,
+        published: bool | None,
+        session: AsyncSession | None = None,
     ) -> Sequence[HelperTaskDto]:
         query = select(HelperTaskEntity)
 
@@ -244,17 +243,17 @@ class HelpersController(BaseController):
     async def _find_task_by_id(
         self,
         task_id: int,
-        published: Optional[bool],
-        session: Optional[AsyncSession] = None,
-    ) -> Optional[HelperTaskDto]:
+        published: bool | None,
+        session: AsyncSession | None = None,
+    ) -> HelperTaskDto | None:
         tasks = await self._find_tasks(task_id, published, session=session)
         return tasks[0] if tasks else None
 
     async def _get_task_by_id(
         self,
         task_id: int,
-        published: Optional[bool] = None,
-        session: Optional[AsyncSession] = None,
+        published: bool | None = None,
+        session: AsyncSession | None = None,
     ) -> HelperTaskDto:
         task = await self._find_task_by_id(task_id, published, session=session)
         if task:

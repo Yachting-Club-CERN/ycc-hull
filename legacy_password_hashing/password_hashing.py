@@ -6,7 +6,6 @@ import logging
 import re
 import struct
 from re import Match, Pattern
-from typing import Optional
 
 from passlib.handlers.pbkdf2 import ldap_pbkdf2_sha1
 from passlib.utils.handlers import PrefixWrapper
@@ -72,9 +71,7 @@ def _hash_to_perl(python_hash: str) -> str:
         raise ValueError(_ERROR_HASH_NOT_STRING)
 
     # . => +: from LDAP BASE64 format
-    match: Optional[Match] = _PYTHON_HASH_FORMAT_RE.search(
-        python_hash.replace(".", "+")
-    )
+    match: Match | None = _PYTHON_HASH_FORMAT_RE.search(python_hash.replace(".", "+"))
     if not match:
         _logger.debug("The Python hash seems invalid: %s", python_hash)
         raise ValueError("The Python hash seems invalid")
@@ -90,7 +87,7 @@ def _hash_to_python(perl_hash: str) -> str:
         raise ValueError(_ERROR_HASH_NOT_STRING)
 
     # . => +: from LDAP BASE64 format
-    match: Optional[Match] = _PERL_HASH_FORMAT_RE.search(perl_hash.replace("+", "."))
+    match: Match | None = _PERL_HASH_FORMAT_RE.search(perl_hash.replace("+", "."))
     if not match:
         _logger.debug("The Perl hash seems invalid: %s", perl_hash)
         raise ValueError("The Perl hash seems invalid")

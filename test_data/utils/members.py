@@ -3,7 +3,7 @@ Test data generator component for members & fees.
 """
 from collections.abc import Iterator
 from datetime import date, datetime, timedelta
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 from faker import Faker
 
@@ -26,7 +26,7 @@ MemberInfo = NamedTuple(
     [
         ("member", MemberEntity),
         ("user", UserEntity),
-        ("entrance_fee_record", Optional[EntranceFeeRecordEntity]),
+        ("entrance_fee_record", EntranceFeeRecordEntity | None),
         ("fee_records", list[FeeRecordEntity]),
         ("licences", list[LicenceEntity]),
     ],
@@ -131,7 +131,7 @@ def _generate_member(faker: Faker, member_id: int) -> MemberEntity:
 
 def _generate_phone_number(
     faker: Faker, member_id: int, truth_probability: int
-) -> Optional[str]:
+) -> str | None:
     return (
         _fake_phone_number(faker)
         if member_id == 2 or faker.pybool(truth_probability=truth_probability)
@@ -188,8 +188,8 @@ def _generate_user(faker: Faker, member: MemberEntity) -> UserEntity:
 def _generate_member_entrance_fee_record(
     faker: Faker,
     member: MemberEntity,
-) -> Optional[EntranceFeeRecordEntity]:
-    financial_year: Optional[int] = (
+) -> EntranceFeeRecordEntity | None:
+    financial_year: int | None = (
         int(member.member_entrance) if faker.pybool(truth_probability=90) else None
     )
     return (
@@ -243,7 +243,7 @@ def _create_fee_record(
     )
 
 
-def _generate_paid_mode(faker: Faker) -> Optional[str]:
+def _generate_paid_mode(faker: Faker) -> str | None:
     if faker.pybool(truth_probability=80):
         return "UBS"
     if faker.pybool(truth_probability=50):

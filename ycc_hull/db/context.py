@@ -1,7 +1,7 @@
 """
 Database context.
 """
-from typing import Any, Awaitable, Optional, TypeVar
+from typing import Any, Awaitable, TypeVar
 from collections.abc import Callable, Sequence
 
 from sqlalchemy import Select, func, select
@@ -22,7 +22,7 @@ class DatabaseContext:
     Database context.
     """
 
-    def __init__(self, database_url: str, echo: Optional[bool] = None) -> None:
+    def __init__(self, database_url: str, echo: bool | None = None) -> None:
         self._engine: AsyncEngine = create_async_engine(database_url, echo=echo)
         self.async_session = async_sessionmaker(self._engine)
 
@@ -30,20 +30,23 @@ class DatabaseContext:
         self,
         statement: Select,
         *,
-        transformer: Optional[Callable[[Any], T]] = None,
-        async_transformer: Optional[Callable[[Any], Awaitable[T]]] = None,
+        transformer: Callable[[Any], T] | None = None,
+        async_transformer: Callable[[Any], Awaitable[T]] | None = None,
         unique: bool = False,
-        session: Optional[AsyncSession] = None,
+        session: AsyncSession | None = None,
     ) -> Sequence[T]:
         """
-        Queries all results for the specified statement from the database.
+        Queries all results for the specified SELECT statement from the database.
 
         Args:
             statement (Select): a SELECT query
             transformer (Callable[[Any], T], optional): Entity transformer (e.g., DTO factory). Defaults to None.
+            async_transformer (Callable[[Any], Awaitable[T]], optional): Async entity transformer (e.g., DTO factory). Defaults to None.
+            unique (bool, optional): Whether to return only unique results. Defaults to False.
+            session (AsyncSession, optional): Database session to use. Defaults to None, which will make this function use a new session.
 
         Returns:
-            Sequence[T]: _description_
+            Sequence[T]: Query results
         """
         if transformer and async_transformer:
             raise AssertionError(
@@ -66,8 +69,18 @@ class DatabaseContext:
                 await session_to_use.close()
 
     async def query_count(
-        self, entity_class: type, *, session: Optional[AsyncSession] = None
+        self, entity_class: type, *, session: AsyncSession | None = None
     ) -> int:
+        """
+        Queries the count for the specified entity class.
+
+        Args:
+            entity_class (type): Entity class
+            session (AsyncSession, optional): Database session to use. Defaults to None, which will make this function use a new session.
+
+        Returns:
+            int: Entity count
+        """
         session_to_use = session or self.async_session()
 
         try:
@@ -90,7 +103,7 @@ class _DatabaseContextHolder:
     """
 
     def __init__(self) -> None:
-        self._context: Optional[DatabaseContext] = None
+        self._context: DatabaseContext | None = None
 
     @property
     def context(self) -> DatabaseContext:

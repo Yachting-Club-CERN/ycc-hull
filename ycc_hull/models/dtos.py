@@ -2,7 +2,6 @@
 General API DTO classes.
 """
 from datetime import date
-from typing import Optional
 
 from ycc_hull.db.entities import (
     BoatEntity,
@@ -110,10 +109,10 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
     username: str
     first_name: str
     last_name: str
-    email: Optional[str]
-    mobile_phone: Optional[str]
-    home_phone: Optional[str]
-    work_phone: Optional[str]
+    email: str | None
+    mobile_phone: str | None
+    home_phone: str | None
+    work_phone: str | None
 
     @staticmethod
     async def create(
@@ -159,7 +158,7 @@ class MembershipTypeDto(CamelisedBaseModelWithEntity[MembershipTypeEntity]):
     name: str
     description_en: str
     description_fr: str
-    comments: Optional[str]
+    comments: str | None
 
     @staticmethod
     async def create(

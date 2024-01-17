@@ -84,7 +84,7 @@ if CONFIG.local:
     app.include_router(api_test_data)
 
 
-def start() -> None:
+async def start() -> None:
     """
     Application entry point.
     """
@@ -92,9 +92,7 @@ def start() -> None:
 
     # Poke the DB, or fail early if the connection is wrong.
     print("[init] Testing DB connection...")
-    membership_types = asyncio.get_event_loop().run_until_complete(
-        MembersController().find_all_membership_types()
-    )
+    membership_types = await MembersController().find_all_membership_types()
 
     print("[init] DB connection successful, membership types: ", membership_types)
 
@@ -111,6 +109,10 @@ def start() -> None:
     )
 
 
-if __name__ == "__main__":
+def main() -> None:
     print("[init] main...")
-    start()
+    asyncio.run(start())
+
+
+if __name__ == "__main__":
+    main()
