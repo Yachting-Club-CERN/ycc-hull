@@ -84,21 +84,26 @@ if CONFIG.local:
     app.include_router(api_test_data)
 
 
-async def start() -> None:
-    """
-    Application entry point.
-    """
-    print("[init] start() ...")
-
+async def check_database_connection() -> None:
     # Poke the DB, or fail early if the connection is wrong.
     print("[init] Testing DB connection...")
     membership_types = await MembersController().find_all_membership_types()
 
     print("[init] DB connection successful, membership types: ", membership_types)
 
+
+
+def main() -> None:
+    """
+    Application entry point.
+    """
+    print("[init] main()...")
+    asyncio.run(check_database_connection())
+
     if not os.path.exists("log"):
         os.makedirs("log")
 
+    # This must be in a sync function
     uvicorn.run(
         "ycc_hull.main:app",
         host="0.0.0.0",
@@ -107,11 +112,6 @@ async def start() -> None:
         log_level="debug",
         log_config=LOGGING_CONFIG_FILE,
     )
-
-
-def main() -> None:
-    print("[init] main...")
-    asyncio.run(start())
 
 
 if __name__ == "__main__":
