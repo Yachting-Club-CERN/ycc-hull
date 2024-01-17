@@ -1,7 +1,7 @@
 """
 Base model.
 """
-from typing import Generic, Optional, TypeVar
+from typing import Generic, TypeVar
 
 from humps import camelize
 from lxml import etree
@@ -29,7 +29,7 @@ class CamelisedBaseModel(BaseModel):
     # We are fighting XSS attacks here, so we need to sanitise all HTML input/output.
     # If you want to mark a field as HTML, use the following syntax:
     #
-    # long_description: Optional[str] = Field(json_schema_extra={"html": True})
+    # long_description: str | None = Field(json_schema_extra={"html": True})
     #
     # No @classmethod to make it run for subclasses.
     @model_validator(mode="before")
@@ -55,7 +55,7 @@ class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    entity: Optional[EntityT] = Field(exclude=True, default=None)
+    entity: EntityT | None = Field(exclude=True, default=None)
     """The entity associated with this model, if available. This allows to write model-oriented code, but still have access to the underlying entity."""
 
     def get_entity(self) -> EntityT:
@@ -66,7 +66,7 @@ class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
         return self.entity
 
 
-def sanitise_text_input(text: Optional[str]) -> Optional[str]:
+def sanitise_text_input(text: str | None) -> str | None:
     if not text:
         return None
 
@@ -75,7 +75,7 @@ def sanitise_text_input(text: Optional[str]) -> Optional[str]:
     return clean_text if clean_text else None
 
 
-def sanitise_html_input(html: Optional[str]) -> Optional[str]:
+def sanitise_html_input(html: str | None) -> str | None:
     if not html:
         return None
 

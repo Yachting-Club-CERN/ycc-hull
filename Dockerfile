@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION="39"
+ARG PYTHON_VERSION="311"
 
 # Main image
 FROM registry.access.redhat.com/ubi9/python-$PYTHON_VERSION

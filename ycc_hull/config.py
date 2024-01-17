@@ -4,7 +4,6 @@ Application configuration.
 import json
 import os
 from enum import Enum
-from typing import Optional
 
 from pydantic import ConfigDict
 
@@ -44,7 +43,7 @@ class Config(CamelisedBaseModel):
     keycloak_realm: str
     keycloak_client: str
     keycloak_client_secret: str
-    keycloak_swagger_client: Optional[str]
+    keycloak_swagger_client: str | None
     uvicorn_port: int
 
     @property

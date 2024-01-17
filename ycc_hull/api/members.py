@@ -3,7 +3,6 @@ Member API endpoints.
 """
 from collections.abc import Sequence
 from datetime import date
-from typing import Optional
 
 from fastapi import APIRouter, Depends
 from ycc_hull.auth import User, auth
@@ -20,7 +19,7 @@ controller = MembersController()
 
 @api_members.get("/api/v0/members")
 async def members_get(
-    year: Optional[int] = None, user: User = Depends(auth)
+    year: int | None = None, user: User = Depends(auth)
 ) -> Sequence[MemberPublicInfoDto]:
     current_year = date.today().year
 

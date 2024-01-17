@@ -2,7 +2,6 @@
 Helpers API endpoints.
 """
 from collections.abc import Sequence
-from typing import Optional
 
 from fastapi import APIRouter, Depends
 from ycc_hull.api.errors import create_http_exception_403
@@ -19,7 +18,7 @@ api_helpers = APIRouter(dependencies=[Depends(auth)])
 controller = HelpersController()
 
 
-def _published(user: User) -> Optional[bool]:
+def _published(user: User) -> bool | None:
     return None if user.helpers_app_admin_or_editor else True
 
 

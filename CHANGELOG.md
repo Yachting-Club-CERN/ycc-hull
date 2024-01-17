@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependency upgrades (2024-01), notable:
   - Pydantic V2
   - OracleDB adapter 2.0.1 & migrate to full async usage
+- Upgrade to Python 3.11
 
 ## [0.4.0] - 2023-06-26
 
