@@ -99,7 +99,7 @@ class BoatEntity(BaseEntity):
     table_pos: Mapped[int] = mapped_column(Integer, unique=True)
     # NUMBER(3, 0) in DB
     ycc_num: Mapped[int] = mapped_column(Integer, unique=True)
-    # Maintainer and maintainer2 are used for sending e-mails to maintainers, e.g., upon Warning/Out of order log entries
+    # Maintainer and maintainer2 are used for sending emails to maintainers, e.g., upon Warning/Out of order log entries
     maintainer_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("members.id"))
     ext_reg_cat: Mapped[str | None] = mapped_column(VARCHAR(2))
     maintainer_id2: Mapped[int | None] = mapped_column(

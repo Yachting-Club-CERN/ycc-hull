@@ -12,6 +12,6 @@ api_boats = APIRouter(dependencies=[Depends(auth)])
 controller = BoatsController()
 
 
-@api_boats.get("/api/v0/boats")
+@api_boats.get("/api/v1/boats")
 async def boats_get() -> Sequence[BoatDto]:
     return await controller.find_all()

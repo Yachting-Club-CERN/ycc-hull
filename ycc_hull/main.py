@@ -4,6 +4,7 @@ Application entry point.
 import asyncio
 import os
 
+import toml
 import uvicorn
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +27,22 @@ from ycc_hull.controllers.exceptions import (
 )
 from ycc_hull.controllers.members_controller import MembersController
 
+
+def read_version_from_pyproject_toml() -> str:
+    """
+    Reads the version from the pyproject.toml file.
+    """
+    pyproject_toml_file = os.path.realpath(
+        os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
+    )
+    with open(pyproject_toml_file, encoding="utf-8") as file:
+        return toml.load(file)["tool"]["poetry"]["version"]
+
+
 app = FastAPI(
+    title="YCC Hull",
+    description="Federated YCC API. Enjoy! 🐨",
+    version=f"{read_version_from_pyproject_toml()}-{CONFIG.environment.value}",
     docs_url="/docs" if CONFIG.api_docs_enabled else None,
     redoc_url="/redoc" if CONFIG.api_docs_enabled else None,
 )
@@ -90,7 +106,6 @@ async def check_database_connection() -> None:
     membership_types = await MembersController().find_all_membership_types()
 
     print("[init] DB connection successful, membership types: ", membership_types)
-
 
 
 def main() -> None:
