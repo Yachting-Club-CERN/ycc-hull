@@ -12,6 +12,6 @@ api_licences = APIRouter(dependencies=[Depends(auth)])
 controller = LicencesController()
 
 
-@api_licences.get("/api/v0/licence-infos")
+@api_licences.get("/api/v1/licence-infos")
 async def licence_infos_get() -> Sequence[LicenceDetailedInfoDto]:
     return await controller.find_all_licence_infos()
