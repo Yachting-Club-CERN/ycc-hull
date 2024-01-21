@@ -35,7 +35,7 @@ class CamelisedBaseModel(BaseModel):
     # No @classmethod to make it run for subclasses.
     @model_validator(mode="before")
     def sanitise_values(cls, values: dict) -> dict:
-        sanitised_values = {}
+        sanitised_values: dict = {}
 
         # Known fields
         for field_name, field_info in cls.model_fields.items():
@@ -50,7 +50,11 @@ class CamelisedBaseModel(BaseModel):
 
     @classmethod
     def _sanitise_value(
-        cls, key: str, field_info: FieldInfo, values: dict, sanitised_values: dict
+        cls,
+        key: str | None,
+        field_info: FieldInfo,
+        values: dict,
+        sanitised_values: dict,
     ) -> Any:
         if key in values:
             value = values.pop(key)
