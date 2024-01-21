@@ -148,7 +148,7 @@ def sanitise_html_input(html: str | None) -> str | None:
         )
         clean_element = cleaner.clean_html(element)
 
-        # Clean_element could be wrapped in an extra <div> or <p> tag, it's OK
+        # clean_element could be wrapped in an extra <div> or <p> tag, it's OK
         return lxml.etree.tostring(clean_element, encoding="unicode", method="html")
     except Exception as e:
         raise ValueError(f"Failed to sanitise HTML input: {html}") from e
