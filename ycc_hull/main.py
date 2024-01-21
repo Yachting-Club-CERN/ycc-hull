@@ -1,14 +1,17 @@
 """
 Application entry point.
 """
-import asyncio
+import logging
 import os
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 import toml
 import uvicorn
 from fastapi import FastAPI, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exception_handlers import http_exception_handler
+from fastapi.middleware.cors import CORSMiddleware
+
 from ycc_hull.api.boats import api_boats
 from ycc_hull.api.errors import (
     create_http_exception_400,
@@ -26,6 +29,9 @@ from ycc_hull.controllers.exceptions import (
     ControllerNotFoundException,
 )
 from ycc_hull.controllers.members_controller import MembersController
+from ycc_hull.db.context import DatabaseContextHolder
+
+_logger = logging.getLogger(__name__)
 
 
 def read_version_from_pyproject_toml() -> str:
@@ -39,12 +45,27 @@ def read_version_from_pyproject_toml() -> str:
         return toml.load(file)["tool"]["poetry"]["version"]
 
 
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    # Poke the DB, or fail early if the connection is wrong.
+    _logger.info("Startup event received, testing DB connection...")
+    membership_types = await MembersController().find_all_membership_types()
+
+    _logger.info("DB connection successful, membership types: %s", membership_types)
+
+    yield
+
+    _logger.info("Shutdown event received, closing DB connection...")
+    await DatabaseContextHolder.context.close()
+
+
 app = FastAPI(
     title="YCC Hull",
     description="Federated YCC API. Enjoy! 🐨",
     version=f"{read_version_from_pyproject_toml()}-{CONFIG.environment.value}",
     docs_url="/docs" if CONFIG.api_docs_enabled else None,
     redoc_url="/redoc" if CONFIG.api_docs_enabled else None,
+    lifespan=lifespan,
 )
 
 
@@ -100,21 +121,10 @@ if CONFIG.local:
     app.include_router(api_test_data)
 
 
-async def check_database_connection() -> None:
-    # Poke the DB, or fail early if the connection is wrong.
-    print("[init] Testing DB connection...")
-    membership_types = await MembersController().find_all_membership_types()
-
-    print("[init] DB connection successful, membership types: ", membership_types)
-
-
 def main() -> None:
     """
     Application entry point.
     """
-    print("[init] main()...")
-    asyncio.run(check_database_connection())
-
     if not os.path.exists("log"):
         os.makedirs("log")
 
