@@ -16,7 +16,7 @@ python-keycloak = "^3.7.0"
 # REST API
 fastapi = "^0.109.0"
 python-multipart = "^0.0.6"
-uvicorn = { extras = ["standard"], version = "^0.25.0" }
+uvicorn = { extras = ["standard"], version = "^0.26.0" }
 # DB
 oracledb = "^2.0.1"
 SQLAlchemy = { extras = ["asyncio", "mypy"], version = "^2.0.25" }
@@ -24,7 +24,7 @@ SQLAlchemy = { extras = ["asyncio", "mypy"], version = "^2.0.25" }
 [tool.poetry.dev-dependencies]
 aiosqlite = "^0.19.0"
 black = "^23.12.1"
-Faker = "^22.2.0"
+Faker = "^22.4.0"
 flake8 = "^7.0.0"
 httpx = "^0.24.0"
 mypy = "^1.8.0"
