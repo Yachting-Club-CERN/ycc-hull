@@ -96,6 +96,12 @@ class DatabaseContext:
             if not session:
                 await session_to_use.close()
 
+    async def close(self) -> None:
+        """
+        Closes the database context.
+        """
+        await self._engine.dispose()
+
 
 class _DatabaseContextHolder:
     """
