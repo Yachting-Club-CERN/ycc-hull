@@ -213,5 +213,5 @@ def test_sanitise() -> None:
         '<a href="http://example.com">Hyperlinks are OK</a>\n'
         '<img src="images-are-ok.jpg">\n'
         "</p>NO TABLES! NO FORMS!  \n \n \n"
-        "NO HEADS! NO TITLES!\n   \n</div>"
+        "NO HEADS! NO TITLES!\n   </div>"
     )
