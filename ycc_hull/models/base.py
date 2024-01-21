@@ -1,14 +1,15 @@
 """
 Base model.
 """
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from humps import camelize
-from lxml import etree
-from lxml.html import fromstring
-from lxml.html.clean import Cleaner
+import lxml
+import lxml.etree
+import lxml.html
+import lxml.html.clean
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-
+from pydantic.fields import FieldInfo
 from ycc_hull.utils import full_type_name
 
 EntityT = TypeVar("EntityT")
@@ -33,19 +34,41 @@ class CamelisedBaseModel(BaseModel):
     #
     # No @classmethod to make it run for subclasses.
     @model_validator(mode="before")
-    def sanitise_strings(cls, values: dict) -> dict:
+    def sanitise_values(cls, values: dict) -> dict:
+        sanitised_values = {}
+
+        # Known fields
+        for field_name, field_info in cls.model_fields.items():
+            cls._sanitise_value(field_name, field_info, values, sanitised_values)
+            cls._sanitise_value(field_info.alias, field_info, values, sanitised_values)
+
+        # Unknown fields (keep for validation message)
         for key, value in values.items():
-            if isinstance(value, str):
-                field_info = cls.model_fields.get(key)
-                if (
-                    field_info
-                    and field_info.json_schema_extra
-                    and field_info.json_schema_extra.get("html")  # type: ignore
-                ):
-                    values[key] = sanitise_html_input(value)
-                else:
-                    values[key] = sanitise_text_input(value)
-        return values
+            sanitised_values[key] = cls._sanitise_string(None, value)
+
+        return sanitised_values
+
+    @classmethod
+    def _sanitise_value(
+        cls, key: str, field_info: FieldInfo, values: dict, sanitised_values: dict
+    ) -> Any:
+        if key in values:
+            value = values.pop(key)
+            sanitised_values[key] = cls._sanitise_string(field_info, value)
+
+    @staticmethod
+    def _sanitise_string(field_info: FieldInfo | None, value: Any) -> Any:
+        if isinstance(value, str):
+            if (
+                field_info
+                and field_info.json_schema_extra
+                and field_info.json_schema_extra.get("html")  # type: ignore
+            ):
+                return sanitise_html_input(value)
+
+            return sanitise_text_input(value)
+
+        return value
 
 
 class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
@@ -70,43 +93,75 @@ def sanitise_text_input(text: str | None) -> str | None:
     if not text:
         return None
 
-    element = fromstring(text)
-    clean_text = Cleaner().clean_html(element).text_content().strip()
-    return clean_text if clean_text else None
+    try:
+        element = _parse_html(text)
+
+        if element is None:
+            return None
+
+        clean_text = (
+            lxml.html.clean.Cleaner().clean_html(element).text_content().strip()
+        )
+        return clean_text if clean_text else None
+    except Exception as e:
+        raise ValueError(f"Failed to sanitise text input: {text}") from e
 
 
 def sanitise_html_input(html: str | None) -> str | None:
     if not html:
         return None
 
-    cleaner = Cleaner(
-        scripts=True,
-        javascript=True,
-        comments=True,
-        style=True,
-        inline_style=True,
-        links=True,
-        meta=True,
-        page_structure=True,
-        processing_instructions=True,
-        embedded=True,
-        frames=True,
-        forms=True,
-        annoying_tags=True,
-        kill_tags=[
-            "base",
-            "canvas",
-            "embed",
-            "iframe",
-            "object",
-            "svg",
-        ],
-        remove_tags=["table", "tbody", "thead", "tfoot", "tr", "th", "td"],
-        remove_unknown_tags=True,
-    )
+    try:
+        element = _parse_html(html)
 
-    element = fromstring(html)
-    clean_element = cleaner.clean_html(element)
+        if element is None:
+            return None
 
-    # clean_element could be wrapped in an extra <div> or <p> tag, it's OK
-    return etree.tostring(clean_element, encoding="unicode", method="html")
+        cleaner = lxml.html.clean.Cleaner(
+            scripts=True,
+            javascript=True,
+            comments=True,
+            style=True,
+            inline_style=True,
+            links=True,
+            meta=True,
+            page_structure=True,
+            processing_instructions=True,
+            embedded=True,
+            frames=True,
+            forms=True,
+            annoying_tags=True,
+            kill_tags=[
+                "base",
+                "canvas",
+                "embed",
+                "iframe",
+                "object",
+                "svg",
+            ],
+            remove_tags=["table", "tbody", "thead", "tfoot", "tr", "th", "td"],
+            remove_unknown_tags=True,
+        )
+        clean_element = cleaner.clean_html(element)
+
+        # Clean_element could be wrapped in an extra <div> or <p> tag, it's OK
+        return lxml.etree.tostring(clean_element, encoding="unicode", method="html")
+    except Exception as e:
+        raise ValueError(f"Failed to sanitise HTML input: {html}") from e
+
+
+def _parse_html(text: str) -> lxml.html.HtmlElement | None:
+    if not text:
+        return None
+    stripped = text.strip()
+    if not stripped:
+        return None
+
+    try:
+        return lxml.html.fromstring(stripped)
+    except Exception as e:
+        # Detect lxml.etree.ParseError("Document is empty")
+        # (Cannot catch directly)
+        if "Document is empty" in str(e):
+            return None
+        raise ValueError(f"Failed to parse text input: {text}") from e
