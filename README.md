@@ -113,8 +113,24 @@ poetry run pytest --cov=ycc_hull --cov-branch --cov-report=html
 poetry run black .
 poetry run mypy .
 poetry run flake8 .
-poetry run pylint --jobs 0 legacy_password_hashing test_data tests ycc_hull
+poetry run pylint --jobs 0 legacy_password_hashing load_tests test_data tests ycc_hull
 ```
+
+## Load Testing
+
+Load tests are located in `load_tests`. They are written using [Locust](https://locust.io/).
+
+```sh
+# LOCAL
+poetry run locust --locustfile load_tests/load_test_helpers.py --host http://localhost:8000
+
+# DEV
+poetry run locust --locustfile load_tests/load_test_helpers.py --host https://ycc-hull-dev.web.cern.ch
+```
+
+You can use either YCC-DEV or YCC-LOCAL for auth (you can configure it in `load_tests/load_test_config.py`).
+
+For more info about test execution see `poetry run locust --help`.
 
 ### Database Schema Upgrade
 
