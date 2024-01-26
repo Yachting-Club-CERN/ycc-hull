@@ -6,9 +6,7 @@ from datetime import datetime, timedelta
 from locust.clients import HttpSession
 
 from load_tests.load_test_auth_utils import create_auth_header
-from load_tests.load_test_config import (
-    API_BASE_URL,
-)
+from load_tests.load_test_config import API_BASE_URL
 
 
 def get_task_categories(client: HttpSession, access_token: str) -> list[dict]:
@@ -38,7 +36,8 @@ def get_tasks(client: HttpSession, access_token: str) -> list[dict]:
 
 def get_task(client: HttpSession, task_id: int, access_token: str) -> dict:
     response = client.get(
-        f"{API_BASE_URL}/helpers/tasks/{task_id}", headers=create_auth_header(access_token)
+        f"{API_BASE_URL}/helpers/tasks/{task_id}",
+        headers=create_auth_header(access_token),
     )
     assert response.status_code == 200, response
 
