@@ -32,6 +32,10 @@ def get_random_access_token() -> str:
 
 
 class HelpersLoadTest(HttpUser):
+    """
+    Helpers API load test.
+    """
+
     @task
     def list_tasks(self) -> None:
         get_tasks(self.client, get_random_access_token())
@@ -49,6 +53,6 @@ class HelpersLoadTest(HttpUser):
 
     @task
     def create_and_get_task_and_sign_up(self) -> None:
-        task = create_task(self.client, ADMIN_ID, ADMIN_ACCESS_TOKEN)
-        sign_up_as_captain(self.client, task["id"], ADMIN_ACCESS_TOKEN)
-        sign_up_as_helper(self.client, task["id"], OTHER_ACCESS_TOKEN)
+        task_ = create_task(self.client, ADMIN_ID, ADMIN_ACCESS_TOKEN)
+        sign_up_as_captain(self.client, task_["id"], ADMIN_ACCESS_TOKEN)
+        sign_up_as_helper(self.client, task_["id"], OTHER_ACCESS_TOKEN)
