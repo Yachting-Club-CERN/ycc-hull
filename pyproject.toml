@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ycc-hull"
-version = "1.0.0"
+version = "1.1.0"
 description = "YCC Hull Backend Service"
 authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 
