@@ -40,8 +40,7 @@ msg.set_content('Hello world')
 
 msg['Subject'] = 'Test sending emails'
 msg['From'] = "ycc-noreply@cern.ch" #ycc-noreply@cern.ch
-msg['To'] = ####
-
+msg['To'] = "joao@mailinator.com"
 
 
 #with open('tuto4.pdf', 'rb') as content_file:
@@ -50,6 +49,8 @@ msg['To'] = ####
 
 # Send the message via our own SMTP server.
 
-s = smtplib.SMTP('localhost',10022)  
+s = smtplib.SMTP('smtp.gmail.com',587)  
+s.starttls()
+s.login('yccapptest','password')
 s.send_message(msg)
 s.quit()
