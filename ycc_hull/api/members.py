@@ -21,6 +21,7 @@ controller = MembersController()
 async def members_get(
     year: int | None = None, user: User = Depends(auth)
 ) -> Sequence[MemberPublicInfoDto]:
+    _check_can_access_year(year, user)
     current_year = date.today().year
 
     if year != current_year and not (user.admin or user.committee_member):
@@ -28,7 +29,7 @@ async def members_get(
             f"You do not have permission to list members for {year}"
         )
 
-    return await controller.find_all_public_infos(year)
+    return await controller.find_all_public_infos(year=year)
 
 
 @api_members.get("/api/v1/membership-types")
@@ -42,3 +43,12 @@ async def users_get(user: User = Depends(auth)) -> Sequence[UserDto]:
         raise create_http_exception_403("You do not have permission to list users")
 
     return await controller.find_all_users()
+
+
+def _check_can_access_year(year: int | None, user: User) -> None:
+    current_year = date.today().year
+
+    if year != current_year and not (user.admin or user.committee_member):
+        raise create_http_exception_403(
+            f"You do not have permission to view members for {year}"
+        )

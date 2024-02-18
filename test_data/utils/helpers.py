@@ -35,6 +35,21 @@ def generate_helper_tasks() -> list[HelperTaskEntity]:
     # Past: to test that one cannot sign up
     # Present: to test sign up
     return [
+        # Shift in previous year
+        HelperTaskEntity(
+            id=2001,
+            category_id=2,
+            title="Winter Maintenance J80",
+            short_description="Go to BA5 and do something",
+            contact_id=1,
+            starts_at=datetime(CURRENT_YEAR - 1, 1, 4, 15, 0),
+            ends_at=datetime(CURRENT_YEAR - 1, 1, 4, 18, 0),
+            deadline=None,
+            helper_min_count=1,
+            helper_max_count=2,
+            urgent=False,
+            published=True,
+        ),
         # Shift in the past, without captain and helpers
         HelperTaskEntity(
             id=2011,

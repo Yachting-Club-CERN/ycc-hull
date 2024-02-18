@@ -26,6 +26,7 @@ class MembersController(BaseController):
 
     async def find_all_public_infos(
         self,
+        *,
         year: int | None = None,
     ) -> Sequence[MemberPublicInfoDto]:
         query = select(MemberEntity)

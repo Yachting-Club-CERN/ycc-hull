@@ -4,7 +4,7 @@ Helpers API DTO classes.
 from collections.abc import Sequence
 from datetime import datetime
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, computed_field, field_validator, model_validator
 
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
@@ -62,6 +62,16 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     captain: "HelperTaskHelperDto | None"
     helpers: Sequence["HelperTaskHelperDto"]
+
+    @computed_field
+    @property
+    def year(self) -> int:
+        if self.starts_at:
+            return self.starts_at.year
+        if self.ends_at:
+            return self.ends_at.year
+        if self.deadline:
+            return self.deadline.year
 
     @classmethod
     async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
@@ -150,17 +160,24 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
 
     @model_validator(mode="after")
     def check_timing(self) -> "HelperTaskMutationRequestDto":
-        valid_shift = (
-            self.starts_at
-            and self.ends_at
-            and not self.deadline
-            and self.starts_at < self.ends_at
-        )
-        valid_deadline = not self.starts_at and not self.ends_at and self.deadline
+        if (self.starts_at and self.ends_at) or self.deadline:
+            # Either valid shift or valid deadline
+            if self.starts_at and self.ends_at:
+                # Shifts have extra conditions
+                if self.starts_at >= self.ends_at:
+                    raise ValueError(
+                        "Invalid timing: start time must be before end time"
+                    )
+                if self.starts_at.year != self.ends_at.year:
+                    raise ValueError(
+                        "Invalid timing: start and end time must be in the same year"
+                    )
+        else:
+            raise ValueError(
+                "Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+            )
 
-        if valid_shift or valid_deadline:
-            return self
-        raise ValueError("Invalid timing")
+        return self
 
     @model_validator(mode="after")
     def check_helper_min_max_count(self) -> "HelperTaskMutationRequestDto":
