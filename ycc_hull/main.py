@@ -1,6 +1,7 @@
 """
 Application entry point.
 """
+
 import logging
 import os
 from contextlib import asynccontextmanager

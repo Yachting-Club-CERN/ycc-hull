@@ -1,6 +1,7 @@
 """
 Helpers DTO tests.
 """
+
 from datetime import datetime
 
 import pytest
@@ -68,7 +69,10 @@ def test_creation_must_specify_timing() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_all_timing_fields() -> None:
@@ -89,7 +93,10 @@ def test_creation_must_not_specify_all_timing_fields() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_start_with_deadline() -> None:
@@ -110,7 +117,10 @@ def test_creation_must_not_specify_start_with_deadline() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_end_with_deadline() -> None:
@@ -131,7 +141,10 @@ def test_creation_must_not_specify_end_with_deadline() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_start_after_end() -> None:
@@ -152,7 +165,10 @@ def test_creation_must_not_specify_start_after_end() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: start time must be before end time"
+    )
 
 
 def test_creation_must_have_consistent_helper_counts() -> None:

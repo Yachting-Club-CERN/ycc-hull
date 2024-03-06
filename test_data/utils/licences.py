@@ -1,6 +1,7 @@
 """
 Test data generator component for licences.
 """
+
 import json
 
 from faker import Faker

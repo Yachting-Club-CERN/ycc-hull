@@ -1,6 +1,7 @@
 """
 Application configuration.
 """
+
 import json
 import os
 from enum import Enum

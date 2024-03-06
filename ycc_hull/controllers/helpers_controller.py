@@ -1,6 +1,7 @@
 """
 Helpers controller.
 """
+
 from collections.abc import Sequence
 from datetime import datetime
 
@@ -40,14 +41,14 @@ class HelpersController(BaseController):
         )
 
     async def find_all_tasks(
-        self, published: bool | None = None
+        self, *, year: int | None = None, published: bool | None = None
     ) -> Sequence[HelperTaskDto]:
-        return await self._find_tasks(None, published)
+        return await self._find_tasks(year=year, task_id=None, published=published)
 
     async def find_task_by_id(
         self, task_id: int, published: bool | None = None
     ) -> HelperTaskDto | None:
-        return await self._find_task_by_id(task_id, published)
+        return await self._find_task_by_id(task_id, published=published)
 
     async def get_task_by_id(
         self, task_id: int, published: bool | None = None
@@ -60,6 +61,7 @@ class HelpersController(BaseController):
     async def create_task(
         self, task_mutation_request: HelperTaskMutationRequestDto, user: User
     ) -> HelperTaskDto:
+        # Admins/editors have full power (e.g., administer things happened in the past)
         async with self.database_context.async_session() as session:
             try:
                 task_entity = HelperTaskEntity(**task_mutation_request.model_dump())
@@ -77,7 +79,7 @@ class HelpersController(BaseController):
                 return task
             except DatabaseError as exc:
                 raise self._handle_database_error(  # pylint: disable=raising-bad-type
-                    exc, "create task", user, task_mutation_request
+                    exc, what="create task", user=user, data=task_mutation_request
                 )
 
     async def update_task(
@@ -86,6 +88,7 @@ class HelpersController(BaseController):
         task_mutation_request: HelperTaskMutationRequestDto,
         user: User,
     ) -> HelperTaskDto:
+        # Admins/editors have full power (e.g., administer things happened in the past)
         async with self.database_context.async_session() as session:
             old_task = await self._get_task_by_id(task_id, session=session)
 
@@ -151,14 +154,14 @@ class HelpersController(BaseController):
                 return new_task
             except DatabaseError as exc:
                 raise self._handle_database_error(  # pylint: disable=raising-bad-type
-                    exc, "update task", user, task_mutation_request
+                    exc, what="update task", user=user, data=task_mutation_request
                 )
 
     async def sign_up_as_captain(self, task_id: int, user: User) -> None:
         async with self.database_context.async_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            await self._check_can_sign_up(task, user.member_id)
+            await self._check_can_sign_up(task=task, member_id=user.member_id)
             if task.captain:
                 raise ControllerConflictException("Task already has a captain")
 
@@ -188,7 +191,7 @@ class HelpersController(BaseController):
     async def sign_up_as_helper(self, task_id: int, user: User) -> None:
         task = await self.get_task_by_id(task_id, published=True)
 
-        await self._check_can_sign_up(task, user.member_id)
+        await self._check_can_sign_up(task=task, member_id=user.member_id)
         if len(task.helpers) >= task.helper_max_count:
             raise ControllerConflictException("Task helper limit reached")
 
@@ -206,6 +209,8 @@ class HelpersController(BaseController):
 
     async def _find_tasks(
         self,
+        *,
+        year: int | None,
         task_id: int | None,
         published: bool | None,
         session: AsyncSession | None = None,
@@ -219,6 +224,15 @@ class HelpersController(BaseController):
                 defer(HelperTaskEntity.long_description, raiseload=True)
             )
 
+        if year is not None:
+            query = query.where(
+                func.coalesce(  # pylint: disable=not-callable
+                    HelperTaskEntity.starts_at, HelperTaskEntity.deadline
+                ).between(
+                    datetime(year, 1, 1, 0, 0, 0, 0),
+                    datetime(year, 12, 31, 23, 59, 59, 0),
+                )
+            )
         if task_id is not None:
             query = query.where(HelperTaskEntity.id == task_id)
         if published is not None:
@@ -233,9 +247,11 @@ class HelpersController(BaseController):
 
         return await self.database_context.query_all(
             query,
-            async_transformer=HelperTaskDto.create_without_long_description
-            if exclude_long_description
-            else HelperTaskDto.create,
+            async_transformer=(
+                HelperTaskDto.create_without_long_description
+                if exclude_long_description
+                else HelperTaskDto.create
+            ),
             unique=True,
             session=session,
         )
@@ -243,24 +259,30 @@ class HelpersController(BaseController):
     async def _find_task_by_id(
         self,
         task_id: int,
+        *,
         published: bool | None,
         session: AsyncSession | None = None,
     ) -> HelperTaskDto | None:
-        tasks = await self._find_tasks(task_id, published, session=session)
+        tasks = await self._find_tasks(
+            year=None, task_id=task_id, published=published, session=session
+        )
         return tasks[0] if tasks else None
 
     async def _get_task_by_id(
         self,
         task_id: int,
+        *,
         published: bool | None = None,
         session: AsyncSession | None = None,
     ) -> HelperTaskDto:
-        task = await self._find_task_by_id(task_id, published, session=session)
+        task = await self._find_task_by_id(
+            task_id, published=published, session=session
+        )
         if task:
             return task
         raise ControllerNotFoundException("Task not found")
 
-    async def _check_can_sign_up(self, task: HelperTaskDto, member_id: int) -> None:
+    async def _check_can_sign_up(self, *, task: HelperTaskDto, member_id: int) -> None:
         if not task.published:
             raise ControllerConflictException("Cannot sign up to an unpublished task")
 

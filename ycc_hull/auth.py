@@ -1,6 +1,7 @@
 """
 Keycloak authentication components.
 """
+
 import logging
 
 from fastapi import Depends

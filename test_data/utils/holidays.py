@@ -1,6 +1,7 @@
 """
 Test data generator component for holidays.
 """
+
 import json
 from datetime import date, datetime
 

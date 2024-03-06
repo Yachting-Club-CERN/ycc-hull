@@ -1,6 +1,7 @@
 """
 Base model.
 """
+
 from typing import Any, Generic, TypeVar
 
 from humps import camelize

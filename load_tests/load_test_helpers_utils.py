@@ -1,6 +1,7 @@
 """
 Helpers API utilities for load tests.
 """
+
 import random
 from datetime import datetime, timedelta
 from locust.clients import HttpSession

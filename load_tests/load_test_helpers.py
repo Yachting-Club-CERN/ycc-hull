@@ -1,6 +1,7 @@
 """
 Helpers API load tests.
 """
+
 import random
 from locust import HttpUser, task
 
