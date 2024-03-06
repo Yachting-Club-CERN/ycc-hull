@@ -23,13 +23,6 @@ async def members_get(
     year: int, user: User = Depends(auth)
 ) -> Sequence[MemberPublicInfoDto]:
     _check_can_access_year(year, user)
-    current_year = date.today().year
-
-    if year != current_year and not (user.admin or user.committee_member):
-        raise create_http_exception_403(
-            f"You do not have permission to list members for {year}"
-        )
-
     return await controller.find_all_public_infos(year=year)
 
 
