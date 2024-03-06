@@ -1,6 +1,7 @@
 """
 User model.
 """
+
 from pydantic import ConfigDict
 from ycc_hull.models.base import CamelisedBaseModel
 

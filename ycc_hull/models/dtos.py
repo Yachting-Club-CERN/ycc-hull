@@ -1,6 +1,7 @@
 """
 General API DTO classes.
 """
+
 from datetime import date
 
 from ycc_hull.db.entities import (

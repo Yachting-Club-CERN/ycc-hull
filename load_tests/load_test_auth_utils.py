@@ -1,6 +1,7 @@
 """
 Authentication utilities for load tests.
 """
+
 import requests
 
 from load_tests.load_test_config import AUTH_CLIENT_ID, AUTH_REALM, AUTH_URL

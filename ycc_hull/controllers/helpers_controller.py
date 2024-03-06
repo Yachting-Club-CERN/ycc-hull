@@ -1,6 +1,7 @@
 """
 Helpers controller.
 """
+
 from collections.abc import Sequence
 from datetime import datetime
 
@@ -223,16 +224,15 @@ class HelpersController(BaseController):
                 defer(HelperTaskEntity.long_description, raiseload=True)
             )
 
-        # TODO
-        # if year is not None:
-        #     query = query.where(
-        #         func.coalesce(  # pylint: disable=not-callable
-        #             HelperTaskEntity.starts_at, HelperTaskEntity.deadline
-        #         ).between(
-        #             datetime(year, 1, 1, 0, 0, 0, 0),
-        #             datetime(year + 1, 1, 1, 0, 0, 0, 0),
-        #         )
-        #     )
+        if year is not None:
+            query = query.where(
+                func.coalesce(  # pylint: disable=not-callable
+                    HelperTaskEntity.starts_at, HelperTaskEntity.deadline
+                ).between(
+                    datetime(year, 1, 1, 0, 0, 0, 0),
+                    datetime(year, 12, 31, 23, 59, 59, 0),
+                )
+            )
         if task_id is not None:
             query = query.where(HelperTaskEntity.id == task_id)
         if published is not None:
@@ -247,9 +247,11 @@ class HelpersController(BaseController):
 
         return await self.database_context.query_all(
             query,
-            async_transformer=HelperTaskDto.create_without_long_description
-            if exclude_long_description
-            else HelperTaskDto.create,
+            async_transformer=(
+                HelperTaskDto.create_without_long_description
+                if exclude_long_description
+                else HelperTaskDto.create
+            ),
             unique=True,
             session=session,
         )

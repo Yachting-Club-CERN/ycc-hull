@@ -1,6 +1,7 @@
 """
 Load test configuration.
 """
+
 from ycc_hull.config import Environment
 
 AUTH_ENVIRONMENT = Environment.DEVELOPMENT

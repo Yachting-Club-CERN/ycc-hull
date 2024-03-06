@@ -1,6 +1,7 @@
 """
 Test data generator component for members & fees.
 """
+
 from collections.abc import Iterator
 from datetime import date, datetime, timedelta
 from typing import NamedTuple

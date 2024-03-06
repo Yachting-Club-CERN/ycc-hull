@@ -1,6 +1,7 @@
 """
 Playground.
 """
+
 import asyncio
 
 from sqlalchemy import ScalarResult, func, select

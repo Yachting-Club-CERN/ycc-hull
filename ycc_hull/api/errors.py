@@ -1,6 +1,7 @@
 """
 Common API error handling.
 """
+
 from typing import Any
 
 from fastapi import HTTPException

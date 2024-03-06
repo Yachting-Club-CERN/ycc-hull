@@ -1,6 +1,7 @@
 """
 Licence API endpoints.
 """
+
 from collections.abc import Sequence
 from fastapi import APIRouter, Depends
 from ycc_hull.auth import auth

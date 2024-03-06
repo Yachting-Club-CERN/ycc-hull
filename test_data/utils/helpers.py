@@ -1,6 +1,7 @@
 """
 Test data generator component for helpers.
 """
+
 from datetime import datetime
 
 from test_data.generator_config import CURRENT_YEAR

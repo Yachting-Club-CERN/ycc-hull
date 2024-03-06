@@ -1,6 +1,7 @@
 """
 Member API endpoints.
 """
+
 from collections.abc import Sequence
 from datetime import date
 
@@ -19,7 +20,7 @@ controller = MembersController()
 
 @api_members.get("/api/v1/members")
 async def members_get(
-    year: int | None = None, user: User = Depends(auth)
+    year: int, user: User = Depends(auth)
 ) -> Sequence[MemberPublicInfoDto]:
     _check_can_access_year(year, user)
     current_year = date.today().year

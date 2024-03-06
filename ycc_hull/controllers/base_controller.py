@@ -1,6 +1,7 @@
 """
 Base controller.
 """
+
 import logging
 import re
 from abc import ABCMeta

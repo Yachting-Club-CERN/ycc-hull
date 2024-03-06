@@ -1,6 +1,7 @@
 """
 Test data generator component for boats.
 """
+
 import copy
 import json
 from test_data.generator_config import BOATS_EXPORTED_JSON_FILE

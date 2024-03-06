@@ -1,6 +1,7 @@
 """
 Helpers API endpoints.
 """
+
 from collections.abc import Sequence
 from datetime import date
 
@@ -28,17 +29,13 @@ async def helper_task_categories_get() -> Sequence[HelperTaskCategoryDto]:
 async def helper_tasks_get(
     year: int | None = None, user: User = Depends(auth)
 ) -> Sequence[HelperTaskDto]:
-    current_year = date.today().year
-
-    if year != current_year and not (
-        user.admin
-        or user.committee_member
-        or user.helpers_app_admin
-        or user.helpers_app_editor
-    ):
-        raise create_http_exception_403(
-            f"You do not have permission to list members for {year}"
+    if not _can_access_year(year, user):
+        error_message = (
+            f"You do not have permission to list tasks for {year}"
+            if year
+            else "You do not have permission to list all tasks"
         )
+        raise create_http_exception_403(error_message)
 
     return await controller.find_all_tasks(year=year, published=_published(user))
 
@@ -48,7 +45,11 @@ async def helper_tasks_get_by_id(
     task_id: int, user: User = Depends(auth)
 ) -> HelperTaskDto:
     task = await controller.get_task_by_id(task_id, published=_published(user))
-    _check_can_access_year(task.year, user)
+
+    if not _can_access_year(task.year, user):
+        raise create_http_exception_403("You do not have permission to view this task")
+
+    return task
 
 
 @api_helpers.post("/api/v1/helpers/tasks")
@@ -114,15 +115,13 @@ def _published(user: User) -> bool | None:
     return None if user.helpers_app_admin_or_editor else True
 
 
-def _check_can_access_year(year: int | None, user: User) -> None:
+def _can_access_year(year: int | None, user: User) -> bool:
     current_year = date.today().year
 
-    if year != current_year and not (
-        user.admin
+    return (
+        year == current_year
+        or user.admin
         or user.committee_member
         or user.helpers_app_admin
         or user.helpers_app_editor
-    ):
-        raise create_http_exception_403(
-            f"You do not have permission to view tasks for {year}"
-        )
+    )

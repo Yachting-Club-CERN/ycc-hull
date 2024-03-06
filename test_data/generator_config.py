@@ -1,6 +1,7 @@
 """
 Test data generator configuration.
 """
+
 from datetime import date
 from os import path
 
