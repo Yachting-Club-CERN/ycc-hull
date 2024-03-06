@@ -42,7 +42,7 @@ class CamelisedBaseModel(BaseModel):
         for field_name, field_info in cls.model_fields.items():
             cls._sanitise_value(field_name, field_info, values, sanitised_values)
             cls._sanitise_value(field_info.alias, field_info, values, sanitised_values)
- 
+
         # Unknown fields (keep for validation message)
         for key, value in values.items():
             sanitised_values[key] = cls._sanitise_string(None, value)
