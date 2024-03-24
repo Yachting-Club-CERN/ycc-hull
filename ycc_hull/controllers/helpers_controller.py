@@ -356,7 +356,9 @@ class HelpersController(BaseController):
         )
         if task:
             return task
-        raise ControllerNotFoundException("Task not found")
+        raise ControllerNotFoundException(
+            "Task not found or not published" if published else "Task not found"
+        )
 
     async def _get_task_entity_by_id(
         self, task_id: int, *, session: AsyncSession
