@@ -12,8 +12,10 @@ from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.models.helpers_dtos import (
     HelperTaskCategoryDto,
+    HelperTaskMarkAsDoneRequestDto,
     HelperTaskMutationRequestDto,
     HelperTaskDto,
+    HelperTaskValidationRequestDto,
 )
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
@@ -54,27 +56,24 @@ async def helper_tasks_get_by_id(
 
 @api_helpers.post("/api/v1/helpers/tasks")
 async def helper_tasks_create(
-    task_mutation_request: HelperTaskMutationRequestDto, user: User = Depends(auth)
+    request: HelperTaskMutationRequestDto, user: User = Depends(auth)
 ) -> HelperTaskDto:
     if not user.helpers_app_admin and not user.helpers_app_editor:
         raise create_http_exception_403(
             "You do not have permission to create helper tasks"
         )
-    if (
-        not user.helpers_app_admin
-        and task_mutation_request.contact_id != user.member_id
-    ):
+    if not user.helpers_app_admin and request.contact_id != user.member_id:
         raise create_http_exception_403(
             "You have to be the contact for the tasks you create"
         )
 
-    return await controller.create_task(task_mutation_request, user)
+    return await controller.create_task(request, user)
 
 
 @api_helpers.put("/api/v1/helpers/tasks/{task_id}")
 async def helper_tasks_update(
     task_id: int,
-    task_mutation_request: HelperTaskMutationRequestDto,
+    request: HelperTaskMutationRequestDto,
     user: User = Depends(auth),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin and not user.helpers_app_editor:
@@ -85,14 +84,14 @@ async def helper_tasks_update(
     existing_task = await helper_tasks_get_by_id(task_id, user)
 
     if user.helpers_app_editor and (
-        task_mutation_request.contact_id != user.member_id
+        request.contact_id != user.member_id
         or existing_task.contact.id != user.member_id
     ):
         raise create_http_exception_403(
             "You have to be the contact for the tasks you update"
         )
 
-    return await controller.update_task(task_id, task_mutation_request, user)
+    return await controller.update_task(task_id, request, user)
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-captain")
@@ -108,6 +107,39 @@ async def helper_tasks_sign_up_as_helper(
     task_id: int, user: User = Depends(auth)
 ) -> HelperTaskDto:
     await controller.sign_up_as_helper(task_id, user)
+    return await controller.get_task_by_id(task_id, published=True)
+
+
+@api_helpers.post("/api/v1/helpers/tasks/{task_id}/mark-as-done")
+async def helper_tasks_mark_as_done(
+    task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User = Depends(auth)
+) -> HelperTaskDto:
+    if not user.helpers_app_admin:
+        task = await helper_tasks_get_by_id(task_id, user)
+        if not (
+            task.contact.id == user.member_id
+            or (task.captain and task.captain.member.id == user.member_id)
+        ):
+            raise create_http_exception_403(
+                "You do not have permission to mark this task as done"
+            )
+
+    await controller.mark_as_done(task_id, request, user)
+    return await controller.get_task_by_id(task_id, published=True)
+
+
+@api_helpers.post("/api/v1/helpers/tasks/{task_id}/validate")
+async def helper_tasks_validate(
+    task_id: int, request: HelperTaskValidationRequestDto, user: User = Depends(auth)
+) -> HelperTaskDto:
+    if not user.helpers_app_admin:
+        task = await helper_tasks_get_by_id(task_id, user)
+        if task.contact.id != user.member_id:
+            raise create_http_exception_403(
+                "You do not have permission to validate this task"
+            )
+
+    await controller.validate(task_id, request, user)
     return await controller.get_task_by_id(task_id, published=True)
 
 

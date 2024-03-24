@@ -112,7 +112,7 @@ class BoatKeys(Base):
 
 class Buvette(Base):
     __tablename__ = "buvette"
-    __table_args__ = (PrimaryKeyConstraint("res_id", name="sys_c009274"),)
+    __table_args__ = (PrimaryKeyConstraint("res_id", name="sys_c0011474"),)
 
     res_id = Column(NUMBER(asdecimal=False), primary_key=True)
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
@@ -124,7 +124,7 @@ class Buvette(Base):
 
 class Countries(Base):
     __tablename__ = "countries"
-    __table_args__ = (PrimaryKeyConstraint("country_code", name="sys_c009250"),)
+    __table_args__ = (PrimaryKeyConstraint("country_code", name="sys_c0011450"),)
 
     country_name = Column(VARCHAR(50), nullable=False)
     country_code = Column(VARCHAR(2), primary_key=True)
@@ -156,7 +156,7 @@ class DbEdits(Base):
 
 class DeletedMemberApps(Base):
     __tablename__ = "deleted_member_apps"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009443"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c0011643"),)
 
     id = Column(NUMBER(asdecimal=False), primary_key=True)
     name = Column(VARCHAR(25), nullable=False)
@@ -165,7 +165,7 @@ class DeletedMemberApps(Base):
 
 class Departments(Base):
     __tablename__ = "departments"
-    __table_args__ = (PrimaryKeyConstraint("dep_id", name="sys_c009380"),)
+    __table_args__ = (PrimaryKeyConstraint("dep_id", name="sys_c0011580"),)
 
     dep_id = Column(NUMBER(10, 0, False), primary_key=True)
     dep_name = Column(VARCHAR(50))
@@ -176,7 +176,7 @@ class Departments(Base):
 class EmailQueueTable(Base):
     __tablename__ = "email_queue_table"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c009304"),
+        PrimaryKeyConstraint("id", name="sys_c0011504"),
         Index("i_email_queue_table_status", "status"),
     )
 
@@ -192,7 +192,7 @@ class EmailQueueTable(Base):
 
 class EmailTemplates(Base):
     __tablename__ = "email_templates"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009275"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c0011475"),)
 
     id = Column(NUMBER(4, 0, False), primary_key=True)
     body = Column(VARCHAR(4000))
@@ -286,7 +286,7 @@ t_holidays = Table(
 class ImportantDates(Base):
     __tablename__ = "important_dates"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c009390"),
+        PrimaryKeyConstraint("id", name="sys_c0011590"),
         Index("important_dates_uq", "what", unique=True),
     )
 
@@ -297,7 +297,7 @@ class ImportantDates(Base):
 
 class ImportantValues(Base):
     __tablename__ = "important_values"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009223"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c0011423"),)
 
     id = Column(NUMBER(10, 0, False), primary_key=True)
     what = Column(VARCHAR(50), nullable=False)
@@ -326,7 +326,7 @@ class Infolicences(Base):
 
 class InterestLevels(Base):
     __tablename__ = "interest_levels"
-    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c009417"),)
+    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c0011617"),)
 
     interest_level = Column(NUMBER(1, 0, False), primary_key=True)
     description = Column(VARCHAR(100))
@@ -335,7 +335,7 @@ class InterestLevels(Base):
 class Lottery(Base):
     __tablename__ = "lottery"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c009450"),
+        PrimaryKeyConstraint("id", name="sys_c0011650"),
         Index("lottery_uq", "year", "member_id", unique=True),
     )
 
@@ -350,7 +350,7 @@ class Lottery(Base):
 
 class LotteryPlaces(Base):
     __tablename__ = "lottery_places"
-    __table_args__ = (PrimaryKeyConstraint("key", name="sys_c009426"),)
+    __table_args__ = (PrimaryKeyConstraint("key", name="sys_c0011626"),)
 
     key = Column(VARCHAR(2), primary_key=True)
     places = Column(NUMBER(asdecimal=False))
@@ -359,7 +359,7 @@ class LotteryPlaces(Base):
 class LotteryResults(Base):
     __tablename__ = "lottery_results"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c009317"),
+        PrimaryKeyConstraint("id", name="sys_c0011517"),
         Index("lottery_results_uq1", "member_id", "year", unique=True),
         Index("lottery_results_uq2", "drawn_seq", "year", unique=True),
     )
@@ -629,6 +629,16 @@ class Members(Base):
     helper_tasks_ = relationship(
         "HelperTasks", foreign_keys="[HelperTasks.contact_id]", back_populates="contact"
     )
+    helper_tasks1 = relationship(
+        "HelperTasks",
+        foreign_keys="[HelperTasks.marked_as_done_by_id]",
+        back_populates="marked_as_done_by",
+    )
+    helper_tasks2 = relationship(
+        "HelperTasks",
+        foreign_keys="[HelperTasks.validated_by_id]",
+        back_populates="validated_by",
+    )
     keys = relationship("Keys", back_populates="member")
     licences = relationship("Licences", back_populates="member")
     helper_task_helpers = relationship("HelperTaskHelpers", back_populates="member")
@@ -896,7 +906,7 @@ t_r_members = Table(
 
 class RegattaSeriesExt(Base):
     __tablename__ = "regatta_series_ext"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009334"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c0011534"),)
 
     id = Column(NUMBER(asdecimal=False), primary_key=True)
     name = Column(VARCHAR(50), nullable=False)
@@ -911,7 +921,7 @@ class RegattaSeriesExt(Base):
 class RegattasExt(Base):
     __tablename__ = "regattas_ext"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c009282"),
+        PrimaryKeyConstraint("id", name="sys_c0011482"),
         Index("regattas_ext_date_from", "date_from"),
     )
 
@@ -977,7 +987,7 @@ t_t_members_obsolete = Table(
 
 class Teachers(Base):
     __tablename__ = "teachers"
-    __table_args__ = (PrimaryKeyConstraint("teacher_id", name="sys_c009375"),)
+    __table_args__ = (PrimaryKeyConstraint("teacher_id", name="sys_c0011575"),)
 
     member_id = Column(NUMBER(asdecimal=False), nullable=False)
     license = Column(VARCHAR(5), nullable=False)
@@ -1015,7 +1025,7 @@ t_tempmembers_lastemtry2005_obs = Table(
 
 class Tests(Base):
     __tablename__ = "tests"
-    __table_args__ = (PrimaryKeyConstraint("test_id", name="sys_c009264"),)
+    __table_args__ = (PrimaryKeyConstraint("test_id", name="sys_c0011464"),)
 
     test_id = Column(NUMBER(asdecimal=False), primary_key=True)
     test_type = Column(VARCHAR(5), nullable=False)
@@ -1043,7 +1053,7 @@ t_userlist = Table(
     metadata,
     Column("username", VARCHAR(8)),
     Column("password", VARCHAR(10)),
-    Index("sys_c009356", "username", unique=True),
+    Index("sys_c0011556", "username", unique=True),
 )
 
 
@@ -1088,11 +1098,11 @@ t_ba5assign_obsolete = Table(
 class Boats(Base):
     __tablename__ = "boats"
     __table_args__ = (
-        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c009479"),
-        PrimaryKeyConstraint("boat_id", name="sys_c009369"),
-        Index("sys_c009370", "name", unique=True),
-        Index("sys_c009371", "ycc_num", unique=True),
-        Index("sys_c009372", "table_pos", unique=True),
+        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c0011679"),
+        PrimaryKeyConstraint("boat_id", name="sys_c0011569"),
+        Index("sys_c0011570", "name", unique=True),
+        Index("sys_c0011571", "ycc_num", unique=True),
+        Index("sys_c0011572", "table_pos", unique=True),
     )
 
     boat_id = Column(NUMBER(3, 0, False), primary_key=True)
@@ -1155,7 +1165,7 @@ class Committee(Base):
     __table_args__ = (
         ForeignKeyConstraint(["member_id"], ["members.id"], name="committee_member_fk"),
         PrimaryKeyConstraint("member_id", "cyear", name="committee_pk"),
-        Index("sys_c009425", "commid", unique=True),
+        Index("sys_c0011625", "commid", unique=True),
     )
 
     member_id = Column(NUMBER(asdecimal=False), primary_key=True, nullable=False)
@@ -1188,8 +1198,8 @@ class CoursesObs(Base):
 class Employees(Base):
     __tablename__ = "employees"
     __table_args__ = (
-        ForeignKeyConstraint(["dep_id"], ["departments.dep_id"], name="sys_c009484"),
-        PrimaryKeyConstraint("emp_id", name="sys_c009412"),
+        ForeignKeyConstraint(["dep_id"], ["departments.dep_id"], name="sys_c0011684"),
+        PrimaryKeyConstraint("emp_id", name="sys_c0011612"),
     )
 
     emp_id = Column(NUMBER(10, 0, False), primary_key=True)
@@ -1230,6 +1240,22 @@ class HelperTasks(Base):
             " ( starts_at IS NOT NULL AND ends_at IS NOT NULL AND deadline IS     NULL and starts_at < ends_at )\n             OR ( starts_at IS     NULL AND ends_at IS     NULL AND deadline IS NOT NULL                         ) ",
             name="helper_tasks_check_timing",
         ),
+        CheckConstraint(
+            " (marked_as_done_at IS     NULL AND marked_as_done_by_id IS     NULL)\n             OR (marked_as_done_at IS NOT NULL AND marked_as_done_by_id IS NOT NULL) ",
+            name="helper_tasks_check_marked_as_done_fields",
+        ),
+        CheckConstraint(
+            " (marked_as_done_at IS     NULL AND marked_as_done_by_id IS     NULL)\n             OR (marked_as_done_at IS NOT NULL AND marked_as_done_by_id IS NOT NULL) ",
+            name="helper_tasks_check_marked_as_done_fields",
+        ),
+        CheckConstraint(
+            " (validated_at IS     NULL AND validated_by_id IS     NULL)\n             OR (validated_at IS NOT NULL AND validated_by_id IS NOT NULL) ",
+            name="helper_tasks_check_validated_fields",
+        ),
+        CheckConstraint(
+            " (validated_at IS     NULL AND validated_by_id IS     NULL)\n             OR (validated_at IS NOT NULL AND validated_by_id IS NOT NULL) ",
+            name="helper_tasks_check_validated_fields",
+        ),
         ForeignKeyConstraint(
             ["captain_id"], ["members.id"], name="helper_tasks_captain_fk"
         ),
@@ -1245,6 +1271,14 @@ class HelperTasks(Base):
         ),
         ForeignKeyConstraint(
             ["contact_id"], ["members.id"], name="helper_tasks_contact_fk"
+        ),
+        ForeignKeyConstraint(
+            ["marked_as_done_by_id"],
+            ["members.id"],
+            name="helper_tasks_marked_as_done_by_fk",
+        ),
+        ForeignKeyConstraint(
+            ["validated_by_id"], ["members.id"], name="helper_tasks_validated_by_fk"
         ),
         PrimaryKeyConstraint("id", name="helper_tasks_pk"),
     )
@@ -1278,6 +1312,12 @@ class HelperTasks(Base):
     captain_required_licence_info_id = Column(NUMBER(asdecimal=False))
     captain_id = Column(NUMBER(asdecimal=False))
     captain_signed_up_at = Column(DateTime)
+    marked_as_done_at = Column(DateTime)
+    marked_as_done_by_id = Column(NUMBER(asdecimal=False))
+    marked_as_done_comment = Column(Text)
+    validated_at = Column(DateTime)
+    validated_by_id = Column(NUMBER(asdecimal=False))
+    validation_comment = Column(Text)
 
     captain = relationship(
         "Members", foreign_keys=[captain_id], back_populates="helper_tasks"
@@ -1288,6 +1328,12 @@ class HelperTasks(Base):
     category = relationship("HelperTaskCategories", back_populates="helper_tasks")
     contact = relationship(
         "Members", foreign_keys=[contact_id], back_populates="helper_tasks_"
+    )
+    marked_as_done_by = relationship(
+        "Members", foreign_keys=[marked_as_done_by_id], back_populates="helper_tasks1"
+    )
+    validated_by = relationship(
+        "Members", foreign_keys=[validated_by_id], back_populates="helper_tasks2"
     )
     helper_task_helpers = relationship("HelperTaskHelpers", back_populates="task")
 
@@ -1308,7 +1354,7 @@ class HelpersAppPermissions(Members):
 class Keys(Base):
     __tablename__ = "keys"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009485"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c0011685"),
         PrimaryKeyConstraint("key_id", "member_id", "kyear", name="keys_pk"),
     )
 
@@ -1322,7 +1368,7 @@ class Keys(Base):
 class Licences(Base):
     __tablename__ = "licences"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009487"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c0011687"),
         PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
     )
 
@@ -1345,7 +1391,7 @@ t_regatta_profiles = Table(
     Column("licence", VARCHAR(10)),
     Column("club", VARCHAR(25)),
     Column("experience", VARCHAR(1000), nullable=False),
-    ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009494"),
+    ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c0011694"),
     Index("ref_prof_mem_id", "member_id"),
 )
 
@@ -1353,11 +1399,11 @@ t_regatta_profiles = Table(
 class RegattasInSeries(Base):
     __tablename__ = "regattas_in_series"
     __table_args__ = (
-        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c009488"),
+        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c0011688"),
         ForeignKeyConstraint(
-            ["series_id"], ["regatta_series_ext.id"], name="sys_c009489"
+            ["series_id"], ["regatta_series_ext.id"], name="sys_c0011689"
         ),
-        PrimaryKeyConstraint("regatta_in_series_id", name="sys_c009338"),
+        PrimaryKeyConstraint("regatta_in_series_id", name="sys_c0011538"),
         Index("regattas_in_series_uq", "regatta_id", "series_id", unique=True),
     )
 
@@ -1372,9 +1418,9 @@ class RegattasInSeries(Base):
 class WebLogon(Members):
     __tablename__ = "web_logon"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009497"),
-        PrimaryKeyConstraint("member_id", name="sys_c009446"),
-        Index("sys_c009447", "logon_id", unique=True),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c0011697"),
+        PrimaryKeyConstraint("member_id", name="sys_c0011646"),
+        Index("sys_c0011647", "logon_id", unique=True),
     )
 
     member_id = Column(NUMBER(asdecimal=False), primary_key=True)
@@ -1411,8 +1457,8 @@ class HelperTaskHelpers(Base):
 class Keyslog(Base):
     __tablename__ = "keyslog"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009486"),
-        PrimaryKeyConstraint("keyslog_id", name="sys_c009388"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c0011686"),
+        PrimaryKeyConstraint("keyslog_id", name="sys_c0011588"),
     )
 
     keyslog_id = Column(NUMBER(asdecimal=False), primary_key=True)
@@ -1430,12 +1476,12 @@ class RegattaParticipation(Base):
     __tablename__ = "regatta_participation"
     __table_args__ = (
         ForeignKeyConstraint(
-            ["assigned_boat_id"], ["boats.boat_id"], name="sys_c009490"
+            ["assigned_boat_id"], ["boats.boat_id"], name="sys_c0011690"
         ),
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009493"),
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009491"),
-        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c009492"),
-        PrimaryKeyConstraint("id", name="sys_c009237"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c0011693"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c0011691"),
+        ForeignKeyConstraint(["regatta_id"], ["regattas_ext.id"], name="sys_c0011692"),
+        PrimaryKeyConstraint("id", name="sys_c0011437"),
         Index("reg_part_mem_id", "member_id"),
         Index("reg_part_reg_id", "regatta_id"),
         Index("regatta_particip_uq", "member_id", "regatta_id", unique=True),
@@ -1466,8 +1512,8 @@ class RegattaParticipation(Base):
 class Reservations(Base):
     __tablename__ = "reservations"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009495"),
-        PrimaryKeyConstraint("res_id", name="sys_c009434"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c0011695"),
+        PrimaryKeyConstraint("res_id", name="sys_c0011634"),
     )
 
     res_id = Column(NUMBER(asdecimal=False), primary_key=True)
@@ -1494,16 +1540,16 @@ t_status = Table(
     Column("s_end", DateTime),
     Column("status", NUMBER(1, 0, False), nullable=False),
     Column("modified", DateTime, nullable=False),
-    ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009496"),
+    ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c0011696"),
 )
 
 
 class Ycclog(Base):
     __tablename__ = "ycclog"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009498"),
-        ForeignKeyConstraint(["owner_id"], ["members.id"], name="sys_c009499"),
-        PrimaryKeyConstraint("modified", name="sys_c009465"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c0011698"),
+        ForeignKeyConstraint(["owner_id"], ["members.id"], name="sys_c0011699"),
+        PrimaryKeyConstraint("modified", name="sys_c0011665"),
     )
 
     boat_id = Column(NUMBER(3, 0, False), nullable=False)

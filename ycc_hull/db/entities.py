@@ -234,6 +234,16 @@ class HelperTaskEntity(BaseEntity):
     published: Mapped[bool] = mapped_column(Integer)
     captain_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("members.id"))
     captain_signed_up_at: Mapped[datetime | None] = mapped_column(DateTime)
+    marked_as_done_at: Mapped[datetime | None] = mapped_column(DateTime)
+    marked_as_done_by_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("members.id")
+    )
+    marked_as_done_comment: Mapped[str | None] = mapped_column(CLOB)
+    validated_at: Mapped[datetime | None] = mapped_column(DateTime)
+    validated_by_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("members.id")
+    )
+    validation_comment: Mapped[str | None] = mapped_column(CLOB)
 
     category: Mapped["HelperTaskCategoryEntity"] = relationship(
         back_populates="tasks", lazy="joined"
@@ -251,6 +261,16 @@ class HelperTaskEntity(BaseEntity):
     )
     helpers: Mapped[list["HelperTaskHelperEntity"]] = relationship(
         back_populates="helper_task", lazy="joined"
+    )
+    marked_as_done_by: Mapped["MemberEntity | None"] = relationship(
+        foreign_keys=marked_as_done_by_id,
+        # No back_populates needed here
+        lazy="joined",
+    )
+    validated_by: Mapped["MemberEntity | None"] = relationship(
+        foreign_keys=validated_by_id,
+        # No back_populates needed here
+        lazy="joined",
     )
 
 

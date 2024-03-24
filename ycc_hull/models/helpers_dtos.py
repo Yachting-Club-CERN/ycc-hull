@@ -64,6 +64,13 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     captain: "HelperTaskHelperDto | None"
     helpers: Sequence["HelperTaskHelperDto"]
 
+    marked_as_done_at: datetime | None
+    marked_as_done_by: MemberPublicInfoDto | None
+    marked_as_done_comment: str | None
+    validated_at: datetime | None
+    validated_by: MemberPublicInfoDto | None
+    validation_comment: str | None
+
     @property
     def year(self) -> int:
         if self.starts_at:
@@ -92,6 +99,8 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
         captain_required_licence_info = (
             await task.awaitable_attrs.captain_required_licence_info
         )
+        marked_as_done_by = await task.awaitable_attrs.marked_as_done_by
+        validated_by = await task.awaitable_attrs.validated_by
 
         return HelperTaskDto(
             entity=task,
@@ -130,6 +139,18 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
                 await HelperTaskHelperDto.create(helper)
                 for helper in await task.awaitable_attrs.helpers
             ],
+            marked_as_done_at=task.marked_as_done_at,
+            marked_as_done_by=(
+                await MemberPublicInfoDto.create(marked_as_done_by)
+                if marked_as_done_by
+                else None
+            ),
+            marked_as_done_comment=task.marked_as_done_comment,
+            validated_at=task.validated_at,
+            validated_by=(
+                await MemberPublicInfoDto.create(validated_by) if validated_by else None
+            ),
+            validation_comment=task.validation_comment,
         )
 
 
@@ -184,6 +205,28 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
         if 0 <= self.helper_min_count <= self.helper_max_count:
             return self
         raise ValueError("Invalid minimum/maximum helper count")
+
+
+class HelperTaskMarkAsDoneRequestDto(CamelisedBaseModel):
+    """
+    Mark as done request DTO for helper task.
+    """
+
+    comment: str | None
+
+
+class HelperTaskValidationRequestDto(CamelisedBaseModel):
+    """
+    Validation request DTO for helper task.
+    """
+
+    helpers_to_validate: list["HelperTaskHelperDto"] = Field(
+        description="List of helpers to validate"
+    )
+    helpers_to_remove: list["HelperTaskHelperDto"] = Field(
+        description="List of helpers to remove (e.g., no show)"
+    )
+    comment: str | None
 
 
 class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):

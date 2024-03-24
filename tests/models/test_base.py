@@ -1,6 +1,7 @@
 """
 Base DTO tests.
 """
+
 import pytest
 
 from ycc_hull.models.base import sanitise_html_input, sanitise_text_input
