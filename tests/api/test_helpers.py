@@ -72,6 +72,12 @@ audit_keys = set(
         "published",
         "captain",
         "helpers",
+        "markedAsDoneAt",
+        "markedAsDoneBy",
+        "markedAsDoneComment",
+        "validatedAt",
+        "validatedBy",
+        "validationComment",
     ]
 )
 
