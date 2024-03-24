@@ -83,17 +83,31 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     @classmethod
     async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
-        return await cls._create(task, await task.awaitable_attrs.long_description)
+        return await cls._create(
+            task,
+            long_description=await task.awaitable_attrs.long_description,
+            marked_as_done_comment=await task.awaitable_attrs.marked_as_done_comment,
+            validation_comment=await task.awaitable_attrs.validation_comment,
+        )
 
     @classmethod
-    async def create_without_long_description(
+    async def create_without_large_fields(
         cls, task: HelperTaskEntity
     ) -> "HelperTaskDto":
-        return await cls._create(task, None)
+        return await cls._create(
+            task,
+            long_description=None,
+            marked_as_done_comment=None,
+            validation_comment=None,
+        )
 
     @staticmethod
     async def _create(
-        task: HelperTaskEntity, long_description: str | None
+        task: HelperTaskEntity,
+        *,
+        long_description: str | None,
+        marked_as_done_comment: str | None = None,
+        validation_comment: str | None = None,
     ) -> "HelperTaskDto":
         captain = await task.awaitable_attrs.captain
         captain_required_licence_info = (
@@ -145,12 +159,12 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
                 if marked_as_done_by
                 else None
             ),
-            marked_as_done_comment=task.marked_as_done_comment,
+            marked_as_done_comment=marked_as_done_comment,
             validated_at=task.validated_at,
             validated_by=(
                 await MemberPublicInfoDto.create(validated_by) if validated_by else None
             ),
-            validation_comment=task.validation_comment,
+            validation_comment=validation_comment,
         )
 
 

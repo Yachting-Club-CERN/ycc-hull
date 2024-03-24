@@ -291,11 +291,13 @@ class HelpersController(BaseController):
     ) -> Sequence[HelperTaskDto]:
         query = select(HelperTaskEntity)
 
-        exclude_long_description: bool = task_id is None
+        exclude_large_fields: bool = task_id is None
 
-        if exclude_long_description:
+        if exclude_large_fields:
             query = query.options(
-                defer(HelperTaskEntity.long_description, raiseload=True)
+                defer(HelperTaskEntity.long_description, raiseload=True),
+                defer(HelperTaskEntity.marked_as_done_comment, raiseload=True),
+                defer(HelperTaskEntity.validation_comment, raiseload=True),
             )
 
         if year is not None:
@@ -322,8 +324,8 @@ class HelpersController(BaseController):
         return await self.database_context.query_all(
             query,
             async_transformer=(
-                HelperTaskDto.create_without_long_description
-                if exclude_long_description
+                HelperTaskDto.create_without_large_fields
+                if exclude_large_fields
                 else HelperTaskDto.create
             ),
             unique=True,
