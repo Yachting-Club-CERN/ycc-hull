@@ -106,8 +106,8 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
         task: HelperTaskEntity,
         *,
         long_description: str | None,
-        marked_as_done_comment: str | None = None,
-        validation_comment: str | None = None,
+        marked_as_done_comment: str | None,
+        validation_comment: str | None,
     ) -> "HelperTaskDto":
         captain = await task.awaitable_attrs.captain
         captain_required_licence_info = (
