@@ -1,107 +1,57 @@
-#print("Hello world")
+def send_task_confirmation(task, member):
 
-#ycc-noreply@cern.ch
+    task_title = task.title
+    task_start_date = task.starts_at
+    task_end_date = task.ends_at
+    task_deadline = task.deadline
+    task_short_description = task.short_description
+    task_long_description = task.long_description
+    
+    member_firstname = member.firstname
+    member_name = member.name
+    member_email = member.email
 
-import smtpd
-import asyncore
 
-class CustomSMTPServer(smtpd.SMTPServer):
-    def process_message(self, peer, mailfrom, rcpttos, data):
-        print(f"Receiving message from: {mailfrom}")
-        print(f"Recipients: {rcpttos}")
-        print(f"Message length: {len(data)}")
-        print(f"Message data:\n{data}\n")
+    import smtplib
+    from email.message import EmailMessage
+    from email.utils import make_msgid
 
-if __name__ == '_main_':
-    smtp_server = CustomSMTPServer(('127.0.0.1', 10022), None)
-    try:
-        asyncore.loop()
-    except KeyboardInterrupt:
-        smtp_server.close()
-        
-        
-# Import smtplib for the actual sending function
-import smtplib
-
-# Import the email modules we'll need
-from email.message import EmailMessage
-
-from email.utils import make_msgid
-
-# Open the plain text file whose name is in textfile for reading.
-#with open(textfile) as fp:
-    # Create a text/plain message
-msg = EmailMessage()
-#msg.set_content('Hello world')
-
-test_text = make_msgid()
-
-email_type = 'notification'
-
-if email_type == 'notification':
+    msg = EmailMessage()
+    test_text = make_msgid()
 
     msg.set_content("""\
-    <html>
-    <head></head>
-    <body>
-        <p>Dear João,</p>
+            <html>
+            <head></head>
+            <body>
+                <p>Dear """ + member_firstname + """,</p>
+                
+                <p>Thank you for signing up for the task: </p>
         
-        <p>Thank you for signing up for the following surveillance shift as Crew2: </p>
+                <p> &emsp; &emsp;""" + task_short_description +"""<br>
+                &emsp; &emsp from """ + task_start_date + """to""" + task_end_date + """
         
-        <p> &emsp; &emsp; Thursday, April 19 <br> &emsp; &emsp; from 18:00 to 20:30 </p>
+                <p>If you cannot take your shift, please find a replacement. </p>
         
-        <p>If you cannot take your shift, please find a replacement and then contact by phone X Y(+41 XXXXXXX) or - if absent - X Y (+41 XXXXXXX). </p>
+                <p>The YCC Surveillance Team</p>
+            
+            </body>
+            </html>
+            """.format(test_text = test_text[1:-1]), subtype='html')
+
         
-        <p>The YCC Surveillance Team</p>
-    </body>
-    </html>
-    """.format(test_text = test_text[1:-1]), subtype='html')
     
-elif email_type == 'reminder':
-    
-    msg.set_content("""\
-    <html>
-    <head></head>
-    <body>
-        <p>Dear João,</p>
-        
-        <p>this is an automatic reminder for the following surveillance shift as CREW: </p>
-        
-        <p> &emsp; &emsp; Thursday, April 19 <br> &emsp; &emsp; from 18:00 to 20:30 </p>
-        
-        <p> Please do not miss it and be in Port Choiseul at the mooring of the Q-boat in time! </p>
-        <p> If you cannot take your shift, please find a replacement and then contact by phone X Y(+41 XXXXXXX) or - if absent - X Y (+41 XXXXXXX). </p>
-        
-        <p>The YCC Surveillance Team</p>
-        
-        <p> The surveillance crew consists of the following members: <br>
-        Crew  : X Y <br>
-        &emsp; &emsp; eMail XXXX@XX.XX <br>
-        &emsp; &emsp; Phone XXX(work) <br>
-        &emsp; &emsp; Phone XXX(home) 
-        
-    </body>
-    </html>
-    """.format(test_text = test_text[1:-1]), subtype='html')
-# me == the sender's email address
-# you == the recipient's email address
-#msg['Subject'] = 'Test sending emails'
-#msg['From'] = "xxxxx@cern.ch" ycc-noreply@cern.ch
-#msg['To'] = #recipient e-mail
+    # me == the sender's email address
+    # you == the recipient's email address
+    #msg['Subject'] = 'Test sending emails'
+    #msg['From'] = "xxxxx@cern.ch" ycc-noreply@cern.ch
+    #msg['To'] = #recipient e-mail
 
-msg['Subject'] = 'Test sending emails'
-msg['From'] = "ycc-noreply@cern.ch" #ycc-noreply@cern.ch
-msg['To'] = "joao@mailinator.com"
+    msg['Subject'] = 'YCC Task enrolment confirmation'
+    msg['From'] = "ycc-noreply@cern.ch" #ycc-noreply@cern.ch
+    msg['To'] = member_email
 
-
-#with open('tuto4.pdf', 'rb') as content_file:
-#    content = content_file.read()
-#    msg.add_attachment(content, maintype='application', subtype='pdf', filename='tuto4.pdf')
-
-# Send the message via our own SMTP server.
-
-s = smtplib.SMTP('smtp.gmail.com',587)  
-s.starttls()
-s.login("yccapptest", "")
-s.send_message(msg)
-s.quit()
+    s = smtplib.SMTP('smtp.gmail.com',587)  
+    s.starttls()
+    s.login("yccapptest", "")
+    s.send_message(msg)
+    s.quit()
