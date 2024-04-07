@@ -242,3 +242,132 @@ def send_reminder_surveillance(task):
     s.login("yccapptest", "")
     s.send_message(msg)
     s.quit()
+    
+
+
+def send_task_marked_as_done(task):
+
+    task_title = task.title
+    
+    captain = task.captain
+    crew = task.helpers
+    
+    names_list = []
+    emails_list = []
+    names_list.append(captain.firstname)
+    emails_list.append(captain.email)
+    for i in range(0, len(crew)):
+        names_list.append(crew[i].firstname)
+        emails_list.append(crew[i].email)
+    
+    
+    import smtplib
+    from email.message import EmailMessage
+    from email.utils import make_msgid
+    
+    for i in range(0, len(names_list)):
+        
+        msg = EmailMessage()
+        test_text = make_msgid()
+
+        msg.set_content("""\
+                <html>
+                <head></head>
+                <body>
+                    <p>Dear """ + names_list[i] + """, <p>
+                    
+                    Thank you for your help with the task: """ + task_title +"""  <br>
+                    This task has been marked as completed. <p>
+            
+                    The YCC Maintenance Team</p>
+                
+                </body>
+                </html>
+                """.format(test_text = test_text[1:-1]), subtype='html')
+
+            
+
+        msg['Subject'] = 'YCC Task completed'
+        msg['From'] = "ycc-noreply@cern.ch" #ycc-noreply@cern.ch
+        msg['To'] = emails_list[i]
+
+        s = smtplib.SMTP('smtp.gmail.com',587)  
+        s.starttls()
+        s.login("yccapptest", "")
+        s.send_message(msg)
+        s.quit()
+        
+        
+def send_modification_update(old_task, new_task):
+    
+    old_task_title = old_task.title
+    
+    new_task_title = new_task.title
+    new_task_start_date = new_task.starts_at
+    new_task_deadline = new_task.deadline
+    new_task_long_description = new_task.long_description
+    
+    captain = new_task.captain
+    crew = new_task.helpers
+    
+    names_list = []
+    emails_list = []
+    names_list.append(captain.firstname)
+    emails_list.append(captain.email)
+    for i in range(0, len(crew)):
+        names_list.append(crew[i].firstname)
+        emails_list.append(crew[i].email)
+        
+    
+    crew_list =''
+    for i in range(0, len(crew)):
+        crew_list += crew[i].firstname + ' ' + crew[i].name + ', Phone number: ' + crew[i].cell_phone + ' / ' + crew[i].work_phone + '<br>'
+    
+    import smtplib
+    from email.message import EmailMessage
+    from email.utils import make_msgid
+    
+    for i in range(0, len(names_list)):
+        
+        msg = EmailMessage()
+        test_text = make_msgid()
+
+        msg.set_content("""\
+                <html>
+                <head></head>
+                <body>
+                    <p>Dear """ + names_list[i] + """, <p>
+                    
+                    The task """ + old_task_title +""", in which you are enrolled in, has been updated. Please find below the updated details:  <p>
+                    
+                    &emsp; &emsp; Title: """ + new_task_title + """ <br>
+                    &emsp; &emsp; Start date: """ + new_task_start_date + """ <br>
+                    &emsp; &emsp; Deadline: """ + new_task_deadline + """ </p>
+                    
+                    &emsp; &emsp; Deascription """ + new_task_long_description + """ </p>
+                    
+                    &emsp; &emsp; Captain: """ + captain.firstname + """ """ + captain.name + """ <br>
+                    &emsp; &emsp; Email: """ + captain.email + """<br>
+                    &emsp; &emsp; Phone: """ + captain.cell_phone + """ / """ + captain.work_phone +""" <p>
+                    
+                    Crew: <br>
+                    """ + crew_list + """
+            
+                    Thank you again for helping with this task!
+                    The YCC Maintenance Team</p>
+                
+                </body>
+                </html>
+                """.format(test_text = test_text[1:-1]), subtype='html')
+
+            
+
+        msg['Subject'] = 'YCC Task completed'
+        msg['From'] = "ycc-noreply@cern.ch" #ycc-noreply@cern.ch
+        msg['To'] = emails_list[i]
+
+        s = smtplib.SMTP('smtp.gmail.com',587)  
+        s.starttls()
+        s.login("yccapptest", "")
+        s.send_message(msg)
+        s.quit()
