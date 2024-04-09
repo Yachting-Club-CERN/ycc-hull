@@ -117,17 +117,12 @@ class HelpersController(BaseController):
                 raise ControllerConflictException(
                     "Cannot change timing after anyone has signed up"
                 )
+            # Check: must publish a task after anyone has signed up
             if anyone_signed_up and not request.published:
                 raise ControllerConflictException(
                     "You must publish a task after anyone has signed up"
                 )
-            # TODO Put modification checks to a method
-            # TODO Do not allow modifications to validated tasks
-            # TODO Allow extending deadlines
-            # TODO In the future with notifications we could do more sophisticated checks:
-            # - Shifts cannot change time after they are marked as done
-            # - Deadlines can be extended even if the task is marked as done, but not if validated
-            # - Maybe add helper properties to the DTO for task type, state like in the app
+            # Check: cannot change timing after the task has been marked as done
             if not same_timing and old_task.marked_as_done_at:
                 raise ControllerConflictException(
                     "Cannot change timing after the task has been marked as done"
