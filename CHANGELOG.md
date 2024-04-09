@@ -7,7 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Hello world
+TODO Hello world
+
+### Added
+
+- Year-aware helper tasks
+- Helper task validation
+- Consistent time zone handling for datetime properties
+
+### Changed
+
+- Better error reporting for task timing issues
+
+## [1.0.0] - 2024-01-30
 
 ### Changed
 
@@ -77,7 +89,8 @@ Hello world
 - Test data generator
 - Deployment on CERN OKD TEST
 
-[unreleased]: https://github.com/Yachting-Club-CERN/ycc-hull/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/Yachting-Club-CERN/ycc-hull/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v1.0.0
 [0.4.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.4.0
 [0.3.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.3.0
 [0.2.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.2.0

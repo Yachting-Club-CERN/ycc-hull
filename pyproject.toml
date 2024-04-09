@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ycc-hull"
-version = "1.0.0"
+version = "1.1.0"
 description = "YCC Hull Backend Service"
 authors = ["Lajos Cseppentő <1053931+LajosCseppento@users.noreply.github.com>"]
 
@@ -10,37 +10,39 @@ python = "~3.11"
 aiofiles = "^23.2.1"
 lxml = "^5.1.0"
 pyhumps = "^3.8.0"
+pytz = "^2024.1"
 toml = "^0.10.2"
 # Auth
-python-keycloak = "^3.7.0"
+python-keycloak = "^3.9.1"
 # REST API
-fastapi = "^0.109.0"
-python-multipart = "^0.0.6"
-uvicorn = { extras = ["standard"], version = "^0.26.0" }
+fastapi = "^0.110.0"
+python-multipart = "^0.0.9"
+uvicorn = { extras = ["standard"], version = "^0.29.0" }
 # DB
-oracledb = "^2.0.1"
-SQLAlchemy = { extras = ["asyncio", "mypy"], version = "^2.0.25" }
+oracledb = "^2.1.1"
+SQLAlchemy = { extras = ["asyncio", "mypy"], version = "^2.0.29" }
 
 [tool.poetry.group.dev.dependencies]
 aiosqlite = "^0.19.0"
-black = "^23.12.1"
-Faker = "^22.5.1"
+black = "^24.3.0"
+Faker = "^24.3.0"
 flake8 = "^7.0.0"
-locust = "^2.20.1"
+locust = "^2.24.1"
 httpx = "^0.24.0"
-mypy = "^1.8.0"
+mypy = "^1.9.0"
 passlib = "^1.7.4"
-pylint = "^3.0.3"
+pylint = "^3.1.0"
 pylint-pydantic = "^0.3.2"
-pytest = "^7.4.4"
+pytest = "^8.1.1"
 pytest-asyncio = "^0.23.3"
 pytest-cov = "^4.1.0"
 pytest-html = "^4.1.1"
-pytest-mock = "^3.12.0"
-types-aiofiles = "^23.2.0.20240106"
-types-lxml = "^2023.10.21"
-types-passlib = "^1.7.7.20240106"
-types-requests = "^2.31.0.20240125"
+pytest-mock = "^3.14.0"
+types-aiofiles = "^23.2.0.20240311"
+types-lxml = "^2024.2.9"
+types-passlib = "^1.7.7.20240311"
+types-pytz = "^2024.1.0.20240203"
+types-requests = "^2.31.0.20240311"
 types-toml = "^0.10.8.7"
 
 [tool.poetry.scripts]

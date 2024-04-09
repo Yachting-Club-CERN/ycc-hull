@@ -37,5 +37,5 @@ jobs:
       - name: Pylint
         run: |
           set -x
-          poetry run pylint --jobs 0 legacy_password_hashing test_data ycc_hull
+          poetry run pylint --jobs 0 legacy_password_hashing load_tests test_data tests ycc_hull
           set +x

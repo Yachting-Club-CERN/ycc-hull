@@ -1,6 +1,7 @@
 """
 Holiday API endpoints.
 """
+
 from collections.abc import Sequence
 
 from fastapi import APIRouter, Depends

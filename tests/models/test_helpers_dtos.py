@@ -1,6 +1,7 @@
 """
 Helpers DTO tests.
 """
+
 from datetime import datetime
 
 import pytest
@@ -68,7 +69,10 @@ def test_creation_must_specify_timing() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_all_timing_fields() -> None:
@@ -89,7 +93,10 @@ def test_creation_must_not_specify_all_timing_fields() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_start_with_deadline() -> None:
@@ -110,7 +117,10 @@ def test_creation_must_not_specify_start_with_deadline() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_end_with_deadline() -> None:
@@ -131,7 +141,10 @@ def test_creation_must_not_specify_end_with_deadline() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+    )
 
 
 def test_creation_must_not_specify_start_after_end() -> None:
@@ -152,7 +165,10 @@ def test_creation_must_not_specify_start_after_end() -> None:
             published=False,
         )
 
-    assert exc_info.value.errors()[0]["msg"] == "Value error, Invalid timing"
+    assert (
+        exc_info.value.errors()[0]["msg"]
+        == "Value error, Invalid timing: start time must be before end time"
+    )
 
 
 def test_creation_must_have_consistent_helper_counts() -> None:
@@ -196,8 +212,8 @@ def test_sanitise() -> None:
             "<base> <meta> <link> <style>NO STYLES!</style>\n"
         ),
         contact_id=1,
-        starts_at="2023-05-01T18:00:00",
-        ends_at="2023-05-01T20:30:00",
+        starts_at=" 2023-05-01T18:00:00 \n ",
+        ends_at=" 2023-05-01T21:30:00+03:00 \n ",
         deadline=None,
         urgent=False,
         captain_required_licence_info_id=9,
@@ -214,4 +230,12 @@ def test_sanitise() -> None:
         '<img src="images-are-ok.jpg">\n'
         "</p>NO TABLES! NO FORMS!  \n \n \n"
         "NO HEADS! NO TITLES!\n   </div>"
+    )
+    assert (
+        request.starts_at is not None
+        and request.starts_at.isoformat() == "2023-05-01T18:00:00+02:00"
+    )
+    assert (
+        request.ends_at is not None
+        and request.ends_at.isoformat() == "2023-05-01T20:30:00+02:00"
     )

@@ -1,6 +1,7 @@
 """
 YCC Legacy Password Hashing
 """
+
 import base64
 import logging
 import re

@@ -1,6 +1,7 @@
 """
 Base controller.
 """
+
 import logging
 import re
 from abc import ABCMeta
@@ -28,7 +29,7 @@ class BaseController(metaclass=ABCMeta):
         return DatabaseContextHolder.context
 
     def _handle_database_error(
-        self, exc: DatabaseError, what: str, user: User, data: Any
+        self, exc: DatabaseError, *, what: str, user: User, data: Any
     ) -> Exception:
         self._logger.info(
             "Failed to %s: %s, user: %s, data: %s",

@@ -1,9 +1,14 @@
 """
 Base DTO tests.
 """
+
 import pytest
 
-from ycc_hull.models.base import sanitise_html_input, sanitise_text_input
+from ycc_hull.models.base import (
+    sanitise_datetime_input,
+    sanitise_html_input,
+    sanitise_text_input,
+)
 
 
 @pytest.mark.parametrize(
@@ -54,3 +59,21 @@ def test_sanitise_text_input(value: str, expected: str) -> None:
 )
 def test_sanitise_html_input(value: str, expected: str) -> None:
     assert sanitise_html_input(value) == expected
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        (None, None),
+        (" \n ", None),
+        ("2024-01-01 10:00:00", "2024-01-01T10:00:00+01:00"),  # Summer time
+        ("2024-04-01 10:00:00", "2024-04-01T10:00:00+02:00"),  # Winter time
+        ("  2024-04-01 10:00:00+03:00 \n ", "2024-04-01T09:00:00+02:00"),
+    ],
+)
+def test_datetime_input(value: str, expected: str) -> None:
+    actual = sanitise_datetime_input(value)
+    if actual is None:
+        assert actual == expected
+    else:
+        assert actual.isoformat() == expected

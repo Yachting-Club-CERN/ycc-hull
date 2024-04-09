@@ -1,6 +1,7 @@
 """
 Members controller.
 """
+
 from collections.abc import Sequence
 
 from sqlalchemy import and_, or_, select
@@ -26,24 +27,23 @@ class MembersController(BaseController):
 
     async def find_all_public_infos(
         self,
-        year: int | None = None,
+        *,
+        year: int,
     ) -> Sequence[MemberPublicInfoDto]:
-        query = select(MemberEntity)
-
-        if year:
-            query = (
-                query.outerjoin(FeeRecordEntity)
-                .filter(
-                    or_(
-                        and_(
-                            MemberEntity.membership.like("H"),
-                            MemberEntity.member_entrance <= year,
-                        ),
-                        FeeRecordEntity.year_f == year,
-                    )
+        query = (
+            select(MemberEntity)
+            .outerjoin(FeeRecordEntity)
+            .filter(
+                or_(
+                    and_(
+                        MemberEntity.membership.like("H"),
+                        MemberEntity.member_entrance <= year,
+                    ),
+                    FeeRecordEntity.year_f == year,
                 )
-                .distinct()
             )
+            .distinct()
+        )
 
         return await self.database_context.query_all(
             query.order_by(MemberEntity.name, MemberEntity.firstname),

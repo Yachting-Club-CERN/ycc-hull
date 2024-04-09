@@ -1,6 +1,7 @@
 """
 Audit log. Persisted in the DB.
 """
+
 import json
 from datetime import date, datetime
 from typing import Any

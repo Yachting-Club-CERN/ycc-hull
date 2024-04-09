@@ -1,6 +1,7 @@
 """
 Boats controller.
 """
+
 from collections.abc import Sequence
 from sqlalchemy import select
 from ycc_hull.controllers.base_controller import BaseController
