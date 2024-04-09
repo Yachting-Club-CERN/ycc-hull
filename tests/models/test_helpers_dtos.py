@@ -212,8 +212,8 @@ def test_sanitise() -> None:
             "<base> <meta> <link> <style>NO STYLES!</style>\n"
         ),
         contact_id=1,
-        starts_at="2023-05-01T18:00:00",
-        ends_at="2023-05-01T21:30:00+03:00",
+        starts_at=" 2023-05-01T18:00:00 \n ",
+        ends_at=" 2023-05-01T21:30:00+03:00 \n ",
         deadline=None,
         urgent=False,
         captain_required_licence_info_id=9,
