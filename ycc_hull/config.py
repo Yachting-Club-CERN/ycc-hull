@@ -8,15 +8,8 @@ from enum import Enum
 
 from pydantic import ConfigDict
 
+from ycc_hull.constants import CONFIG_FILE
 from ycc_hull.models.base import CamelisedBaseModel
-
-CONFIG_FILE = (
-    "conf/config-dev.json"
-    if os.path.exists("conf/config-dev.json")
-    else "conf/config.json"
-)
-
-LOGGING_CONFIG_FILE = "conf/logging.conf"
 
 
 class Environment(str, Enum):

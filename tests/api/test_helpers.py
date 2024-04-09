@@ -3,7 +3,7 @@ Helpers API tests.
 """
 
 import json
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import pytest
 import pytest_asyncio
@@ -15,20 +15,23 @@ from ycc_hull.api.helpers import api_helpers
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import AuditLogEntryEntity
 from ycc_hull.models.helpers_dtos import HelperTaskDto
+from ycc_hull.utils import get_now
 
 app_test.include_router(api_helpers)
 client = TestClient(app_test)
 
-future_day = (datetime.now().date() + timedelta(days=5)).strftime("%Y-%m-%d")
+future_day = (get_now().date() + timedelta(days=5)).strftime("%Y-%m-%d")
+short_description = " The Club needs your help for this task! \n "
+sanitised_short_description = "The Club needs your help for this task!"
 
 task_mutation_shift = {
     "categoryId": 1,
-    "title": "Test Task",
-    "shortDescription": "The Club needs your help for this shift!",
+    "title": " Test Task \n ",
+    "shortDescription": short_description,
     "longDescription": None,
     "contactId": 2,
-    "startsAt": f"{future_day}T18:00:00",
-    "endsAt": f"{future_day}T20:30:00",
+    "startsAt": f" {future_day}T18:00:00 \n ",
+    "endsAt": f" {future_day}T20:30:00 \n ",
     "deadline": None,
     "urgent": False,
     "captainRequiredLicenceInfoId": 9,
@@ -39,14 +42,14 @@ task_mutation_shift = {
 
 task_mutation_deadline = {
     "categoryId": 2,
-    "title": "Test Task",
-    "shortDescription": "The Club needs your help for this task!",
-    "longDescription": "Really! It is very important to get this done!",
+    "title": " Test Task \n ",
+    "shortDescription": short_description,
+    "longDescription": " Really! It is very important to get this done! \n ",
     "contactId": 1,
     "urgent": True,
     "starts_at": None,
     "ends_at": None,
-    "deadline": f"{future_day}T20:00:00",
+    "deadline": f" {future_day}T20:00:00 \n ",
     "captainRequiredLicenceInfoId": None,
     "helperMinCount": 2,
     "helperMaxCount": 2,
@@ -148,7 +151,7 @@ async def test_create_task_as_editor() -> None:
     # Then
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
-    assert task_mutation_shift["shortDescription"] == response_dto.short_description
+    assert sanitised_short_description == response_dto.short_description
 
     await verify_creation_audit_log_entry(response_dto.short_description)
 
@@ -164,7 +167,7 @@ async def test_create_task_as_admin() -> None:
     # Then
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
-    assert task_mutation_deadline["shortDescription"] == response_dto.short_description
+    assert sanitised_short_description == response_dto.short_description
 
     await verify_creation_audit_log_entry(response_dto.short_description)
 
@@ -212,11 +215,11 @@ async def test_update_task_as_editor() -> None:
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
     assert task_id == response_dto.id
-    assert task_mutation_deadline["shortDescription"] == response_dto.short_description
+    assert sanitised_short_description == response_dto.short_description
 
     await verify_update_audit_log_entry(
         task_id,
-        str(task_mutation_shift["shortDescription"]),
+        sanitised_short_description,
         response_dto.short_description,
     )
 
@@ -304,7 +307,7 @@ def test_update_task_cannot_change_timing_if_anyone_signed_up() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # When
-    task_mutation["endsAt"] = f"{future_day}T21:00:00"
+    task_mutation["endsAt"] = f" {future_day}T21:00:00 \n "
     response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_mutation)
 
     # Then

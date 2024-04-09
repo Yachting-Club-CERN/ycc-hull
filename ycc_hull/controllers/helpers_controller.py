@@ -29,6 +29,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
+from ycc_hull.utils import get_now
 
 
 class HelpersController(BaseController):
@@ -104,20 +105,33 @@ class HelpersController(BaseController):
         async with self.database_context.async_session() as session:
             old_task = await self._get_task_by_id(task_id, session=session)
 
+            anyone_signed_up = old_task.captain or old_task.helpers
+            same_timing = (
+                request.starts_at == old_task.starts_at
+                and request.ends_at == old_task.ends_at
+                and request.deadline == old_task.deadline
+            )
+
             # Check: cannot change timing if anyone has signed up
-            if old_task.captain or old_task.helpers:
-                if (
-                    request.starts_at != old_task.starts_at
-                    or request.ends_at != old_task.ends_at
-                    or request.deadline != old_task.deadline
-                ):
-                    raise ControllerConflictException(
-                        "Cannot change timing after anyone has signed up"
-                    )
-                if not request.published:
-                    raise ControllerConflictException(
-                        "You must publish a task after anyone has signed up"
-                    )
+            if anyone_signed_up and not same_timing:
+                raise ControllerConflictException(
+                    "Cannot change timing after anyone has signed up"
+                )
+            if anyone_signed_up and not request.published:
+                raise ControllerConflictException(
+                    "You must publish a task after anyone has signed up"
+                )
+            # TODO Put modification checks to a method
+            # TODO Do not allow modifications to validated tasks
+            # TODO Allow extending deadlines
+            # TODO In the future with notifications we could do more sophisticated checks:
+            # - Shifts cannot change time after they are marked as done
+            # - Deadlines can be extended even if the task is marked as done, but not if validated
+            # - Maybe add helper properties to the DTO for task type, state like in the app
+            if not same_timing and old_task.marked_as_done_at:
+                raise ControllerConflictException(
+                    "Cannot change timing after the task has been marked as done"
+                )
 
             # Check: if a captain has signed up then the new licence must be active for the captain
             if old_task.captain and request.captain_required_licence_info_id != (
@@ -182,7 +196,7 @@ class HelpersController(BaseController):
 
             task_entity = await self._get_task_entity_by_id(task_id, session=session)
             task_entity.captain_id = user.member_id
-            task_entity.captain_signed_up_at = datetime.now()
+            task_entity.captain_signed_up_at = get_now()
             await session.commit()
 
             session.add(
@@ -199,7 +213,7 @@ class HelpersController(BaseController):
                 raise ControllerConflictException("Task helper limit reached")
 
             helper = HelperTaskHelperEntity(
-                task_id=task.id, member_id=user.member_id, signed_up_at=datetime.now()
+                task_id=task.id, member_id=user.member_id, signed_up_at=get_now()
             )
             session.add(helper)
             await session.commit()
@@ -219,7 +233,7 @@ class HelpersController(BaseController):
                 raise ControllerConflictException("Task already marked as done")
 
             task_entity = await self._get_task_entity_by_id(task_id, session=session)
-            task_entity.marked_as_done_at = datetime.now()
+            task_entity.marked_as_done_at = get_now()
             task_entity.marked_as_done_by_id = user.member_id
             task_entity.marked_as_done_comment = request.comment
             await session.commit()
@@ -256,7 +270,7 @@ class HelpersController(BaseController):
             )
 
             task_entity = await self._get_task_entity_by_id(task_id, session=session)
-            now = datetime.now()
+            now = get_now()
 
             if not task_entity.marked_as_done_at:
                 task_entity.marked_as_done_at = now
@@ -379,7 +393,7 @@ class HelpersController(BaseController):
         if task.validated_at:
             raise ControllerConflictException("Cannot sign up to a validated task")
 
-        now = datetime.now()
+        now = get_now()
         if (task.starts_at and task.starts_at < now) or (
             task.deadline and task.deadline < now
         ):

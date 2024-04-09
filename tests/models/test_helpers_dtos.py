@@ -213,7 +213,7 @@ def test_sanitise() -> None:
         ),
         contact_id=1,
         starts_at="2023-05-01T18:00:00",
-        ends_at="2023-05-01T20:30:00",
+        ends_at="2023-05-01T21:30:00+03:00",
         deadline=None,
         urgent=False,
         captain_required_licence_info_id=9,
@@ -230,4 +230,12 @@ def test_sanitise() -> None:
         '<img src="images-are-ok.jpg">\n'
         "</p>NO TABLES! NO FORMS!  \n \n \n"
         "NO HEADS! NO TITLES!\n   </div>"
+    )
+    assert (
+        request.starts_at is not None
+        and request.starts_at.isoformat() == "2023-05-01T18:00:00+02:00"
+    )
+    assert (
+        request.ends_at is not None
+        and request.ends_at.isoformat() == "2023-05-01T20:30:00+02:00"
     )

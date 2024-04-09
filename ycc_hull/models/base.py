@@ -2,6 +2,7 @@
 Base model.
 """
 
+from datetime import datetime
 from typing import Any, Generic, TypeVar
 
 from humps import camelize
@@ -11,7 +12,7 @@ import lxml.html
 import lxml.html.clean
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.fields import FieldInfo
-from ycc_hull.utils import full_type_name
+from ycc_hull.utils import TIME_ZONE, full_type_name
 
 EntityT = TypeVar("EntityT")
 
@@ -32,25 +33,28 @@ class CamelisedBaseModel(BaseModel):
     # If you want to mark a field as HTML, use the following syntax:
     #
     # long_description: str | None = Field(json_schema_extra={"html": True})
-    #
-    # No @classmethod to make it run for subclasses.
     @model_validator(mode="before")
+    @classmethod
     def sanitise_values(cls, values: dict) -> dict:
         sanitised_values: dict = {}
 
         # Known fields
         for field_name, field_info in cls.model_fields.items():
-            cls._sanitise_value(field_name, field_info, values, sanitised_values)
-            cls._sanitise_value(field_info.alias, field_info, values, sanitised_values)
+            cls._extract_and_sanitise_value(
+                field_name, field_info, values, sanitised_values
+            )
+            cls._extract_and_sanitise_value(
+                field_info.alias, field_info, values, sanitised_values
+            )
 
         # Unknown fields (keep for validation message)
         for key, value in values.items():
-            sanitised_values[key] = cls._sanitise_string(None, value)
+            sanitised_values[key] = cls._sanitise_value(None, value)
 
         return sanitised_values
 
     @classmethod
-    def _sanitise_value(
+    def _extract_and_sanitise_value(
         cls,
         key: str | None,
         field_info: FieldInfo,
@@ -59,11 +63,26 @@ class CamelisedBaseModel(BaseModel):
     ) -> Any:
         if key in values:
             value = values.pop(key)
-            sanitised_values[key] = cls._sanitise_string(field_info, value)
+            sanitised_values[key] = cls._sanitise_value(field_info, value)
 
     @staticmethod
-    def _sanitise_string(field_info: FieldInfo | None, value: Any) -> Any:
-        if isinstance(value, str):
+    def _sanitise_value(field_info: FieldInfo | None, value: Any) -> Any:
+        is_str = isinstance(value, str)
+        is_datetime = isinstance(value, datetime)
+        is_datetime_field = field_info and (
+            field_info.annotation == datetime
+            or field_info.annotation == datetime | None
+        )
+
+        if is_datetime or is_datetime_field:
+            if value is None or is_str or is_datetime:
+                return sanitise_datetime_input(value)
+
+            msg_field = " for field {field_info.alias}" if field_info else ""
+            raise ValueError(
+                f"Invalid datetime value{msg_field}: {value} (type: {type(value)})"
+            )
+        if is_str:
             if (
                 field_info
                 and field_info.json_schema_extra
@@ -170,3 +189,24 @@ def _parse_html(text: str) -> lxml.html.HtmlElement | None:
         if "Document is empty" in str(e):
             return None
         raise ValueError(f"Failed to parse text input: {text}") from e
+
+
+def sanitise_datetime_input(value: datetime | str | None) -> datetime | None:
+    if value is None:
+        return None
+
+    # Pydantic converts str to datetime, but does not add the time zone
+    if isinstance(value, str):
+        value = sanitise_text_input(value)
+        if value is None:
+            return None
+
+        value = datetime.fromisoformat(value)
+
+    if not isinstance(value, datetime):
+        raise ValueError(f"Invalid datetime value: {value}")
+
+    if value.tzinfo is None:
+        return TIME_ZONE.localize(value)
+
+    return value.astimezone(TIME_ZONE)
