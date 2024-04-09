@@ -82,6 +82,7 @@ class CamelisedBaseModel(BaseModel):
             raise ValueError(
                 f"Invalid datetime value{msg_field}: {value} (type: {type(value)})"
             )
+
         if is_str:
             if (
                 field_info
