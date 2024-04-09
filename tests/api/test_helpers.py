@@ -21,13 +21,13 @@ app_test.include_router(api_helpers)
 client = TestClient(app_test)
 
 future_day = (get_now().date() + timedelta(days=5)).strftime("%Y-%m-%d")
-short_description = " The Club needs your help for this task! \n "
-sanitised_short_description = "The Club needs your help for this task!"
+SHORT_DESCRIPTION = " The Club needs your help for this task! \n "
+SANITISED_SHORT_DESCRIPTION = "The Club needs your help for this task!"
 
 task_mutation_shift = {
     "categoryId": 1,
     "title": " Test Task \n ",
-    "shortDescription": short_description,
+    "shortDescription": SHORT_DESCRIPTION,
     "longDescription": None,
     "contactId": 2,
     "startsAt": f" {future_day}T18:00:00 \n ",
@@ -43,7 +43,7 @@ task_mutation_shift = {
 task_mutation_deadline = {
     "categoryId": 2,
     "title": " Test Task \n ",
-    "shortDescription": short_description,
+    "shortDescription": SHORT_DESCRIPTION,
     "longDescription": " Really! It is very important to get this done! \n ",
     "contactId": 1,
     "urgent": True,
@@ -151,7 +151,7 @@ async def test_create_task_as_editor() -> None:
     # Then
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
-    assert sanitised_short_description == response_dto.short_description
+    assert SANITISED_SHORT_DESCRIPTION == response_dto.short_description
 
     await verify_creation_audit_log_entry(response_dto.short_description)
 
@@ -167,7 +167,7 @@ async def test_create_task_as_admin() -> None:
     # Then
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
-    assert sanitised_short_description == response_dto.short_description
+    assert SANITISED_SHORT_DESCRIPTION == response_dto.short_description
 
     await verify_creation_audit_log_entry(response_dto.short_description)
 
@@ -215,11 +215,11 @@ async def test_update_task_as_editor() -> None:
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
     assert task_id == response_dto.id
-    assert sanitised_short_description == response_dto.short_description
+    assert SANITISED_SHORT_DESCRIPTION == response_dto.short_description
 
     await verify_update_audit_log_entry(
         task_id,
-        sanitised_short_description,
+        SANITISED_SHORT_DESCRIPTION,
         response_dto.short_description,
     )
 

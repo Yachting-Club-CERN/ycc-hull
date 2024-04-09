@@ -69,9 +69,9 @@ class CamelisedBaseModel(BaseModel):
     def _sanitise_value(field_info: FieldInfo | None, value: Any) -> Any:
         is_str = isinstance(value, str)
         is_datetime = isinstance(value, datetime)
-        is_datetime_field = field_info and (
-            field_info.annotation == datetime
-            or field_info.annotation == datetime | None
+        is_datetime_field = field_info and field_info.annotation in (
+            datetime,
+            datetime | None,
         )
 
         if is_datetime or is_datetime_field:
