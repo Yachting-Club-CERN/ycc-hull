@@ -2,6 +2,7 @@
 Application entry point.
 """
 
+import locale
 import logging
 import os
 from contextlib import asynccontextmanager
@@ -34,6 +35,8 @@ from ycc_hull.controllers.members_controller import MembersController
 from ycc_hull.db.context import DatabaseContextHolder
 
 _logger = logging.getLogger(__name__)
+
+locale.setlocale(locale.LC_ALL, "en_GB.UTF-8")
 
 
 def read_version_from_pyproject_toml() -> str:

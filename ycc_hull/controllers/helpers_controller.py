@@ -16,6 +16,9 @@ from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
     ControllerNotFoundException,
 )
+from ycc_hull.controllers.notifications.notifications_controller import (
+    send_helper_task_helper_sign_up_confirmation,
+)
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -26,6 +29,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
     HelperTaskMutationRequestDto,
+    HelperTaskState,
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
@@ -211,6 +215,9 @@ class HelpersController(BaseController):
                 task_id=task.id, member_id=user.member_id, signed_up_at=get_now()
             )
             session.add(helper)
+            # TODO only here for testing
+            # await send_helper_task_helper_sign_up_confirmation(task, helper.member)
+            # await send_helper_task_helper_sign_up_confirmation(task, task.contact)
             await session.commit()
 
             session.add(
@@ -224,7 +231,7 @@ class HelpersController(BaseController):
         async with self.database_context.async_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            if task.marked_as_done_at:
+            if task.state != HelperTaskState.PENDING:
                 raise ControllerConflictException("Task already marked as done")
 
             task_entity = await self._get_task_entity_by_id(task_id, session=session)
@@ -246,7 +253,7 @@ class HelpersController(BaseController):
         async with self.database_context.async_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            if task.validated_at:
+            if task.state == HelperTaskState.VALIDATED:
                 raise ControllerConflictException("Task already validated")
 
             helper_ids_in_db = set(helper.member.id for helper in task.helpers)

@@ -23,7 +23,7 @@ class DatabaseContext:
     Database context.
     """
 
-    def __init__(self, database_url: str, *, echo: bool | None = None) -> None:
+    def __init__(self, database_url: str, *, echo: bool | None = None):
         self._engine: AsyncEngine = create_async_engine(database_url, echo=echo)
         self.async_session = async_sessionmaker(self._engine)
 
@@ -109,7 +109,7 @@ class _DatabaseContextHolder:
     Database context holder.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self._context: DatabaseContext | None = None
 
     @property

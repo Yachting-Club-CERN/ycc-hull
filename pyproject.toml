@@ -14,6 +14,8 @@ pytz = "^2024.1"
 toml = "^0.10.2"
 # Auth
 python-keycloak = "^3.9.1"
+# Email
+aiosmtplib = "^3.0.1"
 # REST API
 fastapi = "^0.110.0"
 python-multipart = "^0.0.9"

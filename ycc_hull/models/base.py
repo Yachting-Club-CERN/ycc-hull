@@ -83,17 +83,24 @@ class CamelisedBaseModel(BaseModel):
                 f"Invalid datetime value{msg_field}: {value} (type: {type(value)})"
             )
 
-        if is_str:
-            if (
-                field_info
-                and field_info.json_schema_extra
-                and field_info.json_schema_extra.get("html")  # type: ignore
-            ):
+        if is_str and _get_field_info_extra_bool(field_info, "sanitise", True):
+            if _get_field_info_extra_bool(field_info, "html", False):
                 return sanitise_html_input(value)
-
             return sanitise_text_input(value)
 
         return value
+
+
+def _get_field_info_extra_bool(field_info: FieldInfo, key: str, default: bool) -> bool:
+    if field_info and field_info.json_schema_extra:
+        value = field_info.json_schema_extra.get(key, default)
+
+        if isinstance(value, bool):
+            return value
+
+        raise ValueError(f"Invalid value for JSON schema extra key '{key}': {value}")
+
+    return default
 
 
 class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):

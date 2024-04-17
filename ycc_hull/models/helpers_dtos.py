@@ -4,9 +4,11 @@ Helpers API DTO classes.
 
 from collections.abc import Sequence
 from datetime import datetime
+from enum import Enum
 
 from pydantic import Field, field_validator, model_validator
 
+from ycc_hull.config import CONFIG
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -18,6 +20,26 @@ from ycc_hull.models.base import (
     CamelisedBaseModelWithEntity,
 )
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
+
+
+class HelperTaskType(str, Enum):
+    """
+    Helper task type enumeration.
+    """
+
+    SHIFT = "Shift"
+    DEADLINE = "Deadline"
+    UNKNOWN = "Unknown"
+
+
+class HelperTaskState(str, Enum):
+    """
+    Helper task state enumeration.
+    """
+
+    PENDING = "Pending"
+    DONE = "Done"
+    VALIDATED = "Validated"
 
 
 class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntity]):
@@ -80,6 +102,22 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
         if self.deadline:
             return self.deadline.year
         raise ValueError("Missing timing")
+
+    @property
+    def type(self) -> HelperTaskType:
+        if self.starts_at and self.ends_at and not self.deadline:
+            return HelperTaskType.SHIFT
+        if not self.starts_at and not self.ends_at and self.deadline:
+            return HelperTaskType.DEADLINE
+        return HelperTaskType.UNKNOWN
+
+    @property
+    def state(self) -> HelperTaskState:
+        if self.validated_at:
+            return HelperTaskState.VALIDATED
+        if self.marked_as_done_at:
+            return HelperTaskState.DONE
+        return HelperTaskState.PENDING
 
     @classmethod
     async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
