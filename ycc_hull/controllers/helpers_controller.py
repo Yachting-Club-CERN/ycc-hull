@@ -26,6 +26,8 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
     HelperTaskMutationRequestDto,
+    HelperTaskState,
+    HelperTaskType,
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
@@ -178,7 +180,7 @@ class HelpersController(BaseController):
         async with self.database_context.async_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            await self._check_can_sign_up(task=task, member_id=user.member_id)
+            self._check_can_sign_up(task=task, member_id=user.member_id)
             if task.captain:
                 raise ControllerConflictException("Task already has a captain")
 
@@ -203,7 +205,7 @@ class HelpersController(BaseController):
         async with self.database_context.async_session() as session:
             task = await self.get_task_by_id(task_id, published=True, session=session)
 
-            await self._check_can_sign_up(task=task, member_id=user.member_id)
+            self._check_can_sign_up(task=task, member_id=user.member_id)
             if len(task.helpers) >= task.helper_max_count:
                 raise ControllerConflictException("Task helper limit reached")
 
@@ -224,8 +226,12 @@ class HelpersController(BaseController):
         async with self.database_context.async_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            if task.marked_as_done_at:
+            if task.state != HelperTaskState.PENDING:
                 raise ControllerConflictException("Task already marked as done")
+            if self._starts_in_the_future(task):
+                raise ControllerConflictException(
+                    "Cannot mark a task as done before it starts"
+                )
 
             task_entity = await self._get_task_entity_by_id(task_id, session=session)
             task_entity.marked_as_done_at = get_now()
@@ -246,8 +252,12 @@ class HelpersController(BaseController):
         async with self.database_context.async_session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            if task.validated_at:
+            if task.state == HelperTaskState.VALIDATED:
                 raise ControllerConflictException("Task already validated")
+            if self._starts_in_the_future(task):
+                raise ControllerConflictException(
+                    "Cannot validate a task before it starts"
+                )
 
             helper_ids_in_db = set(helper.member.id for helper in task.helpers)
             helper_ids_in_request = set(
@@ -380,12 +390,12 @@ class HelpersController(BaseController):
             )
         ).one()
 
-    async def _check_can_sign_up(self, *, task: HelperTaskDto, member_id: int) -> None:
+    def _check_can_sign_up(self, *, task: HelperTaskDto, member_id: int) -> None:
         if not task.published:
             raise ControllerConflictException("Cannot sign up to an unpublished task")
-        if task.marked_as_done_at:
+        if task.state == HelperTaskState.DONE:
             raise ControllerConflictException("Cannot sign up to a task marked as done")
-        if task.validated_at:
+        if task.state == HelperTaskState.VALIDATED:
             raise ControllerConflictException("Cannot sign up to a validated task")
 
         now = get_now()
@@ -398,3 +408,6 @@ class HelpersController(BaseController):
             raise ControllerConflictException("Already signed up as captain")
         if any(helper.member.id == member_id for helper in task.helpers):
             raise ControllerConflictException("Already signed up as helper")
+
+    def _starts_in_the_future(self, task: HelperTaskDto) -> bool:
+        return task.starts_at and task.starts_at > get_now()

@@ -109,7 +109,7 @@ class _DatabaseContextHolder:
     Database context holder.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self._context: DatabaseContext | None = None
 
     @property
