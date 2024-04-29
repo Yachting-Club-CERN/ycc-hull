@@ -91,9 +91,11 @@ class CamelisedBaseModel(BaseModel):
         return value
 
 
-def _get_field_info_extra_bool(field_info: FieldInfo, key: str, default: bool) -> bool:
+def _get_field_info_extra_bool(
+    field_info: FieldInfo | None, key: str, default: bool
+) -> bool:
     if field_info and field_info.json_schema_extra:
-        value = field_info.json_schema_extra.get(key, default)
+        value = field_info.json_schema_extra.get(key, default)  # type: ignore
 
         if isinstance(value, bool):
             return value

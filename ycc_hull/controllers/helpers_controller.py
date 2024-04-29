@@ -27,7 +27,6 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskMarkAsDoneRequestDto,
     HelperTaskMutationRequestDto,
     HelperTaskState,
-    HelperTaskType,
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
@@ -410,4 +409,4 @@ class HelpersController(BaseController):
             raise ControllerConflictException("Already signed up as helper")
 
     def _starts_in_the_future(self, task: HelperTaskDto) -> bool:
-        return task.starts_at and task.starts_at > get_now()
+        return bool(task.starts_at and task.starts_at > get_now())
