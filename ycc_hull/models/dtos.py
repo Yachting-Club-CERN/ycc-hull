@@ -115,6 +115,10 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
     home_phone: str | None
     work_phone: str | None
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
     @staticmethod
     async def create(
         member: MemberEntity,

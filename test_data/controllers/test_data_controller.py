@@ -50,7 +50,7 @@ class _TestDataImporter:
     Test data importer. Able to import data from exported and generated files.
     """
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
     async def import_exported(
