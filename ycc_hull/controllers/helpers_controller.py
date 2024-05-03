@@ -16,6 +16,9 @@ from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
     ControllerNotFoundException,
 )
+from ycc_hull.controllers.notifications.notifications_controller import (
+    send_helper_task_helper_sign_up_confirmation,
+)
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -212,6 +215,9 @@ class HelpersController(BaseController):
                 task_id=task.id, member_id=user.member_id, signed_up_at=get_now()
             )
             session.add(helper)
+            # TODO only here for testing
+            # await send_helper_task_helper_sign_up_confirmation(task, helper.member)
+            # await send_helper_task_helper_sign_up_confirmation(task, task.contact)
             await session.commit()
 
             session.add(

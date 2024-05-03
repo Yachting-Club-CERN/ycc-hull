@@ -8,6 +8,7 @@ from enum import Enum
 
 from pydantic import Field, field_validator, model_validator
 
+from ycc_hull.config import CONFIG
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -117,6 +118,10 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
         if self.marked_as_done_at:
             return HelperTaskState.DONE
         return HelperTaskState.PENDING
+
+    @property
+    def app_url(self) -> str:
+        return f"{CONFIG.ycc_app_base_url}/helpers/tasks/{self.id}"
 
     @classmethod
     async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
