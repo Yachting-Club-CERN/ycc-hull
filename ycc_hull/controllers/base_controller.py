@@ -21,7 +21,7 @@ class BaseController(metaclass=ABCMeta):
     Base controller.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._logger = logging.getLogger(full_type_name(self.__class__))
 
     @property

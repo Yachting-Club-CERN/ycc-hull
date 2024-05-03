@@ -119,6 +119,10 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
             return HelperTaskState.DONE
         return HelperTaskState.PENDING
 
+    @property
+    def app_url(self) -> str:
+        return f"{CONFIG.ycc_app_base_url}/helpers/tasks/{self.id}"
+
     @classmethod
     async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
         return await cls._create(
