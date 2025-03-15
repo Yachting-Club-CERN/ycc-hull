@@ -2,9 +2,11 @@
 
 YCC backend service.
 
+Sad news as of 2024/2025: this did not catch on, Enrico decided to do his own thing with Flask and Vue.js and Bartek is also doing his own thing. Stays for now as a Python practice project.
+
 ## Prerequisites
 
-- Install Python 3.11
+- Install Python 3.12
 - Install Poetry & [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
   - `pipx install poetry && pipx inject poetry poetry-plugin-up`
 - Optionally install Docker & Docker Compose if you want to run the full stack locally
@@ -80,14 +82,11 @@ For the Swagger UI (optional) create a client with:
 You can regenerate entities using the following commands:
 
 ```sh
-cd generated_entities
-poetry install --no-root
-poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile entities_generated.py
+poetry run sqlacodegen oracle+oracledb://ycclocal:changeit@127.0.0.1:1521/XE --outfile generated_entities/entities_generated.py
+poetry run black generated_entities/entities_generated.py
 ```
 
 Generated entities does not work as good as handwritten ones. Please use the generated entities as a reference for updating handwritten entities in `entities.py`.
-
-(Also note that as of 2023-03 we use SQLAlchemy 2.x (way faster with Oracle and way more convenient), while latest sqlacodegen only supports SQLAlchemy 1.x.)
 
 ### Test Data
 

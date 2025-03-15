@@ -47,7 +47,7 @@ def read_version_from_pyproject_toml() -> str:
         os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
     )
     with open(pyproject_toml_file, encoding="utf-8") as file:
-        return toml.load(file)["tool"]["poetry"]["version"]
+        return toml.load(file)["project"]["version"]
 
 
 @asynccontextmanager
