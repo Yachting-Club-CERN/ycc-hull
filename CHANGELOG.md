@@ -16,6 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Better error reporting for task timing issues
+- Upgrade to Python 3.12
+- Upgrade to Poetry 2
+- Dependency upgrades (2025-03), notable:
+  - OracleDB adapter 3.0.0
+  - sqlacodegen 3.0.0 (which supports SQLAchemy 2.x)
 
 ## [1.0.0] - 2024-01-30
 

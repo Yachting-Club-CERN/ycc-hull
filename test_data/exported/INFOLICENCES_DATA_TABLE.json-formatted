@@ -37,52 +37,36 @@
         {
           "name" : "COURSE_LEVEL",
           "type" : "NUMBER"
+        },
+        {
+          "name" : "HAS_TEST",
+          "type" : "NUMBER"
         }
       ],
       "items" : [
-        {
-          "infoid" : 1,
-          "ncourse" : "W",
-          "nlicence" : "W",
-          "nkey" : "W",
-          "description" : "Windsurf Boards",
-          "coursefee" : 100,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : 1
-        },
         {
           "infoid" : 2,
           "ncourse" : "D",
           "nlicence" : "D",
           "nkey" : "D",
-          "description" : "Laser 2, RS500, Topper Xenon",
+          "description" : "Laser, Melges 15, RS400, RS500",
           "coursefee" : 170,
           "course_name" : "Dinghy",
           "course_active" : "Y",
-          "course_level" : 1
+          "course_level" : 1,
+          "has_test" : 1
         },
         {
           "infoid" : 3,
           "ncourse" : "ED",
           "nlicence" : "ED",
           "nkey" : "S",
-          "description" : "Iso, RS400, RS500, Laser 2",
+          "description" : "29er",
           "coursefee" : 170,
           "course_name" : "Advanced dinghy",
           "course_active" : "Y",
-          "course_level" : 2
-        },
-        {
-          "infoid" : 4,
-          "ncourse" : "C",
-          "nlicence" : "C",
-          "nkey" : "C",
-          "description" : "Mystere 5.5, SL16",
-          "coursefee" : 170,
-          "course_name" : "Catamaran",
-          "course_active" : "N",
-          "course_level" : 2
+          "course_level" : 2,
+          "has_test" : 1
         },
         {
           "infoid" : 5,
@@ -93,7 +77,8 @@
           "coursefee" : 170,
           "course_name" : "Yngling",
           "course_active" : "Y",
-          "course_level" : 1
+          "course_level" : 1,
+          "has_test" : 1
         },
         {
           "infoid" : 6,
@@ -104,95 +89,20 @@
           "coursefee" : 170,
           "course_name" : "Surprise",
           "course_active" : "Y",
-          "course_level" : 2
-        },
-        {
-          "infoid" : 7,
-          "ncourse" : null,
-          "nlicence" : "O",
-          "nkey" : "O",
-          "description" : "Soling",
-          "coursefee" : 0,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
-        },
-        {
-          "infoid" : 8,
-          "ncourse" : "CK",
-          "nlicence" : "CK",
-          "nkey" : "CK",
-          "description" : "First 25",
-          "coursefee" : 170,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
+          "course_level" : 2,
+          "has_test" : 1
         },
         {
           "infoid" : 9,
           "ncourse" : "M",
           "nlicence" : "M",
           "nkey" : "MM",
-          "description" : "Motors",
+          "description" : "Motor boats",
           "coursefee" : 0,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
-        },
-        {
-          "infoid" : 10,
-          "ncourse" : null,
-          "nlicence" : "B",
-          "nkey" : "B",
-          "description" : "Baracs",
-          "coursefee" : 0,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
-        },
-        {
-          "infoid" : 11,
-          "ncourse" : null,
-          "nlicence" : "BA",
-          "nkey" : "BA",
-          "description" : "BA5",
-          "coursefee" : null,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
-        },
-        {
-          "infoid" : 12,
-          "ncourse" : "EW",
-          "nlicence" : "EW",
-          "nkey" : "W",
-          "description" : "Expert Windsurf",
-          "coursefee" : 200,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : 2
-        },
-        {
-          "infoid" : 13,
-          "ncourse" : "1A",
-          "nlicence" : "1A",
-          "nkey" : null,
-          "description" : "First Aid",
-          "coursefee" : 0,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
-        },
-        {
-          "infoid" : -1,
-          "ncourse" : "NW",
-          "nlicence" : "NW",
-          "nkey" : null,
-          "description" : "no introductor course for W",
-          "coursefee" : null,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 1
         },
         {
           "infoid" : 14,
@@ -203,161 +113,200 @@
           "coursefee" : 170,
           "course_name" : "Cabin keel-boat",
           "course_active" : "Y",
-          "course_level" : 2
+          "course_level" : 2,
+          "has_test" : 1
         },
         {
           "infoid" : 15,
           "ncourse" : "CC",
           "nlicence" : "CC",
-          "nkey" : null,
-          "description" : "Competent Crew for Gib Sea, Surprise",
+          "nkey" : "",
+          "description" : "Competent Crew",
           "coursefee" : 170,
           "course_name" : "Competent Crew",
           "course_active" : "Y",
-          "course_level" : 1
+          "course_level" : 1,
+          "has_test" : 1
         },
         {
           "infoid" : 19,
           "ncourse" : "EC",
           "nlicence" : "EC",
           "nkey" : "EC",
-          "description" : "SL16, Hobie Tiger",
+          "description" : "Nacra, Hobie Tiger",
           "coursefee" : 170,
           "course_name" : "Advanced Catamaran",
           "course_active" : "Y",
-          "course_level" : 2
-        },
-        {
-          "infoid" : 20,
-          "ncourse" : null,
-          "nlicence" : "R",
-          "nkey" : "R",
-          "description" : "Rib",
-          "coursefee" : null,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
+          "course_level" : 2,
+          "has_test" : 1
         },
         {
           "infoid" : 24,
-          "ncourse" : null,
+          "ncourse" : "",
           "nlicence" : "J7",
-          "nkey" : null,
-          "description" : "J70  familiarisation outing for SU key holders",
-          "coursefee" : null,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
+          "nkey" : "",
+          "description" : "J70",
+          "coursefee" : "",
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 1
         },
         {
           "infoid" : 25,
           "ncourse" : "D3",
           "nlicence" : "D3",
-          "nkey" : null,
+          "nkey" : "",
           "description" : "Dynamic 3000, Miss R",
           "coursefee" : 170,
           "course_name" : "Advance Cabin Keel Boat",
           "course_active" : "Y",
-          "course_level" : 2
+          "course_level" : 2,
+          "has_test" : 1
         },
         {
-          "infoid" : 18,
-          "ncourse" : "CN",
-          "nlicence" : "CN",
-          "nkey" : null,
-          "description" : "CNV + YCC Dinghy course",
-          "coursefee" : 410,
-          "course_name" : "CNV+YCC Dinghy",
+          "infoid" : 4,
+          "ncourse" : "C",
+          "nlicence" : "C",
+          "nkey" : "C",
+          "description" : "SL16",
+          "coursefee" : 170,
+          "course_name" : "Catamaran",
           "course_active" : "N",
-          "course_level" : 1
+          "course_level" : 2,
+          "has_test" : 1
         },
         {
           "infoid" : 23,
           "ncourse" : "L",
           "nlicence" : "L",
-          "nkey" : null,
+          "nkey" : "",
           "description" : "Laser course",
           "coursefee" : 170,
           "course_name" : "Laser",
           "course_active" : "Y",
-          "course_level" : 2
+          "course_level" : 2,
+          "has_test" : 0
         },
         {
-          "infoid" : 26,
-          "ncourse" : "SS",
-          "nlicence" : "SS",
-          "nkey" : null,
-          "description" : "Symmetric Spinnaker course",
-          "coursefee" : 90,
-          "course_name" : "Spinnaker Symmetric",
+          "infoid" : 29,
+          "ncourse" : "SP",
+          "nlicence" : "SP",
+          "nkey" : "",
+          "description" : "Spinnaker course",
+          "coursefee" : 170,
+          "course_name" : "Spinnaker course",
           "course_active" : "Y",
-          "course_level" : 3
-        },
-        {
-          "infoid" : 27,
-          "ncourse" : "SA",
-          "nlicence" : "SA",
-          "nkey" : null,
-          "description" : "Asymmetric Spinnaker course",
-          "coursefee" : 90,
-          "course_name" : "Spinnaker Asymmetric",
-          "course_active" : "Y",
-          "course_level" : 3
-        },
-        {
-          "infoid" : 28,
-          "ncourse" : "SY",
-          "nlicence" : "SY",
-          "nkey" : null,
-          "description" : "Yngling Spinnaker course",
-          "coursefee" : 90,
-          "course_name" : "Spinnaker Yngling",
-          "course_active" : "Y",
-          "course_level" : 3
+          "course_level" : 3,
+          "has_test" : 0
         },
         {
           "infoid" : 16,
           "ncourse" : "RD",
           "nlicence" : "RD",
-          "nkey" : null,
+          "nkey" : "",
           "description" : "Regatta Dinghies",
           "coursefee" : 170,
           "course_name" : "Regatta Dinghy",
           "course_active" : "N",
-          "course_level" : 3
+          "course_level" : 3,
+          "has_test" : 0
         },
         {
-          "infoid" : 17,
-          "ncourse" : "RS",
-          "nlicence" : "RS",
-          "nkey" : null,
-          "description" : "Regatta Surprise",
-          "coursefee" : 170,
-          "course_name" : "Regatta Surprise",
-          "course_active" : "N",
-          "course_level" : 3
+          "infoid" : 1,
+          "ncourse" : "W",
+          "nlicence" : "W",
+          "nkey" : "W",
+          "description" : "Windsurf Boards",
+          "coursefee" : 100,
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : 1,
+          "has_test" : 0
         },
         {
           "infoid" : 22,
-          "ncourse" : null,
+          "ncourse" : "",
           "nlicence" : "J",
-          "nkey" : null,
-          "description" : "J80 familiarisation outing for SU key holders",
-          "coursefee" : null,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
+          "nkey" : "",
+          "description" : "J80",
+          "coursefee" : "",
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 1
+        },
+        {
+          "infoid" : 7,
+          "ncourse" : "",
+          "nlicence" : "O",
+          "nkey" : "O",
+          "description" : "Soling",
+          "coursefee" : 0,
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 0
+        },
+        {
+          "infoid" : 8,
+          "ncourse" : "CK",
+          "nlicence" : "CK",
+          "nkey" : "CK",
+          "description" : "First 25",
+          "coursefee" : 170,
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 0
+        },
+        {
+          "infoid" : 12,
+          "ncourse" : "EW",
+          "nlicence" : "EW",
+          "nkey" : "W",
+          "description" : "Expert Windsurf",
+          "coursefee" : 200,
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : 2,
+          "has_test" : 0
+        },
+        {
+          "infoid" : -1,
+          "ncourse" : "NW",
+          "nlicence" : "NW",
+          "nkey" : "",
+          "description" : "no introductor course for W",
+          "coursefee" : "",
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 0
+        },
+        {
+          "infoid" : 20,
+          "ncourse" : "",
+          "nlicence" : "R",
+          "nkey" : "R",
+          "description" : "Rib",
+          "coursefee" : "",
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 1
         },
         {
           "infoid" : 21,
-          "ncourse" : null,
+          "ncourse" : "",
           "nlicence" : "T",
-          "nkey" : null,
+          "nkey" : "",
           "description" : "Theory test",
-          "coursefee" : null,
-          "course_name" : null,
-          "course_active" : null,
-          "course_level" : null
+          "coursefee" : "",
+          "course_name" : "",
+          "course_active" : "",
+          "course_level" : "",
+          "has_test" : 1
         }
       ]
     }
