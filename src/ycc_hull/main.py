@@ -44,7 +44,7 @@ def read_version_from_pyproject_toml() -> str:
     Reads the version from the pyproject.toml file.
     """
     pyproject_toml_file = os.path.realpath(
-        os.path.join(os.path.dirname(__file__), "..", "pyproject.toml")
+        os.path.join(os.path.dirname(__file__), "../../pyproject.toml")
     )
     with open(pyproject_toml_file, encoding="utf-8") as file:
         return toml.load(file)["project"]["version"]

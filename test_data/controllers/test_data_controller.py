@@ -17,7 +17,7 @@ from test_data.generator_config import (
     HELPER_TASKS_JSON_FILE,
     HELPERS_APP_PERMISSIONS_JSON_FILE,
     HOLIDAYS_JSON_FILE,
-    INFOLICENCES_EXPORTED_JSON_FILE,
+    LICENCE_INFOS_JSON_FILE,
     LICENCES_JSON_FILE,
     MEMBERS_JSON_FILE,
     MEMBERSHIP_EXPORTED_JSON_FILE,
@@ -187,8 +187,8 @@ class TestDataController(BaseController):
         if await self.database_context.query_count(LicenceInfoEntity, session=session):
             log.append("Skipping licence infos")
         else:
-            entries = await importer.import_exported(
-                INFOLICENCES_EXPORTED_JSON_FILE, LicenceInfoEntity
+            entries = await importer.import_generated(
+                LICENCE_INFOS_JSON_FILE, LicenceInfoEntity
             )
             log.append(f"Add {len(entries)} licence infos")
 
@@ -261,16 +261,17 @@ class TestDataController(BaseController):
             HelperTaskHelperEntity,
             HelperTaskEntity,
             HelperTaskCategoryEntity,
-            # Boats
-            BoatEntity,
             # Licences,
-            LicenceInfoEntity,
             LicenceEntity,
             # Members
             EntranceFeeRecordEntity,
             FeeRecordEntity,
             UserEntity,
             MemberEntity,
+            # Licence infos,
+            LicenceInfoEntity,
+            # Boats
+            BoatEntity,
             # General
             AuditLogEntryEntity,
             MembershipTypeEntity,

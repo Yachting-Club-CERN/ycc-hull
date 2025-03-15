@@ -19,9 +19,10 @@ HOLIDAYS_JSON_FILE = f"{_SCRIPT_DIR}/generated/Holidays.json"
 # Members & Licences
 ENTRANCE_FEE_RECORDS_JSON_FILE = f"{_SCRIPT_DIR}/generated/EntranceFeeRecords.json"
 FEE_RECORDS_JSON_FILE = f"{_SCRIPT_DIR}/generated/FeeRecords.json"
-INFOLICENCES_EXPORTED_JSON_FILE = (
+LICENCE_INFOS_EXPORTED_JSON_FILE = (
     f"{_SCRIPT_DIR}/exported/INFOLICENCES_DATA_TABLE.json-formatted"
 )
+LICENCE_INFOS_JSON_FILE = f"{_SCRIPT_DIR}/generated/LicenceInfos.json"
 LICENCES_JSON_FILE = f"{_SCRIPT_DIR}/generated/Licences.json"
 MEMBERS_JSON_FILE = f"{_SCRIPT_DIR}/generated/Members.json"
 MEMBERSHIP_EXPORTED_JSON_FILE = (

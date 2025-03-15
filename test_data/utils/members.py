@@ -63,18 +63,24 @@ def _fake_username_collision(first_name: str, last_name: str) -> str:
     )
 
 
-def generate_member_infos(faker: Faker, count: int) -> list[MemberInfo]:
-    return [_generate_member_info(faker, i + 1) for i in range(0, count)]
+def generate_member_infos(
+    faker: Faker, licences_to_ids: dict[str, int], count: int
+) -> list[MemberInfo]:
+    return [
+        _generate_member_info(faker, licences_to_ids, i + 1) for i in range(0, count)
+    ]
 
 
-def _generate_member_info(faker: Faker, member_id: int) -> MemberInfo:
+def _generate_member_info(
+    faker: Faker, licences_to_ids: dict[str, int], member_id: int
+) -> MemberInfo:
     member = _generate_member(faker, member_id)
     return MemberInfo(
         member=member,
         user=_generate_user(faker, member),
         entrance_fee_record=_generate_member_entrance_fee_record(faker, member),
         fee_records=_generate_member_fee_records(faker, member),
-        licences=generate_licences(faker, member),
+        licences=generate_licences(faker, licences_to_ids, member),
     )
 
 
