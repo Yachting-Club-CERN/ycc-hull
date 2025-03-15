@@ -241,6 +241,7 @@ def _create_fee_record(
         paid_mode=_generate_paid_mode(faker),
         fee=fee,
         entered_date=entered_date,
+        payment_reason=None,
     )
 
 

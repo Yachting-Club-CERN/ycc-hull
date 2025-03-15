@@ -9,7 +9,6 @@ from ycc_hull.db.entities import BoatEntity
 
 
 def generate_boats() -> list[BoatEntity]:
-    # Remove maintainers from the exported file
     with open(BOATS_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
         return [_create_boat(boat) for boat in json.load(file)["results"][0]["items"]]
 

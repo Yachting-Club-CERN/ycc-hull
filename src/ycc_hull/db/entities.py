@@ -297,9 +297,11 @@ class HolidayEntity(BaseEntity):
 
     __tablename__ = "holidays"
 
-    day: Mapped[datetime] = mapped_column(DateTime)
+    # Code-only primary key on day, since the id field is nullable in the DB and it is often null
+    day: Mapped[datetime] = mapped_column(DateTime, primary_key=True)
     label: Mapped[str] = mapped_column(VARCHAR(20))
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    # Lot of nulls in the DB
+    id: Mapped[int | None] = mapped_column(Integer)
 
 
 class LicenceEntity(BaseEntity):
@@ -359,7 +361,6 @@ class LicenceInfoEntity(BaseEntity):
     course_level: Mapped[int | None] = mapped_column(Integer)
     # 0, 1 (NUMBER(1, 0) in DB)
     has_test: Mapped[int] = mapped_column(Integer)
-
 
 
 class MemberEntity(BaseEntity):

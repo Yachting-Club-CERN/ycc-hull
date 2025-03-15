@@ -2,7 +2,7 @@
 
 YCC backend service.
 
-Sad news as of 2024/2025: this did not catch on, Enrico decided to do his own thing with Flask and Vue.js and Bartek is also doing his own thing. Stays for now as a Python practice project.
+Sad news as of 2025-03: This approach did not catch on, Enrico decided to do his own thing with Flask and Vue.js and Bartek is also doing his own thing. Stays for now as backend for the YCC App & Python practice project.
 
 ## Prerequisites
 
@@ -66,12 +66,14 @@ For the Swagger UI (optional) create a client with:
 
 ## Development Guide
 
-### Module Structure
+### Project Layout
 
 - `generated_entities`: generated entities for reference
 - `legacy_password_hashing`: Perl-compatible password hashing
 - `test_data`: test data & generator
-- `ycc_hull`: published module
+- `tests`: tests
+- `load_tests`: load tests
+- `src/ycc_hull`: published module
   - `api`: API endpoints, which are also responsible for authorisation
   - `controllers`: controllers, responsible for business logic and DB to DTO conversion
   - `db`: DB-related components, entities
