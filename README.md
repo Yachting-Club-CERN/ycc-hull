@@ -7,6 +7,7 @@ Sad news as of 2025-03: This approach did not catch on, Enrico decided to do his
 ## Prerequisites
 
 - Install Python 3.12
+- Install Oracle Instant Client
 - Install Poetry & [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
   - `pipx install poetry && pipx inject poetry poetry-plugin-up`
 - Optionally install Docker & Docker Compose if you want to run the full stack locally

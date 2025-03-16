@@ -7,7 +7,7 @@ from datetime import date, datetime
 
 import aiofiles
 from sqlalchemy import delete
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 from test_data.generator_config import (
     BOATS_JSON_FILE,
     ENTRANCE_FEE_RECORDS_JSON_FILE,
@@ -50,7 +50,7 @@ class _TestDataImporter:
     Test data importer. Able to import data from exported and generated files.
     """
 
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(self, session: Session) -> None:
         self._session = session
 
     async def import_exported(
@@ -74,7 +74,7 @@ class _TestDataImporter:
             entry = self._prepare(entry)
             self._session.add(cls(**entry))
             if commit_on_each:
-                await self._session.commit()
+                self._session.commit()
         return entries
 
     def _prepare(self, entry: dict) -> dict:
@@ -101,7 +101,7 @@ class TestDataController(BaseController):
     async def populate(self) -> list[str]:
         log: list[str] = []
 
-        async with self.database_context.async_session() as session:
+        with self.database_context.session() as session:
             importer = _TestDataImporter(session=session)
 
             log.extend(await self._populate_holidays(session, importer))
@@ -109,7 +109,7 @@ class TestDataController(BaseController):
             log.extend(await self._populate_boats(session, importer))
             log.extend(await self._populate_licences(session, importer))
 
-            await session.commit()
+            session.commit()
             log.append("Commit")
 
             log.extend(await self._populate_helpers(session, importer))
@@ -117,7 +117,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_holidays(
-        self, session: AsyncSession, importer: _TestDataImporter
+        self, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -130,7 +130,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_members(
-        self, session: AsyncSession, importer: _TestDataImporter
+        self, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -167,7 +167,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_boats(
-        self, session: AsyncSession, importer: _TestDataImporter
+        self, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -180,7 +180,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_licences(
-        self, session: AsyncSession, importer: _TestDataImporter
+        self, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -201,7 +201,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_helpers(
-        self, session: AsyncSession, importer: _TestDataImporter
+        self, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -233,7 +233,7 @@ class TestDataController(BaseController):
             )
             log.append(f"Add {len(entries)} helper tasks")
 
-        await session.commit()
+        session.commit()
         log.append("Commit")
 
         if await self.database_context.query_count(
@@ -248,7 +248,7 @@ class TestDataController(BaseController):
             )
             log.append(f"Add {len(entries)} helper task helpers (COMMIT on each)")
 
-        await session.commit()
+        session.commit()
         log.append("Commit")
 
         return log
@@ -288,12 +288,12 @@ class TestDataController(BaseController):
                 f"Some entity classes are not handled: {unhandled_class_names}"
             )
 
-        async with self.database_context.async_session() as session:
+        with self.database_context.session() as session:
             for cls in classes:
                 log.append(f"Deleting {short_type_name(cls)} entities")
-                await session.execute(delete(cls))
+                session.execute(delete(cls))
 
-            await session.commit()
+            session.commit()
             log.append("Commit")
 
         return log

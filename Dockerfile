@@ -16,6 +16,11 @@ FROM registry.access.redhat.com/ubi9/python-$PYTHON_VERSION
 
 WORKDIR /opt/app-root/src
 
+USER root
+RUN dnf install -y https://download.oracle.com/otn_software/linux/instantclient/2370000/oracle-instantclient-basic-23.7.0.25.01-1.el9.x86_64.rpm && \
+    dnf clean all
+
+USER 1001
 RUN pip install --no-cache-dir -U pip setuptools micropipenv
 
 COPY --chown=1001:0 --from=builder /opt/app-root/src/requirements.txt /opt/app-root/src/
