@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependency upgrades (2025-03), notable:
   - OracleDB adapter 3.0.0
   - sqlacodegen 3.0.0 (which supports SQLAchemy 2.x)
+- Move production code to `src/`
+- For containerisation, use Poetry to generate a `requirements.txt` file for micropipenv
 
 ## [1.0.0] - 2024-01-30
 

@@ -43,11 +43,15 @@ def read_version_from_pyproject_toml() -> str:
     """
     Reads the version from the pyproject.toml file.
     """
-    pyproject_toml_file = os.path.realpath(
-        os.path.join(os.path.dirname(__file__), "../../pyproject.toml")
-    )
-    with open(pyproject_toml_file, encoding="utf-8") as file:
-        return toml.load(file)["project"]["version"]
+    for project_dir in ["../", "../../"]:
+        pyproject_toml_file = os.path.realpath(
+            os.path.join(os.path.dirname(__file__), project_dir, "pyproject.toml")
+        )
+        if os.path.exists(pyproject_toml_file):
+            with open(pyproject_toml_file, encoding="utf-8") as file:
+                return toml.load(file)["project"]["version"]
+
+    raise FileNotFoundError("pyproject.toml not found")
 
 
 @asynccontextmanager

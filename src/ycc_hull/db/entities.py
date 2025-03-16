@@ -96,9 +96,9 @@ class BoatEntity(BaseEntity):
     license: Mapped[str] = mapped_column(VARCHAR(5))
     class_: Mapped[str] = mapped_column("class", VARCHAR(5))
     # NUMBER(5, 0) in DB
-    table_pos: Mapped[int] = mapped_column(Integer, unique=True)
+    table_pos: Mapped[int | None] = mapped_column(Integer, unique=True)
     # NUMBER(3, 0) in DB
-    ycc_num: Mapped[int] = mapped_column(Integer, unique=True)
+    ycc_num: Mapped[int | None] = mapped_column(Integer, unique=True)
     # Maintainer and maintainer2 are used for sending emails to maintainers, e.g., upon Warning/Out of order log entries
     maintainer_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("members.id"))
     ext_reg_cat: Mapped[str | None] = mapped_column(VARCHAR(2))
