@@ -27,7 +27,9 @@ class DatabaseContext:
     """
 
     def __init__(self, database_url: str, *, echo: bool | None = None) -> None:
-        oracledb.init_oracle_client()
+        if database_url.startswith("oracle+oracledb://"):
+            oracledb.init_oracle_client()
+
         self._engine: Engine = create_engine(database_url, echo=echo)
         self.session = sessionmaker(self._engine)
 
