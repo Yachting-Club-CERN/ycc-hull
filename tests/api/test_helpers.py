@@ -91,8 +91,8 @@ async def init_database() -> None:
 
 
 async def get_last_audit_log_entry() -> AuditLogEntryEntity:
-    async with DatabaseContextHolder.context.async_session() as session:
-        entry = await session.scalar(
+    with DatabaseContextHolder.context.session() as session:
+        entry = session.scalar(
             select(AuditLogEntryEntity).order_by(AuditLogEntryEntity.id.desc()).limit(1)
         )
         if not entry:

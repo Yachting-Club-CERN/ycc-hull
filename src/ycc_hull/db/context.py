@@ -5,13 +5,16 @@ Database context.
 from typing import Any, Awaitable, TypeVar
 from collections.abc import Callable, Sequence
 
-from sqlalchemy import Select, func, select
-from sqlalchemy.ext.asyncio import (
-    AsyncEngine,
-    create_async_engine,
-    AsyncSession,
-    async_sessionmaker,
+import oracledb
+from sqlalchemy import (
+    Select,
+    func,
+    select,
+    Engine,
+    create_engine,
 )
+from sqlalchemy.orm import Session, sessionmaker
+
 
 from ycc_hull.config import CONFIG, Environment
 
@@ -24,8 +27,9 @@ class DatabaseContext:
     """
 
     def __init__(self, database_url: str, *, echo: bool | None = None) -> None:
-        self._engine: AsyncEngine = create_async_engine(database_url, echo=echo)
-        self.async_session = async_sessionmaker(self._engine)
+        oracledb.init_oracle_client()
+        self._engine: Engine = create_engine(database_url, echo=echo)
+        self.session = sessionmaker(self._engine)
 
     async def query_all(  # pylint: disable=too-many-arguments
         self,
@@ -34,7 +38,7 @@ class DatabaseContext:
         transformer: Callable[[Any], T] | None = None,
         async_transformer: Callable[[Any], Awaitable[T]] | None = None,
         unique: bool = False,
-        session: AsyncSession | None = None,
+        session: Session | None = None,
     ) -> Sequence[T]:
         """
         Queries all results for the specified SELECT statement from the database.
@@ -44,7 +48,7 @@ class DatabaseContext:
             transformer (Callable[[Any], T], optional): Entity transformer (e.g., DTO factory). Defaults to None.
             async_transformer (Callable[[Any], Awaitable[T]], optional): Async entity transformer (e.g., DTO factory). Defaults to None.
             unique (bool, optional): Whether to return only unique results. Defaults to False.
-            session (AsyncSession, optional): Database session to use. Defaults to None, which will make this function use a new session.
+            session (Session, optional): Database session to use. Defaults to None, which will make this function use a new session.
 
         Returns:
             Sequence[T]: Query results
@@ -53,10 +57,10 @@ class DatabaseContext:
             raise AssertionError(
                 "Only one of transformer and async_transformer can be specified"
             )
-        session_to_use = session or self.async_session()
+        session_to_use = session or self.session()
 
         try:
-            result = await session_to_use.scalars(statement)
+            result = session_to_use.scalars(statement)
             if unique:
                 result = result.unique()
 
@@ -67,25 +71,25 @@ class DatabaseContext:
             return result.all()
         finally:
             if not session:
-                await session_to_use.close()
+                session_to_use.close()
 
     async def query_count(
-        self, entity_class: type, *, session: AsyncSession | None = None
+        self, entity_class: type, *, session: Session | None = None
     ) -> int:
         """
         Queries the count for the specified entity class.
 
         Args:
             entity_class (type): Entity class
-            session (AsyncSession, optional): Database session to use. Defaults to None, which will make this function use a new session.
+            session (Session, optional): Database session to use. Defaults to None, which will make this function use a new session.
 
         Returns:
             int: Entity count
         """
-        session_to_use = session or self.async_session()
+        session_to_use = session or self.session()
 
         try:
-            result = await session_to_use.scalar(
+            result = session_to_use.scalar(
                 select(func.count()).select_from(  # pylint: disable=not-callable
                     entity_class
                 )
@@ -95,13 +99,13 @@ class DatabaseContext:
             return result
         finally:
             if not session:
-                await session_to_use.close()
+                session_to_use.close()
 
     async def close(self) -> None:
         """
         Closes the database context.
         """
-        await self._engine.dispose()
+        self._engine.dispose()
 
 
 class _DatabaseContextHolder:

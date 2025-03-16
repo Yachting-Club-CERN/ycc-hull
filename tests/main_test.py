@@ -108,11 +108,10 @@ async def init_test_database(name: str) -> None:
     if not os.path.exists("tmp"):
         os.makedirs("tmp", exist_ok=True)
     DatabaseContextHolder.context = DatabaseContext(
-        database_url=f"sqlite+aiosqlite:///tmp/test-{name}.db", echo=False
+        database_url=f"sqlite:///tmp/test-{name}.db", echo=False
     )
     engine = DatabaseContextHolder.context._engine  # pylint: disable=protected-access
-    async with engine.begin() as connection:
-        await connection.run_sync(BaseEntity.metadata.drop_all)
-        await connection.run_sync(BaseEntity.metadata.create_all)
+    BaseEntity.metadata.drop_all(bind=engine)
+    BaseEntity.metadata.create_all(bind=engine)
 
     await TestDataController().repopulate()

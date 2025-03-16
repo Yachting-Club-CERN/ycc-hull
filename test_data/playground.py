@@ -25,9 +25,9 @@ def _username(member: MemberEntity) -> str:
 
 
 async def dump_members_and_fees() -> None:
-    async with database_context.async_session() as session:
+    with database_context.session() as session:
         members: ScalarResult[MemberEntity] = (
-            await session.scalars(select(MemberEntity).order_by(MemberEntity.id))
+            session.scalars(select(MemberEntity).order_by(MemberEntity.id))
         ).unique()
 
         for member in members:
@@ -54,10 +54,10 @@ async def dump_members_and_fees() -> None:
 
 
 async def dump_members_and_licences() -> None:
-    async with database_context.async_session() as session:
+    with database_context.session() as session:
         print("=" * 80)
         members: ScalarResult[MemberEntity] = (
-            await session.scalars(
+            session.scalars(
                 select(MemberEntity)
                 .options(joinedload(MemberEntity.licences))
                 .order_by(MemberEntity.id)
@@ -90,9 +90,9 @@ async def dump_helper_tasks() -> None:
         f"COUNT(HelperTaskHelperEntity): {await database_context.query_count(HelperTaskHelperEntity)}"
     )
 
-    async with database_context.async_session() as session:
+    with database_context.session() as session:
         helper_tasks: ScalarResult[HelperTaskEntity] = (
-            await session.scalars(
+            session.scalars(
                 select(HelperTaskEntity)
                 .options(joinedload(HelperTaskEntity.category))
                 .order_by(
