@@ -347,8 +347,8 @@ class LicenceInfoEntity(BaseEntity):
     # This is actually the licence ID, same as BoatEntity.license (note the inconsistency in the spelling).
     # However, boats do not have licence in their table what is here, for example Laser is listed as L here,
     # but for booking a Laser one needs a D licence (at least as of 2023)
-    nlicence: Mapped[str | None] = mapped_column(VARCHAR(2))
-    # Probably we can ignore this one, often NULLm especially for new entries
+    nlicence: Mapped[str] = mapped_column(VARCHAR(2))
+    # Probably we can ignore this one, often NULL, especially for new entries
     nkey: Mapped[str | None] = mapped_column(VARCHAR(2))
     description: Mapped[str] = mapped_column(VARCHAR(50))
     # NULL, 0, 90, 170, ... (NUMBER(4, 0) in DB)

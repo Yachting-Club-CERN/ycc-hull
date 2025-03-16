@@ -33,9 +33,9 @@ _KEYCLOAK = KeycloakOpenID(
 
 
 # Programmatic access to the token endpoint: _KEYCLOAK.well_known()["token_endpoint"]
-token_endpoint = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
-_logger.info("Initialising OAuth 2 scheme with token endpoint: %s", token_endpoint)
-_OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=token_endpoint)
+TOKEN_ENDPOINT = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
+_logger.info("Initialising OAuth 2 scheme with token endpoint: %s", TOKEN_ENDPOINT)
+_OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=TOKEN_ENDPOINT)
 
 
 def _create_user(user_info: dict, token_info: dict) -> User:
