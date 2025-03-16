@@ -4,6 +4,8 @@ General API DTO classes.
 
 from datetime import date
 
+from pydantic import Field
+
 from ycc_hull.db.entities import (
     BoatEntity,
     HolidayEntity,
@@ -25,10 +27,11 @@ class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
     id: int
     name: str
     type: str
-    number: int
     licence: str
-    class_: str
-    table_position: int
+    class_: str = Field(alias="class")
+    capacity: int | None
+    # ycc_num / number is irrelevant for the model
+    table_position: int | None
 
     @staticmethod
     async def create(
@@ -39,9 +42,9 @@ class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
             id=boat.boat_id,
             name=boat.name,
             type=boat.type,
-            number=boat.ycc_num,
             licence=boat.license,
             class_=boat.class_,
+            capacity=boat.capacity,
             table_position=boat.table_pos,
         )
 
@@ -53,6 +56,7 @@ class HolidayDto(CamelisedBaseModelWithEntity[HolidayEntity]):
 
     date: date
     label: str
+    # id is irrelevant for the model
 
     @staticmethod
     async def create(

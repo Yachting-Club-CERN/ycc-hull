@@ -26,7 +26,9 @@ def generate_holidays() -> list[HolidayEntity]:
     with open(HOLIDAYS_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
         return [
             HolidayEntity(
-                day=_parse_oracle_date(holiday["day"]), label=holiday["label"]
+                day=_parse_oracle_date(holiday["day"]),
+                label=holiday["label"],
+                id=None if holiday["id"] == "" else holiday["id"],
             )
             for holiday in json.load(file)["results"][0]["items"]
         ]
