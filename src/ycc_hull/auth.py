@@ -54,7 +54,7 @@ def _create_user(user_info: dict, token_info: dict) -> User:
         'preferred_username': 'MHUFF',
         'given_name': 'Michele',
         'family_name': 'Huff',
-        'email': 'Michele.Huff@mailinator.com'
+        'email': 'michele.huff@mailinator.com'
     }
     ```
 
@@ -75,7 +75,7 @@ def _create_user(user_info: dict, token_info: dict) -> User:
         'given_name': 'Michele',
         'family_name': 'Huff',
         'preferred_username': 'MHUFF',
-        'email': 'Michele.Huff@mailinator.com',
+        'email': 'michele.huff@mailinator.com',
         'email_verified': False,
         'acr': '1',
         'allowed-origins': ['http://localhost:8000'],

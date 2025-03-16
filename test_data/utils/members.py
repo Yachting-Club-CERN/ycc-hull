@@ -119,7 +119,7 @@ def _generate_member(faker: Faker, member_id: int) -> MemberEntity:
         # work_town = Column(VARCHAR2(25))
         # work_state = Column(VARCHAR2(5))
         work_phone=_generate_phone_number(faker, member_id, 10),
-        e_mail=f"{first_name}.{last_name}@mailinator.com",
+        e_mail=f"{first_name.lower()}.{last_name.lower()}@mailinator.com",
         home_addr="~~~Ignored~~~",
         # home_towncode = Column(VARCHAR2(7))
         # home_town = Column(VARCHAR2(25))
