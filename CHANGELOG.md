@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-03-16
+
 ### Added
 
 - Year-aware helper tasks
@@ -24,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move production code to `src/`
 - For containerisation, use Poetry to generate a `requirements.txt` file for micropipenv
 - Switch to python-oracledb thick mode
+- Prepare for Keycloak 26
 
 ## [1.0.0] - 2024-01-30
 
@@ -96,6 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deployment on CERN OKD TEST
 
 [unreleased]: https://github.com/Yachting-Club-CERN/ycc-hull/compare/v1.0.0...HEAD
+[1.1.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v1.0.0
 [0.4.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.4.0
 [0.3.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.3.0
