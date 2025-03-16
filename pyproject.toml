@@ -1,6 +1,6 @@
 [project]
 name = "ycc-hull"
-version = "1.1.0"
+version = "1.1.1"
 description = "YCC Hull Backend Service"
 authors = [
     { name = "Lajos Cseppentő", email = "1053931+LajosCseppento@users.noreply.github.com" },
