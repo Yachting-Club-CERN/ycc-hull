@@ -24,7 +24,7 @@ _PYTHON_HASH_FORMAT_RE: Pattern = re.compile(r"^{PBKDF2}(\d+)[$](.+)[$](.+)$")
 
 # In YCC format, compatible with Enrico's PERL applications:
 # {PBKDF2-X}HMACSHA1:AABOIA:2/u/l7J2zpnTmlMqBQDgnA:89AeSFShUfrxB6guLEi7CUiTL8c
-_PERL_HASH_FORMAT_RE: Pattern = re.compile(r"^{X-PBKDF2}HMACSHA1:(.+)[:](.+)[:](.+)$")
+_PERL_HASH_FORMAT_RE: Pattern = re.compile(r"^{X-PBKDF2}HMACSHA1:(.+):(.+):(.+)$")
 
 _HASHER: PrefixWrapper = _create_hasher()
 
