@@ -23,5 +23,9 @@
   "peacock.color": "#215732",
   "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
+  "sonarlint.connectedMode.project": {
+    "connectionId": "yachting-club-cern",
+    "projectKey": "Yachting-Club-CERN_ycc-hull"
+  }
 }
