@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 TODO Hello world
 
+## [1.1.0] - 2025-03-16
+
 ### Added
 
 - Year-aware helper tasks
@@ -18,6 +20,15 @@ TODO Hello world
 ### Changed
 
 - Better error reporting for task timing issues
+- Upgrade to Python 3.12
+- Upgrade to Poetry 2
+- Dependency upgrades (2025-03), notable:
+  - OracleDB adapter 3.0.0
+  - sqlacodegen 3.0.0 (which supports SQLAchemy 2.x)
+- Move production code to `src/`
+- For containerisation, use Poetry to generate a `requirements.txt` file for micropipenv
+- Switch to python-oracledb thick mode
+- Prepare for Keycloak 26
 
 ## [1.0.0] - 2024-01-30
 
@@ -90,6 +101,7 @@ TODO Hello world
 - Deployment on CERN OKD TEST
 
 [unreleased]: https://github.com/Yachting-Club-CERN/ycc-hull/compare/v1.0.0...HEAD
+[1.1.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v1.0.0
 [0.4.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.4.0
 [0.3.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.3.0

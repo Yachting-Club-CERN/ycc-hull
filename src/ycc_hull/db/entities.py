@@ -96,9 +96,9 @@ class BoatEntity(BaseEntity):
     license: Mapped[str] = mapped_column(VARCHAR(5))
     class_: Mapped[str] = mapped_column("class", VARCHAR(5))
     # NUMBER(5, 0) in DB
-    table_pos: Mapped[int] = mapped_column(Integer, unique=True)
+    table_pos: Mapped[int | None] = mapped_column(Integer, unique=True)
     # NUMBER(3, 0) in DB
-    ycc_num: Mapped[int] = mapped_column(Integer, unique=True)
+    ycc_num: Mapped[int | None] = mapped_column(Integer, unique=True)
     # Maintainer and maintainer2 are used for sending emails to maintainers, e.g., upon Warning/Out of order log entries
     maintainer_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("members.id"))
     ext_reg_cat: Mapped[str | None] = mapped_column(VARCHAR(2))
@@ -106,15 +106,7 @@ class BoatEntity(BaseEntity):
         Integer, ForeignKey("members.id")
     )
     registration_pdf: Mapped[Any | None] = mapped_column(BLOB)
-
-    # This could be many to many when away from Perl (and maybe APEX too)
-    maintainer1: Mapped["MemberEntity | None"] = relationship(
-        foreign_keys=maintainer_id, back_populates="maintained_boats1"
-    )
-    maintainer2: Mapped["MemberEntity | None"] = relationship(
-        foreign_keys=maintainer_id2,
-        back_populates="maintained_boats2",
-    )
+    capacity: Mapped[int | None] = mapped_column(Integer)
 
 
 class EntranceFeeRecordEntity(BaseEntity):
@@ -174,6 +166,7 @@ class FeeRecordEntity(BaseEntity):
     paymentid: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True
     )
+    payment_reason: Mapped[str | None] = mapped_column(VARCHAR(50))
 
 
 class HelpersAppPermissionEntity(BaseEntity):
@@ -304,9 +297,11 @@ class HolidayEntity(BaseEntity):
 
     __tablename__ = "holidays"
 
-    day: Mapped[datetime] = mapped_column(DateTime)
+    # Code-only primary key on day, since the id field is nullable in the DB and it is often null
+    day: Mapped[datetime] = mapped_column(DateTime, primary_key=True)
     label: Mapped[str] = mapped_column(VARCHAR(20))
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    # Lot of nulls in the DB
+    id: Mapped[int | None] = mapped_column(Integer)
 
 
 class LicenceEntity(BaseEntity):
@@ -352,8 +347,8 @@ class LicenceInfoEntity(BaseEntity):
     # This is actually the licence ID, same as BoatEntity.license (note the inconsistency in the spelling).
     # However, boats do not have licence in their table what is here, for example Laser is listed as L here,
     # but for booking a Laser one needs a D licence (at least as of 2023)
-    nlicence: Mapped[str | None] = mapped_column(VARCHAR(2))
-    # Probably we can ignore this one, often NULLm especially for new entries
+    nlicence: Mapped[str] = mapped_column(VARCHAR(2))
+    # Probably we can ignore this one, often NULL, especially for new entries
     nkey: Mapped[str | None] = mapped_column(VARCHAR(2))
     description: Mapped[str] = mapped_column(VARCHAR(50))
     # NULL, 0, 90, 170, ... (NUMBER(4, 0) in DB)
@@ -364,6 +359,8 @@ class LicenceInfoEntity(BaseEntity):
     course_active: Mapped[str | None] = mapped_column(CHAR(1))
     # NULL, 1, 2, 3 (NUMBER(1, 0) in DB)
     course_level: Mapped[int | None] = mapped_column(Integer)
+    # 0, 1 (NUMBER(1, 0) in DB)
+    has_test: Mapped[int] = mapped_column(Integer)
 
 
 class MemberEntity(BaseEntity):
@@ -437,17 +434,6 @@ class MemberEntity(BaseEntity):
         back_populates="member"
     )
     licences: Mapped[list["LicenceEntity"]] = relationship()
-    # This could be many to many when away from Perl (and maybe APEX too)
-    maintained_boats1: Mapped[list["BoatEntity"]] = relationship(
-        foreign_keys="BoatEntity.maintainer_id",
-        order_by="BoatEntity.name",
-        back_populates="maintainer1",
-    )
-    maintained_boats2: Mapped[list["BoatEntity"]] = relationship(
-        foreign_keys="BoatEntity.maintainer_id2",
-        order_by="BoatEntity.name",
-        back_populates="maintainer2",
-    )
     user: Mapped["UserEntity | None"] = relationship(
         back_populates="member", lazy="joined"
     )
@@ -507,7 +493,7 @@ class UserEntity(BaseEntity):
     logon_id: Mapped[str] = mapped_column(VARCHAR(25), unique=True)
     session_id: Mapped[int | None] = mapped_column(Integer)
     session_date: Mapped[datetime | None] = mapped_column(DateTime)
-    logon_pass2: Mapped[str | None] = mapped_column(VARCHAR(128))
+    logon_pass2: Mapped[str | None] = mapped_column(VARCHAR(256))
     pass_reset_key: Mapped[str | None] = mapped_column(VARCHAR(128))
     pass_reset_exp: Mapped[datetime | None] = mapped_column(DateTime)
     last_changed: Mapped[datetime | None] = mapped_column(DateTime)

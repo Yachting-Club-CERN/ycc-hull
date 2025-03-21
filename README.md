@@ -2,9 +2,12 @@
 
 YCC backend service.
 
+Sad news as of 2025-03: This approach did not catch on, Enrico decided to do his own thing with Flask and Vue.js and Bartek is also doing his own thing. Stays for now as backend for the YCC App & Python practice project.
+
 ## Prerequisites
 
-- Install Python 3.11
+- Install Python 3.12
+- Install Oracle Instant Client
 - Install Poetry & [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
   - `pipx install poetry && pipx inject poetry poetry-plugin-up`
 - Optionally install Docker & Docker Compose if you want to run the full stack locally
@@ -64,12 +67,14 @@ For the Swagger UI (optional) create a client with:
 
 ## Development Guide
 
-### Module Structure
+### Project Layout
 
 - `generated_entities`: generated entities for reference
 - `legacy_password_hashing`: Perl-compatible password hashing
 - `test_data`: test data & generator
-- `ycc_hull`: published module
+- `tests`: tests
+- `load_tests`: load tests
+- `src/ycc_hull`: published module
   - `api`: API endpoints, which are also responsible for authorisation
   - `controllers`: controllers, responsible for business logic and DB to DTO conversion
   - `db`: DB-related components, entities
@@ -80,14 +85,11 @@ For the Swagger UI (optional) create a client with:
 You can regenerate entities using the following commands:
 
 ```sh
-cd generated_entities
-poetry install --no-root
-poetry run sqlacodegen oracle+cx_oracle://ycclocal:changeit@127.0.0.1:1521 --outfile entities_generated.py
+poetry run sqlacodegen oracle+oracledb://ycclocal:changeit@127.0.0.1:1521/XE --outfile generated_entities/entities_generated.py
+poetry run black generated_entities/entities_generated.py
 ```
 
 Generated entities does not work as good as handwritten ones. Please use the generated entities as a reference for updating handwritten entities in `entities.py`.
-
-(Also note that as of 2023-03 we use SQLAlchemy 2.x (way faster with Oracle and way more convenient), while latest sqlacodegen only supports SQLAlchemy 1.x.)
 
 ### Test Data
 

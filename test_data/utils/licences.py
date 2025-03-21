@@ -2,32 +2,22 @@
 Test data generator component for licences.
 """
 
-import json
-
 from faker import Faker
 
-from test_data.generator_config import CURRENT_YEAR, INFOLICENCES_EXPORTED_JSON_FILE
+from test_data.generator_config import CURRENT_YEAR
 from ycc_hull.db.entities import LicenceEntity, MemberEntity
 
-
-def _create_licences_to_ids() -> dict[str, int]:
-    with open(INFOLICENCES_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
-        return {
-            licence_info["nlicence"]: licence_info["infoid"]
-            for licence_info in json.load(file)["results"][0]["items"]
-        }
-
-
-_LICENCES_TO_IDS = _create_licences_to_ids()
 _LICENCES_LEVEL1 = ["CC", "D", "Y"]
 _LICENCES_LEVEL2 = ["C", "EC", "ED", "GS", "SU", "J", "J7"]
 _LICENCES_LEVEL3 = ["D3"]
 _LICENCES_OTHER = ["M"]
 
 
-def generate_licences(faker: Faker, member: MemberEntity) -> list[LicenceEntity]:
+def generate_licences(
+    faker: Faker, licences_to_ids: dict[str, int], member: MemberEntity
+) -> list[LicenceEntity]:
     return [
-        _create_licence(faker, member, _LICENCES_TO_IDS[licence])
+        _create_licence(faker, member, licences_to_ids[licence])
         for licence in sorted(_generate_licence_list(faker, member))
     ]
 

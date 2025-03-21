@@ -41,6 +41,10 @@
         {
           "name" : "MAINTAINER_ID2",
           "type" : "NUMBER"
+        },
+        {
+          "name" : "CAPACITY",
+          "type" : "NUMBER"
         }
       ],
       "items" : [
@@ -51,10 +55,11 @@
           "ycc_num" : 1,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : -1,
-          "maintainer_id" : 4978,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 2
         },
         {
           "boat_id" : 2,
@@ -63,10 +68,11 @@
           "ycc_num" : 2,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 7,
-          "maintainer_id" : 4978,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 2
         },
         {
           "boat_id" : 3,
@@ -75,10 +81,11 @@
           "ycc_num" : 3,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 9,
-          "maintainer_id" : 4978,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 3
         },
         {
           "boat_id" : 4,
@@ -87,10 +94,11 @@
           "ycc_num" : 4,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : -4,
-          "maintainer_id" : 4978,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 2
         },
         {
           "boat_id" : 5,
@@ -99,10 +107,11 @@
           "ycc_num" : 11,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 5,
-          "maintainer_id" : 4978,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 3
         },
         {
           "boat_id" : 6,
@@ -111,10 +120,11 @@
           "ycc_num" : 12,
           "license" : "ED",
           "class" : "DGY",
-          "table_pos" : -6,
-          "maintainer_id" : 4978,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 3
         },
         {
           "boat_id" : 7,
@@ -123,10 +133,11 @@
           "ycc_num" : 6,
           "license" : "C",
           "class" : "CAT",
-          "table_pos" : -7,
-          "maintainer_id" : 673,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : 5651
+          "maintainer_id2" : "",
+          "capacity" : 3
         },
         {
           "boat_id" : 8,
@@ -135,10 +146,11 @@
           "ycc_num" : 7,
           "license" : "C",
           "class" : "CAT",
-          "table_pos" : 12,
+          "table_pos" : 410,
           "maintainer_id" : 673,
           "ext_reg_cat" : "C",
-          "maintainer_id2" : 5651
+          "maintainer_id2" : 5651,
+          "capacity" : 3
         },
         {
           "boat_id" : 9,
@@ -147,10 +159,11 @@
           "ycc_num" : 5,
           "license" : "Y",
           "class" : "YNG",
-          "table_pos" : 15,
-          "maintainer_id" : 4660,
+          "table_pos" : 500,
+          "maintainer_id" : 5657,
           "ext_reg_cat" : "Y",
-          "maintainer_id2" : 6763
+          "maintainer_id2" : 6763,
+          "capacity" : 3
         },
         {
           "boat_id" : 10,
@@ -159,10 +172,11 @@
           "ycc_num" : 9,
           "license" : "Y",
           "class" : "YNG",
-          "table_pos" : 16,
-          "maintainer_id" : 4660,
+          "table_pos" : 501,
+          "maintainer_id" : 919,
           "ext_reg_cat" : "Y",
-          "maintainer_id2" : 6763
+          "maintainer_id2" : 6763,
+          "capacity" : 3
         },
         {
           "boat_id" : 11,
@@ -171,10 +185,11 @@
           "ycc_num" : 10,
           "license" : "Y",
           "class" : "YNG",
-          "table_pos" : 17,
-          "maintainer_id" : 4660,
+          "table_pos" : 502,
+          "maintainer_id" : 6129,
           "ext_reg_cat" : "Y",
-          "maintainer_id2" : 6763
+          "maintainer_id2" : 6763,
+          "capacity" : 4
         },
         {
           "boat_id" : 12,
@@ -183,10 +198,11 @@
           "ycc_num" : 8,
           "license" : "SU",
           "class" : "SUR",
-          "table_pos" : -12,
+          "table_pos" : "",
           "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : 6
         },
         {
           "boat_id" : 13,
@@ -195,10 +211,11 @@
           "ycc_num" : 14,
           "license" : "SU",
           "class" : "SUR",
-          "table_pos" : 20,
+          "table_pos" : 601,
           "maintainer_id" : 804,
           "ext_reg_cat" : "SU",
-          "maintainer_id2" : 875
+          "maintainer_id2" : 875,
+          "capacity" : 6
         },
         {
           "boat_id" : 14,
@@ -207,10 +224,11 @@
           "ycc_num" : 15,
           "license" : "CK",
           "class" : "GS",
-          "table_pos" : -14,
+          "table_pos" : "",
           "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : 6
         },
         {
           "boat_id" : 15,
@@ -219,10 +237,11 @@
           "ycc_num" : 100,
           "license" : "M",
           "class" : "M",
-          "table_pos" : 25,
+          "table_pos" : 900,
           "maintainer_id" : 5241,
           "ext_reg_cat" : "",
-          "maintainer_id2" : 751
+          "maintainer_id2" : 751,
+          "capacity" : 7
         },
         {
           "boat_id" : 16,
@@ -231,10 +250,11 @@
           "ycc_num" : 16,
           "license" : "W",
           "class" : "W",
-          "table_pos" : -16,
+          "table_pos" : "",
           "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : 1
         },
         {
           "boat_id" : 17,
@@ -243,10 +263,11 @@
           "ycc_num" : 17,
           "license" : "GS",
           "class" : "GS",
-          "table_pos" : 23,
+          "table_pos" : 800,
           "maintainer_id" : 804,
           "ext_reg_cat" : "",
-          "maintainer_id2" : 875
+          "maintainer_id2" : 875,
+          "capacity" : 6
         },
         {
           "boat_id" : 20,
@@ -255,22 +276,24 @@
           "ycc_num" : 20,
           "license" : "EC",
           "class" : "CAT",
-          "table_pos" : 11,
+          "table_pos" : 400,
           "maintainer_id" : 673,
           "ext_reg_cat" : "EC",
-          "maintainer_id2" : 5651
+          "maintainer_id2" : 5651,
+          "capacity" : 3
         },
         {
           "boat_id" : 23,
-          "name" : "RIB",
+          "name" : "Baby Duck",
           "type" : "RIB",
           "ycc_num" : 23,
           "license" : "R",
           "class" : "R",
-          "table_pos" : 26,
-          "maintainer_id" : 1099,
+          "table_pos" : 901,
+          "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : 6
         },
         {
           "boat_id" : 35,
@@ -279,22 +302,24 @@
           "ycc_num" : 35,
           "license" : "Y",
           "class" : "YNG",
-          "table_pos" : 18,
-          "maintainer_id" : 4660,
+          "table_pos" : 503,
+          "maintainer_id" : 6910,
           "ext_reg_cat" : "Y",
-          "maintainer_id2" : 6763
+          "maintainer_id2" : 6763,
+          "capacity" : 4
         },
         {
           "boat_id" : 36,
-          "name" : "Bombard525",
+          "name" : "Mother Duck II",
           "type" : "RIB",
           "ycc_num" : 36,
           "license" : "M",
           "class" : "M",
-          "table_pos" : 27,
-          "maintainer_id" : "",
+          "table_pos" : 902,
+          "maintainer_id" : 6942,
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : 14
         },
         {
           "boat_id" : 37,
@@ -303,10 +328,37 @@
           "ycc_num" : 37,
           "license" : "D3",
           "class" : "D3",
-          "table_pos" : 24,
-          "maintainer_id" : 804,
+          "table_pos" : 801,
+          "maintainer_id" : 224,
           "ext_reg_cat" : "D3",
-          "maintainer_id2" : 875
+          "maintainer_id2" : "",
+          "capacity" : 8
+        },
+        {
+          "boat_id" : 38,
+          "name" : "Y-knot?",
+          "type" : "Yngling",
+          "ycc_num" : 38,
+          "license" : "Y",
+          "class" : "YNG",
+          "table_pos" : 504,
+          "maintainer_id" : 5373,
+          "ext_reg_cat" : "Y",
+          "maintainer_id2" : 6763,
+          "capacity" : 4
+        },
+        {
+          "boat_id" : 100,
+          "name" : "Netcat",
+          "type" : "Hobie Tiger",
+          "ycc_num" : 101,
+          "license" : "EC",
+          "class" : "CAT",
+          "table_pos" : 401,
+          "maintainer_id" : 673,
+          "ext_reg_cat" : "EC",
+          "maintainer_id2" : 5651,
+          "capacity" : 3
         },
         {
           "boat_id" : 18,
@@ -315,10 +367,11 @@
           "ycc_num" : 18,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 8,
-          "maintainer_id" : 4978,
+          "table_pos" : 141,
+          "maintainer_id" : 5407,
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 2
         },
         {
           "boat_id" : 24,
@@ -327,10 +380,11 @@
           "ycc_num" : 24,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 3,
-          "maintainer_id" : 4978,
+          "table_pos" : 102,
+          "maintainer_id" : 5407,
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 1
         },
         {
           "boat_id" : 25,
@@ -339,10 +393,11 @@
           "ycc_num" : 25,
           "license" : "J",
           "class" : "SUR",
-          "table_pos" : 21,
+          "table_pos" : 700,
           "maintainer_id" : 804,
           "ext_reg_cat" : "J",
-          "maintainer_id2" : 875
+          "maintainer_id2" : 875,
+          "capacity" : 8
         },
         {
           "boat_id" : 26,
@@ -351,10 +406,11 @@
           "ycc_num" : 26,
           "license" : "ALL",
           "class" : "TOOL",
-          "table_pos" : -24,
-          "maintainer_id" : 894,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : ""
         },
         {
           "boat_id" : 27,
@@ -363,10 +419,11 @@
           "ycc_num" : 27,
           "license" : "ALL",
           "class" : "TOOL",
-          "table_pos" : 28,
-          "maintainer_id" : 894,
+          "table_pos" : 1000,
+          "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : ""
         },
         {
           "boat_id" : 28,
@@ -375,10 +432,11 @@
           "ycc_num" : 28,
           "license" : "GS",
           "class" : "GS",
-          "table_pos" : -21,
+          "table_pos" : "",
           "maintainer_id" : "",
           "ext_reg_cat" : "",
-          "maintainer_id2" : ""
+          "maintainer_id2" : "",
+          "capacity" : ""
         },
         {
           "boat_id" : 29,
@@ -387,10 +445,11 @@
           "ycc_num" : 29,
           "license" : "ED",
           "class" : "DGY",
-          "table_pos" : 10,
-          "maintainer_id" : 4978,
+          "table_pos" : 150,
+          "maintainer_id" : 5407,
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 2
         },
         {
           "boat_id" : 30,
@@ -399,10 +458,11 @@
           "ycc_num" : 30,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 4,
-          "maintainer_id" : 4978,
+          "table_pos" : 131,
+          "maintainer_id" : 5407,
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 2
         },
         {
           "boat_id" : 31,
@@ -411,10 +471,11 @@
           "ycc_num" : 31,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 6,
-          "maintainer_id" : 4978,
+          "table_pos" : 140,
+          "maintainer_id" : 5407,
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 2
         },
         {
           "boat_id" : 32,
@@ -423,10 +484,37 @@
           "ycc_num" : 32,
           "license" : "J7",
           "class" : "SUR",
-          "table_pos" : 22,
+          "table_pos" : 701,
           "maintainer_id" : 804,
           "ext_reg_cat" : "J7",
-          "maintainer_id2" : 875
+          "maintainer_id2" : 875,
+          "capacity" : 6
+        },
+        {
+          "boat_id" : 99,
+          "name" : "the SSL",
+          "type" : "J70",
+          "ycc_num" : 99,
+          "license" : "J7",
+          "class" : "SUR",
+          "table_pos" : "",
+          "maintainer_id" : "",
+          "ext_reg_cat" : "J7",
+          "maintainer_id2" : "",
+          "capacity" : 6
+        },
+        {
+          "boat_id" : 101,
+          "name" : "Joda",
+          "type" : "J70",
+          "ycc_num" : "",
+          "license" : "J7",
+          "class" : "SUR",
+          "table_pos" : 702,
+          "maintainer_id" : 804,
+          "ext_reg_cat" : "J7",
+          "maintainer_id2" : 875,
+          "capacity" : 6
         },
         {
           "boat_id" : 19,
@@ -435,10 +523,11 @@
           "ycc_num" : 19,
           "license" : "SU",
           "class" : "SUR",
-          "table_pos" : 19,
+          "table_pos" : 600,
           "maintainer_id" : 804,
           "ext_reg_cat" : "SU",
-          "maintainer_id2" : 875
+          "maintainer_id2" : 875,
+          "capacity" : 6
         },
         {
           "boat_id" : 21,
@@ -447,10 +536,11 @@
           "ycc_num" : 21,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 1,
-          "maintainer_id" : 4978,
+          "table_pos" : 100,
+          "maintainer_id" : 5407,
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 1
         },
         {
           "boat_id" : 22,
@@ -459,10 +549,11 @@
           "ycc_num" : 22,
           "license" : "D",
           "class" : "DGY",
-          "table_pos" : 2,
-          "maintainer_id" : 4978,
+          "table_pos" : 101,
+          "maintainer_id" : 5407,
           "ext_reg_cat" : "D",
-          "maintainer_id2" : 5407
+          "maintainer_id2" : "",
+          "capacity" : 1
         },
         {
           "boat_id" : 33,
@@ -471,22 +562,89 @@
           "ycc_num" : 33,
           "license" : "EC",
           "class" : "CAT",
-          "table_pos" : 13,
-          "maintainer_id" : 673,
+          "table_pos" : "",
+          "maintainer_id" : "",
           "ext_reg_cat" : "EC",
-          "maintainer_id2" : 5651
+          "maintainer_id2" : "",
+          "capacity" : 3
         },
         {
           "boat_id" : 34,
-          "name" : "Nacra",
+          "name" : "Quantum Cat",
           "type" : "Nacra",
           "ycc_num" : 34,
           "license" : "EC",
           "class" : "CAT",
-          "table_pos" : 14,
+          "table_pos" : 420,
           "maintainer_id" : 673,
           "ext_reg_cat" : "EC",
-          "maintainer_id2" : 5651
+          "maintainer_id2" : 5651,
+          "capacity" : 2
+        },
+        {
+          "boat_id" : 39,
+          "name" : "Shamash",
+          "type" : " Bianca 28",
+          "ycc_num" : "",
+          "license" : "SU",
+          "class" : "SUR",
+          "table_pos" : "",
+          "maintainer_id" : 119,
+          "ext_reg_cat" : "",
+          "maintainer_id2" : "",
+          "capacity" : 8
+        },
+        {
+          "boat_id" : 40,
+          "name" : "Sunbeam",
+          "type" : "Sunbeam 28",
+          "ycc_num" : "",
+          "license" : "SU",
+          "class" : "SUR",
+          "table_pos" : "",
+          "maintainer_id" : 159,
+          "ext_reg_cat" : "",
+          "maintainer_id2" : "",
+          "capacity" : 8
+        },
+        {
+          "boat_id" : 41,
+          "name" : "Athos",
+          "type" : "Melges 15",
+          "ycc_num" : 41,
+          "license" : "D",
+          "class" : "DGY",
+          "table_pos" : 110,
+          "maintainer_id" : 5407,
+          "ext_reg_cat" : "D",
+          "maintainer_id2" : "",
+          "capacity" : 2
+        },
+        {
+          "boat_id" : 42,
+          "name" : "Porthos",
+          "type" : "Melges 15",
+          "ycc_num" : 42,
+          "license" : "D",
+          "class" : "DGY",
+          "table_pos" : 111,
+          "maintainer_id" : 5407,
+          "ext_reg_cat" : "D",
+          "maintainer_id2" : "",
+          "capacity" : 2
+        },
+        {
+          "boat_id" : 43,
+          "name" : "Aramis",
+          "type" : "Melges 15",
+          "ycc_num" : 43,
+          "license" : "D",
+          "class" : "DGY",
+          "table_pos" : 112,
+          "maintainer_id" : 5407,
+          "ext_reg_cat" : "D",
+          "maintainer_id2" : "",
+          "capacity" : 2
         }
       ]
     }

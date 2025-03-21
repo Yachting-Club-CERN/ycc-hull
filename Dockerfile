@@ -1,21 +1,34 @@
-ARG PYTHON_VERSION="311"
+ARG PYTHON_VERSION="312"
+
+# Use Poetry to generate requirements.txt as in the past there were various problems with micropipenv handling Poetry lock files with dependency groups
+FROM registry.access.redhat.com/ubi9/python-$PYTHON_VERSION AS builder
+
+WORKDIR /opt/app-root/src
+
+RUN pip install --no-cache-dir -U pip setuptools poetry && \
+    poetry self add poetry-plugin-export
+
+COPY --chown=1001:0 "pyproject.toml" "poetry.lock" "./"
+RUN poetry export --only main --format requirements.txt --output requirements.txt
 
 # Main image
 FROM registry.access.redhat.com/ubi9/python-$PYTHON_VERSION
 
-WORKDIR "/opt/app-root/src"
+WORKDIR /opt/app-root/src
 
-# Note: could not make ENABLE_MICROPIPENV work :-(
-RUN pip install -U pip setuptools micropipenv[toml]
-# 1001 = uid from parent container
-COPY --chown=1001:0 "ycc_hull" "./ycc_hull/"
-COPY --chown=1001:0 "poetry.lock" "pyproject.toml" "docker-entrypoint.sh" "./"
-RUN mkdir conf/ && chmod 0777 conf/
-RUN mkdir log/ && chmod 0777 log/
-# --dev was added during the Pytho 3.11 upgrade (2024-01). It is ugly, but
-# without it micropipenv does not install all the main transitive dependencies
-# from the Poetry lock file. No idea why.
-RUN micropipenv install --method poetry --dev
+USER root
+RUN dnf install -y https://download.oracle.com/otn_software/linux/instantclient/2370000/oracle-instantclient-basic-23.7.0.25.01-1.el9.x86_64.rpm && \
+    dnf clean all
+
+USER 1001
+RUN pip install --no-cache-dir -U pip setuptools micropipenv
+
+COPY --chown=1001:0 --from=builder /opt/app-root/src/requirements.txt /opt/app-root/src/
+RUN micropipenv install --method requirements
+
+COPY --chown=1001:0 "docker-entrypoint.sh" "pyproject.toml" "src" "./"
+RUN mkdir conf/ && chmod 0777 conf/ && \
+    mkdir log/ && chmod 0777 log/
 
 EXPOSE 8080
 ENTRYPOINT [ "/opt/app-root/src/docker-entrypoint.sh" ]

@@ -33,9 +33,9 @@ _KEYCLOAK = KeycloakOpenID(
 
 
 # Programmatic access to the token endpoint: _KEYCLOAK.well_known()["token_endpoint"]
-token_endpoint = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
-_logger.info("Initialising OAuth 2 scheme with token endpoint: %s", token_endpoint)
-_OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=token_endpoint)
+TOKEN_ENDPOINT = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
+_logger.info("Initialising OAuth 2 scheme with token endpoint: %s", TOKEN_ENDPOINT)
+_OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=TOKEN_ENDPOINT)
 
 
 def _create_user(user_info: dict, token_info: dict) -> User:
@@ -54,7 +54,7 @@ def _create_user(user_info: dict, token_info: dict) -> User:
         'preferred_username': 'MHUFF',
         'given_name': 'Michele',
         'family_name': 'Huff',
-        'email': 'Michele.Huff@mailinator.com'
+        'email': 'michele.huff@mailinator.com'
     }
     ```
 
@@ -75,7 +75,7 @@ def _create_user(user_info: dict, token_info: dict) -> User:
         'given_name': 'Michele',
         'family_name': 'Huff',
         'preferred_username': 'MHUFF',
-        'email': 'Michele.Huff@mailinator.com',
+        'email': 'michele.huff@mailinator.com',
         'email_verified': False,
         'acr': '1',
         'allowed-origins': ['http://localhost:8000'],

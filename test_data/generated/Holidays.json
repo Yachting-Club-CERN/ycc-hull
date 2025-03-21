@@ -4,6 +4,7 @@
       "@type": "date",
       "value": "2003-04-18"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -11,6 +12,7 @@
       "@type": "date",
       "value": "2003-04-21"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -18,6 +20,7 @@
       "@type": "date",
       "value": "2003-05-01"
     },
+    "id": null,
     "label": "1st May)"
   },
   {
@@ -25,6 +28,7 @@
       "@type": "date",
       "value": "2003-05-29"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -32,6 +36,7 @@
       "@type": "date",
       "value": "2003-06-09"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -39,6 +44,7 @@
       "@type": "date",
       "value": "2003-09-11"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -46,6 +52,7 @@
       "@type": "date",
       "value": "2004-04-09"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -53,6 +60,7 @@
       "@type": "date",
       "value": "2004-04-12"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -60,6 +68,7 @@
       "@type": "date",
       "value": "2004-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -67,6 +76,7 @@
       "@type": "date",
       "value": "2004-05-20"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -74,6 +84,7 @@
       "@type": "date",
       "value": "2004-05-21"
     },
+    "id": null,
     "label": "(2)1st of May"
   },
   {
@@ -81,6 +92,7 @@
       "@type": "date",
       "value": "2004-05-31"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -88,6 +100,7 @@
       "@type": "date",
       "value": "2004-09-09"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -95,6 +108,7 @@
       "@type": "date",
       "value": "2006-04-14"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -102,6 +116,7 @@
       "@type": "date",
       "value": "2006-04-17"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -109,6 +124,7 @@
       "@type": "date",
       "value": "2006-05-01"
     },
+    "id": null,
     "label": "Comp 1st May"
   },
   {
@@ -116,6 +132,7 @@
       "@type": "date",
       "value": "2006-05-25"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -123,6 +140,7 @@
       "@type": "date",
       "value": "2006-06-05"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -130,6 +148,7 @@
       "@type": "date",
       "value": "2006-09-07"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -137,6 +156,7 @@
       "@type": "date",
       "value": "2005-03-25"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -144,6 +164,7 @@
       "@type": "date",
       "value": "2005-03-28"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -151,6 +172,7 @@
       "@type": "date",
       "value": "2005-05-06"
     },
+    "id": null,
     "label": "Comp 1st May"
   },
   {
@@ -158,6 +180,7 @@
       "@type": "date",
       "value": "2005-05-05"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -165,6 +188,7 @@
       "@type": "date",
       "value": "2005-05-16"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -172,6 +196,7 @@
       "@type": "date",
       "value": "2005-09-08"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -179,6 +204,7 @@
       "@type": "date",
       "value": "2007-04-06"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -186,6 +212,7 @@
       "@type": "date",
       "value": "2007-04-09"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -193,6 +220,7 @@
       "@type": "date",
       "value": "2007-05-01"
     },
+    "id": null,
     "label": "Comp 1st May"
   },
   {
@@ -200,6 +228,7 @@
       "@type": "date",
       "value": "2007-05-17"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -207,6 +236,7 @@
       "@type": "date",
       "value": "2007-05-28"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -214,6 +244,7 @@
       "@type": "date",
       "value": "2007-09-06"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -221,6 +252,7 @@
       "@type": "date",
       "value": "2008-03-21"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -228,6 +260,7 @@
       "@type": "date",
       "value": "2008-03-24"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -235,6 +268,7 @@
       "@type": "date",
       "value": "2008-05-02"
     },
+    "id": null,
     "label": "Comp 1st May"
   },
   {
@@ -242,6 +276,7 @@
       "@type": "date",
       "value": "2008-05-01"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -249,6 +284,7 @@
       "@type": "date",
       "value": "2008-05-12"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -256,6 +292,7 @@
       "@type": "date",
       "value": "2008-09-11"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -263,6 +300,7 @@
       "@type": "date",
       "value": "2009-04-10"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -270,6 +308,7 @@
       "@type": "date",
       "value": "2009-04-13"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -277,6 +316,7 @@
       "@type": "date",
       "value": "2009-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -284,6 +324,7 @@
       "@type": "date",
       "value": "2009-05-21"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -291,6 +332,7 @@
       "@type": "date",
       "value": "2009-06-01"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -298,6 +340,7 @@
       "@type": "date",
       "value": "2009-09-10"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -305,6 +348,7 @@
       "@type": "date",
       "value": "2012-04-06"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -312,6 +356,7 @@
       "@type": "date",
       "value": "2012-04-09"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -319,6 +364,7 @@
       "@type": "date",
       "value": "2012-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -326,6 +372,7 @@
       "@type": "date",
       "value": "2012-05-17"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -333,6 +380,7 @@
       "@type": "date",
       "value": "2012-05-28"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -340,6 +388,7 @@
       "@type": "date",
       "value": "2012-09-06"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -347,6 +396,7 @@
       "@type": "date",
       "value": "2013-03-29"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -354,6 +404,7 @@
       "@type": "date",
       "value": "2013-04-01"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -361,6 +412,7 @@
       "@type": "date",
       "value": "2013-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -368,6 +420,7 @@
       "@type": "date",
       "value": "2013-05-09"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -375,6 +428,7 @@
       "@type": "date",
       "value": "2013-05-20"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -382,6 +436,7 @@
       "@type": "date",
       "value": "2013-09-05"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -389,6 +444,7 @@
       "@type": "date",
       "value": "2014-04-18"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -396,6 +452,7 @@
       "@type": "date",
       "value": "2014-04-21"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -403,6 +460,7 @@
       "@type": "date",
       "value": "2014-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -410,6 +468,7 @@
       "@type": "date",
       "value": "2014-05-29"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -417,6 +476,7 @@
       "@type": "date",
       "value": "2014-06-09"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -424,6 +484,7 @@
       "@type": "date",
       "value": "2014-09-11"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -431,6 +492,7 @@
       "@type": "date",
       "value": "2015-04-03"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -438,6 +500,7 @@
       "@type": "date",
       "value": "2015-04-06"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -445,6 +508,7 @@
       "@type": "date",
       "value": "2015-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -452,6 +516,7 @@
       "@type": "date",
       "value": "2015-05-14"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -459,6 +524,7 @@
       "@type": "date",
       "value": "2015-05-25"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -466,13 +532,183 @@
       "@type": "date",
       "value": "2015-09-10"
     },
+    "id": null,
     "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-05-01"
+    },
+    "id": 21,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-12-31"
+    },
+    "id": 28,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-01-02"
+    },
+    "id": null,
+    "label": "Compensation"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-04-07"
+    },
+    "id": null,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-04-10"
+    },
+    "id": null,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-05-01"
+    },
+    "id": null,
+    "label": "1 May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-05-18"
+    },
+    "id": null,
+    "label": "Ascension day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-05-29"
+    },
+    "id": null,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-09-07"
+    },
+    "id": null,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-12-25"
+    },
+    "id": null,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-12-26"
+    },
+    "id": null,
+    "label": "Compensation"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2023-12-29"
+    },
+    "id": null,
+    "label": "Compensation"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-04-06"
+    },
+    "id": 46,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-05-01"
+    },
+    "id": 47,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-05-14"
+    },
+    "id": 48,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-05-25"
+    },
+    "id": 49,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-09-10"
+    },
+    "id": 50,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-12-24"
+    },
+    "id": 51,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-12-25"
+    },
+    "id": 52,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-12-31"
+    },
+    "id": 53,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2025-04-03"
+    },
+    "id": 45,
+    "label": "Good Friday"
   },
   {
     "day": {
       "@type": "date",
       "value": "2019-04-19"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -480,6 +716,7 @@
       "@type": "date",
       "value": "2019-04-22"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -487,6 +724,7 @@
       "@type": "date",
       "value": "2019-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -494,6 +732,7 @@
       "@type": "date",
       "value": "2019-05-30"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -501,6 +740,7 @@
       "@type": "date",
       "value": "2019-06-10"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -508,6 +748,7 @@
       "@type": "date",
       "value": "2019-09-05"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -515,6 +756,7 @@
       "@type": "date",
       "value": "2020-04-10"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -522,6 +764,7 @@
       "@type": "date",
       "value": "2020-04-13"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -529,6 +772,7 @@
       "@type": "date",
       "value": "2020-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -536,6 +780,7 @@
       "@type": "date",
       "value": "2020-05-21"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -543,6 +788,7 @@
       "@type": "date",
       "value": "2020-06-01"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -550,6 +796,7 @@
       "@type": "date",
       "value": "2020-09-10"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -557,6 +804,7 @@
       "@type": "date",
       "value": "2021-04-02"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -564,6 +812,7 @@
       "@type": "date",
       "value": "2021-04-05"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -571,6 +820,7 @@
       "@type": "date",
       "value": "2021-04-30"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -578,6 +828,7 @@
       "@type": "date",
       "value": "2021-05-13"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -585,6 +836,7 @@
       "@type": "date",
       "value": "2021-05-24"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -592,6 +844,7 @@
       "@type": "date",
       "value": "2021-09-09"
     },
+    "id": null,
     "label": "Jeune genevois"
   },
   {
@@ -599,6 +852,7 @@
       "@type": "date",
       "value": "2022-04-15"
     },
+    "id": null,
     "label": "Good Friday"
   },
   {
@@ -606,6 +860,7 @@
       "@type": "date",
       "value": "2022-04-18"
     },
+    "id": null,
     "label": "Easter Monday"
   },
   {
@@ -613,6 +868,7 @@
       "@type": "date",
       "value": "2022-05-01"
     },
+    "id": null,
     "label": "1st May"
   },
   {
@@ -620,6 +876,7 @@
       "@type": "date",
       "value": "2022-05-26"
     },
+    "id": null,
     "label": "Ascension Day"
   },
   {
@@ -627,6 +884,7 @@
       "@type": "date",
       "value": "2022-06-06"
     },
+    "id": null,
     "label": "Whit Monday"
   },
   {
@@ -634,6 +892,1791 @@
       "@type": "date",
       "value": "2022-09-08"
     },
+    "id": null,
     "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-03-29"
+    },
+    "id": 1,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-04-03"
+    },
+    "id": 72,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-04-06"
+    },
+    "id": 73,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-05-01"
+    },
+    "id": 74,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-05-14"
+    },
+    "id": 75,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-05-25"
+    },
+    "id": 76,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-09-10"
+    },
+    "id": 77,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-12-24"
+    },
+    "id": 78,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-12-25"
+    },
+    "id": 79,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2026-12-31"
+    },
+    "id": 80,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-04-01"
+    },
+    "id": 22,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-05-09"
+    },
+    "id": 23,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-05-20"
+    },
+    "id": 24,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-09-05"
+    },
+    "id": 25,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-12-24"
+    },
+    "id": 26,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2024-12-25"
+    },
+    "id": 27,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-03-26"
+    },
+    "id": 81,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-03-29"
+    },
+    "id": 82,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-05-01"
+    },
+    "id": 83,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-05-06"
+    },
+    "id": 84,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-05-17"
+    },
+    "id": 85,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-09-09"
+    },
+    "id": 86,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-12-24"
+    },
+    "id": 87,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-12-25"
+    },
+    "id": 88,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2027-12-31"
+    },
+    "id": 89,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-04-14"
+    },
+    "id": 90,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-04-17"
+    },
+    "id": 91,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-05-01"
+    },
+    "id": 92,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-05-25"
+    },
+    "id": 93,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-06-05"
+    },
+    "id": 94,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-09-07"
+    },
+    "id": 95,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-12-24"
+    },
+    "id": 96,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-12-25"
+    },
+    "id": 97,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2028-12-31"
+    },
+    "id": 98,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-03-30"
+    },
+    "id": 99,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-04-02"
+    },
+    "id": 100,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-05-01"
+    },
+    "id": 101,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-05-10"
+    },
+    "id": 102,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-05-21"
+    },
+    "id": 103,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-09-06"
+    },
+    "id": 104,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-12-24"
+    },
+    "id": 105,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-12-25"
+    },
+    "id": 106,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2029-12-31"
+    },
+    "id": 107,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-04-19"
+    },
+    "id": 108,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-04-22"
+    },
+    "id": 109,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-05-01"
+    },
+    "id": 110,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-05-30"
+    },
+    "id": 111,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-06-10"
+    },
+    "id": 112,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-09-05"
+    },
+    "id": 113,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-12-24"
+    },
+    "id": 114,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-12-25"
+    },
+    "id": 115,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2030-12-31"
+    },
+    "id": 116,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-04-11"
+    },
+    "id": 117,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-04-14"
+    },
+    "id": 118,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-05-01"
+    },
+    "id": 119,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-05-22"
+    },
+    "id": 120,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-06-02"
+    },
+    "id": 121,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-09-11"
+    },
+    "id": 122,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-12-24"
+    },
+    "id": 123,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-12-25"
+    },
+    "id": 124,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2031-12-31"
+    },
+    "id": 125,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-03-26"
+    },
+    "id": 126,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-03-29"
+    },
+    "id": 127,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-05-01"
+    },
+    "id": 128,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-05-06"
+    },
+    "id": 129,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-05-17"
+    },
+    "id": 130,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-09-09"
+    },
+    "id": 131,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-12-24"
+    },
+    "id": 132,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-12-25"
+    },
+    "id": 133,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2032-12-31"
+    },
+    "id": 134,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-04-15"
+    },
+    "id": 135,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-04-18"
+    },
+    "id": 136,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-05-01"
+    },
+    "id": 137,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-05-26"
+    },
+    "id": 138,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-06-06"
+    },
+    "id": 139,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-09-08"
+    },
+    "id": 140,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-12-24"
+    },
+    "id": 141,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-12-25"
+    },
+    "id": 142,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2033-12-31"
+    },
+    "id": 143,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-04-07"
+    },
+    "id": 144,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-04-10"
+    },
+    "id": 145,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-05-01"
+    },
+    "id": 146,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-05-18"
+    },
+    "id": 147,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-05-29"
+    },
+    "id": 148,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-09-07"
+    },
+    "id": 149,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-12-24"
+    },
+    "id": 150,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-12-25"
+    },
+    "id": 151,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2034-12-31"
+    },
+    "id": 152,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-03-23"
+    },
+    "id": 153,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-03-26"
+    },
+    "id": 154,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-05-01"
+    },
+    "id": 155,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-05-03"
+    },
+    "id": 156,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-05-14"
+    },
+    "id": 157,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-09-06"
+    },
+    "id": 158,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-12-24"
+    },
+    "id": 159,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-12-25"
+    },
+    "id": 160,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2035-12-31"
+    },
+    "id": 161,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-04-11"
+    },
+    "id": 162,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-04-14"
+    },
+    "id": 163,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-05-01"
+    },
+    "id": 164,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-05-22"
+    },
+    "id": 165,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-06-02"
+    },
+    "id": 166,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-09-11"
+    },
+    "id": 167,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-12-24"
+    },
+    "id": 168,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-12-25"
+    },
+    "id": 169,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2036-12-31"
+    },
+    "id": 170,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-04-03"
+    },
+    "id": 171,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-04-06"
+    },
+    "id": 172,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-05-01"
+    },
+    "id": 173,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-05-14"
+    },
+    "id": 174,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-05-25"
+    },
+    "id": 175,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-09-10"
+    },
+    "id": 176,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-12-24"
+    },
+    "id": 177,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-12-25"
+    },
+    "id": 178,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2037-12-31"
+    },
+    "id": 179,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-04-23"
+    },
+    "id": 180,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-04-26"
+    },
+    "id": 181,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-05-01"
+    },
+    "id": 182,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-06-03"
+    },
+    "id": 183,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-06-14"
+    },
+    "id": 184,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-09-09"
+    },
+    "id": 185,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-12-24"
+    },
+    "id": 186,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-12-25"
+    },
+    "id": 187,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2038-12-31"
+    },
+    "id": 188,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-04-08"
+    },
+    "id": 189,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-04-11"
+    },
+    "id": 190,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-05-01"
+    },
+    "id": 191,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-05-19"
+    },
+    "id": 192,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-05-30"
+    },
+    "id": 193,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-09-08"
+    },
+    "id": 194,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-12-24"
+    },
+    "id": 195,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-12-25"
+    },
+    "id": 196,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2039-12-31"
+    },
+    "id": 197,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-03-30"
+    },
+    "id": 198,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-04-02"
+    },
+    "id": 199,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-05-01"
+    },
+    "id": 200,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-05-10"
+    },
+    "id": 201,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-05-21"
+    },
+    "id": 202,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-09-06"
+    },
+    "id": 203,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-12-24"
+    },
+    "id": 204,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-12-25"
+    },
+    "id": 205,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2040-12-31"
+    },
+    "id": 206,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-04-19"
+    },
+    "id": 207,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-04-22"
+    },
+    "id": 208,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-05-01"
+    },
+    "id": 209,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-05-30"
+    },
+    "id": 210,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-06-10"
+    },
+    "id": 211,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-09-05"
+    },
+    "id": 212,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-12-24"
+    },
+    "id": 213,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-12-25"
+    },
+    "id": 214,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2041-12-31"
+    },
+    "id": 215,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-04-04"
+    },
+    "id": 216,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-04-07"
+    },
+    "id": 217,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-05-01"
+    },
+    "id": 218,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-05-15"
+    },
+    "id": 219,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-05-26"
+    },
+    "id": 220,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-09-11"
+    },
+    "id": 221,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-12-24"
+    },
+    "id": 222,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-12-25"
+    },
+    "id": 223,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2042-12-31"
+    },
+    "id": 224,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-03-27"
+    },
+    "id": 225,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-03-30"
+    },
+    "id": 226,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-05-01"
+    },
+    "id": 227,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-05-07"
+    },
+    "id": 228,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-05-18"
+    },
+    "id": 229,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-09-10"
+    },
+    "id": 230,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-12-24"
+    },
+    "id": 231,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-12-25"
+    },
+    "id": 232,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2043-12-31"
+    },
+    "id": 233,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-04-15"
+    },
+    "id": 234,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-04-18"
+    },
+    "id": 235,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-05-01"
+    },
+    "id": 236,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-05-26"
+    },
+    "id": 237,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-06-06"
+    },
+    "id": 238,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-09-08"
+    },
+    "id": 239,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-12-24"
+    },
+    "id": 240,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-12-25"
+    },
+    "id": 241,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2044-12-31"
+    },
+    "id": 242,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-04-07"
+    },
+    "id": 243,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-04-10"
+    },
+    "id": 244,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-05-01"
+    },
+    "id": 245,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-05-18"
+    },
+    "id": 246,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-05-29"
+    },
+    "id": 247,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-09-07"
+    },
+    "id": 248,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-12-24"
+    },
+    "id": 249,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-12-25"
+    },
+    "id": 250,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2045-12-31"
+    },
+    "id": 251,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-03-23"
+    },
+    "id": 252,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-03-26"
+    },
+    "id": 253,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-05-01"
+    },
+    "id": 254,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-05-03"
+    },
+    "id": 255,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-05-14"
+    },
+    "id": 256,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-09-06"
+    },
+    "id": 257,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-12-24"
+    },
+    "id": 258,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-12-25"
+    },
+    "id": 259,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2046-12-31"
+    },
+    "id": 260,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-04-12"
+    },
+    "id": 261,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-04-15"
+    },
+    "id": 262,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-05-01"
+    },
+    "id": 263,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-05-23"
+    },
+    "id": 264,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-06-03"
+    },
+    "id": 265,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-09-05"
+    },
+    "id": 266,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-12-24"
+    },
+    "id": 267,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-12-25"
+    },
+    "id": 268,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2047-12-31"
+    },
+    "id": 269,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-04-03"
+    },
+    "id": 270,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-04-06"
+    },
+    "id": 271,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-05-01"
+    },
+    "id": 272,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-05-14"
+    },
+    "id": 273,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-05-25"
+    },
+    "id": 274,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-09-10"
+    },
+    "id": 275,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-12-24"
+    },
+    "id": 276,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-12-25"
+    },
+    "id": 277,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2048-12-31"
+    },
+    "id": 278,
+    "label": "New Year's Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-04-16"
+    },
+    "id": 279,
+    "label": "Good Friday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-04-19"
+    },
+    "id": 280,
+    "label": "Easter Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-05-01"
+    },
+    "id": 281,
+    "label": "1st May"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-05-27"
+    },
+    "id": 282,
+    "label": "Ascension Day"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-06-07"
+    },
+    "id": 283,
+    "label": "Whit Monday"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-09-09"
+    },
+    "id": 284,
+    "label": "Jeune genevois"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-12-24"
+    },
+    "id": 285,
+    "label": "Christmas Eve"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-12-25"
+    },
+    "id": 286,
+    "label": "Christmas"
+  },
+  {
+    "day": {
+      "@type": "date",
+      "value": "2049-12-31"
+    },
+    "id": 287,
+    "label": "New Year's Eve"
   }
 ]

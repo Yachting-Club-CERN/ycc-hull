@@ -56,6 +56,8 @@ class Config(CamelisedBaseModel):
     keycloak_client_secret: str
     keycloak_swagger_client: str | None
     uvicorn_port: int
+
+    # TODO rather app config with name and baseUrl
     ycc_app_base_url: str
 
     @property

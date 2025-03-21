@@ -20,6 +20,7 @@ from test_data.generator_config import (
     HELPERS_APP_PERMISSIONS_JSON_FILE,
     HOLIDAYS_EXPORTED_JSON_FILE,
     HOLIDAYS_JSON_FILE,
+    LICENCE_INFOS_JSON_FILE,
     LICENCES_JSON_FILE,
     MEMBER_COUNT,
     MEMBERS_JSON_FILE,
@@ -33,6 +34,7 @@ from test_data.utils.helpers import (
     generate_helpers_app_permissions,
 )
 from test_data.utils.holidays import generate_holidays
+from test_data.utils.licence_infos import generate_licence_infos
 from test_data.utils.members import (
     generate_member_infos,
     get_member_info_by_id,
@@ -81,13 +83,22 @@ def generate(force_regenerate: bool = False) -> None:
         print("== Generating holidays...")
         write_json_file(HOLIDAYS_JSON_FILE, generate_holidays())
 
+    licence_infos = generate_licence_infos()
+    licences_to_ids = {info.nlicence: info.infoid for info in licence_infos}
+
+    if path.exists(LICENCE_INFOS_JSON_FILE) and not force_regenerate:
+        print("== Skipping licence infos")
+    else:
+        print("== Generating licence infos...")
+        write_json_file(LICENCE_INFOS_JSON_FILE, licence_infos)
+
     if path.exists(MEMBERS_JSON_FILE) and not force_regenerate:
         print("== Skipping members")
     else:
         print(
             "== Generating members (and users, entrance fee records, fee records and licences)..."
         )
-        member_infos = generate_member_infos(faker, MEMBER_COUNT)
+        member_infos = generate_member_infos(faker, licences_to_ids, MEMBER_COUNT)
         members = [member_info.member for member_info in member_infos]
         users = [member_info.user for member_info in member_infos]
         entrance_fee_records = [

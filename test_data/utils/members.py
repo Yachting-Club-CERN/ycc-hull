@@ -63,18 +63,24 @@ def _fake_username_collision(first_name: str, last_name: str) -> str:
     )
 
 
-def generate_member_infos(faker: Faker, count: int) -> list[MemberInfo]:
-    return [_generate_member_info(faker, i + 1) for i in range(0, count)]
+def generate_member_infos(
+    faker: Faker, licences_to_ids: dict[str, int], count: int
+) -> list[MemberInfo]:
+    return [
+        _generate_member_info(faker, licences_to_ids, i + 1) for i in range(0, count)
+    ]
 
 
-def _generate_member_info(faker: Faker, member_id: int) -> MemberInfo:
+def _generate_member_info(
+    faker: Faker, licences_to_ids: dict[str, int], member_id: int
+) -> MemberInfo:
     member = _generate_member(faker, member_id)
     return MemberInfo(
         member=member,
         user=_generate_user(faker, member),
         entrance_fee_record=_generate_member_entrance_fee_record(faker, member),
         fee_records=_generate_member_fee_records(faker, member),
-        licences=generate_licences(faker, member),
+        licences=generate_licences(faker, licences_to_ids, member),
     )
 
 
@@ -113,7 +119,7 @@ def _generate_member(faker: Faker, member_id: int) -> MemberEntity:
         # work_town = Column(VARCHAR2(25))
         # work_state = Column(VARCHAR2(5))
         work_phone=_generate_phone_number(faker, member_id, 10),
-        e_mail=f"{first_name}.{last_name}@mailinator.com",
+        e_mail=f"{first_name.lower()}.{last_name.lower()}@mailinator.com",
         home_addr="~~~Ignored~~~",
         # home_towncode = Column(VARCHAR2(7))
         # home_town = Column(VARCHAR2(25))
@@ -241,6 +247,7 @@ def _create_fee_record(
         paid_mode=_generate_paid_mode(faker),
         fee=fee,
         entered_date=entered_date,
+        payment_reason=None,
     )
 
 
