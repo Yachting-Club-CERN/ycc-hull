@@ -3,7 +3,7 @@
 import aiosmtplib
 import logging
 
-from ycc_hull.config import EmailConfig
+from ycc_hull.config import CONFIG, EmailConfig
 from ycc_hull.utils import full_type_name
 from email.message import EmailMessage
 
@@ -24,6 +24,7 @@ class SmtpConnection:
             self._config.smtp_username,
             self._config.smtp_start_tls,
         )
+
         self._smtp = aiosmtplib.SMTP(
             hostname=self._config.smtp_host,
             port=self._config.smtp_port,
@@ -32,9 +33,7 @@ class SmtpConnection:
             password=self._config.smtp_password,
         )
         await self._smtp.connect()
-        # if self._config.smtp_start_tls:
-        #     self._smtp.starttls()
-        # self._smtp.login(self._config.smtp_username, self._config.smtp_password)
+
         self._logger.info("Connected to SMTP server")
         return self
 
@@ -42,10 +41,9 @@ class SmtpConnection:
         if not self._smtp:
             raise ValueError("SMTP connection is not established")
 
-        if self._config.subject_prefix:
-            subject = f"{self._config.subject_prefix} {message['Subject']}"
-            del message["Subject"]
-            message["Subject"] = subject
+        subject = f"[{CONFIG.ycc_app.name}] {message['Subject']}"
+        del message["Subject"]
+        message["Subject"] = subject
 
         if self._config.content_header:
             content = message.get_content()

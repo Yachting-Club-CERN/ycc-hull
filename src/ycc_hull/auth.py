@@ -25,15 +25,15 @@ _INACTIVE_MEMBER = "Inactive member. Please contact the club."
 
 
 _KEYCLOAK = KeycloakOpenID(
-    server_url=CONFIG.keycloak_server_url,
-    realm_name=CONFIG.keycloak_realm,
-    client_id=CONFIG.keycloak_client,
-    client_secret_key=CONFIG.keycloak_client_secret,
+    server_url=CONFIG.keycloak.server_url,
+    realm_name=CONFIG.keycloak.realm,
+    client_id=CONFIG.keycloak.client,
+    client_secret_key=CONFIG.keycloak.client_secret,
 )
 
 
 # Programmatic access to the token endpoint: _KEYCLOAK.well_known()["token_endpoint"]
-TOKEN_ENDPOINT = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
+TOKEN_ENDPOINT = f"{CONFIG.keycloak.server_url}/realms/{CONFIG.keycloak.realm}/protocol/openid-connect/token"
 _logger.info("Initialising OAuth 2 scheme with token endpoint: %s", TOKEN_ENDPOINT)
 _OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=TOKEN_ENDPOINT)
 

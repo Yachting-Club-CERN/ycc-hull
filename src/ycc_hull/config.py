@@ -28,15 +28,27 @@ class EmailConfig(CamelisedBaseModel):
     Email configuration.
     """
 
-    from_name: str
     from_email: str
-    subject_prefix: str | None
-    content_header: str | None = Field(json_schema_extra={"sanitise": False})
+    content_header: str | None = Field(
+        default=None, json_schema_extra={"sanitise": False}
+    )
     smtp_host: str
     smtp_port: int
     smtp_start_tls: bool
-    smtp_username: str
-    smtp_password: str
+    smtp_username: str | None = None
+    smtp_password: str | None = None
+
+
+class KeycloakConfig(CamelisedBaseModel):
+    """
+    Keycloak configuration.
+    """
+
+    server_url: str
+    realm: str
+    client: str
+    client_secret: str
+    swagger_client: str | None = None
 
 
 class YccAppConfig(CamelisedBaseModel):
@@ -58,12 +70,8 @@ class Config(CamelisedBaseModel):
     environment: Environment
     database_url: str
     cors_origins: frozenset[str]
-    email: EmailConfig | None
-    keycloak_server_url: str
-    keycloak_realm: str
-    keycloak_client: str
-    keycloak_client_secret: str
-    keycloak_swagger_client: str | None
+    email: EmailConfig | None = None
+    keycloak: KeycloakConfig
     uvicorn_port: int
     ycc_app: YccAppConfig
 

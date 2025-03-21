@@ -112,8 +112,8 @@ app.add_middleware(
 
 if CONFIG.api_docs_enabled:
     app.swagger_ui_init_oauth = {
-        "clientId": CONFIG.keycloak_swagger_client,
-        "realm": CONFIG.keycloak_realm,
+        "clientId": CONFIG.keycloak.swagger_client,
+        "realm": CONFIG.keycloak.realm,
         # These scopes are needed to be able to use the API.
         "scopes": "openid profile email",
     }
