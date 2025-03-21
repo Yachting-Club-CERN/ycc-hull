@@ -1,8 +1,8 @@
 from datetime import datetime
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.notifications.email import EmailMessageBuilder
-from ycc_hull.controllers.notifications.format_utils import (
-    format_phone_numbers,
+
+from ycc_hull.controllers.notifications.email_content_utils import (
     format_timing,
     get_helper_task_url,
 )

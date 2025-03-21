@@ -54,6 +54,13 @@ poetry run start
 - Address: [http://localhost:8000/](http://localhost:8000/)
 - API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
+You can also separately verify the DB and the e-mail configuration:
+
+```sh
+poetry run db-playground
+poetry run email-playground
+```
+
 ## Keycloak Client Configuration
 
 For a clean config two clients are recommended, one for `ycc-hull` and one for the Swagger UI. The latter is optional.
