@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-TODO Hello world
+TODO notifications
 
 ## [1.1.0] - 2025-03-16
 
@@ -100,7 +100,7 @@ TODO Hello world
 - Test data generator
 - Deployment on CERN OKD TEST
 
-[unreleased]: https://github.com/Yachting-Club-CERN/ycc-hull/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/Yachting-Club-CERN/ycc-hull/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v1.1.0
 [1.0.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v1.0.0
 [0.4.0]: https://github.com/Yachting-Club-CERN/ycc-hull/releases/tag/v0.4.0
