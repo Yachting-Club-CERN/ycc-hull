@@ -1,55 +1,14 @@
 from datetime import datetime
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.notifications.email import EmailMessageBuilder
+from ycc_hull.controllers.notifications.format_utils import (
+    format_phone_numbers,
+    format_timing,
+    get_helper_task_url,
+)
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import HelperTaskDto, HelperTaskType
-
-
-def get_helper_task_url(task: HelperTaskDto) -> str:
-    return f"{CONFIG.ycc_app_base_url}/helpers/tasks/{task.id}"
-
-
-def format_date(date: datetime | None) -> str | None:
-    return date.strftime("%d/%m/%Y") if date else None
-
-
-def format_date_with_day(date: datetime | None) -> str | None:
-    return date.strftime("%A, %d %B %Y") if date else None
-
-
-def format_time(date: datetime | None) -> str | None:
-    return date.strftime("%H:%M") if date else None
-
-
-def format_date_time(date: datetime | None) -> str | None:
-    return date.strftime("%d/%m/%Y, %H:%M") if date else None
-
-
-# TODO format better: https://pypi.org/project/phonenumbers/
-
-
-def format_phone_numbers(member: MemberPublicInfoDto) -> str:
-    phones = []
-    if member.mobile_phone:
-        phones.append(f"Mobile: {member.mobile_phone}")
-    if member.home_phone:
-        phones.append(f"Home: {member.home_phone}")
-    if member.work_phone:
-        phones.append(f"Work: {member.work_phone}")
-
-
-def format_timing(task: HelperTaskDto) -> str:
-    if task.type == HelperTaskType.SHIFT:
-        same_day_end = task.starts_at.date() == task.ends_at.date()
-        if same_day_end:
-            return f"Shift: {format_date_with_day(task.starts_at)} {format_time(task.starts_at)} - {format_time(task.ends_at)}"
-        else:
-            return f"Multi-Day Shift: {format_date_time(task.starts_at)} - {format_date_time(task.ends_at)}"
-    elif task.type == HelperTaskType.DEADLINE:
-        return f"Deadline: {format_date_with_day(task.deadline)} {format_time(task.deadline)}"
-    else:
-        return f"Start: {format_date_time(task.starts_at)} End: {format_date_time(task.ends_at)} Deadline: {format_date_time(task.deadline)}"
 
 
 async def send_helper_task_helper_sign_up_confirmation(
@@ -72,7 +31,7 @@ Thank you for signing up for the task as helper:
 <ul>
   <li><a href="{get_helper_task_url(task)}">{task.title}</a>
   <li>{format_timing(task)}
-  <li>Contact: {task.contact.full_name}, {task.contact.email}, {task.contact.cell_phone}
+  <li>Contact: {task.contact.full_name}, {task.contact.email}, {format_phone_numbers(task.contact)}
 </ul>
 
 If you cannot take your shift, please find a replacement.

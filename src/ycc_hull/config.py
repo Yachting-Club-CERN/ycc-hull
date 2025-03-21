@@ -39,6 +39,15 @@ class EmailConfig(CamelisedBaseModel):
     smtp_password: str
 
 
+class YccAppConfig(CamelisedBaseModel):
+    """
+    YCC app configuration.
+    """
+
+    name: str
+    base_url: str
+
+
 class Config(CamelisedBaseModel):
     """
     Application configuration.
@@ -56,9 +65,7 @@ class Config(CamelisedBaseModel):
     keycloak_client_secret: str
     keycloak_swagger_client: str | None
     uvicorn_port: int
-
-    # TODO rather app config with name and baseUrl
-    ycc_app_base_url: str
+    ycc_app: YccAppConfig
 
     @property
     def local(self) -> bool:

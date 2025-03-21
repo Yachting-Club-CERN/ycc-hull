@@ -14,6 +14,7 @@ dependencies = [
     "pyhumps>=3.8.0",
     "pytz>=2025.1",
     "toml>=0.10.2",
+    "phonenumbers>=9.0.1",
 
     # Auth
     "python-keycloak>=5.3.1",

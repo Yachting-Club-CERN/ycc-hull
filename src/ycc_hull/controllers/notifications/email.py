@@ -1,4 +1,5 @@
 "Email support."
+
 from email.message import EmailMessage
 from email.utils import formataddr
 
@@ -53,7 +54,7 @@ class EmailMessageBuilder:
                 raise ValueError(
                     "Sender is not set and email configuration is not specified"
                 )
-            self.from_(CONFIG.email.from_name, CONFIG.email.from_email)
+            self.from_(CONFIG.ycc_app.name, CONFIG.email.from_email)
         if not self._to:
             raise ValueError("Recipient is not set")
         if not self._subject:
