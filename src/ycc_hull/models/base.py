@@ -138,8 +138,8 @@ def sanitise_text_input(text: str | None) -> str | None:
             lxml.html.clean.Cleaner().clean_html(element).text_content().strip()
         )
         return clean_text if clean_text else None
-    except Exception as e:
-        raise ValueError(f"Failed to sanitise text input: {text}") from e
+    except Exception as exc:
+        raise ValueError(f"Failed to sanitise text input: {text}") from exc
 
 
 def sanitise_html_input(html: str | None) -> str | None:
@@ -181,8 +181,8 @@ def sanitise_html_input(html: str | None) -> str | None:
 
         # clean_element could be wrapped in an extra <div> or <p> tag, it's OK
         return lxml.etree.tostring(clean_element, encoding="unicode", method="html")
-    except Exception as e:
-        raise ValueError(f"Failed to sanitise HTML input: {html}") from e
+    except Exception as exc:
+        raise ValueError(f"Failed to sanitise HTML input: {html}") from exc
 
 
 def _parse_html(text: str) -> lxml.html.HtmlElement | None:
@@ -194,12 +194,12 @@ def _parse_html(text: str) -> lxml.html.HtmlElement | None:
 
     try:
         return lxml.html.fromstring(stripped)
-    except Exception as e:
+    except Exception as exc:
         # Detect lxml.etree.ParseError("Document is empty")
         # (Cannot catch directly)
-        if "Document is empty" in str(e):
+        if "Document is empty" in str(exc):
             return None
-        raise ValueError(f"Failed to parse text input: {text}") from e
+        raise ValueError(f"Failed to parse text input: {text}") from exc
 
 
 def sanitise_datetime_input(value: datetime | str | None) -> datetime | None:

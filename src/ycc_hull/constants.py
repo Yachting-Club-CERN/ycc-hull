@@ -37,6 +37,6 @@ def find_config_file() -> str:
 
 CONFIG_FILE = find_config_file()
 
-LOGGING_CONFIG_FILE = f"{_CONFIG_DIRECTORY}/logging.json"
+LOGGING_CONFIG_FILE = f"{_CONFIG_DIRECTORY}/logging.conf"
 
 TIME_ZONE_ID = "Europe/Zurich"

@@ -65,7 +65,9 @@ class EmailMessageBuilder:
         self._from = self._extract_address(contact)
         return self
 
-    def to(self, contacts: EmailContact | EmailContacts) -> "EmailMessageBuilder":
+    def to(
+        self, contacts: EmailContact | EmailContacts | None
+    ) -> "EmailMessageBuilder":
         self._add_contacts(self._to, contacts)
         return self
 

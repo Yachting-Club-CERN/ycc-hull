@@ -168,7 +168,7 @@ def format_helper_task_timing(task: HelperTaskDto) -> str:
 
 
 def format_helper_task_subject(task: HelperTaskDto) -> str:
-    return f"Helper Task: {task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
+    return f"{task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
 
 
 def format_helper_task(task: HelperTaskDto) -> str:
