@@ -1,5 +1,3 @@
-"Email support."
-
 from email.message import EmailMessage
 from email.utils import formataddr
 from typing import Iterable
@@ -24,7 +22,11 @@ EmailContacts = EmailContact | Iterable[EmailContact | None]
 
 
 class EmailMessageBuilder:
-    """Type-safe builder for email.message.EmailMessage."""
+    """
+    Type-safe builder for email.message.EmailMessage.
+
+    build(...) wraps the main content with the rest of the HTML code and text.
+    """
 
     def __init__(
         self,
