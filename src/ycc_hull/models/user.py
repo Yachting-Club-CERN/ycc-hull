@@ -3,6 +3,7 @@ User model.
 """
 
 from pydantic import ConfigDict
+
 from ycc_hull.models.base import CamelisedBaseModel
 
 _YCC_ADMIN_ROLE = "ycc-admin"

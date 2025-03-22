@@ -15,10 +15,7 @@ from ycc_hull.db.entities import (
     HelperTaskHelperEntity,
     MemberEntity,
 )
-from ycc_hull.models.base import (
-    CamelisedBaseModel,
-    CamelisedBaseModelWithEntity,
-)
+from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntity
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
 

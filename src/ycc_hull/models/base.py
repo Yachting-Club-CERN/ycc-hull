@@ -5,13 +5,14 @@ Base model.
 from datetime import datetime
 from typing import Any, Generic, TypeVar
 
-from humps import camelize
 import lxml
 import lxml.etree
 import lxml.html
 import lxml.html.clean
+from humps import camelize
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.fields import FieldInfo
+
 from ycc_hull.utils import TIME_ZONE, full_type_name
 
 EntityT = TypeVar("EntityT")

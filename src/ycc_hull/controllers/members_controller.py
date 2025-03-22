@@ -5,19 +5,15 @@ Members controller.
 from collections.abc import Sequence
 
 from sqlalchemy import and_, or_, select
-from ycc_hull.controllers.base_controller import BaseController
 
+from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.db.entities import (
     FeeRecordEntity,
     MemberEntity,
     MembershipTypeEntity,
     UserEntity,
 )
-from ycc_hull.models.dtos import (
-    MemberPublicInfoDto,
-    MembershipTypeDto,
-    UserDto,
-)
+from ycc_hull.models.dtos import MemberPublicInfoDto, MembershipTypeDto, UserDto
 
 
 class MembersController(BaseController):

@@ -6,9 +6,9 @@ import asyncio
 
 from sqlalchemy import ScalarResult, func, select
 from sqlalchemy.orm import joinedload
+
 from ycc_hull.config import CONFIG
 from ycc_hull.db.context import DatabaseContext
-
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,

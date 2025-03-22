@@ -6,12 +6,10 @@ from collections.abc import Sequence
 from datetime import date
 
 from fastapi import APIRouter, Depends
-from ycc_hull.auth import User, auth
 
+from ycc_hull.api.errors import create_http_exception_403
+from ycc_hull.auth import User, auth
 from ycc_hull.controllers.members_controller import MembersController
-from ycc_hull.api.errors import (
-    create_http_exception_403,
-)
 from ycc_hull.models.dtos import MemberPublicInfoDto, MembershipTypeDto, UserDto
 
 api_members = APIRouter(dependencies=[Depends(auth)])

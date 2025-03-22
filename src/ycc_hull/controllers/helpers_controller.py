@@ -7,7 +7,7 @@ from datetime import datetime
 
 from sqlalchemy import func, select
 from sqlalchemy.exc import DatabaseError
-from sqlalchemy.orm import defer, lazyload, Session
+from sqlalchemy.orm import Session, defer, lazyload
 
 from ycc_hull.controllers.audit import create_audit_entry
 from ycc_hull.controllers.base_controller import BaseController
