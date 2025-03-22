@@ -112,6 +112,7 @@ Upgrade to latest versions:
 ```sh
 poetry run pytest --cov=ycc_hull --cov-branch --cov-report=html
 
+poetry run isort .
 poetry run black .
 poetry run mypy .
 poetry run flake8 .

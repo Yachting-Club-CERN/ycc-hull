@@ -8,6 +8,7 @@ from datetime import date, datetime
 import aiofiles
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
+
 from test_data.generator_config import (
     BOATS_JSON_FILE,
     ENTRANCE_FEE_RECORDS_JSON_FILE,
@@ -24,7 +25,6 @@ from test_data.generator_config import (
     USERS_JSON_FILE,
 )
 from ycc_hull.controllers.base_controller import BaseController
-
 from ycc_hull.db.entities import (
     AuditLogEntryEntity,
     BaseEntity,
@@ -42,7 +42,7 @@ from ycc_hull.db.entities import (
     MembershipTypeEntity,
     UserEntity,
 )
-from ycc_hull.utils import short_type_name, full_type_name
+from ycc_hull.utils import full_type_name, short_type_name
 
 
 class _TestDataImporter:

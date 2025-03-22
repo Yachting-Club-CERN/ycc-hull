@@ -6,6 +6,7 @@ import logging
 import re
 from abc import ABCMeta
 from typing import Any
+
 from sqlalchemy.exc import DatabaseError
 
 from ycc_hull.controllers.exceptions import ControllerConflictException

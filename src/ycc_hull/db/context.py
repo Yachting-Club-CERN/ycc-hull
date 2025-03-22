@@ -2,19 +2,12 @@
 Database context.
 """
 
-from typing import Any, Awaitable, TypeVar
 from collections.abc import Callable, Sequence
+from typing import Any, Awaitable, TypeVar
 
 import oracledb
-from sqlalchemy import (
-    Select,
-    func,
-    select,
-    Engine,
-    create_engine,
-)
+from sqlalchemy import Engine, Select, create_engine, func, select
 from sqlalchemy.orm import Session, sessionmaker
-
 
 from ycc_hull.config import CONFIG, Environment
 

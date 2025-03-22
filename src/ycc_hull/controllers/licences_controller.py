@@ -3,7 +3,9 @@ Licences controller.
 """
 
 from collections.abc import Sequence
+
 from sqlalchemy import select
+
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.db.entities import LicenceInfoEntity
 from ycc_hull.models.dtos import LicenceDetailedInfoDto

@@ -29,10 +29,10 @@ to always the British spellings in this project ('c' instead of 's').
 Note 3: The existing DB is inconsistent in boolean fields. Sometimes they are
 NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
 """
+from collections.abc import Sequence
 from datetime import datetime
 from typing import Any
 
-from collections.abc import Sequence
 from sqlalchemy import (
     BLOB,
     CHAR,
