@@ -8,13 +8,17 @@ from fastapi import FastAPI, Request, Response
 from fastapi.exception_handlers import http_exception_handler
 
 from test_data.controllers.test_data_controller import TestDataController
-from ycc_hull.api.errors import (create_http_exception_400,
-                                 create_http_exception_404,
-                                 create_http_exception_409)
+from ycc_hull.api.errors import (
+    create_http_exception_400,
+    create_http_exception_404,
+    create_http_exception_409,
+)
 from ycc_hull.auth import auth
-from ycc_hull.controllers.exceptions import (ControllerBadRequestException,
-                                             ControllerConflictException,
-                                             ControllerNotFoundException)
+from ycc_hull.controllers.exceptions import (
+    ControllerBadRequestException,
+    ControllerConflictException,
+    ControllerNotFoundException,
+)
 from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
 from ycc_hull.db.entities import BaseEntity
 from ycc_hull.models.user import User

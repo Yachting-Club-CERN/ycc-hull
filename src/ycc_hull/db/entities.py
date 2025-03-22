@@ -33,8 +33,18 @@ from collections.abc import Sequence
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import (BLOB, CHAR, CLOB, VARCHAR, DateTime, ForeignKey, Index,
-                        Integer, PrimaryKeyConstraint, text)
+from sqlalchemy import (
+    BLOB,
+    CHAR,
+    CLOB,
+    VARCHAR,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    PrimaryKeyConstraint,
+    text,
+)
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 

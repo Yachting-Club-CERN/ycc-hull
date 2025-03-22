@@ -8,12 +8,19 @@ from typing import NamedTuple
 
 from faker import Faker
 
-from legacy_password_hashing.password_hashing import (hash_ycc_password,
-                                                      verify_ycc_password)
+from legacy_password_hashing.password_hashing import (
+    hash_ycc_password,
+    verify_ycc_password,
+)
 from test_data.generator_config import CURRENT_YEAR
 from test_data.utils.licences import generate_licences
-from ycc_hull.db.entities import (EntranceFeeRecordEntity, FeeRecordEntity,
-                                  LicenceEntity, MemberEntity, UserEntity)
+from ycc_hull.db.entities import (
+    EntranceFeeRecordEntity,
+    FeeRecordEntity,
+    LicenceEntity,
+    MemberEntity,
+    UserEntity,
+)
 
 MemberInfo = NamedTuple(
     "MemberInfo",

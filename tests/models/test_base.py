@@ -4,8 +4,11 @@ Base DTO tests.
 
 import pytest
 
-from ycc_hull.models.base import (sanitise_datetime_input, sanitise_html_input,
-                                  sanitise_text_input)
+from ycc_hull.models.base import (
+    sanitise_datetime_input,
+    sanitise_html_input,
+    sanitise_text_input,
+)
 
 
 @pytest.mark.parametrize(

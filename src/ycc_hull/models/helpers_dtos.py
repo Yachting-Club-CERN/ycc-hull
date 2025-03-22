@@ -8,10 +8,13 @@ from enum import Enum
 
 from pydantic import Field, field_validator, model_validator
 
-from ycc_hull.db.entities import (HelperTaskCategoryEntity, HelperTaskEntity,
-                                  HelperTaskHelperEntity, MemberEntity)
-from ycc_hull.models.base import (CamelisedBaseModel,
-                                  CamelisedBaseModelWithEntity)
+from ycc_hull.db.entities import (
+    HelperTaskCategoryEntity,
+    HelperTaskEntity,
+    HelperTaskHelperEntity,
+    MemberEntity,
+)
+from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntity
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
 

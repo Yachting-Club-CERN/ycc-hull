@@ -11,15 +11,23 @@ from sqlalchemy.orm import Session, defer, lazyload
 
 from ycc_hull.controllers.audit import create_audit_entry
 from ycc_hull.controllers.base_controller import BaseController
-from ycc_hull.controllers.exceptions import (ControllerConflictException,
-                                             ControllerNotFoundException)
-from ycc_hull.db.entities import (HelperTaskCategoryEntity, HelperTaskEntity,
-                                  HelperTaskHelperEntity)
-from ycc_hull.models.helpers_dtos import (HelperTaskCategoryDto, HelperTaskDto,
-                                          HelperTaskMarkAsDoneRequestDto,
-                                          HelperTaskMutationRequestDto,
-                                          HelperTaskState,
-                                          HelperTaskValidationRequestDto)
+from ycc_hull.controllers.exceptions import (
+    ControllerConflictException,
+    ControllerNotFoundException,
+)
+from ycc_hull.db.entities import (
+    HelperTaskCategoryEntity,
+    HelperTaskEntity,
+    HelperTaskHelperEntity,
+)
+from ycc_hull.models.helpers_dtos import (
+    HelperTaskCategoryDto,
+    HelperTaskDto,
+    HelperTaskMarkAsDoneRequestDto,
+    HelperTaskMutationRequestDto,
+    HelperTaskState,
+    HelperTaskValidationRequestDto,
+)
 from ycc_hull.models.user import User
 from ycc_hull.utils import get_now
 

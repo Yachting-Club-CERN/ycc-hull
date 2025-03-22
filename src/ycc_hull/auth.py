@@ -7,8 +7,7 @@ import logging
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from keycloak import KeycloakOpenID
-from keycloak.exceptions import (KeycloakAuthenticationError,
-                                 KeycloakInvalidTokenError)
+from keycloak.exceptions import KeycloakAuthenticationError, KeycloakInvalidTokenError
 
 from ycc_hull.api.errors import create_http_exception_401
 from ycc_hull.config import CONFIG

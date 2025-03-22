@@ -6,9 +6,14 @@ from datetime import date
 
 from pydantic import Field
 
-from ycc_hull.db.entities import (BoatEntity, HolidayEntity, LicenceInfoEntity,
-                                  MemberEntity, MembershipTypeEntity,
-                                  UserEntity)
+from ycc_hull.db.entities import (
+    BoatEntity,
+    HolidayEntity,
+    LicenceInfoEntity,
+    MemberEntity,
+    MembershipTypeEntity,
+    UserEntity,
+)
 from ycc_hull.models.base import CamelisedBaseModelWithEntity
 
 _UNKNOWN = "<unknown>"

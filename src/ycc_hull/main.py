@@ -15,18 +15,22 @@ from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 
 from ycc_hull.api.boats import api_boats
-from ycc_hull.api.errors import (create_http_exception_400,
-                                 create_http_exception_404,
-                                 create_http_exception_409)
+from ycc_hull.api.errors import (
+    create_http_exception_400,
+    create_http_exception_404,
+    create_http_exception_409,
+)
 from ycc_hull.api.helpers import api_helpers
 from ycc_hull.api.holidays import api_holidays
 from ycc_hull.api.licences import api_licences
 from ycc_hull.api.members import api_members
 from ycc_hull.config import CONFIG
 from ycc_hull.constants import LOGGING_CONFIG_FILE
-from ycc_hull.controllers.exceptions import (ControllerBadRequestException,
-                                             ControllerConflictException,
-                                             ControllerNotFoundException)
+from ycc_hull.controllers.exceptions import (
+    ControllerBadRequestException,
+    ControllerConflictException,
+    ControllerNotFoundException,
+)
 from ycc_hull.controllers.members_controller import MembersController
 from ycc_hull.db.context import DatabaseContextHolder
 
