@@ -14,11 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When a task is marked as done
   - When a task is validated
 
-
 ### Changed
 
 - Hierarchical `config.json` for better readability
-
 
 ## [1.1.0] - 2025-03-16
 
