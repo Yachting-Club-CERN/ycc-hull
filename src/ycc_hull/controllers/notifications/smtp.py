@@ -90,7 +90,7 @@ class SmtpConnection:
             )
 
         self._logger.info(
-            "Sending e-mail (Subject: %s, To: %s, Cc: %s, Bcc: %s, Reply-To: %s, content length: %d)",
+            "Sending email (Subject: %s, To: %s, Cc: %s, Bcc: %s, Reply-To: %s, content length: %d)",
             message["Subject"],
             message["To"],
             message["Cc"],

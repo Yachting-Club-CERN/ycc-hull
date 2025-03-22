@@ -19,7 +19,7 @@ dependencies = [
     # Auth
     "python-keycloak>=5.3.1",
 
-    # E-mail
+    # Email
     "aiosmtplib>=4.0.0",
 
     # REST API
