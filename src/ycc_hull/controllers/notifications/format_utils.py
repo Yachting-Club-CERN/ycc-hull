@@ -45,12 +45,13 @@ def wrap_email_html(content: str) -> str:
 
 
 def format_date(date: datetime | None) -> str | None:
+    # Example: 01/01/2025
     return date.strftime("%d/%m/%Y") if date else None
 
 
 def format_date_with_day(date: datetime | None) -> str | None:
-    #
-    return date.strftime("%A, %d %B %Y") if date else None
+    # Example: Wednesday, 1 January 2025
+    return date.strftime("%A, %-d %B %Y") if date else None
 
 
 def format_time(date: datetime | None) -> str | None:
@@ -59,7 +60,7 @@ def format_time(date: datetime | None) -> str | None:
 
 
 def format_date_time(date: datetime | None) -> str | None:
-    # Example: 01/01/2022 12:00
+    # Example: 01/01/2025, 12:00
     return date.strftime("%d/%m/%Y, %H:%M") if date else None
 
 
