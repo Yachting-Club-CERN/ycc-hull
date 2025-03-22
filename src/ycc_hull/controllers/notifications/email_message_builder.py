@@ -7,7 +7,7 @@ from typing import Iterable
 from pydantic import BaseModel
 
 from ycc_hull.config import CONFIG
-from ycc_hull.controllers.notifications.email_content_utils import (
+from ycc_hull.controllers.notifications.format_utils import (
     SHIFT_REPLACEMENT_REMINDER,
     YCC_APP_SIGNATURE,
     wrap_email_html,

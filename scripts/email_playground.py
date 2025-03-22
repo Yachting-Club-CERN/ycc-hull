@@ -7,12 +7,12 @@ import secrets
 from email.message import EmailMessage
 
 from ycc_hull.config import CONFIG
-from ycc_hull.controllers.notifications.email_content_utils import (
+from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
+from ycc_hull.controllers.notifications.format_utils import (
     format_helper_task,
     format_helper_task_subject,
     wrap_email_html,
 )
-from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
