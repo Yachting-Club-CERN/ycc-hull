@@ -1,5 +1,5 @@
 """
-Playground.
+Database playground.
 """
 
 import asyncio

@@ -12,9 +12,10 @@ from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.models.helpers_dtos import (
     HelperTaskCategoryDto,
+    HelperTaskCreationRequestDto,
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
-    HelperTaskMutationRequestDto,
+    HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
 
@@ -56,7 +57,7 @@ async def helper_tasks_get_by_id(
 
 @api_helpers.post("/api/v1/helpers/tasks")
 async def helper_tasks_create(
-    request: HelperTaskMutationRequestDto, user: User = Depends(auth)
+    request: HelperTaskCreationRequestDto, user: User = Depends(auth)
 ) -> HelperTaskDto:
     if not user.helpers_app_admin and not user.helpers_app_editor:
         raise create_http_exception_403(
@@ -73,7 +74,7 @@ async def helper_tasks_create(
 @api_helpers.put("/api/v1/helpers/tasks/{task_id}")
 async def helper_tasks_update(
     task_id: int,
-    request: HelperTaskMutationRequestDto,
+    request: HelperTaskUpdateRequestDto,
     user: User = Depends(auth),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin and not user.helpers_app_editor:

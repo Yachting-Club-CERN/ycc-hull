@@ -2,13 +2,16 @@
 Base controller.
 """
 
+import asyncio
 import logging
 import re
 from abc import ABCMeta
-from typing import Any
+from typing import Any, Coroutine
 
 from sqlalchemy.exc import DatabaseError
+from sqlalchemy.orm import Session
 
+from ycc_hull.controllers.audit import create_audit_entry
 from ycc_hull.controllers.exceptions import ControllerConflictException
 from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
 from ycc_hull.db.entities import BaseEntity
@@ -68,3 +71,21 @@ class BaseController(metaclass=ABCMeta):
     ) -> None:
         for field, value in request.__dict__.items():
             setattr(entity, field, value)
+
+    def _audit_log(
+        self, session: Session, user: User, description: str, data: dict | None = None
+    ) -> None:
+        async def wrapper() -> None:
+            session.add(create_audit_entry(user, description, data))
+            session.commit()
+
+        self._run_in_background(wrapper())
+
+    def _run_in_background(self, coroutine: Coroutine[Any, Any, Any]) -> None:
+        async def wrapper() -> None:
+            try:
+                await coroutine
+            except Exception:  # pylint: disable=broad-exception-caught
+                self._logger.exception("Background task failed")
+
+        asyncio.create_task(wrapper())

@@ -36,6 +36,15 @@ cd ../ycc-infra/ycc-keycloak-local
 ./kc.sh start-dev
 ```
 
+Start Mailpit (if you do not want to test email testing, copy `conf/config.json` to `conf/config-dev.json` and remove `email`):
+
+```sh
+docker run -d --name=mailpit --restart unless-stopped -e TZ=Europe/Zurich -p 8025:8025 -p 1025:1025 axllent/mailpit
+
+// SMTP: localhost:1025
+// Web: http://localhost:8025
+```
+
 Start application:
 
 ```sh
@@ -44,6 +53,13 @@ poetry run start
 
 - Address: [http://localhost:8000/](http://localhost:8000/)
 - API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+You can also separately verify the DB and the email configuration:
+
+```sh
+poetry run db-playground
+poetry run email-playground
+```
 
 ## Keycloak Client Configuration
 

@@ -6,7 +6,7 @@ import json
 import os
 from enum import Enum
 
-from pydantic import ConfigDict
+from pydantic import ConfigDict, Field
 
 from ycc_hull.constants import CONFIG_FILE
 from ycc_hull.models.base import CamelisedBaseModel
@@ -23,6 +23,43 @@ class Environment(str, Enum):
     LOCAL = "LOCAL"
 
 
+class EmailConfig(CamelisedBaseModel):
+    """
+    Email configuration.
+    """
+
+    from_email: str
+    content_header: str | None = Field(
+        default=None, json_schema_extra={"sanitise": False}
+    )
+    smtp_host: str
+    smtp_port: int
+    smtp_start_tls: bool
+    smtp_username: str | None = None
+    smtp_password: str | None = None
+
+
+class KeycloakConfig(CamelisedBaseModel):
+    """
+    Keycloak configuration.
+    """
+
+    server_url: str
+    realm: str
+    client: str
+    client_secret: str
+    swagger_client: str | None = None
+
+
+class YccAppConfig(CamelisedBaseModel):
+    """
+    YCC app configuration.
+    """
+
+    name: str
+    base_url: str
+
+
 class Config(CamelisedBaseModel):
     """
     Application configuration.
@@ -33,12 +70,10 @@ class Config(CamelisedBaseModel):
     environment: Environment
     database_url: str
     cors_origins: frozenset[str]
-    keycloak_server_url: str
-    keycloak_realm: str
-    keycloak_client: str
-    keycloak_client_secret: str
-    keycloak_swagger_client: str | None
+    email: EmailConfig | None = None
+    keycloak: KeycloakConfig
     uvicorn_port: int
+    ycc_app: YccAppConfig
 
     @property
     def local(self) -> bool:

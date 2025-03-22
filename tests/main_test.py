@@ -62,6 +62,9 @@ class FakeAuth:
         return User(
             member_id=cls._member_id,
             username="testuser",
+            email="testuser@example.com",
+            first_name="Test",
+            last_name="User",
             groups=[],
             roles=roles,
         )

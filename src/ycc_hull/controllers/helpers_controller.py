@@ -9,11 +9,13 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session, defer, lazyload
 
-from ycc_hull.controllers.audit import create_audit_entry
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
     ControllerNotFoundException,
+)
+from ycc_hull.controllers.notifications.helpers_notifications_controller import (
+    HelpersNotificationsController,
 )
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
@@ -22,10 +24,11 @@ from ycc_hull.db.entities import (
 )
 from ycc_hull.models.helpers_dtos import (
     HelperTaskCategoryDto,
+    HelperTaskCreationRequestDto,
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
-    HelperTaskMutationRequestDto,
     HelperTaskState,
+    HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
@@ -36,6 +39,11 @@ class HelpersController(BaseController):
     """
     Helpers controller. Returns DTO objects.
     """
+
+    def __init__(self) -> None:
+        super().__init__()
+
+        self._notifications = HelpersNotificationsController()
 
     async def find_all_task_categories(self) -> Sequence[HelperTaskCategoryDto]:
         return await self.database_context.query_all(
@@ -72,7 +80,7 @@ class HelpersController(BaseController):
         raise ControllerNotFoundException("Task not found")
 
     async def create_task(
-        self, request: HelperTaskMutationRequestDto, user: User
+        self, request: HelperTaskCreationRequestDto, user: User
     ) -> HelperTaskDto:
         # Admins/editors have full power (e.g., administer things happened in the past)
         with self.database_context.session() as session:
@@ -84,10 +92,7 @@ class HelpersController(BaseController):
                 task = await HelperTaskDto.create(task_entity)
                 self._logger.info("Created task: %s, user: %s", task, user)
 
-                session.add(
-                    create_audit_entry(user, "Helpers/Tasks/Create", {"new": task})
-                )
-                session.commit()
+                self._audit_log(session, user, "Helpers/Tasks/Create", {"new": task})
 
                 return task
             except DatabaseError as exc:
@@ -98,7 +103,7 @@ class HelpersController(BaseController):
     async def update_task(
         self,
         task_id: int,
-        request: HelperTaskMutationRequestDto,
+        request: HelperTaskUpdateRequestDto,
         user: User,
     ) -> HelperTaskDto:
         # Admins/editors have full power (e.g., administer things happened in the past)
@@ -159,14 +164,12 @@ class HelpersController(BaseController):
                 new_task = await HelperTaskDto.create(task_entity)
                 self._logger.info("Updated task: %s, user: %s", new_task, user)
 
-                session.add(
-                    create_audit_entry(
-                        user,
-                        f"Helpers/Tasks/Update/{task_id}",
-                        {"old": old_task, "new": new_task},
-                    )
+                self._audit_log(
+                    session,
+                    user,
+                    f"Helpers/Tasks/Update/{task_id}",
+                    {"old": old_task, "new": new_task},
                 )
-                session.commit()
 
                 return new_task
             except DatabaseError as exc:
@@ -194,10 +197,9 @@ class HelpersController(BaseController):
             task_entity.captain_signed_up_at = get_now()
             session.commit()
 
-            session.add(
-                create_audit_entry(user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
-            )
-            session.commit()
+            updated_task = await HelperTaskDto.create(task_entity)
+            self._audit_log(session, user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
+            self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
     async def sign_up_as_helper(self, task_id: int, user: User) -> None:
         with self.database_context.session() as session:
@@ -211,12 +213,14 @@ class HelpersController(BaseController):
                 task_id=task.id, member_id=user.member_id, signed_up_at=get_now()
             )
             session.add(helper)
+
             session.commit()
 
-            session.add(
-                create_audit_entry(user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
+            updated_task = await self.get_task_by_id(
+                task_id, published=True, session=session
             )
-            session.commit()
+            self._audit_log(session, user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
+            self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
     async def mark_as_done(
         self, task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User
@@ -237,12 +241,11 @@ class HelpersController(BaseController):
             task_entity.marked_as_done_comment = request.comment
             session.commit()
 
-            session.add(
-                create_audit_entry(
-                    user, f"Helpers/Tasks/MarkAsDone/{task_id}", {"request": request}
-                )
+            updated_task = await HelperTaskDto.create(task_entity)
+            self._audit_log(session, user, f"Helpers/Tasks/MarkAsDone/{task_id}")
+            self._run_in_background(
+                self._notifications.on_mark_as_done(updated_task, user)
             )
-            session.commit()
 
     async def validate(
         self, task_id: int, request: HelperTaskValidationRequestDto, user: User
@@ -289,14 +292,9 @@ class HelpersController(BaseController):
 
             session.commit()
 
-            session.add(
-                create_audit_entry(
-                    user,
-                    f"Helpers/Tasks/Validate/{task_id}",
-                    {"request": request},
-                )
-            )
-            session.commit()
+            updated_task = await HelperTaskDto.create(task_entity)
+            self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
+            self._run_in_background(self._notifications.on_validate(updated_task, user))
 
     async def _find_tasks(
         self,

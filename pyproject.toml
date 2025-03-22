@@ -1,6 +1,6 @@
 [project]
 name = "ycc-hull"
-version = "1.1.1"
+version = "1.2.0"
 description = "YCC Hull Backend Service"
 authors = [
     { name = "Lajos Cseppentő", email = "1053931+LajosCseppento@users.noreply.github.com" },
@@ -11,12 +11,16 @@ dependencies = [
     # General
     "aiofiles>=24.1.0",
     "lxml[html_clean]>=5.3.1",
+    "phonenumbers>=9.0.1",
     "pyhumps>=3.8.0",
     "pytz>=2025.1",
     "toml>=0.10.2",
 
     # Auth
     "python-keycloak>=5.3.1",
+
+    # Email
+    "aiosmtplib>=4.0.0",
 
     # REST API
     "fastapi>=0.115.11",
@@ -30,6 +34,10 @@ dependencies = [
 
 [tool.isort]
 profile = "black"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "module"
 
 [tool.poetry]
 packages = [{ include = "ycc_hull", from = "src" }]
@@ -55,6 +63,8 @@ types-toml = "^0.10.8.20240310"
 [tool.poetry.group.test.dependencies]
 locust = "^2.33.2"
 pytest = "^8.3.5"
+pylint = "^3.3.5"
+pylint-pydantic = "^0.3.5"
 pytest-asyncio = "^0.25.3"
 pytest-cov = "^6.0.0"
 pytest-html = "^4.1.1"
@@ -64,7 +74,8 @@ pytest-mock = "^3.14.0"
 start = "ycc_hull.main:main"
 generate-test-data = "test_data.generator:generate"
 regenerate-test-data = "test_data.generator:regenerate"
-playground = "test_data.playground:main"
+db-playground = "scripts.db_playground:main"
+email-playground = "scripts.email_playground:main"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

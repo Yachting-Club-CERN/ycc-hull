@@ -202,9 +202,9 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
         )
 
 
-class HelperTaskMutationRequestDto(CamelisedBaseModel):
+class HelperTaskMutationRequestBaseDto(CamelisedBaseModel):
     """
-    Mutation request DTO for helper task.
+    Base DTO for helper task mutation requests.
     """
 
     category_id: int
@@ -229,7 +229,7 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
         return value
 
     @model_validator(mode="after")
-    def check_timing(self) -> "HelperTaskMutationRequestDto":
+    def check_timing(self) -> "HelperTaskMutationRequestBaseDto":
         if self.starts_at and self.ends_at and not self.deadline:
             # Shifts have extra conditions
             if self.starts_at >= self.ends_at:
@@ -249,10 +249,22 @@ class HelperTaskMutationRequestDto(CamelisedBaseModel):
         return self
 
     @model_validator(mode="after")
-    def check_helper_min_max_count(self) -> "HelperTaskMutationRequestDto":
+    def check_helper_min_max_count(self) -> "HelperTaskMutationRequestBaseDto":
         if 0 <= self.helper_min_count <= self.helper_max_count:
             return self
         raise ValueError("Invalid minimum/maximum helper count")
+
+
+class HelperTaskCreationRequestDto(HelperTaskMutationRequestBaseDto):
+    """
+    Creation request DTO for helper task.
+    """
+
+
+class HelperTaskUpdateRequestDto(HelperTaskMutationRequestBaseDto):
+    """
+    Update request DTO for helper task.
+    """
 
 
 class HelperTaskMarkAsDoneRequestDto(CamelisedBaseModel):
@@ -308,5 +320,6 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
 
 HelperTaskCategoryDto.model_rebuild()
 HelperTaskDto.model_rebuild()
-HelperTaskMutationRequestDto.model_rebuild()
+HelperTaskCreationRequestDto.model_rebuild()
+HelperTaskUpdateRequestDto.model_rebuild()
 HelperTaskHelperDto.model_rebuild()
