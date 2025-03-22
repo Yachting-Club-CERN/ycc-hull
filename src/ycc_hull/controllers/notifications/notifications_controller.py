@@ -4,7 +4,7 @@ from ycc_hull.controllers.notifications.email import EmailMessageBuilder
 
 from ycc_hull.controllers.notifications.email_content_utils import (
     format_timing,
-    get_helper_task_url,
+    _get_helper_task_url,
 )
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import MemberPublicInfoDto
@@ -24,31 +24,21 @@ async def send_helper_task_helper_sign_up_confirmation(
             f"""
 <html>
 <body>
-Dear {member.full_name},
+<p>Dear {member.full_name},</p>
+
 <p>
 Thank you for signing up for the task as helper:
 
 <ul>
-  <li><a href="{get_helper_task_url(task)}">{task.title}</a>
+  <li><a href="{_get_helper_task_url(task)}">{task.title}</a>
   <li>{format_timing(task)}
   <li>Contact: {task.contact.full_name}, {task.contact.email}, {format_phone_numbers(task.contact)}
 </ul>
+</p>
 
 If you cannot take your shift, please find a replacement.
 <p>
-HTML TEST
-<p><strong>STRONG</strong> <em>EM</em> <u>U</u> <s>S</s> <a href="https://cern.ch">A</a>
-<p>
-<b>BOLD</b> <i>ITALIC</i> <u>UNDERLINE</u> <s>STRIKETHROUGH</s>
-<p>
-<span style="color: red;">RED</span> <span style="color: green;">GREEN</span> <span style="color: blue;">BLUE</span>
-<p>
-<span style = "font-size: 20px;">20px</span> <span style = "font-size: 30px;">30px</span> <span style = "font-size: 40px;">40px</span>
-<p>
-<span style = "font-family: Arial;">Arial</span> <span style = "font-family: Courier;">Courier</span> <span style = "font-family: Georgia;">Georgia</span>
-<p>
-<span style = "font-weight: bold;">BOLD</span> <span style = "font-style: italic;">ITALIC</span> <span style = "text-decoration: underline;">UNDERLINE</span>
-<p>
+
 Kind wishes,
 YCC Maintenance & Surveillance Teams"""
         )

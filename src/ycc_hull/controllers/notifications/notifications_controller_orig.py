@@ -1,3 +1,5 @@
+# Delete when migrated Tomas's templates
+
 import logging
 import smtplib
 from email.message import EmailMessage

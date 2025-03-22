@@ -7,10 +7,6 @@ from ycc_hull.models.helpers_dtos import HelperTaskDto, HelperTaskType
 import phonenumbers
 
 
-def get_helper_task_url(task: HelperTaskDto) -> str:
-    return f"{CONFIG.ycc_app.base_url}/helpers/tasks/{task.id}"
-
-
 #
 # Date Format
 #
@@ -82,19 +78,6 @@ def link_phones(member: MemberPublicInfoDto) -> str | None:
     return " / ".join(phones) if phones else None
 
 
-def format_timing(task: HelperTaskDto) -> str:
-    if task.type == HelperTaskType.SHIFT:
-        same_day_end = task.starts_at.date() == task.ends_at.date()
-        if same_day_end:
-            return f"Shift: {format_date_with_day(task.starts_at)} {format_time(task.starts_at)} - {format_time(task.ends_at)}"
-        else:
-            return f"Multi-Day Shift: {format_date_time(task.starts_at)} - {format_date_time(task.ends_at)}"
-    elif task.type == HelperTaskType.DEADLINE:
-        return f"Deadline: {format_date_with_day(task.deadline)} {format_time(task.deadline)}"
-    else:
-        return f"Start: {format_date_time(task.starts_at)} End: {format_date_time(task.ends_at)} Deadline: {format_date_time(task.deadline)}"
-
-
 #
 # Member Format
 #
@@ -108,3 +91,69 @@ def format_member_info(member: MemberPublicInfoDto) -> str:
     if phones:
         member_info += f" / {phones}"
     return member_info
+
+
+#
+# Task Format
+#
+def format_timing(task: HelperTaskDto) -> str:
+    if task.type == HelperTaskType.SHIFT:
+        same_day_end = task.starts_at.date() == task.ends_at.date()
+        if same_day_end:
+            return f"Shift: {format_date_with_day(task.starts_at)} {format_time(task.starts_at)} &ndash; {format_time(task.ends_at)}"
+        else:
+            return f"Multi-Day Shift: {format_date_time(task.starts_at)} &ndash; {format_date_time(task.ends_at)}"
+    elif task.type == HelperTaskType.DEADLINE:
+        return f"Deadline: {format_date_with_day(task.deadline)} {format_time(task.deadline)}"
+    else:
+        return f"Start: {format_date_time(task.starts_at)} End: {format_date_time(task.ends_at)} Deadline: {format_date_time(task.deadline)}"
+
+
+def _get_helper_task_url(task: HelperTaskDto) -> str:
+    return f"{CONFIG.ycc_app.base_url}/helpers/tasks/{task.id}"
+
+
+def format_helper_task(task: HelperTaskDto) -> str:
+    task_url = _get_helper_task_url(task)
+
+    helpers = []
+    if task.helpers:
+        helpers.append("<ul>")
+
+        for helper in task.helpers:
+            helpers.append(f"  <li>{format_member_info(helper.member)}</li>")
+
+        helpers.append("</ul>")
+    else:
+        helpers.append("-")
+
+    return f"""
+<div>
+    <p style="font-size: x-large;">
+        <strong>{task.title} ({task.category.title})</strong>
+    </p>
+    <p style="font-size: large;"><strong>{format_timing(task)}</strong></p>
+    <p><em>{task.short_description}</em></p>
+    <ul>
+        <li>Contact: {format_member_info(task.contact)}</li>
+        <li>Captain: {format_member_info(task.captain.member) if task.captain else "-"}</li>
+        <li>Helpers: {"".join(helpers)}</li>
+    </ul>
+    <p>
+        <a
+            href="{task_url}"
+            style="
+                display: inline-block;
+                padding: 6px 16px;
+                font-size: large;
+                color: #ffffff;
+                background-color: #1976d2;
+                text-decoration: none;
+                border-radius: 4px;
+            "
+        >
+            <strong>Open in the YCC App</strong>
+        </a>
+    </p>
+</div>
+"""
