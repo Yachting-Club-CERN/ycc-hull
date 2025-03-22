@@ -25,10 +25,11 @@ from ycc_hull.db.entities import (
 )
 from ycc_hull.models.helpers_dtos import (
     HelperTaskCategoryDto,
+    HelperTaskCreationRequestDto,
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
-    HelperTaskMutationRequestDto,
     HelperTaskState,
+    HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
@@ -75,7 +76,7 @@ class HelpersController(BaseController):
         raise ControllerNotFoundException("Task not found")
 
     async def create_task(
-        self, request: HelperTaskMutationRequestDto, user: User
+        self, request: HelperTaskCreationRequestDto, user: User
     ) -> HelperTaskDto:
         # Admins/editors have full power (e.g., administer things happened in the past)
         with self.database_context.session() as session:
@@ -101,7 +102,7 @@ class HelpersController(BaseController):
     async def update_task(
         self,
         task_id: int,
-        request: HelperTaskMutationRequestDto,
+        request: HelperTaskUpdateRequestDto,
         user: User,
     ) -> HelperTaskDto:
         # Admins/editors have full power (e.g., administer things happened in the past)
@@ -170,6 +171,10 @@ class HelpersController(BaseController):
                     )
                 )
                 session.commit()
+
+                if request.notify_participants:
+                    pass
+                    # TODO
 
                 return new_task
             except DatabaseError as exc:
