@@ -10,39 +10,31 @@ from typing import Any
 
 from faker import Faker
 
-from test_data.generator_config import (
-    BOATS_JSON_FILE,
-    ENTRANCE_FEE_RECORDS_JSON_FILE,
-    FEE_RECORDS_JSON_FILE,
-    HELPER_TASK_CATEGORIES_JSON_FILE,
-    HELPER_TASK_HELPERS_JSON_FILE,
-    HELPER_TASKS_JSON_FILE,
-    HELPERS_APP_PERMISSIONS_JSON_FILE,
-    HOLIDAYS_EXPORTED_JSON_FILE,
-    HOLIDAYS_JSON_FILE,
-    LICENCE_INFOS_JSON_FILE,
-    LICENCES_JSON_FILE,
-    MEMBER_COUNT,
-    MEMBERS_JSON_FILE,
-    USERS_JSON_FILE,
-)
+from test_data.generator_config import (BOATS_JSON_FILE,
+                                        ENTRANCE_FEE_RECORDS_JSON_FILE,
+                                        FEE_RECORDS_JSON_FILE,
+                                        HELPER_TASK_CATEGORIES_JSON_FILE,
+                                        HELPER_TASK_HELPERS_JSON_FILE,
+                                        HELPER_TASKS_JSON_FILE,
+                                        HELPERS_APP_PERMISSIONS_JSON_FILE,
+                                        HOLIDAYS_EXPORTED_JSON_FILE,
+                                        HOLIDAYS_JSON_FILE,
+                                        LICENCE_INFOS_JSON_FILE,
+                                        LICENCES_JSON_FILE, MEMBER_COUNT,
+                                        MEMBERS_JSON_FILE, USERS_JSON_FILE)
 from test_data.utils.boats import generate_boats
-from test_data.utils.helpers import (
-    generate_helper_task_categories,
-    generate_helper_task_helpers,
-    generate_helper_tasks,
-    generate_helpers_app_permissions,
-)
+from test_data.utils.helpers import (generate_helper_task_categories,
+                                     generate_helper_task_helpers,
+                                     generate_helper_tasks,
+                                     generate_helpers_app_permissions)
 from test_data.utils.holidays import generate_holidays
 from test_data.utils.licence_infos import generate_licence_infos
-from test_data.utils.members import (
-    generate_member_infos,
-    get_member_info_by_id,
-    get_members_with_licence,
-    get_members_with_payment_current_year,
-    get_members_without_licence,
-    get_members_without_payment_current_year,
-)
+from test_data.utils.members import (generate_member_infos,
+                                     get_member_info_by_id,
+                                     get_members_with_licence,
+                                     get_members_with_payment_current_year,
+                                     get_members_without_licence,
+                                     get_members_without_payment_current_year)
 from ycc_hull.db.entities import BaseEntity
 
 faker: Faker = Faker()

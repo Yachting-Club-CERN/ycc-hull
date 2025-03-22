@@ -8,41 +8,29 @@ from datetime import date, datetime
 import aiofiles
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
-from test_data.generator_config import (
-    BOATS_JSON_FILE,
-    ENTRANCE_FEE_RECORDS_JSON_FILE,
-    FEE_RECORDS_JSON_FILE,
-    HELPER_TASK_CATEGORIES_JSON_FILE,
-    HELPER_TASK_HELPERS_JSON_FILE,
-    HELPER_TASKS_JSON_FILE,
-    HELPERS_APP_PERMISSIONS_JSON_FILE,
-    HOLIDAYS_JSON_FILE,
-    LICENCE_INFOS_JSON_FILE,
-    LICENCES_JSON_FILE,
-    MEMBERS_JSON_FILE,
-    MEMBERSHIP_EXPORTED_JSON_FILE,
-    USERS_JSON_FILE,
-)
-from ycc_hull.controllers.base_controller import BaseController
 
-from ycc_hull.db.entities import (
-    AuditLogEntryEntity,
-    BaseEntity,
-    BoatEntity,
-    EntranceFeeRecordEntity,
-    FeeRecordEntity,
-    HelpersAppPermissionEntity,
-    HelperTaskCategoryEntity,
-    HelperTaskEntity,
-    HelperTaskHelperEntity,
-    HolidayEntity,
-    LicenceEntity,
-    LicenceInfoEntity,
-    MemberEntity,
-    MembershipTypeEntity,
-    UserEntity,
-)
-from ycc_hull.utils import short_type_name, full_type_name
+from test_data.generator_config import (BOATS_JSON_FILE,
+                                        ENTRANCE_FEE_RECORDS_JSON_FILE,
+                                        FEE_RECORDS_JSON_FILE,
+                                        HELPER_TASK_CATEGORIES_JSON_FILE,
+                                        HELPER_TASK_HELPERS_JSON_FILE,
+                                        HELPER_TASKS_JSON_FILE,
+                                        HELPERS_APP_PERMISSIONS_JSON_FILE,
+                                        HOLIDAYS_JSON_FILE,
+                                        LICENCE_INFOS_JSON_FILE,
+                                        LICENCES_JSON_FILE, MEMBERS_JSON_FILE,
+                                        MEMBERSHIP_EXPORTED_JSON_FILE,
+                                        USERS_JSON_FILE)
+from ycc_hull.controllers.base_controller import BaseController
+from ycc_hull.db.entities import (AuditLogEntryEntity, BaseEntity, BoatEntity,
+                                  EntranceFeeRecordEntity, FeeRecordEntity,
+                                  HelpersAppPermissionEntity,
+                                  HelperTaskCategoryEntity, HelperTaskEntity,
+                                  HelperTaskHelperEntity, HolidayEntity,
+                                  LicenceEntity, LicenceInfoEntity,
+                                  MemberEntity, MembershipTypeEntity,
+                                  UserEntity)
+from ycc_hull.utils import full_type_name, short_type_name
 
 
 class _TestDataImporter:

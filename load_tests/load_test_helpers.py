@@ -3,24 +3,14 @@ Helpers API load tests.
 """
 
 import random
+
 from locust import HttpUser, task
 
-from load_tests.load_test_auth_utils import (
-    get_access_token,
-    get_user_id,
-)
-from load_tests.load_test_config import (
-    ADMIN_USER,
-    OTHER_USER,
-)
-from load_tests.load_test_helpers_utils import (
-    create_task,
-    get_task,
-    get_tasks,
-    sign_up_as_captain,
-    sign_up_as_helper,
-)
-
+from load_tests.load_test_auth_utils import get_access_token, get_user_id
+from load_tests.load_test_config import ADMIN_USER, OTHER_USER
+from load_tests.load_test_helpers_utils import (create_task, get_task,
+                                                get_tasks, sign_up_as_captain,
+                                                sign_up_as_helper)
 
 ADMIN_ACCESS_TOKEN = get_access_token(ADMIN_USER)
 ADMIN_ID = get_user_id(ADMIN_ACCESS_TOKEN)

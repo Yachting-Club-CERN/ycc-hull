@@ -5,12 +5,9 @@ Test data generator component for helpers.
 from datetime import datetime
 
 from test_data.generator_config import CURRENT_YEAR
-from ycc_hull.db.entities import (
-    HelpersAppPermissionEntity,
-    HelperTaskCategoryEntity,
-    HelperTaskEntity,
-    HelperTaskHelperEntity,
-)
+from ycc_hull.db.entities import (HelpersAppPermissionEntity,
+                                  HelperTaskCategoryEntity, HelperTaskEntity,
+                                  HelperTaskHelperEntity)
 
 
 def generate_helpers_app_permissions() -> list[HelpersAppPermissionEntity]:

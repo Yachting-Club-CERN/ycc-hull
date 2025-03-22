@@ -3,9 +3,10 @@ General utilities.
 """
 
 from datetime import datetime
-import pytz
-from ycc_hull.constants import TIME_ZONE_ID
 
+import pytz
+
+from ycc_hull.constants import TIME_ZONE_ID
 
 TIME_ZONE = pytz.timezone(TIME_ZONE_ID)
 

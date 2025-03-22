@@ -4,6 +4,7 @@ Helpers API utilities for load tests.
 
 import random
 from datetime import datetime, timedelta
+
 from locust.clients import HttpSession
 
 from load_tests.load_test_auth_utils import create_auth_header

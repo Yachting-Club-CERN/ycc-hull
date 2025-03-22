@@ -3,9 +3,10 @@ Licence API endpoints.
 """
 
 from collections.abc import Sequence
-from fastapi import APIRouter, Depends
-from ycc_hull.auth import auth
 
+from fastapi import APIRouter, Depends
+
+from ycc_hull.auth import auth
 from ycc_hull.controllers.licences_controller import LicencesController
 from ycc_hull.models.dtos import LicenceDetailedInfoDto
 

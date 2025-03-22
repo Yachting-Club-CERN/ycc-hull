@@ -29,22 +29,12 @@ to always the British spellings in this project ('c' instead of 's').
 Note 3: The existing DB is inconsistent in boolean fields. Sometimes they are
 NUMBER(1,0) and sometimes VARCHAR2(1). For new tables use NUMBER(1,0).
 """
+from collections.abc import Sequence
 from datetime import datetime
 from typing import Any
 
-from collections.abc import Sequence
-from sqlalchemy import (
-    BLOB,
-    CHAR,
-    CLOB,
-    VARCHAR,
-    DateTime,
-    ForeignKey,
-    Index,
-    Integer,
-    PrimaryKeyConstraint,
-    text,
-)
+from sqlalchemy import (BLOB, CHAR, CLOB, VARCHAR, DateTime, ForeignKey, Index,
+                        Integer, PrimaryKeyConstraint, text)
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
