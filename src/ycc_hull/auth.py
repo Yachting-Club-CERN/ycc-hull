@@ -104,6 +104,9 @@ def _create_user(user_info: dict, token_info: dict) -> User:
             "preferred_username",
             token_info.get("username", token_info.get("preferred_username")),
         ),
+        email=user_info.get("email", token_info.get("email")),
+        first_name=user_info.get("given_name", token_info.get("given_name")),
+        last_name=user_info.get("family_name", token_info.get("family_name")),
         groups=tuple(user_info.get("groups", [])),
         roles=tuple(
             user_info.get("roles", token_info.get("realm_access", {}).get("roles", []))

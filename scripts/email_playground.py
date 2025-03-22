@@ -3,8 +3,8 @@ Email playground.
 """
 
 import asyncio
-from email.message import EmailMessage
 import secrets
+from email.message import EmailMessage
 
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.notifications.email_content_utils import (
@@ -20,7 +20,6 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskDto,
     HelperTaskHelperDto,
 )
-
 
 member_alice = MemberPublicInfoDto(
     id=1000,
@@ -109,7 +108,10 @@ helper_task = HelperTaskDto(
 )
 
 
-def create_message(subject: str, content: str) -> None:
+def create_message(subject: str, content: str) -> EmailMessage:
+    if CONFIG.email is None:
+        raise ValueError("Email configuration is not set")
+
     email = EmailMessage()
     email["From"] = CONFIG.email.from_email
     email["To"] = CONFIG.email.from_email
@@ -121,7 +123,7 @@ def create_message(subject: str, content: str) -> None:
 async def send_message(smtp: SmtpConnection, email: EmailMessage) -> None:
     print("Sending email...")
     await smtp.send_message(email)
-    print("Email sent.")
+    print("Email sent")
 
 
 async def run() -> None:
@@ -130,6 +132,8 @@ async def run() -> None:
     print("Connecting to SMTP server...")
 
     async with SmtpConnection() as smtp:
+        print("Connected to SMTP server")
+
         await send_message(
             smtp, create_message(f"{prefix}Hello, world!", "Hello, world!")
         )
@@ -202,6 +206,9 @@ async def run() -> None:
                 wrap_email_html(format_helper_task(helper_task)),
             ),
         )
+
+        if helper_task.captain is None:
+            raise ValueError(f"Captain is not set: {helper_task}")
 
         await send_message(
             smtp,

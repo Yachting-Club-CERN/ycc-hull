@@ -8,7 +8,6 @@ from enum import Enum
 
 from pydantic import Field, field_validator, model_validator
 
-from ycc_hull.config import CONFIG
 from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,

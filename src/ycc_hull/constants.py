@@ -20,18 +20,19 @@ def find_config_file() -> str:
         raise AssertionError(
             f"Multiple active development configuration files found: {active_dev_files}"
         )
-    elif active_dev_file_count == 1:
+
+    if active_dev_file_count == 1:
         config_file = f"{_CONFIG_DIRECTORY}/{active_dev_files[0]}"
         # Using print as logging is not configured yet at this point
         print("!!!")
         print(f"!!! Using development configuration file: {config_file}")
         print("!!!")
         return config_file
-    else:
-        config_file = f"{_CONFIG_DIRECTORY}/config.json"
-        if not os.path.exists(config_file):
-            raise AssertionError(f"Missing configuration file: {config_file}")
-        return config_file
+
+    config_file = f"{_CONFIG_DIRECTORY}/config.json"
+    if not os.path.exists(config_file):
+        raise AssertionError(f"Missing configuration file: {config_file}")
+    return config_file
 
 
 CONFIG_FILE = find_config_file()

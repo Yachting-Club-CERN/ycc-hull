@@ -32,8 +32,15 @@ class User(CamelisedBaseModel):
 
     member_id: int
     username: str
+    email: str
+    first_name: str
+    last_name: str
     groups: tuple[str, ...]
     roles: tuple[str, ...]
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
 
     @property
     def active_member(self) -> bool:

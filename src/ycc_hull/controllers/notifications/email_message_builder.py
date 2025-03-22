@@ -2,7 +2,7 @@
 
 from email.message import EmailMessage
 from email.utils import formataddr
-from typing import Iterable, Union, overload
+from typing import Iterable
 
 from pydantic import BaseModel
 
@@ -13,6 +13,14 @@ from ycc_hull.controllers.notifications.email_content_utils import (
     wrap_email_html,
 )
 from ycc_hull.models.dtos import MemberPublicInfoDto
+from ycc_hull.models.user import User
+
+# Email contact:
+#
+# - string: "alice@example.com", "Alice <alice@example.com>"
+# - MemberPublicInfoDto, User: object with email and full_name
+EmailContact = str | MemberPublicInfoDto | User
+EmailContacts = EmailContact | Iterable[EmailContact | None]
 
 
 class EmailMessageBuilder:
@@ -20,7 +28,7 @@ class EmailMessageBuilder:
 
     def __init__(
         self,
-    ):
+    ) -> None:
         self._from: str | None = None
         self._to: list[str] = []
         self._cc: list[str] = []
@@ -28,76 +36,47 @@ class EmailMessageBuilder:
         self._subject: str | None = None
         self._content: str | None = None
 
-    def _extract_address(self, *args: str | MemberPublicInfoDto) -> str:
-        if len(args) == 1 and isinstance(args[0], MemberPublicInfoDto):
-            return formataddr((args[0].full_name, args[0].email))
-        elif len(args) == 2 and all(isinstance(arg, str) for arg in args):
-            return formataddr((args[0], args[1]))
+    def _extract_address(self, recipient: EmailContact) -> str:
+        if isinstance(recipient, str):
+            return recipient
+        elif isinstance(recipient, (MemberPublicInfoDto, User)):
+            return formataddr((recipient.full_name, recipient.email))
         else:
             raise TypeError(
-                f"Expected (name, email) or (MemberPublicInfoDto,), got {args}"
+                f"Expected string, MemberPublicInfoDto or User, got {recipient}"
             )
 
-    def _add_recipients(
-        self,
-        target_list: list,
-        *args: str | MemberPublicInfoDto | Iterable[MemberPublicInfoDto] | None,
+    def _add_contacts(
+        self, target_list: list[str], contact: EmailContacts | None
     ) -> None:
-        if len(args) == 1 and args[0] is None:
+        if not contact:
             return
 
-        if (
-            len(args) == 1
-            and isinstance(args[0], Iterable)
-            and not isinstance(args[0], (str, bytes, BaseModel))
+        if isinstance(contact, Iterable) and not isinstance(
+            contact, (bytes, str, BaseModel)
         ):
-            target_list.extend(self._extract_address(member) for member in args[0])
+            target_list.extend(
+                self._extract_address(recipient) for recipient in contact if recipient
+            )
         else:
-            target_list.append(self._extract_address(*args))
+            target_list.append(self._extract_address(contact))
 
-    @overload
-    def from_(self, name: str, email: str) -> "EmailMessageBuilder": ...
-
-    @overload
-    def from_(self, member: MemberPublicInfoDto) -> "EmailMessageBuilder": ...
-
-    def from_(self, *args: str | MemberPublicInfoDto) -> "EmailMessageBuilder":
-        self._from = self._extract_address(*args)
+    def from_(self, contact: EmailContact) -> "EmailMessageBuilder":
+        self._from = self._extract_address(contact)
         return self
 
-    @overload
-    def to(self, name: str, email: str) -> "EmailMessageBuilder": ...
-
-    @overload
-    def to(self, member: MemberPublicInfoDto) -> "EmailMessageBuilder": ...
-
-    def to(
-        self, *args: str | MemberPublicInfoDto | Iterable[MemberPublicInfoDto] | None
-    ) -> "EmailMessageBuilder":
-        self._add_recipients(self._to, *args)
+    def to(self, contacts: EmailContact | EmailContacts) -> "EmailMessageBuilder":
+        self._add_contacts(self._to, contacts)
         return self
-
-    @overload
-    def cc(self, name: str, email: str) -> "EmailMessageBuilder": ...
-    @overload
-    def cc(self, member: MemberPublicInfoDto | None) -> "EmailMessageBuilder": ...
-    @overload
-    def cc(self, members: Iterable[MemberPublicInfoDto]) -> "EmailMessageBuilder": ...
 
     def cc(
-        self, *args: str | MemberPublicInfoDto | Iterable[MemberPublicInfoDto] | None
+        self, contacts: EmailContact | EmailContacts | None
     ) -> "EmailMessageBuilder":
-        self._add_recipients(self._cc, *args)
+        self._add_contacts(self._cc, contacts)
         return self
 
-    @overload
-    def reply_to(self, name: str, email: str) -> "EmailMessageBuilder": ...
-
-    @overload
-    def reply_to(self, member: MemberPublicInfoDto) -> "EmailMessageBuilder": ...
-
-    def reply_to(self, *args: str | MemberPublicInfoDto) -> "EmailMessageBuilder":
-        self._reply_to = self._extract_address(*args)
+    def reply_to(self, contact: EmailContact) -> "EmailMessageBuilder":
+        self._reply_to = self._extract_address(contact)
         return self
 
     def subject(self, subject: str) -> "EmailMessageBuilder":
@@ -111,12 +90,12 @@ class EmailMessageBuilder:
     def build(self) -> EmailMessage:
         if not self._from:
             if not CONFIG.email:
-                raise RuntimeError(
-                    "Sender is not set and email configuration is not specified"
+                raise ValueError(
+                    "Email configuration is not set, cannot determine default FROM address"
                 )
-            self.from_(CONFIG.ycc_app.name, CONFIG.email.from_email)
+            self.from_(formataddr((CONFIG.ycc_app.name, CONFIG.email.from_email)))
         if not self._to:
-            raise RuntimeError("Recipient is not set")
+            raise RuntimeError("Recipient (TO) is not set")
         if not self._subject:
             raise RuntimeError("Subject is not set")
         if not self._content:

@@ -15,8 +15,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskCreationRequestDto,
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
-    HelperTaskMutationRequestDto,
-    HelperTaskDto,
+    HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
 

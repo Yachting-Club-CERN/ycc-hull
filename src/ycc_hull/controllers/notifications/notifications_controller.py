@@ -1,11 +1,11 @@
 from datetime import datetime
-from ycc_hull.config import CONFIG
-from ycc_hull.controllers.notifications.email import EmailMessageBuilder
 
+from ycc_hull.config import CONFIG
 from ycc_hull.controllers.notifications.email_content_utils import (
-    format_helper_task_timing,
     _get_helper_task_url,
+    format_helper_task_timing,
 )
+from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import HelperTaskDto, HelperTaskType

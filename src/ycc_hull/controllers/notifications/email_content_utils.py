@@ -5,10 +5,12 @@ On could use jinja2, but would need to configure all the helpers too, which are 
 """
 
 from datetime import datetime
+
+import phonenumbers
+
 from ycc_hull.config import CONFIG
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import HelperTaskDto, HelperTaskType
-import phonenumbers
 
 #
 # General
@@ -117,6 +119,7 @@ def format_member_info(member: MemberPublicInfoDto) -> str:
     member_info = (
         f"{member.full_name} ({member.username}): {format_email(member.email)}"
     )
+
     phones = link_phones(member)
     if phones:
         member_info += f" / {phones}"
@@ -149,7 +152,11 @@ def _get_helper_task_url(task: HelperTaskDto) -> str:
 def format_helper_task_timing(task: HelperTaskDto) -> str:
     # Note: Also used in email subjects as plain text
     if task.type == HelperTaskType.SHIFT:
-        same_day_end = task.starts_at.date() == task.ends_at.date()
+        same_day_end = (
+            task.starts_at
+            and task.ends_at
+            and task.starts_at.date() == task.ends_at.date()
+        )
         if same_day_end:
             return f"Shift: {format_date_with_day(task.starts_at)} {format_time(task.starts_at)} &ndash; {format_time(task.ends_at)}"
         else:

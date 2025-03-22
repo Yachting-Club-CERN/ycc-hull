@@ -1,8 +1,11 @@
 """SMTP support."""
 
 import logging
-import aiosmtplib
 from email.message import EmailMessage
+from types import TracebackType
+from typing import Type
+
+import aiosmtplib
 
 from ycc_hull.config import CONFIG, EmailConfig
 from ycc_hull.utils import full_type_name
@@ -12,8 +15,12 @@ class SmtpConnection:
     """Context manager for an SMTP connection."""
 
     def __init__(self, config: EmailConfig | None = None):
+        config_to_use = config if config else CONFIG.email
+        if config_to_use is None:
+            raise ValueError("Email configuration is not set")
+
         self._logger = logging.getLogger(full_type_name(self.__class__))
-        self._config = config if config else CONFIG.email
+        self._config = config_to_use
         self._smtp: aiosmtplib.SMTP | None = None
 
     async def __aenter__(self) -> "SmtpConnection":
@@ -37,7 +44,12 @@ class SmtpConnection:
         self._logger.info("Connected to SMTP server")
         return self
 
-    async def __aexit__(self, exc_type, exc_value, traceback):
+    async def __aexit__(
+        self,
+        exc_type: Type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool | None:
         self._logger.info("Closing SMTP connection")
 
         if exc_type is not None:
