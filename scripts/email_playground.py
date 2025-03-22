@@ -9,8 +9,10 @@ import secrets
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.notifications.email_content_utils import (
     format_helper_task,
+    format_helper_task_subject,
     wrap_email_html,
 )
+from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
@@ -76,8 +78,8 @@ helper_task = HelperTaskDto(
     short_description="Club night!",
     long_description=None,
     contact=member_alice,
-    starts_at="2024-04-25T18:00:00Z",
-    ends_at="2024-04-25T20:30:00Z",
+    starts_at="2024-04-25T18:00:00",
+    ends_at="2024-04-25T20:30:00",
     deadline=None,
     urgent=False,
     captain_required_licence_info=LicenceInfoDto(id=9, licence="M"),
@@ -86,16 +88,16 @@ helper_task = HelperTaskDto(
     published=True,
     captain=HelperTaskHelperDto(
         member=member_bob,
-        signed_up_at="2024-04-01T09:00:00Z",
+        signed_up_at="2024-04-01T09:00:00",
     ),
     helpers=[
         HelperTaskHelperDto(
             member=member_john,
-            signed_up_at="2024-04-01T09:01:00Z",
+            signed_up_at="2024-04-01T09:01:00",
         ),
         HelperTaskHelperDto(
             member=member_marie,
-            signed_up_at="2024-04-01T09:02:00Z",
+            signed_up_at="2024-04-01T09:02:00",
         ),
     ],
     marked_as_done_at=None,
@@ -107,15 +109,16 @@ helper_task = HelperTaskDto(
 )
 
 
-async def send_mail(smtp: SmtpConnection, subject: str, content: str) -> None:
-    print("Connecting to SMTP server...")
-
+def create_message(subject: str, content: str) -> None:
     email = EmailMessage()
     email["From"] = CONFIG.email.from_email
     email["To"] = CONFIG.email.from_email
     email["Subject"] = subject
     email.set_content(content)
+    return email
 
+
+async def send_message(smtp: SmtpConnection, email: EmailMessage) -> None:
     print("Sending email...")
     await smtp.send_message(email)
     print("Email sent.")
@@ -127,12 +130,15 @@ async def run() -> None:
     print("Connecting to SMTP server...")
 
     async with SmtpConnection() as smtp:
-        await send_mail(smtp, f"{prefix}Hello, world!", "Hello, world!")
+        await send_message(
+            smtp, create_message(f"{prefix}Hello, world!", "Hello, world!")
+        )
 
-        await send_mail(
+        await send_message(
             smtp,
-            f"{prefix}HTML",
-            """
+            create_message(
+                f"{prefix}HTML",
+                """
 <html>
 <body>
 <p>HTML TEST</p>
@@ -186,12 +192,34 @@ async def run() -> None:
 </body>
 </html>
 """,
+            ),
         )
 
-        await send_mail(
+        await send_message(
             smtp,
-            f"{prefix}Helper Task",
-            wrap_email_html(format_helper_task(helper_task)),
+            create_message(
+                f"{prefix}Helper Task",
+                wrap_email_html(format_helper_task(helper_task)),
+            ),
+        )
+
+        await send_message(
+            smtp,
+            EmailMessageBuilder().to(helper_task.captain.member).cc(helper_task.contact)
+            # CC is removed by the builder if it is the same as TO
+            .cc(helper_task.captain.member)
+            .cc(helper.member for helper in helper_task.helpers)
+            .reply_to(helper_task.contact)
+            .subject(f"{prefix}{format_helper_task_subject(helper_task)}")
+            .content(
+                f"""
+<p>Dear {helper_task.captain.member.first_name},</p>
+<p>Thank you for signing up for this task.</p>
+
+{format_helper_task(helper_task)}
+"""
+            )
+            .build(),
         )
 
 

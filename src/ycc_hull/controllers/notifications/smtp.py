@@ -56,7 +56,7 @@ class SmtpConnection:
 
     async def send_message(self, message: EmailMessage) -> None:
         if not self._smtp:
-            raise ValueError("SMTP connection is not established")
+            raise RuntimeError("SMTP connection is not established")
 
         subject = f"[{CONFIG.ycc_app.name}] {message['Subject']}"
         del message["Subject"]
@@ -90,3 +90,7 @@ class SmtpConnection:
         )
 
         await self._smtp.send_message(message)
+
+    async def send_messages(self, messages: list[EmailMessage]) -> None:
+        for message in messages:
+            await self.send_message(message)

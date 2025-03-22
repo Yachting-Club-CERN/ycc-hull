@@ -1,4 +1,8 @@
-"""Utility functions for formatting email content."""
+"""
+Utility functions for formatting email content.
+
+On could use jinja2, but would need to configure all the helpers too, which are in the end would be in Python anyway.
+"""
 
 from datetime import datetime
 from ycc_hull.config import CONFIG
@@ -122,7 +126,28 @@ def format_member_info(member: MemberPublicInfoDto) -> str:
 #
 # Task Format
 #
-def format_timing(task: HelperTaskDto) -> str:
+
+SHIFT_REPLACEMENT_REMINDER = """
+<p>
+    <em>Reminder: If you cannot help with a task any more, we kindly ask you to find a replacement
+    (e.g., during an outing or in one of the YCC WhatsApp groups) and let us know.</em>
+</p>
+"""
+
+YCC_APP_SIGNATURE = """
+<p>
+    Kind wishes,<br />
+    YCC Maintenance & Regatta & Surveillance Teams
+</p>
+"""
+
+
+def _get_helper_task_url(task: HelperTaskDto) -> str:
+    return f"{CONFIG.ycc_app.base_url}/helpers/tasks/{task.id}"
+
+
+def format_helper_task_timing(task: HelperTaskDto) -> str:
+    # Note: Also used in email subjects as plain text
     if task.type == HelperTaskType.SHIFT:
         same_day_end = task.starts_at.date() == task.ends_at.date()
         if same_day_end:
@@ -135,8 +160,8 @@ def format_timing(task: HelperTaskDto) -> str:
         return f"Start: {format_date_time(task.starts_at)} End: {format_date_time(task.ends_at)} Deadline: {format_date_time(task.deadline)}"
 
 
-def _get_helper_task_url(task: HelperTaskDto) -> str:
-    return f"{CONFIG.ycc_app.base_url}/helpers/tasks/{task.id}"
+def format_helper_task_subject(task: HelperTaskDto) -> str:
+    return f"Helper Task: {task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
 
 
 def format_helper_task(task: HelperTaskDto) -> str:
@@ -158,7 +183,7 @@ def format_helper_task(task: HelperTaskDto) -> str:
     <p style="font-size: x-large;">
         <strong>{task.title} ({task.category.title})</strong>
     </p>
-    <p style="font-size: large;"><strong>{format_timing(task)}</strong></p>
+    <p style="font-size: large;"><strong>{format_helper_task_timing(task)}</strong></p>
     <p><em>{task.short_description}</em></p>
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>

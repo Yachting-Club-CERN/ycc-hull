@@ -3,7 +3,7 @@ from ycc_hull.config import CONFIG
 from ycc_hull.controllers.notifications.email import EmailMessageBuilder
 
 from ycc_hull.controllers.notifications.email_content_utils import (
-    format_timing,
+    format_helper_task_timing,
     _get_helper_task_url,
 )
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
@@ -31,7 +31,7 @@ Thank you for signing up for the task as helper:
 
 <ul>
   <li><a href="{_get_helper_task_url(task)}">{task.title}</a>
-  <li>{format_timing(task)}
+  <li>{format_helper_task_timing(task)}
   <li>Contact: {task.contact.full_name}, {task.contact.email}, {format_phone_numbers(task.contact)}
 </ul>
 </p>
