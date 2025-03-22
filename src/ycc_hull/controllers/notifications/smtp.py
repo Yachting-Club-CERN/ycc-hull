@@ -1,5 +1,3 @@
-"""SMTP support."""
-
 import logging
 from email.message import EmailMessage
 from types import TracebackType
