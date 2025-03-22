@@ -134,7 +134,7 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
             username=member.user.logon_id if member.user else _UNKNOWN,
             first_name=member.firstname,
             last_name=member.name,
-            # Unknown email for active members is a bit weird, but rather do this then keep checking None everywhere else
+            # Unknown email for active members is clearly a WTF
             email=member.e_mail if member.e_mail else _UNKNOWN_EMAIL,
             mobile_phone=member.cell_phone,
             home_phone=member.home_phone,
