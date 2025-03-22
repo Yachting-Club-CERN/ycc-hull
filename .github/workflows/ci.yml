@@ -29,6 +29,7 @@ jobs:
       - name: Quick Lint
         run: |
           set -x
+          poetry run isort .
           poetry run black .
           git status
           poetry run mypy .

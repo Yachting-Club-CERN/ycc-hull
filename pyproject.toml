@@ -28,6 +28,9 @@ dependencies = [
     "SQLAlchemy[asyncio,mypy]>=2.0.39",
 ]
 
+[tool.isort]
+profile = "black"
+
 [tool.poetry]
 packages = [{ include = "ycc_hull", from = "src" }]
 
