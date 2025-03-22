@@ -75,14 +75,14 @@ class BaseController(metaclass=ABCMeta):
     def _audit_log(
         self, session: Session, user: User, description: str, data: dict | None = None
     ) -> None:
-        async def wrapper():
+        async def wrapper() -> None:
             session.add(create_audit_entry(user, description, data))
             session.commit()
 
         self._run_in_background(wrapper())
 
     def _run_in_background(self, coroutine: Coroutine[Any, Any, Any]) -> None:
-        async def wrapper():
+        async def wrapper() -> None:
             try:
                 await coroutine
             except Exception:  # pylint: disable=broad-exception-caught

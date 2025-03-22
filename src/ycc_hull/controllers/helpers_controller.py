@@ -171,10 +171,6 @@ class HelpersController(BaseController):
                     {"old": old_task, "new": new_task},
                 )
 
-                if request.notify_participants:
-                    # TODO
-                    pass
-
                 return new_task
             except DatabaseError as exc:
                 raise self._handle_database_error(  # pylint: disable=raising-bad-type

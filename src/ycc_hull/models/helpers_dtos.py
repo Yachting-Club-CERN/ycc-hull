@@ -266,8 +266,6 @@ class HelperTaskUpdateRequestDto(HelperTaskMutationRequestBaseDto):
     Update request DTO for helper task.
     """
 
-    notify_participants: bool
-
 
 class HelperTaskMarkAsDoneRequestDto(CamelisedBaseModel):
     """
