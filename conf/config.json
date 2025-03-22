@@ -7,10 +7,23 @@
     "http://127.0.0.1:8080"
   ],
   "databaseUrl": "oracle+oracledb://ycclocal:changeit@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=127.0.0.1)(PORT=1521)))",
-  "keycloakServerUrl": "http://localhost:8080",
-  "keycloakRealm": "YCC-LOCAL",
-  "keycloakClient": "ycc-hull-local",
-  "keycloakClientSecret": "SaksuyBhXMq4xuLhHTTUQtXsn3JQ3AiG",
-  "keycloakSwaggerClient": "ycc-hull-local-swagger",
-  "uvicornPort": "8000"
+  "email": {
+    "fromEmail": "ycc.app.local@localhost",
+    "contentHeader": "<p><strong style=\"color: red\">!!! This is a test email from the YCC LOCAL environment !!!</strong></p>",
+    "smtpHost": "localhost",
+    "smtpPort": 1025,
+    "smtpStartTls": false
+  },
+  "keycloak": {
+    "serverUrl": "http://localhost:8080",
+    "realm": "YCC-LOCAL",
+    "client": "ycc-hull-local",
+    "clientSecret": "SaksuyBhXMq4xuLhHTTUQtXsn3JQ3AiG",
+    "swaggerClient": "ycc-hull-local-swagger"
+  },
+  "uvicornPort": "8000",
+  "yccApp": {
+    "name": "YCC App LOCAL",
+    "baseUrl": "http://localhost:3000"
+  }
 }

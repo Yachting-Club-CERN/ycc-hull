@@ -17,6 +17,7 @@ from ycc_hull.db.entities import (
 from ycc_hull.models.base import CamelisedBaseModelWithEntity
 
 _UNKNOWN = "<unknown>"
+_UNKNOWN_EMAIL = "unknown@email"
 
 
 class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
@@ -114,7 +115,7 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
     username: str
     first_name: str
     last_name: str
-    email: str | None
+    email: str
     mobile_phone: str | None
     home_phone: str | None
     work_phone: str | None
@@ -133,7 +134,8 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
             username=member.user.logon_id if member.user else _UNKNOWN,
             first_name=member.firstname,
             last_name=member.name,
-            email=member.e_mail,
+            # Unknown email for active members is clearly a WTF
+            email=member.e_mail if member.e_mail else _UNKNOWN_EMAIL,
             mobile_phone=member.cell_phone,
             home_phone=member.home_phone,
             work_phone=member.work_phone,

@@ -7,11 +7,11 @@ from datetime import datetime
 import pytest
 from pydantic import ValidationError
 
-from ycc_hull.models.helpers_dtos import HelperTaskMutationRequestDto
+from ycc_hull.models.helpers_dtos import HelperTaskCreationRequestDto
 
 
 def test_creation_valid_shift() -> None:
-    request = HelperTaskMutationRequestDto(
+    request = HelperTaskCreationRequestDto(
         category_id=1,
         title="Test Task",
         short_description="The Club needs your help!",
@@ -32,7 +32,7 @@ def test_creation_valid_shift() -> None:
 
 
 def test_creation_valid_deadline() -> None:
-    request = HelperTaskMutationRequestDto(
+    request = HelperTaskCreationRequestDto(
         category_id=1,
         title="Test Task",
         short_description="The Club needs your help!",
@@ -53,7 +53,7 @@ def test_creation_valid_deadline() -> None:
 
 def test_creation_must_specify_timing() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskMutationRequestDto(
+        HelperTaskCreationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -77,7 +77,7 @@ def test_creation_must_specify_timing() -> None:
 
 def test_creation_must_not_specify_all_timing_fields() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskMutationRequestDto(
+        HelperTaskCreationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -101,7 +101,7 @@ def test_creation_must_not_specify_all_timing_fields() -> None:
 
 def test_creation_must_not_specify_start_with_deadline() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskMutationRequestDto(
+        HelperTaskCreationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -125,7 +125,7 @@ def test_creation_must_not_specify_start_with_deadline() -> None:
 
 def test_creation_must_not_specify_end_with_deadline() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskMutationRequestDto(
+        HelperTaskCreationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -149,7 +149,7 @@ def test_creation_must_not_specify_end_with_deadline() -> None:
 
 def test_creation_must_not_specify_start_after_end() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskMutationRequestDto(
+        HelperTaskCreationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -173,7 +173,7 @@ def test_creation_must_not_specify_start_after_end() -> None:
 
 def test_creation_must_have_consistent_helper_counts() -> None:
     with pytest.raises(ValidationError) as exc_info:
-        HelperTaskMutationRequestDto(
+        HelperTaskCreationRequestDto(
             category_id=1,
             title="Test Task",
             short_description="The Club needs your help!",
@@ -196,7 +196,7 @@ def test_creation_must_have_consistent_helper_counts() -> None:
 
 
 def test_sanitise() -> None:
-    request = HelperTaskMutationRequestDto(
+    request = HelperTaskCreationRequestDto(
         category_id=1,
         title="  <em>Test Task</em>  ",
         short_description="\t\nThe Club needs your help!\t<!-- Test -->\n",

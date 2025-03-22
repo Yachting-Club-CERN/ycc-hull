@@ -25,15 +25,15 @@ _INACTIVE_MEMBER = "Inactive member. Please contact the club."
 
 
 _KEYCLOAK = KeycloakOpenID(
-    server_url=CONFIG.keycloak_server_url,
-    realm_name=CONFIG.keycloak_realm,
-    client_id=CONFIG.keycloak_client,
-    client_secret_key=CONFIG.keycloak_client_secret,
+    server_url=CONFIG.keycloak.server_url,
+    realm_name=CONFIG.keycloak.realm,
+    client_id=CONFIG.keycloak.client,
+    client_secret_key=CONFIG.keycloak.client_secret,
 )
 
 
 # Programmatic access to the token endpoint: _KEYCLOAK.well_known()["token_endpoint"]
-TOKEN_ENDPOINT = f"{CONFIG.keycloak_server_url}/realms/{CONFIG.keycloak_realm}/protocol/openid-connect/token"
+TOKEN_ENDPOINT = f"{CONFIG.keycloak.server_url}/realms/{CONFIG.keycloak.realm}/protocol/openid-connect/token"
 _logger.info("Initialising OAuth 2 scheme with token endpoint: %s", TOKEN_ENDPOINT)
 _OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=TOKEN_ENDPOINT)
 
@@ -104,6 +104,9 @@ def _create_user(user_info: dict, token_info: dict) -> User:
             "preferred_username",
             token_info.get("username", token_info.get("preferred_username")),
         ),
+        email=user_info.get("email", token_info.get("email")),
+        first_name=user_info.get("given_name", token_info.get("given_name")),
+        last_name=user_info.get("family_name", token_info.get("family_name")),
         groups=tuple(user_info.get("groups", [])),
         roles=tuple(
             user_info.get("roles", token_info.get("realm_access", {}).get("roles", []))

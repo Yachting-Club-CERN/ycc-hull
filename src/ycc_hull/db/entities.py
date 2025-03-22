@@ -387,6 +387,7 @@ class MemberEntity(BaseEntity):
     work_town: Mapped[str | None] = mapped_column(VARCHAR(25))
     work_state: Mapped[str | None] = mapped_column(VARCHAR(5))
     work_phone: Mapped[str | None] = mapped_column(VARCHAR(25))
+    # This is actually NULL for a few rows
     e_mail: Mapped[str | None] = mapped_column(VARCHAR(50))
     home_addr: Mapped[str] = mapped_column(VARCHAR(50))
     home_towncode: Mapped[str | None] = mapped_column(VARCHAR(7))

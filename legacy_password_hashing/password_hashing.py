@@ -43,7 +43,7 @@ def hash_ycc_password(password: str) -> str:
         str: password hash
     """
     if not isinstance(password, str):
-        raise ValueError(_ERROR_PASSWORD_NOT_STRING)
+        raise TypeError(_ERROR_PASSWORD_NOT_STRING)
 
     return _hash_to_perl(_HASHER.hash(password))
 
@@ -60,16 +60,16 @@ def verify_ycc_password(password: str, password_hash: str) -> bool:
         bool: verification result
     """
     if not isinstance(password, str):
-        raise ValueError(_ERROR_PASSWORD_NOT_STRING)
+        raise TypeError(_ERROR_PASSWORD_NOT_STRING)
     if not isinstance(password_hash, str):
-        raise ValueError(_ERROR_HASH_NOT_STRING)
+        raise TypeError(_ERROR_HASH_NOT_STRING)
 
     return _HASHER.verify(password, _hash_to_python(password_hash))
 
 
 def _hash_to_perl(python_hash: str) -> str:
     if not isinstance(python_hash, str):
-        raise ValueError(_ERROR_HASH_NOT_STRING)
+        raise TypeError(_ERROR_HASH_NOT_STRING)
 
     # . => +: from LDAP BASE64 format
     match: Match | None = _PYTHON_HASH_FORMAT_RE.search(python_hash.replace(".", "+"))
@@ -85,7 +85,7 @@ def _hash_to_perl(python_hash: str) -> str:
 
 def _hash_to_python(perl_hash: str) -> str:
     if not isinstance(perl_hash, str):
-        raise ValueError(_ERROR_HASH_NOT_STRING)
+        raise TypeError(_ERROR_HASH_NOT_STRING)
 
     # . => +: from LDAP BASE64 format
     match: Match | None = _PERL_HASH_FORMAT_RE.search(perl_hash.replace("+", "."))
@@ -98,15 +98,16 @@ def _hash_to_python(perl_hash: str) -> str:
 
 
 def _pack(data: int) -> str:
-    if isinstance(data, int):
-        # Perl pack('N', ...) is 32-bit big-endian (https://perldoc.perl.org/functions/pack)
-        # It translates to `>I` in Python struct.pack (https://docs.python.org/3/library/struct.html#format-strings)
-        return base64.b64encode(struct.pack(">I", data)).decode("ascii")
-    raise ValueError(f"Unsupported value type: {type(data)}")
+    if not isinstance(data, int):
+        raise TypeError(f"Unsupported value type: {type(data)}")
+
+    # Perl pack('N', ...) is 32-bit big-endian (https://perldoc.perl.org/functions/pack)
+    # It translates to `>I` in Python struct.pack (https://docs.python.org/3/library/struct.html#format-strings)
+    return base64.b64encode(struct.pack(">I", data)).decode("ascii")
 
 
 def _unpack_int(data: str) -> int:
     if not isinstance(data, str):
-        raise ValueError("The data must be a string")
+        raise TypeError("The data must be a string")
 
     return struct.unpack(">I", base64.b64decode(data.encode("ascii")))[0]
