@@ -52,11 +52,11 @@ def format_date(date: datetime | None) -> str | None:
 
 def format_date_with_day(date: datetime | None) -> str | None:
     # Example: Wednesday, 1 January 2025
-    return (
-        date.strftime("%A, %#d %B %Y" if sys.platform == "win32" else "%A %-d %B %Y")
-        if date
-        else None
-    )
+    if not date:
+        return None
+
+    date_format = "%A, %#d %B %Y" if sys.platform == "win32" else "%A, %-d %B %Y"
+    return date.strftime(date_format)
 
 
 def format_time(date: datetime | None) -> str | None:
