@@ -6,6 +6,32 @@ from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import HelperTaskDto, HelperTaskType
 import phonenumbers
 
+#
+# General
+#
+
+
+def wrap_email_html(content: str) -> str:
+    # Wrap the content in a table to ensure it is displayed correctly in the most email clients
+    return f"""
+<html>
+<body>
+<table
+    role="presentation"
+    border="0"
+    cellpadding="0"
+    cellspacing="0"
+    width="100%"
+    style="font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;"
+>
+    <tr>
+        <td>{content}</td>
+    </tr>
+</table>
+</body>
+</html>
+"""
+
 
 #
 # Date Format

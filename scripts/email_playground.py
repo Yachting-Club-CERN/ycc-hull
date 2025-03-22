@@ -4,9 +4,13 @@ Email playground.
 
 import asyncio
 from email.message import EmailMessage
+import secrets
 
 from ycc_hull.config import CONFIG
-from ycc_hull.controllers.notifications.email_content_utils import format_helper_task
+from ycc_hull.controllers.notifications.email_content_utils import (
+    format_helper_task,
+    wrap_email_html,
+)
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
@@ -118,14 +122,16 @@ async def send_mail(smtp: SmtpConnection, subject: str, content: str) -> None:
 
 
 async def run() -> None:
+    prefix = f"Test {secrets.token_hex(2).upper()} - "
+
     print("Connecting to SMTP server...")
 
     async with SmtpConnection() as smtp:
-        await send_mail(smtp, "Test - Hello, world!", "Hello, world!")
+        await send_mail(smtp, f"{prefix}Hello, world!", "Hello, world!")
 
         await send_mail(
             smtp,
-            "Test - HTML",
+            f"{prefix}HTML",
             """
 <html>
 <body>
@@ -184,25 +190,8 @@ async def run() -> None:
 
         await send_mail(
             smtp,
-            "Test - Helper Task",
-            f"""
-<html>
-<body>
-<table
-    role="presentation"
-    border="0"
-    cellpadding="0"
-    cellspacing="0"
-    width="100%"
-    style="font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;"
->
-    <tr>
-        <td>{format_helper_task(helper_task)}</td>
-    </tr>
-</table>
-</body>
-</html>
-""",
+            f"{prefix}Helper Task",
+            wrap_email_html(format_helper_task(helper_task)),
         )
 
 
