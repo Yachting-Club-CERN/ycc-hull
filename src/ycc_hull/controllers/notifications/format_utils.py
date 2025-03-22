@@ -1,7 +1,7 @@
 """
 Utility functions for formatting email content.
 
-On could use jinja2, but would need to configure all the helpers too, which are in the end would be in Python anyway.
+One could use jinja2, but would need to configure all the helpers too, which are in the end would be in Python anyway.
 """
 
 from datetime import datetime
@@ -49,14 +49,17 @@ def format_date(date: datetime | None) -> str | None:
 
 
 def format_date_with_day(date: datetime | None) -> str | None:
+    #
     return date.strftime("%A, %d %B %Y") if date else None
 
 
 def format_time(date: datetime | None) -> str | None:
+    # Example: 12:00
     return date.strftime("%H:%M") if date else None
 
 
 def format_date_time(date: datetime | None) -> str | None:
+    # Example: 01/01/2022 12:00
     return date.strftime("%d/%m/%Y, %H:%M") if date else None
 
 
@@ -65,7 +68,7 @@ def format_date_time(date: datetime | None) -> str | None:
 #
 
 
-def format_email(email: str) -> str:
+def format_email_link(email: str) -> str:
     return f'<a href="mailto:{email}">{email}</a>'
 
 
@@ -89,7 +92,7 @@ def format_phone(phone: str | None) -> str | None:
         return phone
 
 
-def link_phone(phone: str | None) -> str | None:
+def format_phone_link(phone: str | None) -> str | None:
     if not phone:
         return None
 
@@ -97,14 +100,14 @@ def link_phone(phone: str | None) -> str | None:
     return f'<a href="tel:{phone}">{formatted_phone}</a>'
 
 
-def link_phones(member: MemberPublicInfoDto) -> str | None:
+def format_phone_links(member: MemberPublicInfoDto) -> str | None:
     phones = []
     if member.mobile_phone:
-        phones.append(f"Mobile: {link_phone(member.mobile_phone)}")
+        phones.append(f"Mobile: {format_phone_link(member.mobile_phone)}")
     if member.home_phone:
-        phones.append(f"Home: {link_phone(member.home_phone)}")
+        phones.append(f"Home: {format_phone_link(member.home_phone)}")
     if member.work_phone:
-        phones.append(f"Work: {link_phone(member.work_phone)}")
+        phones.append(f"Work: {format_phone_link(member.work_phone)}")
 
     # Theoretically it is possible that in the DB all phone numbers are missing
     return " / ".join(phones) if phones else None
@@ -117,10 +120,10 @@ def link_phones(member: MemberPublicInfoDto) -> str | None:
 
 def format_member_info(member: MemberPublicInfoDto) -> str:
     member_info = (
-        f"{member.full_name} ({member.username}): {format_email(member.email)}"
+        f"{member.full_name} ({member.username}): {format_email_link(member.email)}"
     )
 
-    phones = link_phones(member)
+    phones = format_phone_links(member)
     if phones:
         member_info += f" / {phones}"
     return member_info
