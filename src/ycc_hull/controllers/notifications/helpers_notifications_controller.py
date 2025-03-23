@@ -169,7 +169,7 @@ class HelpersNotificationsController(BaseController):
     <li>Validate the tasks. During validation you will be asked to mark which members showed up and optionally you can leave a comment</li>
     <li>If the task was not done before the deadline, maybe you want to extend it.</li>
 </ul>
-"""mo
+"""
             )
         ).build()
 
