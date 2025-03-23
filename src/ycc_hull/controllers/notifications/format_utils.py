@@ -6,6 +6,7 @@ One could use jinja2, but would need to configure all the helpers too, which are
 
 import sys
 from datetime import datetime
+from typing import Iterable
 
 import phonenumbers
 
@@ -176,6 +177,18 @@ def format_helper_task_timing(task: HelperTaskDto) -> str:
         return f"Start: {format_date_time(task.starts_at)} End: {format_date_time(task.ends_at)} Deadline: {format_date_time(task.deadline)}"
 
 
+def format_helper_task_timing_with_extra(task: HelperTaskDto) -> str:
+    timing_extra = []
+    if task.urgent:
+        timing_extra.append("URGENT")
+    if not task.published:
+        timing_extra.append("HIDDEN")
+
+    timing_extra_str = f" ({", ".join(timing_extra)})" if timing_extra else ""
+
+    return f"{format_helper_task_timing(task)}{timing_extra_str}"
+
+
 def format_helper_task_subject(task: HelperTaskDto) -> str:
     return f"{task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
 
@@ -199,12 +212,12 @@ def format_helper_task(task: HelperTaskDto) -> str:
     <p style="font-size: x-large;">
         <strong>{task.title} ({task.category.title})</strong>
     </p>
-    <p style="font-size: large;"><strong>{format_helper_task_timing(task)}</strong></p>
+    <p style="font-size: large;"><strong>{format_helper_task_timing_with_extra(task)}</strong></p>
     <p><em>{task.short_description}</em></p>
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>
         <li>Captain: {format_member_info(task.captain.member) if task.captain else "-"}</li>
-        <li>Helpers: {"".join(helpers)}</li>
+        <li>Helpers: {"\n".join(helpers)}</li>
     </ul>
     <p>
         <a
@@ -224,3 +237,21 @@ def format_helper_task(task: HelperTaskDto) -> str:
     </p>
 </div>
 """
+
+
+def format_helper_tasks_list(tasks: Iterable[HelperTaskDto]) -> str:
+    def format_task_li(task: HelperTaskDto) -> str:
+        task_url = _get_helper_task_url(task)
+
+        return f"""
+    <li>
+        <a href="{task_url}">
+            {task.title} ({format_helper_task_timing(task)})
+        </a>
+    </li>
+"""
+
+    return f"""
+<ul>
+    {"\n".join(format_task_li(task) for task in tasks)}
+</ul>"""

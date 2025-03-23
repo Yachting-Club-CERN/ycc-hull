@@ -3,12 +3,13 @@ Helpers controller.
 """
 
 from collections.abc import Sequence
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session, defer, lazyload
 
+from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
@@ -28,6 +29,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
     HelperTaskState,
+    HelperTaskType,
     HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
@@ -296,12 +298,128 @@ class HelpersController(BaseController):
             self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
             self._run_in_background(self._notifications.on_validate(updated_task, user))
 
+    async def send_daily_reminders(self) -> None:
+        """
+        Sends daily reminders to task participants.
+
+        When reminders are never sent:
+        - Tasks which are started and not finished (especially multi-day shifts)
+        - Tasks that are validated
+
+        For upcoming tasks:
+        - Task is due when starts or deadline comes (if both present (invalid though), the earlier one)
+        - 2 weeks: task is due <=15 days, but >=14 days
+        - 3 days: task is due <=4 days, but >=3 days
+        - today: task is due today
+
+        Overdue tasks (not validated tasks in the past; to speed up task validation):
+        - Reminders are sent per contact, not per task
+        - Shifts (and invalid timing):
+            - A reminder is sent every day to the contact 1 week after the shift is finished.
+            - The delay gives a window for shift organisers to validate tasks (as shifts "just happen" anyway").
+            - No immediate pressure on shift organisers, especially as the shifts often happen in batches (regattas, surveillance etc.)
+        - Deadline tasks:
+            - A reminder is sent every day to the contact the if the deadline has expired.
+            - Deadline tasks are usually one-off maintenance tasks and in the past the experience was that they are often forgotten
+            - After the deadline expires, it is either done (and should have been validated) or the deadline should be extended
+
+        Notes:
+        - Also send reminders for past years
+        - Also send reminders for unpublished tasks (tasks with helpers should not be unpublished)
+        """
+        if not CONFIG.email:
+            return
+
+        with self.database_context.session() as session:
+            # Query all relevant tasks
+            now = get_now()
+            today_end = now.replace(hour=23, minute=59, second=59, microsecond=0)
+            one_week_ago = now - timedelta(days=7)
+            due_in_2_weeks_start = now + timedelta(days=15)
+            due_in_2_weeks_end = now + timedelta(days=14)
+            due_in_3_days_start = now + timedelta(days=4)
+            due_in_3_days_end = now + timedelta(days=3)
+
+            entity_timing_fields = [
+                HelperTaskEntity.starts_at,
+                HelperTaskEntity.ends_at,
+                HelperTaskEntity.deadline,
+            ]
+
+            where = and_(
+                HelperTaskEntity.validated_by_id.is_(None),
+                or_(
+                    *[
+                        field.between(due_in_2_weeks_start, due_in_2_weeks_end)
+                        for field in entity_timing_fields
+                    ],
+                    *[
+                        field.between(due_in_3_days_start, due_in_3_days_end)
+                        for field in entity_timing_fields
+                    ],
+                    # Today or overdue
+                    *[field < today_end for field in entity_timing_fields],
+                ),
+            )
+
+            tasks = await self._find_tasks(
+                year=None,
+                task_id=None,
+                published=None,
+                where=where,
+                session=session,
+            )
+
+            # Split tasks how should be the reminders sent
+            upcoming_tasks: list[HelperTaskDto] = []
+            overdue_tasks: list[HelperTaskDto] = []
+
+            for task in tasks:
+                timings = [
+                    t
+                    for t in [task.starts_at, task.ends_at, task.deadline]
+                    if t is not None
+                ]
+
+                if not timings:
+                    # (Invalid) task has no timing information: no reminder
+                    self._logger.warning("Task %s has no timing information", task)
+                    continue
+
+                timing_earliest = min(timings)
+                timing_latest = max(timings)
+
+                task_upcoming = now < timing_earliest
+                task_due = timing_latest < now
+
+                if not task_upcoming and not task_due:
+                    # Ongoing tasks: no reminder
+                    continue
+
+                if (
+                    task_due
+                    and task.type == HelperTaskType.SHIFT
+                    and one_week_ago < timing_latest
+                ):
+                    # Shifts: reminder 1 week after the shift ends
+                    continue
+
+                if task_due:
+                    overdue_tasks.append(task)
+                else:
+                    # Upcoming task
+                    upcoming_tasks.append(task)
+
+        # TODO logging
+        await self._notifications.send_reminders(upcoming_tasks, overdue_tasks)
+
     async def _find_tasks(
         self,
         *,
         year: int | None,
         task_id: int | None,
         published: bool | None,
+        where: ColumnElement[bool] | None = None,
         session: Session | None = None,
     ) -> Sequence[HelperTaskDto]:
         query = select(HelperTaskEntity)
@@ -328,6 +446,8 @@ class HelpersController(BaseController):
             query = query.where(HelperTaskEntity.id == task_id)
         if published is not None:
             query = query.where(HelperTaskEntity.published == published)
+        if where:
+            query = query.where(where)
 
         query = query.order_by(
             HelperTaskEntity.urgent.desc(),

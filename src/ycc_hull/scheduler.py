@@ -31,20 +31,20 @@ def init_scheduler(app: FastAPI) -> AsyncIOScheduler:
     scheduler = AsyncIOScheduler(timezone=TIME_ZONE_ID)
 
     trigger = _parse_trigger(NOTIFICATIONS_TRIGGER)
-    _logger.info("Using schedule %s for helper task reminders", trigger)
+    _logger.info("Using schedule %s for daily helper task reminders", trigger)
 
     @scheduler.scheduled_job(trigger=trigger)
-    async def send_helper_task_reminders() -> None:
-        task_name = send_helper_task_reminders.__name__
+    async def send_daily_helper_task_reminders() -> None:
+        task_name = send_daily_helper_task_reminders.__name__
 
         _logger.info("[%s] Starting scheduled task", task_name)
 
         try:
             controller = get_controllers(app).helpers_controller
 
-            # TODO logic
-            # only remind for tasks in the next two weeks
+            # TODO logging
             _logger.info("Sending helper task reminders... %s", controller)
+            await controller.send_daily_reminders()
 
             _logger.info("[%s] Scheduled task finished", task_name)
         except Exception:
