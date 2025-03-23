@@ -10,9 +10,9 @@ from ycc_hull.controllers.members_controller import MembersController
 
 
 @dataclass(frozen=True)
-class _Controllers:
+class Controllers:
     """
-    Holds the state of the application.
+    Holds the controllers for the application.
     """
 
     boats_controller: BoatsController
@@ -24,7 +24,7 @@ class _Controllers:
 
 def init_app_controllers(app: FastAPI) -> None:
     # Starlette's app.state is perfect to share this with the scheduler
-    app.state.controllers = _Controllers(
+    app.state.controllers = Controllers(
         boats_controller=BoatsController(),
         helpers_controller=HelpersController(),
         holidays_controller=HolidaysController(),
@@ -33,7 +33,7 @@ def init_app_controllers(app: FastAPI) -> None:
     )
 
 
-def get_controllers(app_or_request: FastAPI | Request) -> _Controllers:
+def get_controllers(app_or_request: FastAPI | Request) -> Controllers:
     app = app_or_request.app if isinstance(app_or_request, Request) else app_or_request
     return app.state.controllers
 
