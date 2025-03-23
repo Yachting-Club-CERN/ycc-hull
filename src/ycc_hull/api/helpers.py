@@ -8,6 +8,7 @@ from datetime import date
 from fastapi import APIRouter, Depends
 
 from ycc_hull.api.errors import create_http_exception_403
+from ycc_hull.app_controllers import get_helpers_controller
 from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.models.helpers_dtos import (
@@ -20,17 +21,20 @@ from ycc_hull.models.helpers_dtos import (
 )
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
-controller = HelpersController()
 
 
 @api_helpers.get("/api/v1/helpers/task-categories")
-async def helper_task_categories_get() -> Sequence[HelperTaskCategoryDto]:
+async def helper_task_categories_get(
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> Sequence[HelperTaskCategoryDto]:
     return await controller.find_all_task_categories()
 
 
 @api_helpers.get("/api/v1/helpers/tasks")
 async def helper_tasks_get(
-    year: int | None = None, user: User = Depends(auth)
+    year: int | None = None,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> Sequence[HelperTaskDto]:
     if not _can_access_year(year, user):
         error_message = (
@@ -45,7 +49,9 @@ async def helper_tasks_get(
 
 @api_helpers.get("/api/v1/helpers/tasks/{task_id}")
 async def helper_tasks_get_by_id(
-    task_id: int, user: User = Depends(auth)
+    task_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     task = await controller.get_task_by_id(task_id, published=_published(user))
 
@@ -57,7 +63,9 @@ async def helper_tasks_get_by_id(
 
 @api_helpers.post("/api/v1/helpers/tasks")
 async def helper_tasks_create(
-    request: HelperTaskCreationRequestDto, user: User = Depends(auth)
+    request: HelperTaskCreationRequestDto,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin and not user.helpers_app_editor:
         raise create_http_exception_403(
@@ -76,6 +84,7 @@ async def helper_tasks_update(
     task_id: int,
     request: HelperTaskUpdateRequestDto,
     user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin and not user.helpers_app_editor:
         raise create_http_exception_403(
@@ -97,7 +106,9 @@ async def helper_tasks_update(
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-captain")
 async def helper_tasks_sign_up_as_captain(
-    task_id: int, user: User = Depends(auth)
+    task_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     await controller.sign_up_as_captain(task_id, user)
     return await controller.get_task_by_id(task_id, published=True)
@@ -105,7 +116,9 @@ async def helper_tasks_sign_up_as_captain(
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-helper")
 async def helper_tasks_sign_up_as_helper(
-    task_id: int, user: User = Depends(auth)
+    task_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     await controller.sign_up_as_helper(task_id, user)
     return await controller.get_task_by_id(task_id, published=True)
@@ -113,7 +126,10 @@ async def helper_tasks_sign_up_as_helper(
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/mark-as-done")
 async def helper_tasks_mark_as_done(
-    task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User = Depends(auth)
+    task_id: int,
+    request: HelperTaskMarkAsDoneRequestDto,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin:
         task = await helper_tasks_get_by_id(task_id, user)
@@ -131,7 +147,10 @@ async def helper_tasks_mark_as_done(
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/validate")
 async def helper_tasks_validate(
-    task_id: int, request: HelperTaskValidationRequestDto, user: User = Depends(auth)
+    task_id: int,
+    request: HelperTaskValidationRequestDto,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin:
         task = await helper_tasks_get_by_id(task_id, user)

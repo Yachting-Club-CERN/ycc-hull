@@ -39,4 +39,9 @@ CONFIG_FILE = find_config_file()
 
 LOGGING_CONFIG_FILE = f"{_CONFIG_DIRECTORY}/logging.conf"
 
+# Can be handy when you are testing
+# NOTIFICATIONS_TRIGGER = "interval-seconds: 120"
+NOTIFICATIONS_TRIGGER = "interval-seconds: 30"
+# NOTIFICATIONS_TRIGGER = "cron: 0 9 * * *"
+
 TIME_ZONE_ID = "Europe/Zurich"
