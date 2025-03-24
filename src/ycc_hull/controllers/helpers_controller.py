@@ -302,15 +302,14 @@ class HelpersController(BaseController):
         """
         Sends daily reminders to task participants.
 
-        When reminders are never sent:
-        - Tasks which are started and not finished (especially multi-day shifts)
+        Never send reminders for:
+        - Tasks that are started and are not yet finished (especially multi-day shifts)
         - Tasks that are validated
 
-        For upcoming tasks:
-        - Task is due when starts or deadline comes (if both present (invalid though), the earlier one)
-        - 2 weeks: task is due <=15 days, but >=14 days
-        - 3 days: task is due <=4 days, but >=3 days
-        - today: task is due today
+        For upcoming tasks send reminders:
+        - 2 weeks before
+        - 3 days before
+        - the day of the task
 
         Overdue tasks (not validated tasks in the past; to speed up task validation):
         - Reminders are sent per contact, not per task
@@ -349,6 +348,8 @@ class HelpersController(BaseController):
             today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
             today_end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
             one_week_ago = today_start - timedelta(days=7)
+
+            # Using ranges to avoid persisting notification time in the database
             due_in_2_weeks_start = today_start + timedelta(days=14)
             due_in_2_weeks_end = today_start + timedelta(days=15)
             due_in_3_days_start = today_start + timedelta(days=3)
