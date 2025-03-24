@@ -9,7 +9,7 @@ from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session, defer, lazyload
 
-from ycc_hull.config import CONFIG
+from ycc_hull.config import emails_enabled
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
@@ -327,8 +327,7 @@ class HelpersController(BaseController):
         - Also send reminders for past years (avoid hanging tasks; tasks can have a deadline on 31 December)
         - Also send reminders for unpublished tasks (tasks with helpers should not be unpublished)
         """
-        if not CONFIG.email:
-            self._logger.info("Email configuration is not set, skipping notifications")
+        if not emails_enabled(self._logger):
             return
 
         def debug(task: HelperTaskDto, message: str) -> None:

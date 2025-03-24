@@ -5,6 +5,7 @@ Application configuration.
 import json
 import os
 from enum import Enum
+from logging import Logger
 
 from pydantic import ConfigDict, Field
 
@@ -93,3 +94,11 @@ if os.path.isfile(CONFIG_FILE):
         CONFIG = Config(**_config_data)
 else:
     raise AssertionError(f"Missing configuration file: {CONFIG_FILE}")
+
+
+def emails_enabled(logger: Logger) -> bool:
+    if CONFIG.email:
+        return True
+
+    logger.info("Email configuration is not set, skipping notifications")
+    return False
