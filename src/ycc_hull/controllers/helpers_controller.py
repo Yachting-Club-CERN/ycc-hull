@@ -347,13 +347,13 @@ class HelpersController(BaseController):
             # "Round" to the start of the day
             today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
             today_end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
-            one_week_ago = today_start - timedelta(days=7)
+            one_week_ago = now - timedelta(days=7)
 
             # Using ranges to avoid persisting notification time in the database
             due_in_2_weeks_start = today_start + timedelta(days=14)
-            due_in_2_weeks_end = today_start + timedelta(days=15)
+            due_in_2_weeks_end = today_end + timedelta(days=14)
             due_in_3_days_start = today_start + timedelta(days=3)
-            due_in_3_days_end = today_start + timedelta(days=4)
+            due_in_3_days_end = today_end + timedelta(days=3)
 
             entity_timing_fields = [
                 HelperTaskEntity.starts_at,
@@ -364,6 +364,7 @@ class HelpersController(BaseController):
             where = and_(
                 HelperTaskEntity.validated_by_id.is_(None),
                 or_(
+                    # Note: BETWEEN is inclusive (uses <=, not <)
                     *[
                         field.between(due_in_2_weeks_start, due_in_2_weeks_end)
                         for field in entity_timing_fields
