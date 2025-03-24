@@ -212,7 +212,7 @@ class HelperTaskEntity(BaseEntity):
     short_description: Mapped[str] = mapped_column(VARCHAR(200))
     long_description: Mapped[str | None] = mapped_column(CLOB)
     contact_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
-    # Either start+end is specified or the deadline
+    # Either starts_at & ends_at are specified (shift) or the deadline
     starts_at: Mapped[datetime | None] = mapped_column(DateTime)
     ends_at: Mapped[datetime | None] = mapped_column(DateTime)
     deadline: Mapped[datetime | None] = mapped_column(DateTime)

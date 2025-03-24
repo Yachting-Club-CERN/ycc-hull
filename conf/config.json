@@ -21,6 +21,9 @@
     "clientSecret": "SaksuyBhXMq4xuLhHTTUQtXsn3JQ3AiG",
     "swaggerClient": "ycc-hull-local-swagger"
   },
+  "notifications": {
+    "dailyNotificationsTrigger": "cron: 4 9 * * *"
+  },
   "uvicornPort": "8000",
   "yccApp": {
     "name": "YCC App LOCAL",

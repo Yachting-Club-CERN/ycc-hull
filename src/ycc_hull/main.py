@@ -24,6 +24,10 @@ from ycc_hull.api.helpers import api_helpers
 from ycc_hull.api.holidays import api_holidays
 from ycc_hull.api.licences import api_licences
 from ycc_hull.api.members import api_members
+from ycc_hull.app_controllers import (
+    get_controllers,
+    init_app_controllers,
+)
 from ycc_hull.config import CONFIG
 from ycc_hull.constants import LOGGING_CONFIG_FILE
 from ycc_hull.controllers.exceptions import (
@@ -31,8 +35,8 @@ from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
     ControllerNotFoundException,
 )
-from ycc_hull.controllers.members_controller import MembersController
 from ycc_hull.db.context import DatabaseContextHolder
+from ycc_hull.scheduler import init_scheduler
 
 _logger = logging.getLogger(__name__)
 
@@ -55,17 +59,26 @@ def read_version_from_pyproject_toml() -> str:
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
-    # Poke the DB, or fail early if the connection is wrong.
-    _logger.info("Startup event received, testing DB connection...")
-    membership_types = await MembersController().find_all_membership_types()
+async def lifespan(fastapi_app: FastAPI) -> AsyncGenerator[None, None]:
+    # Poke the DB or fail early if the connection is wrong
+    init_app_controllers(fastapi_app)
 
+    _logger.info("Startup event received, testing DB connection...")
+    membership_types = await get_controllers(
+        fastapi_app
+    ).members_controller.find_all_membership_types()
     _logger.info("DB connection successful, membership types: %s", membership_types)
+
+    _logger.info("Starting the scheduler")
+    scheduler = init_scheduler(fastapi_app)
+    scheduler.start()
 
     yield
 
     _logger.info("Shutdown event received, closing DB connection...")
     await DatabaseContextHolder.context.close()
+    _logger.info("Stopping the scheduler...")
+    scheduler.shutdown()
 
 
 app = FastAPI(

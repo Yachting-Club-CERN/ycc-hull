@@ -13,6 +13,7 @@ from ycc_hull.api.errors import (
     create_http_exception_404,
     create_http_exception_409,
 )
+from ycc_hull.app_controllers import init_app_controllers
 from ycc_hull.auth import auth
 from ycc_hull.controllers.exceptions import (
     ControllerBadRequestException,
@@ -24,6 +25,7 @@ from ycc_hull.db.entities import BaseEntity
 from ycc_hull.models.user import User
 
 app_test = FastAPI()
+init_app_controllers(app_test)
 
 
 @app_test.exception_handler(ControllerBadRequestException)
@@ -117,4 +119,4 @@ async def init_test_database(name: str) -> None:
     BaseEntity.metadata.drop_all(bind=engine)
     BaseEntity.metadata.create_all(bind=engine)
 
-    await TestDataController().repopulate()
+    await TestDataController().repopulate(False)

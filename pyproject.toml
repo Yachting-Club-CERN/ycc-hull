@@ -19,8 +19,9 @@ dependencies = [
     # Auth
     "python-keycloak>=5.3.1",
 
-    # Email
+    # Notifications
     "aiosmtplib>=4.0.0",
+    "apscheduler>=3.11.0",
 
     # REST API
     "fastapi>=0.115.11",
@@ -34,6 +35,14 @@ dependencies = [
 
 [tool.isort]
 profile = "black"
+
+[tool.mypy]
+plugins = ["pydantic.mypy", "sqlalchemy.ext.mypy.plugin"]
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["apscheduler.*", "keycloak.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

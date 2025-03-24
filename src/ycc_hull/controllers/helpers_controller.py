@@ -3,12 +3,13 @@ Helpers controller.
 """
 
 from collections.abc import Sequence
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session, defer, lazyload
 
+from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
@@ -28,6 +29,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskDto,
     HelperTaskMarkAsDoneRequestDto,
     HelperTaskState,
+    HelperTaskType,
     HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
@@ -296,12 +298,152 @@ class HelpersController(BaseController):
             self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
             self._run_in_background(self._notifications.on_validate(updated_task, user))
 
-    async def _find_tasks(
+    async def send_daily_reminders(self) -> None:  # pylint: disable=too-many-locals
+        """
+        Sends daily reminders to task participants.
+
+        Never send reminders for:
+        - Tasks that are started and are not yet finished (especially multi-day shifts)
+        - Tasks that are validated
+
+        For upcoming tasks send reminders:
+        - 2 weeks before
+        - 3 days before
+        - the day of the task
+
+        Overdue tasks (not validated tasks in the past; to speed up task validation):
+        - Reminders are sent per contact, not per task
+        - Shifts (and invalid timing):
+            - A reminder is sent every day to the contact 1 week after the shift is finished.
+            - The delay gives a window for shift organisers to validate tasks (as shifts "just happen" anyway").
+            - No immediate pressure on shift organisers, especially as the shifts often happen in batches (regattas, surveillance etc.)
+        - Deadline tasks:
+            - A reminder is sent every day to the contact the if the deadline has expired.
+            - Deadline tasks are usually one-off maintenance tasks and in the past the experience was that they are often forgotten
+            - After the deadline expires, it is either done (and should have been validated) or the deadline should be extended
+
+        Notes:
+        - Also send reminders for past years (avoid hanging tasks; tasks can have a deadline on 31 December)
+        - Also send reminders for unpublished tasks (tasks with helpers should not be unpublished)
+        """
+        if not CONFIG.emails_enabled(self._logger):
+            return
+
+        def debug(task: HelperTaskDto, message: str) -> None:
+            self._logger.debug(
+                "Task %s (id=%d, starts_at=%s, ends_at=%s, deadline=%s): %s",
+                task.title,
+                task.id,
+                task.starts_at,
+                task.ends_at,
+                task.deadline,
+                message,
+            )
+
+        with self.database_context.session() as session:
+            # Query all relevant tasks
+            now = get_now()
+
+            # "Round" to the start of the day
+            today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            today_end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+            one_week_ago = now - timedelta(days=7)
+
+            # Using ranges to avoid persisting notification time in the database
+            due_in_2_weeks_start = today_start + timedelta(days=14)
+            due_in_2_weeks_end = today_end + timedelta(days=14)
+            due_in_3_days_start = today_start + timedelta(days=3)
+            due_in_3_days_end = today_end + timedelta(days=3)
+
+            entity_timing_fields = [
+                HelperTaskEntity.starts_at,
+                HelperTaskEntity.ends_at,
+                HelperTaskEntity.deadline,
+            ]
+
+            where = and_(
+                HelperTaskEntity.validated_by_id.is_(None),
+                or_(
+                    # Note: BETWEEN is inclusive (uses <=, not <)
+                    *[
+                        field.between(due_in_2_weeks_start, due_in_2_weeks_end)
+                        for field in entity_timing_fields
+                    ],
+                    *[
+                        field.between(due_in_3_days_start, due_in_3_days_end)
+                        for field in entity_timing_fields
+                    ],
+                    # Today or overdue
+                    *[field <= today_end for field in entity_timing_fields],
+                ),
+            )
+
+            tasks = await self._find_tasks(
+                year=None,
+                task_id=None,
+                published=None,
+                where=where,
+                session=session,
+            )
+
+            # Split tasks how should be the reminders sent
+            upcoming_tasks: list[HelperTaskDto] = []
+            overdue_tasks: list[HelperTaskDto] = []
+
+            for task in tasks:
+                timings = [
+                    t
+                    for t in [task.starts_at, task.ends_at, task.deadline]
+                    if t is not None
+                ]
+
+                if not timings:
+                    # (Invalid) task has no timing information: no reminder
+                    self._logger.warning("Task %s has no timing information", task)
+                    continue
+
+                timing_earliest = min(timings)
+                timing_latest = max(timings)
+
+                # Note that here we are actually comparing to now, not to the start of the day
+                task_upcoming = now < timing_earliest
+                task_due = timing_latest < now
+
+                if not task_upcoming and not task_due:
+                    # Ongoing tasks: no reminder
+                    debug(task, "Ongoing task")
+                    continue
+
+                if (
+                    task_due
+                    and task.type == HelperTaskType.SHIFT
+                    and one_week_ago < timing_latest
+                ):
+                    # Shifts: skip reminder if timing_latest is more recent (greater) than one week ago
+                    debug(task, "Overdue shift in grace period")
+                    continue
+
+                if task_due:
+                    debug(task, "Overdue task")
+                    overdue_tasks.append(task)
+                else:
+                    debug(task, "Upcoming task")
+                    upcoming_tasks.append(task)
+
+        self._logger.info(
+            "Identified %d upcoming tasks and %d overdue tasks",
+            len(upcoming_tasks),
+            len(overdue_tasks),
+        )
+        await self._notifications.send_reminders(upcoming_tasks, overdue_tasks)
+
+    async def _find_tasks(  # pylint: disable=too-many-arguments
         self,
         *,
         year: int | None,
         task_id: int | None,
         published: bool | None,
+        where: ColumnElement[bool] | None = None,
         session: Session | None = None,
     ) -> Sequence[HelperTaskDto]:
         query = select(HelperTaskEntity)
@@ -328,6 +470,8 @@ class HelpersController(BaseController):
             query = query.where(HelperTaskEntity.id == task_id)
         if published is not None:
             query = query.where(HelperTaskEntity.published == published)
+        if where is not None:
+            query = query.where(where)
 
         query = query.order_by(
             HelperTaskEntity.urgent.desc(),
