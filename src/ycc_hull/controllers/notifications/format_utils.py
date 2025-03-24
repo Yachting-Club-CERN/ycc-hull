@@ -20,7 +20,9 @@ from ycc_hull.models.helpers_dtos import HelperTaskDto, HelperTaskType
 
 
 def wrap_email_html(content: str) -> str:
-    # Wrap the content in a table to ensure it is displayed correctly in the most email clients
+    """
+    Wraps the given content in a table layout to improve compatibility across different email clients.
+    """
     return f"""
 <html>
 <body>

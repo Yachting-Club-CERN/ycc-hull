@@ -1,7 +1,7 @@
 import asyncio
 from collections import defaultdict
 
-from ycc_hull.config import emails_enabled
+from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
 from ycc_hull.controllers.notifications.format_utils import (
@@ -24,7 +24,7 @@ class HelpersNotificationsController(BaseController):
     """
 
     async def on_sign_up(self, task: HelperTaskDto, user: User) -> None:
-        if not emails_enabled(self._logger):
+        if not CONFIG.emails_enabled(self._logger):
             return
 
         message = (
@@ -47,7 +47,7 @@ class HelpersNotificationsController(BaseController):
             await smtp.send_message(message)
 
     async def on_mark_as_done(self, task: HelperTaskDto, user: User) -> None:
-        if not emails_enabled(self._logger):
+        if not CONFIG.emails_enabled(self._logger):
             return
 
         message = (
@@ -70,7 +70,7 @@ class HelpersNotificationsController(BaseController):
             await smtp.send_message(message)
 
     async def on_validate(self, task: HelperTaskDto, user: User) -> None:
-        if not emails_enabled(self._logger):
+        if not CONFIG.emails_enabled(self._logger):
             return
 
         message = (
@@ -97,7 +97,7 @@ class HelpersNotificationsController(BaseController):
         upcoming_tasks: list[HelperTaskDto],
         overdue_tasks: list[HelperTaskDto],
     ) -> None:
-        if not emails_enabled(self._logger):
+        if not CONFIG.emails_enabled(self._logger):
             return
 
         async with SmtpConnection() as smtp:

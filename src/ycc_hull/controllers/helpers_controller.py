@@ -9,7 +9,7 @@ from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session, defer, lazyload
 
-from ycc_hull.config import emails_enabled
+from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.exceptions import (
     ControllerConflictException,
@@ -326,7 +326,7 @@ class HelpersController(BaseController):
         - Also send reminders for past years (avoid hanging tasks; tasks can have a deadline on 31 December)
         - Also send reminders for unpublished tasks (tasks with helpers should not be unpublished)
         """
-        if not emails_enabled(self._logger):
+        if not CONFIG.emails_enabled(self._logger):
             return
 
         def debug(task: HelperTaskDto, message: str) -> None:
@@ -419,7 +419,7 @@ class HelpersController(BaseController):
                     and task.type == HelperTaskType.SHIFT
                     and one_week_ago < timing_latest
                 ):
-                    # Shifts: reminder 1 week after the shift ends
+                    # Shifts: skip reminder if timing_latest is more recent (greater) than one week ago
                     debug(task, "Overdue shift in grace period")
                     continue
 

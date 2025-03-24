@@ -52,6 +52,19 @@ class KeycloakConfig(CamelisedBaseModel):
     swagger_client: str | None = None
 
 
+class NotificationsConfig(CamelisedBaseModel):
+    """
+    Notifications configuration.
+    """
+
+    daily_notifications_trigger: str | None = Field(
+        description=(
+            "Trigger for daily notifications. For production it could be e.g., `cron: 4 9 * * *` for testing you can also use `interval-seconds: 120`."
+            "If None, notifications are disabled."
+        )
+    )
+
+
 class YccAppConfig(CamelisedBaseModel):
     """
     YCC app configuration.
@@ -73,6 +86,7 @@ class Config(CamelisedBaseModel):
     cors_origins: frozenset[str]
     email: EmailConfig | None = None
     keycloak: KeycloakConfig
+    notifications: NotificationsConfig
     uvicorn_port: int
     ycc_app: YccAppConfig
 
@@ -84,6 +98,13 @@ class Config(CamelisedBaseModel):
     def api_docs_enabled(self) -> bool:
         return self.environment in (Environment.LOCAL, Environment.DEVELOPMENT)
 
+    def emails_enabled(self, logger: Logger) -> bool:
+        if self.email:
+            return True
+
+        logger.info("Email configuration is not set, skipping notifications")
+        return False
+
 
 CONFIG: Config
 
@@ -94,11 +115,3 @@ if os.path.isfile(CONFIG_FILE):
         CONFIG = Config(**_config_data)
 else:
     raise AssertionError(f"Missing configuration file: {CONFIG_FILE}")
-
-
-def emails_enabled(logger: Logger) -> bool:
-    if CONFIG.email:
-        return True
-
-    logger.info("Email configuration is not set, skipping notifications")
-    return False
