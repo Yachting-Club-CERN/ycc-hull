@@ -91,7 +91,7 @@ async def helper_tasks_update(
             "You do not have permission to update helper tasks"
         )
 
-    existing_task = await helper_tasks_get_by_id(task_id, user)
+    existing_task = await helper_tasks_get_by_id(task_id, user, controller)
 
     if user.helpers_app_editor and (
         request.contact_id != user.member_id
@@ -132,7 +132,7 @@ async def helper_tasks_mark_as_done(
     controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin:
-        task = await helper_tasks_get_by_id(task_id, user)
+        task = await helper_tasks_get_by_id(task_id, user, controller)
         if not (
             task.contact.id == user.member_id
             or (task.captain and task.captain.member.id == user.member_id)
@@ -153,7 +153,7 @@ async def helper_tasks_validate(
     controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
     if not user.helpers_app_admin:
-        task = await helper_tasks_get_by_id(task_id, user)
+        task = await helper_tasks_get_by_id(task_id, user, controller)
         if task.contact.id != user.member_id:
             raise create_http_exception_403(
                 "You do not have permission to validate this task"

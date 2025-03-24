@@ -37,18 +37,14 @@ def init_scheduler(app: FastAPI) -> AsyncIOScheduler:
     async def send_daily_helper_task_reminders() -> None:
         task_name = send_daily_helper_task_reminders.__name__
 
-        _logger.info("[%s] Starting scheduled task", task_name)
+        _logger.info("Starting scheduled task: %s", task_name)
 
         try:
-            controller = get_controllers(app).helpers_controller
+            await get_controllers(app).helpers_controller.send_daily_reminders()
 
-            # TODO logging
-            _logger.info("Sending helper task reminders... %s", controller)
-            await controller.send_daily_reminders()
-
-            _logger.info("[%s] Scheduled task finished", task_name)
+            _logger.info("Scheduled task finished: %s", task_name)
         except Exception:
-            _logger.exception("[%s] Scheduled task failed", task_name)
+            _logger.exception("Scheduled task failed: %s", task_name)
             raise
 
     return scheduler

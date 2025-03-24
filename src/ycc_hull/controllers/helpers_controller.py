@@ -298,7 +298,7 @@ class HelpersController(BaseController):
             self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
             self._run_in_background(self._notifications.on_validate(updated_task, user))
 
-    async def send_daily_reminders(self) -> None:
+    async def send_daily_reminders(self) -> None:  # pylint: disable=too-many-locals
         """
         Sends daily reminders to task participants.
 
@@ -324,21 +324,36 @@ class HelpersController(BaseController):
             - After the deadline expires, it is either done (and should have been validated) or the deadline should be extended
 
         Notes:
-        - Also send reminders for past years
+        - Also send reminders for past years (avoid hanging tasks; tasks can have a deadline on 31 December)
         - Also send reminders for unpublished tasks (tasks with helpers should not be unpublished)
         """
         if not CONFIG.email:
+            self._logger.info("Email configuration is not set, skipping notifications")
             return
+
+        def debug(task: HelperTaskDto, message: str) -> None:
+            self._logger.debug(
+                "Task %s (id=%d, starts_at=%s, ends_at=%s, deadline=%s): %s",
+                task.title,
+                task.id,
+                task.starts_at,
+                task.ends_at,
+                task.deadline,
+                message,
+            )
 
         with self.database_context.session() as session:
             # Query all relevant tasks
             now = get_now()
-            today_end = now.replace(hour=23, minute=59, second=59, microsecond=0)
-            one_week_ago = now - timedelta(days=7)
-            due_in_2_weeks_start = now + timedelta(days=15)
-            due_in_2_weeks_end = now + timedelta(days=14)
-            due_in_3_days_start = now + timedelta(days=4)
-            due_in_3_days_end = now + timedelta(days=3)
+
+            # "Round" to the start of the day
+            today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            today_end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+            one_week_ago = today_start - timedelta(days=7)
+            due_in_2_weeks_start = today_start + timedelta(days=14)
+            due_in_2_weeks_end = today_start + timedelta(days=15)
+            due_in_3_days_start = today_start + timedelta(days=3)
+            due_in_3_days_end = today_start + timedelta(days=4)
 
             entity_timing_fields = [
                 HelperTaskEntity.starts_at,
@@ -358,7 +373,7 @@ class HelpersController(BaseController):
                         for field in entity_timing_fields
                     ],
                     # Today or overdue
-                    *[field < today_end for field in entity_timing_fields],
+                    *[field <= today_end for field in entity_timing_fields],
                 ),
             )
 
@@ -389,11 +404,13 @@ class HelpersController(BaseController):
                 timing_earliest = min(timings)
                 timing_latest = max(timings)
 
+                # Note that here we are actually comparing to now, not to the start of the day
                 task_upcoming = now < timing_earliest
                 task_due = timing_latest < now
 
                 if not task_upcoming and not task_due:
                     # Ongoing tasks: no reminder
+                    debug(task, "Ongoing task")
                     continue
 
                 if (
@@ -402,18 +419,24 @@ class HelpersController(BaseController):
                     and one_week_ago < timing_latest
                 ):
                     # Shifts: reminder 1 week after the shift ends
+                    debug(task, "Overdue shift in grace period")
                     continue
 
                 if task_due:
+                    debug(task, "Overdue task")
                     overdue_tasks.append(task)
                 else:
-                    # Upcoming task
+                    debug(task, "Upcoming task")
                     upcoming_tasks.append(task)
 
-        # TODO logging
+        self._logger.info(
+            "Identified %d upcoming tasks and %d overdue tasks",
+            len(upcoming_tasks),
+            len(overdue_tasks),
+        )
         await self._notifications.send_reminders(upcoming_tasks, overdue_tasks)
 
-    async def _find_tasks(
+    async def _find_tasks(  # pylint: disable=too-many-arguments
         self,
         *,
         year: int | None,
@@ -446,7 +469,7 @@ class HelpersController(BaseController):
             query = query.where(HelperTaskEntity.id == task_id)
         if published is not None:
             query = query.where(HelperTaskEntity.published == published)
-        if where:
+        if where is not None:
             query = query.where(where)
 
         query = query.order_by(

@@ -3,7 +3,7 @@ Test Data API endpoints.
 """
 
 import json
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta
 
 import aiofiles
 from sqlalchemy import delete
@@ -98,7 +98,7 @@ class TestDataController(BaseController):
 
     __test__ = False
 
-    async def populate(self) -> list[str]:
+    async def populate(self, add_daily_helper_tasks: bool) -> list[str]:
         log: list[str] = []
 
         with self.database_context.session() as session:
@@ -112,7 +112,9 @@ class TestDataController(BaseController):
             session.commit()
             log.append("Commit")
 
-            log.extend(await self._populate_helpers(session, importer))
+            log.extend(
+                await self._populate_helpers(add_daily_helper_tasks, session, importer)
+            )
 
         return log
 
@@ -201,7 +203,10 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_helpers(
-        self, session: Session, importer: _TestDataImporter
+        self,
+        add_daily_helper_tasks: bool,
+        session: Session,
+        importer: _TestDataImporter,
     ) -> list[str]:
         log: list[str] = []
 
@@ -247,6 +252,72 @@ class TestDataController(BaseController):
                 commit_on_each=True,
             )
             log.append(f"Add {len(entries)} helper task helpers (COMMIT on each)")
+
+        session.commit()
+        log.append("Commit")
+
+        if add_daily_helper_tasks:
+            log.extend(await self._create_daily_helper_tasks(session))
+
+        return log
+
+    async def _create_daily_helper_tasks(
+        self,
+        session: Session,
+    ) -> list[str]:
+        log: list[str] = []
+        tasks: list[HelperTaskEntity] = []
+
+        category_id = 1
+        contact_id = 1
+        today = datetime.today().date()
+
+        for i in range(-30, 31):
+            day = today + timedelta(days=i)
+            starts_at = datetime.combine(day, time(18, 0, 0))
+            ends_at = datetime.combine(day, time(20, 30, 0))
+            deadline = datetime.combine(day, time(23, 59, 59))
+            urgent = i % 3 == 0
+            published = i % 5 != 0
+
+            tasks.append(
+                HelperTaskEntity(
+                    category_id=category_id,
+                    title=f"Shift for {day}",
+                    short_description="The Club needs your help!",
+                    long_description=None,
+                    contact_id=contact_id,
+                    starts_at=starts_at,
+                    ends_at=ends_at,
+                    deadline=None,
+                    urgent=urgent,
+                    captain_required_licence_info_id=None,
+                    helper_min_count=1,
+                    helper_max_count=2,
+                    published=published,
+                ),
+            )
+
+            tasks.append(
+                HelperTaskEntity(
+                    category_id=category_id,
+                    title=f"Deadline task for {day}",
+                    short_description="The Club needs your help!",
+                    long_description=None,
+                    contact_id=contact_id,
+                    starts_at=None,
+                    ends_at=None,
+                    deadline=deadline,
+                    urgent=urgent,
+                    captain_required_licence_info_id=None,
+                    helper_min_count=1,
+                    helper_max_count=2,
+                    published=published,
+                ),
+            )
+
+        session.add_all(tasks)
+        log.append(f"Add {len(tasks)} daily helper tasks")
 
         session.commit()
         log.append("Commit")
@@ -298,10 +369,10 @@ class TestDataController(BaseController):
 
         return log
 
-    async def repopulate(self) -> list[str]:
+    async def repopulate(self, add_daily_helper_tasks: bool) -> list[str]:
         log: list[str] = []
 
         log.extend(await self.clear())
-        log.extend(await self.populate())
+        log.extend(await self.populate(add_daily_helper_tasks))
 
         return log

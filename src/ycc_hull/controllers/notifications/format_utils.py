@@ -193,8 +193,20 @@ def format_helper_task_subject(task: HelperTaskDto) -> str:
     return f"{task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
 
 
-def format_helper_task(task: HelperTaskDto) -> str:
+def format_helper_task(
+    task: HelperTaskDto, *, warnings: list[str] | None = None
+) -> str:
     task_url = _get_helper_task_url(task)
+
+    warnings_html = (
+        f"""
+    <p style="color: #ff0000;">
+        {"<br />\n".join(warning for warning in warnings)}
+    </p>
+"""
+        if warnings
+        else ""
+    )
 
     helpers = []
     if task.helpers:
@@ -213,6 +225,7 @@ def format_helper_task(task: HelperTaskDto) -> str:
         <strong>{task.title} ({task.category.title})</strong>
     </p>
     <p style="font-size: large;"><strong>{format_helper_task_timing_with_extra(task)}</strong></p>
+    {warnings_html}
     <p><em>{task.short_description}</em></p>
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>

@@ -23,7 +23,7 @@ class SmtpConnection:
 
     async def __aenter__(self) -> "SmtpConnection":
         self._logger.info(
-            "Connecting to SMTP server %s:%s as %s, start TLS: %s",
+            "Connecting to SMTP server %s:%s as username=%s, start TLS: %s",
             self._config.smtp_host,
             self._config.smtp_port,
             self._config.smtp_username,

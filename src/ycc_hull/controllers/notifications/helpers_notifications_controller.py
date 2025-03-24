@@ -1,13 +1,9 @@
+import asyncio
 from collections import defaultdict
-from typing import Iterable
 
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
-from ycc_hull.controllers.notifications.email_message_builder import (
-    EmailContact,
-    EmailContacts,
-    EmailMessageBuilder,
-)
+from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
 from ycc_hull.controllers.notifications.format_utils import (
     format_helper_task,
     format_helper_task_subject,
@@ -19,6 +15,8 @@ from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import HelperTaskDto
 from ycc_hull.models.user import User
 
+NOTIFICATION_DELAY_SECONDS = 0.5
+
 
 class HelpersNotificationsController(BaseController):
     """
@@ -27,6 +25,7 @@ class HelpersNotificationsController(BaseController):
 
     async def on_sign_up(self, task: HelperTaskDto, user: User) -> None:
         if not CONFIG.email:
+            self._logger.info("Email configuration is not set, skipping notifications")
             return
 
         message = (
@@ -50,6 +49,7 @@ class HelpersNotificationsController(BaseController):
 
     async def on_mark_as_done(self, task: HelperTaskDto, user: User) -> None:
         if not CONFIG.email:
+            self._logger.info("Email configuration is not set, skipping notifications")
             return
 
         message = (
@@ -73,6 +73,7 @@ class HelpersNotificationsController(BaseController):
 
     async def on_validate(self, task: HelperTaskDto, user: User) -> None:
         if not CONFIG.email:
+            self._logger.info("Email configuration is not set, skipping notifications")
             return
 
         message = (
@@ -99,13 +100,14 @@ class HelpersNotificationsController(BaseController):
         upcoming_tasks: list[HelperTaskDto],
         overdue_tasks: list[HelperTaskDto],
     ) -> None:
-        # TODO logging
         if not CONFIG.email:
+            self._logger.info("Email configuration is not set, skipping notifications")
             return
 
         async with SmtpConnection() as smtp:
             for task in upcoming_tasks:
                 await self._send_upcoming_task_reminder(task, smtp)
+                await asyncio.sleep(NOTIFICATION_DELAY_SECONDS)
 
             overdue_tasks_by_contact_id: dict[int, list[HelperTaskDto]] = defaultdict(
                 list
@@ -113,29 +115,33 @@ class HelpersNotificationsController(BaseController):
             for task in overdue_tasks:
                 overdue_tasks_by_contact_id[task.contact.id].append(task)
 
-            for contact_id, tasks in overdue_tasks_by_contact_id.items():
+            for _, tasks in overdue_tasks_by_contact_id.items():
                 if not tasks:
                     continue
 
                 contact = tasks[0].contact
                 await self._send_overdue_tasks_reminder(contact, tasks, smtp)
+                await asyncio.sleep(NOTIFICATION_DELAY_SECONDS)
 
     async def _send_upcoming_task_reminder(
         self, task: HelperTaskDto, smtp: SmtpConnection
     ) -> None:
-        message = (
-            _task_notification_email_to_captain_and_helpers(task)
-            .content(
-                f"""
+        warnings = _get_task_warnings(task)
+
+        message_builder = _task_notification_email_to_captain_and_helpers(task)
+
+        if warnings:
+            message_builder.to(task.contact)
+
+        message = message_builder.content(
+            f"""
 <p>Dear Sailors,</p>
 
-<p>This just a quick reminder about your upcoming task.</p>
+<p>This is just a quick reminder about your upcoming task.</p>
 
-{format_helper_task(task)}
+{format_helper_task(task, warnings=warnings)}
             """
-            )
-            .build()
-        )
+        ).build()
         await smtp.send_message(message)
 
     async def _send_overdue_tasks_reminder(
@@ -148,18 +154,20 @@ class HelpersNotificationsController(BaseController):
             return
 
         tasks_count = len(tasks)
-        n_overdue_tasks = f"{tasks_count} overdue task{'s' if tasks_count > 1 else ''}"
+        n_overdue_tasks_str = (
+            f"{tasks_count} overdue task{'s' if tasks_count > 1 else ''}"
+        )
 
         message = (
             EmailMessageBuilder()
             .to(contact)
             .reply_to(contact)
-            .subject(n_overdue_tasks)
+            .subject(n_overdue_tasks_str)
             .content(
                 f"""
 <p>Dear {contact.first_name},</p>
 
-<p>This is a reminder you are the contact for {n_overdue_tasks}.</p>
+<p>This is a reminder that you are the contact for {n_overdue_tasks_str}.</p>
 
 {format_helper_tasks_list(tasks)}
 
@@ -217,3 +225,31 @@ def _task_notification_email_to_captain_and_helpers(
         .to(task.captain.member if task.captain else None)
         .to(helper.member for helper in task.helpers)
     )
+
+
+def _get_task_warnings(task: HelperTaskDto) -> list[str]:
+    warnings = []
+
+    if not task.captain:
+        warnings.append("No captain has signed up.")
+
+    helper_count = len(task.helpers)
+    if helper_count < task.helper_min_count:
+        helper_count_str: str = ""
+
+        if helper_count == 0:
+            helper_count_str = "No helpers have"
+        elif helper_count == 1:
+            helper_count_str = "Only 1 helper has"
+        else:
+            helper_count_str = f"Only {helper_count} helpers have"
+
+        required_helpers_str = (
+            "1 is" if task.helper_min_count == 1 else f"{task.helper_min_count} are"
+        )
+
+        warnings.append(
+            f"{helper_count_str} signed up &mdash; at least {required_helpers_str} required."
+        )
+
+    return warnings

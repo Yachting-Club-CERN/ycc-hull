@@ -1,3 +1,5 @@
+"""App controllers module."""
+
 from dataclasses import dataclass
 
 from fastapi import FastAPI, Request
