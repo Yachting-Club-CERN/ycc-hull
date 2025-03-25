@@ -24,7 +24,7 @@ future_day = (get_now().date() + timedelta(days=5)).strftime("%Y-%m-%d")
 SHORT_DESCRIPTION = " The Club needs your help for this task! \n "
 SANITISED_SHORT_DESCRIPTION = "The Club needs your help for this task!"
 
-task_mutation_shift = {
+task_creation_shift = {
     "categoryId": 1,
     "title": " Test Task \n ",
     "shortDescription": SHORT_DESCRIPTION,
@@ -40,7 +40,7 @@ task_mutation_shift = {
     "published": False,
 }
 
-task_mutation_deadline = {
+task_creation_deadline = {
     "categoryId": 2,
     "title": " Test Task \n ",
     "shortDescription": SHORT_DESCRIPTION,
@@ -55,6 +55,11 @@ task_mutation_deadline = {
     "helperMaxCount": 2,
     "published": True,
 }
+
+
+task_update_shift = {**task_creation_shift, "notifySignedUpMembers": True}
+
+task_update_deadline = {**task_creation_deadline, "notifySignedUpMembers": False}
 
 audit_keys = set(
     [
@@ -127,7 +132,12 @@ async def verify_update_audit_log_entry(
 
     audit_data = json.loads(audit.data)
 
-    assert audit_data.keys() == {"old", "new"}
+    assert audit_data.keys() == {"diff", "old", "new", "notifySignedUpMembers"}
+    if old_short_description != new_short_description:
+        assert audit_data["diff"]["shortDescription"] == {
+            "old": old_short_description,
+            "new": new_short_description,
+        }
 
     assert audit_data["old"]["@type"] == "ycc_hull.models.helpers_dtos.HelperTaskDto"
     assert audit_data["old"]["id"] == task_id
@@ -146,7 +156,7 @@ async def test_create_task_as_editor() -> None:
     FakeAuth.set_helpers_app_editor()
 
     # When
-    response = client.post("/api/v1/helpers/tasks", json=task_mutation_shift)
+    response = client.post("/api/v1/helpers/tasks", json=task_creation_shift)
 
     # Then
     assert response.status_code == 200
@@ -162,7 +172,7 @@ async def test_create_task_as_admin() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # When
-    response = client.post("/api/v1/helpers/tasks", json=task_mutation_deadline)
+    response = client.post("/api/v1/helpers/tasks", json=task_creation_deadline)
 
     # Then
     assert response.status_code == 200
@@ -177,7 +187,7 @@ def test_create_task_fails_if_not_admin_nor_editor() -> None:
     FakeAuth.set_member()
 
     # When
-    response = client.post("/api/v1/helpers/tasks", json=task_mutation_shift)
+    response = client.post("/api/v1/helpers/tasks", json=task_creation_shift)
 
     # Then
     assert response.status_code == 403 and response.json() == {
@@ -190,7 +200,7 @@ def test_create_task_fails_if_editor_but_not_contact() -> None:
     FakeAuth.set_helpers_app_editor()
 
     # When
-    response = client.post("/api/v1/helpers/tasks", json=task_mutation_deadline)
+    response = client.post("/api/v1/helpers/tasks", json=task_creation_deadline)
 
     # Then
     assert response.status_code == 403 and response.json() == {
@@ -202,14 +212,14 @@ def test_create_task_fails_if_editor_but_not_contact() -> None:
 async def test_update_task_as_editor() -> None:
     # Given
     FakeAuth.set_helpers_app_editor()
-    task_mutation = task_mutation_shift.copy()
-    task_mutation["contactId"] = 2
-    task_id = client.post("/api/v1/helpers/tasks", json=task_mutation).json()["id"]
+    request = task_creation_shift.copy()
+    request["contactId"] = 2
+    task_id = client.post("/api/v1/helpers/tasks", json=request).json()["id"]
 
     # When
-    task_mutation = task_mutation_deadline.copy()
-    task_mutation["contactId"] = 2
-    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_mutation)
+    request = task_update_deadline.copy()
+    request["contactId"] = 2
+    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=request)
 
     # Then
     assert response.status_code == 200
@@ -227,15 +237,13 @@ async def test_update_task_as_editor() -> None:
 def test_update_task_fails_if_not_admin_nor_editor() -> None:
     # Given
     FakeAuth.set_helpers_app_admin()
-    task_id = client.post("/api/v1/helpers/tasks", json=task_mutation_shift).json()[
+    task_id = client.post("/api/v1/helpers/tasks", json=task_creation_shift).json()[
         "id"
     ]
     FakeAuth.set_member()
 
     # When
-    response = client.put(
-        f"/api/v1/helpers/tasks/{task_id}", json=task_mutation_deadline
-    )
+    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_update_deadline)
 
     # Then
     assert response.status_code == 403 and response.json() == {
@@ -246,13 +254,13 @@ def test_update_task_fails_if_not_admin_nor_editor() -> None:
 def test_update_task_fails_if_editor_but_not_contact() -> None:
     # Given
     FakeAuth.set_helpers_app_admin()
-    task_id = client.post("/api/v1/helpers/tasks", json=task_mutation_deadline).json()[
+    task_id = client.post("/api/v1/helpers/tasks", json=task_creation_shift).json()[
         "id"
     ]
     FakeAuth.set_helpers_app_editor()
 
     # When
-    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_mutation_shift)
+    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_update_deadline)
 
     # Then
     assert response.status_code == 403 and response.json() == {
@@ -262,10 +270,10 @@ def test_update_task_fails_if_editor_but_not_contact() -> None:
 
 def test_update_task_if_anyone_signed_up() -> None:
     # Given
-    task_mutation = task_mutation_shift.copy()
-    task_mutation["published"] = True
+    request = task_creation_shift.copy()
+    request["published"] = True
     FakeAuth.set_helpers_app_admin()
-    task_id = client.post("/api/v1/helpers/tasks", json=task_mutation).json()["id"]
+    task_id = client.post("/api/v1/helpers/tasks", json=request).json()["id"]
 
     FakeAuth.set_member()
     assert (
@@ -276,13 +284,15 @@ def test_update_task_if_anyone_signed_up() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # When
-    task_mutation["title"] = "Title 2"
-    task_mutation["shortDescription"] = "Short description 2"
-    task_mutation["longDescription"] = "Long description 2"
-    task_mutation["contactId"] = 123
-    task_mutation["urgent"] = not task_mutation["urgent"]
+    request = task_update_shift.copy()
+    request["title"] = "Title 2"
+    request["shortDescription"] = "Short description 2"
+    request["longDescription"] = "Long description 2"
+    request["contactId"] = 123
+    request["urgent"] = not request["urgent"]
+    request["published"] = True
 
-    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_mutation)
+    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=request)
 
     # Then
     assert (
@@ -293,10 +303,10 @@ def test_update_task_if_anyone_signed_up() -> None:
 
 def test_update_task_cannot_change_timing_if_anyone_signed_up() -> None:
     # Given
-    task_mutation = task_mutation_shift.copy()
-    task_mutation["published"] = True
+    request = task_creation_shift.copy()
+    request["published"] = True
     FakeAuth.set_helpers_app_admin()
-    task_id = client.post("/api/v1/helpers/tasks", json=task_mutation).json()["id"]
+    task_id = client.post("/api/v1/helpers/tasks", json=request).json()["id"]
 
     FakeAuth.set_member()
     assert (
@@ -307,8 +317,9 @@ def test_update_task_cannot_change_timing_if_anyone_signed_up() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # When
-    task_mutation["endsAt"] = f" {future_day}T21:00:00 \n "
-    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_mutation)
+    request = task_update_shift.copy()
+    request["endsAt"] = f" {future_day}T21:00:00 \n "
+    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=request)
 
     # Then
     assert response.status_code == 409 and response.json() == {
@@ -318,10 +329,10 @@ def test_update_task_cannot_change_timing_if_anyone_signed_up() -> None:
 
 def test_update_task_cannot_unpublish_if_anyone_signed_up() -> None:
     # Given
-    task_mutation = task_mutation_deadline.copy()
-    task_mutation["published"] = True
+    request = task_creation_deadline.copy()
+    request["published"] = True
     FakeAuth.set_helpers_app_admin()
-    task_id = client.post("/api/v1/helpers/tasks", json=task_mutation).json()["id"]
+    task_id = client.post("/api/v1/helpers/tasks", json=request).json()["id"]
 
     FakeAuth.set_member()
     assert (
@@ -332,8 +343,9 @@ def test_update_task_cannot_unpublish_if_anyone_signed_up() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # When
-    task_mutation["published"] = False
-    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_mutation)
+    request = task_update_deadline.copy()
+    request["published"] = False
+    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=request)
 
     # Then
     assert response.status_code == 409 and response.json() == {

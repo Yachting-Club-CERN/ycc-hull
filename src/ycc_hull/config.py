@@ -67,7 +67,7 @@ class NotificationsConfig(CamelisedBaseModel):
 
 class YccAppConfig(CamelisedBaseModel):
     """
-    YCC app configuration.
+    YCC App configuration.
     """
 
     name: str

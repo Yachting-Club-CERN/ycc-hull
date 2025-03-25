@@ -1,7 +1,7 @@
 """
 Utility functions for formatting email content.
 
-One could use jinja2, but would need to configure all the helpers too, which are in the end would be in Python anyway.
+We could use Jinja2, but we would still need to implement most helpers in Python, so sticking to plain Python formatting makes things simpler.
 """
 
 import sys
@@ -144,7 +144,7 @@ def format_member_info(member: MemberPublicInfoDto) -> str:
 
 SHIFT_REPLACEMENT_REMINDER = """
 <p>
-    <em>Reminder: If you cannot help with a task any more, we kindly ask you to find a replacement
+    <em>Reminder 📢: If you cannot help with a task any more, we kindly ask you to find a replacement
     (e.g., during an outing or in one of the YCC WhatsApp groups) and let us know.</em>
 </p>
 """
@@ -192,7 +192,9 @@ def format_helper_task_timing_with_extra(task: HelperTaskDto) -> str:
 
 
 def format_helper_task_subject(task: HelperTaskDto) -> str:
-    return f"{task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
+    return (
+        f"⛵🔔 {task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
+    )
 
 
 def format_helper_task(
@@ -210,16 +212,16 @@ def format_helper_task(
         else ""
     )
 
-    helpers = []
     if task.helpers:
-        helpers.append("<ul>")
-
-        for helper in task.helpers:
-            helpers.append(f"  <li>{format_member_info(helper.member)}</li>")
-
-        helpers.append("</ul>")
+        helpers_html = f"""
+    <ul>
+        {"\n".join(f"<li>{format_member_info(helper.member)}</li>" for helper in task.helpers)}
+    </ul>
+"""
+    elif task.helper_min_count > 0:
+        helpers_html = "😭"
     else:
-        helpers.append("-")
+        helpers_html = "Not needed"
 
     return f"""
 <div>
@@ -231,8 +233,8 @@ def format_helper_task(
     <p><em>{task.short_description}</em></p>
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>
-        <li>Captain: {format_member_info(task.captain.member) if task.captain else "-"}</li>
-        <li>Helpers: {"\n".join(helpers)}</li>
+        <li>Captain: {format_member_info(task.captain.member) if task.captain else "😭"}</li>
+        <li>Helpers: {helpers_html}</li>
     </ul>
     <p>
         <a
@@ -247,7 +249,7 @@ def format_helper_task(
                 border-radius: 4px;
             "
         >
-            <strong>Open in the YCC App</strong>
+            <strong>Open in the App</strong>
         </a>
     </p>
 </div>
