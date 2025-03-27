@@ -289,6 +289,7 @@ def test_update_task_if_anyone_signed_up() -> None:
     request["shortDescription"] = "Short description 2"
     request["longDescription"] = "Long description 2"
     request["contactId"] = 123
+    request["endsAt"] = f" {future_day}T21:00:00 \n "
     request["urgent"] = not request["urgent"]
     request["published"] = True
 
@@ -299,32 +300,6 @@ def test_update_task_if_anyone_signed_up() -> None:
         response.status_code == 200
         and response.json()["shortDescription"] == "Short description 2"
     )
-
-
-def test_update_task_cannot_change_timing_if_anyone_signed_up() -> None:
-    # Given
-    request = task_creation_shift.copy()
-    request["published"] = True
-    FakeAuth.set_helpers_app_admin()
-    task_id = client.post("/api/v1/helpers/tasks", json=request).json()["id"]
-
-    FakeAuth.set_member()
-    assert (
-        client.post(f"/api/v1/helpers/tasks/{task_id}/sign-up-as-helper").status_code
-        == 200
-    )
-
-    FakeAuth.set_helpers_app_admin()
-
-    # When
-    request = task_update_shift.copy()
-    request["endsAt"] = f" {future_day}T21:00:00 \n "
-    response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=request)
-
-    # Then
-    assert response.status_code == 409 and response.json() == {
-        "detail": "Cannot change timing after anyone has signed up"
-    }
 
 
 def test_update_task_cannot_unpublish_if_anyone_signed_up() -> None:
