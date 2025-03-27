@@ -1,11 +1,17 @@
 import asyncio
 from collections import defaultdict
+import copy
+import logging
+from typing import Any
+
+from fastapi.background import P
 
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
 from ycc_hull.controllers.notifications.format_utils import (
     format_helper_task,
+    format_helper_task_min_max_helpers,
     format_helper_task_subject,
     format_helper_task_timing,
     format_helper_tasks_list,
@@ -16,12 +22,163 @@ from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import HelperTaskDto
 from ycc_hull.models.user import User
-from ycc_hull.utils import DiffEntry, camel_case_to_words
+from ycc_hull.utils import DiffEntry, camel_case_to_words, full_type_name
 
 NOTIFICATION_DELAY_SECONDS = 0.5
 
 _BOAT_PARTY = "⛵️🥳"
 _DEAR_SAILORS = f"<p>Dear Sailors {_BOAT_PARTY},</p>"
+
+
+class _HelperTaskChanges:
+    def __init__(
+        self,
+        old_task: HelperTaskDto,
+        new_task: HelperTaskDto,
+        diff: dict[str, DiffEntry],
+    ):
+        self._logger = logging.getLogger(full_type_name(self.__class__))
+
+        self._old_task = old_task
+        self._new_task = new_task
+        # Objects should work on their own copy of the diff
+        self._diff = copy.deepcopy(diff)
+
+        self._category_title_change = self._diff.pop("category.title", None)
+        self._title_change = self._diff.pop("title", None)
+        self._short_description_change = self._diff.pop("shortDescription", None)
+        self._long_description_changed = (
+            self._diff.pop("longDescription", None) is not None
+        )
+        self._contact_changed = False
+        self._timing_changed = False
+        self._captain_required_licence_change = self._diff.pop(
+            "captainRequiredLicenceInfo.licence", None
+        )
+        self._helper_min_max_count_changed = False
+        self._urgent_changed = self._diff.pop("urgent", None) is not None
+        self._published_changed = self._diff.pop("published", None) is not None
+        self._captain_changed = False
+        self._helpers_changed = False
+        self._status_changed = False
+
+        self.summary: list[str] = []
+        self.relevant_details: dict[str, Any] = {}
+
+        self._detect_changes()
+        self._compute_known()
+        self._collect_undetected_changes()
+
+    def _add_detailed_change(self, label: str, previous_value: Any) -> None:
+        self.summary.append(label)
+        self.relevant_details[f"Previous {label}"] = previous_value
+
+    def _detect_changes(self):
+        # Group fields covering the same concept and remove keys we never want to report
+        for remaining_key in list(self._diff.keys()):
+            if (
+                remaining_key == "id"
+                or remaining_key.endswith(".id")
+                or remaining_key.endswith("Id")
+            ):
+                self._diff.pop(remaining_key, None)
+            elif remaining_key.startswith("category."):
+                self._diff.pop(remaining_key, None)
+            elif remaining_key.startswith("contact."):
+                self._contact_changed = True
+                self._diff.pop(remaining_key, None)
+            elif (
+                remaining_key == "startsAt"
+                or remaining_key == "endsAt"
+                or remaining_key == "deadline"
+            ):
+                self._timing_changed = True
+                self._diff.pop(remaining_key, None)
+            elif remaining_key == "helperMinCount" or remaining_key == "helperMaxCount":
+                self._helper_min_max_count_changed = True
+                self._diff.pop(remaining_key, None)
+            elif remaining_key.startswith("captain."):
+                self._captain_changed = True
+                self._diff.pop(remaining_key, None)
+            elif remaining_key.startswith("helpers."):
+                self._helpers_changed = True
+                self._diff.pop(remaining_key, None)
+            elif (
+                remaining_key.startswith("marked_as_done_")
+                or remaining_key.startswith("validated_")
+                or remaining_key.startswith("validation_")
+            ):
+                self._status_changed = True
+                self._diff.pop(remaining_key, None)
+
+    def _compute_known(self) -> None:
+        diff_changes = [
+            ("category", self._category_title_change),
+            ("title", self._title_change),
+            ("short description", self._short_description_change),
+            (
+                "captain required licence",
+                self._captain_required_licence_change,
+            ),
+        ]
+
+        # None = no formatter, no reported details
+        flagged_changes = [
+            (
+                # Not putting this in the email
+                "long description",
+                self._long_description_changed,
+                None,
+            ),
+            (
+                "contact",
+                self._contact_changed,
+                lambda: format_member_info(self._old_task.contact),
+            ),
+            (
+                "timing",
+                self._timing_changed,
+                lambda: format_helper_task_timing(self._old_task),
+            ),
+            (
+                "helpers needed",
+                self._helper_min_max_count_changed,
+                lambda: format_helper_task_min_max_helpers(self._old_task),
+            ),
+            (
+                "urgent" if self._new_task.urgent else "not urgent",
+                self._urgent_changed,
+                None,
+            ),
+            (
+                "published" if self._new_task.published else "unpublished",
+                self._published_changed,
+                None,
+            ),
+            ("captain", self._captain_changed, None),
+            ("helpers", self._helpers_changed, None),
+            ("status", self._status_changed, None),
+        ]
+
+        for label, change in diff_changes:
+            if change:
+                self._add_detailed_change(label, change["old"])
+
+        for label, flag, get_val in flagged_changes:
+            if flag:
+                if get_val:
+                    self._add_detailed_change(label, get_val())
+                else:
+                    self.summary.append(label)
+
+    def _collect_undetected_changes(self):
+        for remaining_key in self._diff.keys():
+            self._logger.warning(
+                "Unhandled field for task update notification: %s", remaining_key
+            )
+            what = camel_case_to_words(remaining_key)
+            self.summary.append(what)
+            self.relevant_details[f"Previous {what}"] = self._diff[remaining_key]["old"]
 
 
 class HelpersNotificationsController(BaseController):
@@ -39,133 +196,20 @@ class HelpersNotificationsController(BaseController):
         if not CONFIG.emails_enabled(self._logger):
             return
 
-        category_title_change = diff.pop("category.title", None)
-        title_change = diff.pop("title", None)
-        short_description_change = diff.pop("shortDescription", None)
-        long_description_changed = diff.pop("longDescription", None) is not None
+        changes = _HelperTaskChanges(old_task, new_task, diff)
 
-        contact_changed = False
-        timing_changed = False
-        captain_required_licence_change = diff.pop(
-            "captainRequiredLicenceInfo.licence", None
-        )
-        helper_min_max_count_changed = False
-
-        urgent_change = diff.pop("urgent", None)
-        published_change = diff.pop("published", None)
-
-        # These are only here for completeness, however, they have their separate API endpoint and notifications
-        captain_changed = False
-        helpers_changed = False
-        status_changed = False
-
-        # Group fields covering the same concept and remove keys we never want to report
-        for remaining_key in list(diff.keys()):
-            if (
-                remaining_key == "id"
-                or remaining_key.endswith(".id")
-                or remaining_key.endswith("Id")
-            ):
-                diff.pop(remaining_key, None)
-            elif remaining_key.startswith("category."):
-                diff.pop(remaining_key, None)
-            elif remaining_key.startswith("contact."):
-                contact_changed = True
-                diff.pop(remaining_key, None)
-            elif (
-                remaining_key == "startsAt"
-                or remaining_key == "endsAt"
-                or remaining_key == "deadline"
-            ):
-                timing_changed = True
-                diff.pop(remaining_key, None)
-            elif remaining_key == "helperMinCount" or remaining_key == "helperMaxCount":
-                helper_min_max_count_changed = True
-                diff.pop(remaining_key, None)
-            elif remaining_key.startswith("captain."):
-                captain_changed = True
-                diff.pop(remaining_key, None)
-            elif remaining_key.startswith("helpers."):
-                helpers_changed = True
-                diff.pop(remaining_key, None)
-            elif (
-                remaining_key.startswith("marked_as_done_")
-                or remaining_key.startswith("validated_")
-                or remaining_key.startswith("validation_")
-            ):
-                status_changed = True
-                diff.pop(remaining_key, None)
-
-        changes = []
-        previous_values = {}
-
-        if category_title_change:
-            changes.append("category")
-            previous_values["Previous category"] = category_title_change["old"]
-        if title_change:
-            changes.append("title")
-            previous_values["Previous title"] = title_change["old"]
-        if short_description_change:
-            changes.append("short description")
-            previous_values["Previous short description"] = short_description_change[
-                "old"
-            ]
-        if long_description_changed:
-            changes.append("long description")
-            # Not putting this in the email
-        if contact_changed:
-            changes.append("contact")
-            previous_values["Previous contact"] = format_member_info(old_task.contact)
-        if timing_changed:
-            changes.append("timing")
-            previous_values["Previous timing"] = format_helper_task_timing(old_task)
-        if captain_required_licence_change:
-            changes.append("captain required licence")
-            previous_values["Previous captain required licence"] = (
-                captain_required_licence_change["old"]
-            )
-        if helper_min_max_count_changed:
-            changes.append("helpers needed")
-            previous_values["Previous helpers needed"] = (
-                f"{old_task.helper_min_count} - {old_task.helper_max_count}"
-            )
-        if urgent_change:
-            if new_task.urgent:
-                changes.append("urgent")
-            else:
-                changes.append("not urgent")
-        if published_change:
-            if new_task.published:
-                changes.append("published")
-            else:
-                changes.append("unpublished")
-        if captain_changed:
-            changes.append("captain")
-        if helpers_changed:
-            changes.append("helpers")
-        if status_changed:
-            changes.append("status")
-
-        for remaining_key in diff.keys():
-            self._logger.warning(
-                "Unhandled field for task update notification: %s", remaining_key
-            )
-            what = camel_case_to_words(remaining_key)
-            changes.append(what)
-            previous_values[f"Previous {what}"] = diff[remaining_key]["old"]
-
-        if changes:
-            changes_str = f"Here is what changed: {', '.join(changes)}."
+        if changes.summary:
+            changes_str = f"Here is what changed: {', '.join(changes.summary)}."
         else:
             changes_str = "Nothing seems to have changed — but it's still worth checking in the app! 😊"
 
         previous_values_html = ""
-        if previous_values:
+        if changes.relevant_details:
             previous_values_html = f"""
-<p>Previous values:</p>
+<p>Details:</p>
 
 <table>
-    {"\n".join(f"  <tr><td>{key}</td><td>{value}</td></tr>" for key, value in previous_values.items())}
+    {"\n".join(f"  <tr><td>{key}</td><td>{value}</td></tr>" for key, value in changes.relevant_details.items())}
 </table>
 """
 
@@ -176,7 +220,7 @@ class HelpersNotificationsController(BaseController):
                     f"""
 {_DEAR_SAILORS}
 
-<p>🆕 {user.full_name} has updated this task.</p>
+<p>📢 {user.full_name} has updated this task.</p>
 
 <p>{changes_str}</p>
 

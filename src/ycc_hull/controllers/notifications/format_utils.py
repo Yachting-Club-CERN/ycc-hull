@@ -191,6 +191,13 @@ def format_helper_task_timing_with_extra(task: HelperTaskDto) -> str:
     return f"{format_helper_task_timing(task)}{timing_extra_str}"
 
 
+def format_helper_task_min_max_helpers(task: HelperTaskDto) -> str:
+    if task.helper_min_count == task.helper_max_count:
+        return f"{task.helper_min_count}"
+    else:
+        return f"{task.helper_min_count} - {task.helper_max_count}"
+
+
 def format_helper_task_subject(task: HelperTaskDto) -> str:
     return (
         f"⛵🔔 {task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
