@@ -1,10 +1,8 @@
 import asyncio
-from collections import defaultdict
 import copy
 import logging
+from collections import defaultdict
 from typing import Any
-
-from fastapi.background import P
 
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
@@ -73,7 +71,7 @@ class _HelperTaskChanges:
         self.summary.append(label)
         self.relevant_details[f"Previous {label}"] = previous_value
 
-    def _detect_changes(self):
+    def _detect_changes(self) -> None:
         # Group fields covering the same concept and remove keys we never want to report
         for remaining_key in list(self._diff.keys()):
             if (
@@ -164,14 +162,14 @@ class _HelperTaskChanges:
             if change:
                 self._add_detailed_change(label, change["old"])
 
-        for label, flag, get_val in flagged_changes:
+        for label, flag, get_previous_value in flagged_changes:
             if flag:
-                if get_val:
-                    self._add_detailed_change(label, get_val())
+                if get_previous_value:
+                    self._add_detailed_change(label, get_previous_value())
                 else:
                     self.summary.append(label)
 
-    def _collect_undetected_changes(self):
+    def _collect_undetected_changes(self) -> None:
         for remaining_key in self._diff.keys():
             self._logger.warning(
                 "Unhandled field for task update notification: %s", remaining_key
@@ -220,7 +218,7 @@ class HelpersNotificationsController(BaseController):
                     f"""
 {_DEAR_SAILORS}
 
-<p>📢 {user.full_name} has updated this task.</p>
+<p>{user.full_name} has updated this task. 📢</p>
 
 <p>{changes_str}</p>
 
@@ -247,7 +245,7 @@ class HelpersNotificationsController(BaseController):
                     f"""
 <p>Dear {user.first_name} {_BOAT_PARTY},</p>
 
-<p>🙏 Thank you for signing up for this task.</p>
+<p>Thank you for signing up for this task. 🙏</p>
 
 {format_helper_task(task)}
 """
@@ -270,7 +268,7 @@ class HelpersNotificationsController(BaseController):
                     f"""
 {_DEAR_SAILORS}
 
-<p>🙏 Thank you for your help with this task. {user.full_name} has marked it as done and it is now waiting for validation from {task.contact.full_name}.</p>
+<p>Thank you for your help with this task. {user.full_name} has marked it as done and it is now waiting for validation from {task.contact.full_name}. 🙏</p>
 
 {format_helper_task(task)}
 """
@@ -293,7 +291,7 @@ class HelpersNotificationsController(BaseController):
                     f"""
 {_DEAR_SAILORS}
 
-<p>🙏 Thank you for your help with this task, it has been validated by {user.full_name}.</p>
+<p>Thank you for your help with this task, it has been validated by {user.full_name}. 🙏</p>
 
 {format_helper_task(task)}
 """
@@ -346,7 +344,7 @@ class HelpersNotificationsController(BaseController):
             f"""
 {_DEAR_SAILORS}
 
-<p>🔔 This is just a quick reminder about your upcoming task.</p>
+<p>This is just a quick reminder about your upcoming task. 🔔</p>
 
 {format_helper_task(task, warnings=warnings)}
             """
@@ -376,7 +374,7 @@ class HelpersNotificationsController(BaseController):
                 f"""
 <p>Dear {contact.first_name} {_BOAT_PARTY},</p>
 
-<p>⏰ This is a reminder that you are the contact for {n_overdue_tasks_str}.</p>
+<p>This is a reminder that you are the contact for {n_overdue_tasks_str}. ⏰</p>
 
 {format_helper_tasks_list(tasks)}
 

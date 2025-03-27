@@ -144,7 +144,7 @@ def format_member_info(member: MemberPublicInfoDto) -> str:
 
 SHIFT_REPLACEMENT_REMINDER = """
 <p>
-    <em>Reminder 📢: If you cannot help with a task any more, we kindly ask you to find a replacement
+    <em>📢 Reminder: If you cannot help with a task any more, we kindly ask you to find a replacement
     (e.g., during an outing or in one of the YCC WhatsApp groups) and let us know.</em>
 </p>
 """
@@ -241,7 +241,7 @@ def format_helper_task(
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>
         <li>Captain: {format_member_info(task.captain.member) if task.captain else "😭"}</li>
-        <li>Helpers: {helpers_html}</li>
+        <li>Helpers ({format_helper_task_min_max_helpers(task)}): {helpers_html}</li>
     </ul>
     <p>
         <a
