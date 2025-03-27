@@ -10,6 +10,7 @@ import lxml.etree
 import lxml.html
 import lxml.html.clean
 from humps import camelize
+from lxml_html_clean import Cleaner, clean_html
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.fields import FieldInfo
 
@@ -134,9 +135,7 @@ def sanitise_text_input(text: str | None) -> str | None:
         if element is None:
             return None
 
-        clean_text = (
-            lxml.html.clean.Cleaner().clean_html(element).text_content().strip()
-        )
+        clean_text = clean_html(element).text_content().strip()
         return clean_text if clean_text else None
     except Exception as exc:
         raise ValueError(f"Failed to sanitise text input: {text}") from exc
@@ -145,6 +144,8 @@ def sanitise_text_input(text: str | None) -> str | None:
 def sanitise_html_input(html: str | None) -> str | None:
     if not html:
         return None
+    if sanitise_text_input(html) is None:
+        return None
 
     try:
         element = _parse_html(html)
@@ -152,7 +153,7 @@ def sanitise_html_input(html: str | None) -> str | None:
         if element is None:
             return None
 
-        cleaner = lxml.html.clean.Cleaner(
+        cleaner = Cleaner(
             scripts=True,
             javascript=True,
             comments=True,

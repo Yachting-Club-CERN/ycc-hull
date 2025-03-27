@@ -32,8 +32,9 @@ def test_sanitise_text_input(value: str, expected: str) -> None:
     [
         (None, None),
         ("  ", None),
+        ("<div> <h1>\r\n\t</h1> <p> &nbsp;&nbsp;&nbsp; </p> </div>", None),
         (" my text ", "<p>my text</p>"),
-        (" <h1> </h1> ", "<h1> </h1>"),
+        (" <h1> A </h1> ", "<h1> A </h1>"),
         (" <h1> Hello, World! </h1> ", "<h1> Hello, World! </h1>"),
         (" <!-- Comment --> ", None),
         (" <!-- Comment  1 --> my text <!-- Comment  2 --> ", "<p>my text </p>"),
