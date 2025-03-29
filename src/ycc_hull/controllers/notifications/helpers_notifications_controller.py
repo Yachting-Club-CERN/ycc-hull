@@ -29,6 +29,14 @@ _DEAR_SAILORS = f"<p>Dear Sailors {_BOAT_PARTY},</p>"
 
 
 class _HelperTaskChanges:
+    """
+    Responsible for computing the changes between two helper tasks.
+
+    Attributes:
+        summary (list[str]): A list of labels representing the fields that have changed.
+        relevant_details (dict[str, Any]): A dictionary mapping descriptive labels to values.
+    """
+
     def __init__(
         self,
         old_task: HelperTaskDto,
@@ -79,35 +87,35 @@ class _HelperTaskChanges:
                 or remaining_key.endswith(".id")
                 or remaining_key.endswith("Id")
             ):
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
             elif remaining_key.startswith("category."):
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
             elif remaining_key.startswith("contact."):
                 self._contact_changed = True
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
             elif (
                 remaining_key == "startsAt"
                 or remaining_key == "endsAt"
                 or remaining_key == "deadline"
             ):
                 self._timing_changed = True
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
             elif remaining_key == "helperMinCount" or remaining_key == "helperMaxCount":
                 self._helper_min_max_count_changed = True
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
             elif remaining_key.startswith("captain."):
                 self._captain_changed = True
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
             elif remaining_key.startswith("helpers."):
                 self._helpers_changed = True
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
             elif (
                 remaining_key.startswith("marked_as_done_")
                 or remaining_key.startswith("validated_")
                 or remaining_key.startswith("validation_")
             ):
                 self._status_changed = True
-                self._diff.pop(remaining_key, None)
+                self._diff.pop(remaining_key)
 
     def _compute_known(self) -> None:
         diff_changes = [
