@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Allow editors to change timing of helper tasks
 - Do not allow changing the year of the task if anyone has signed up
+- Do not allow members to sign up as helper for multiple surveillance shifts before mid-June
 - Hierarchical `config.json` for better readability
 - UTF-8 log file
 

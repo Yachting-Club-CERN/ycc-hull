@@ -3,7 +3,7 @@ Helpers controller.
 """
 
 from collections.abc import Sequence
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.exc import DatabaseError
@@ -199,7 +199,9 @@ class HelpersController(BaseController):
         with self.database_context.session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
-            self._check_can_sign_up(task=task, member_id=user.member_id)
+            await self._check_can_sign_up_as_captain(
+                task=task, member_id=user.member_id
+            )
             if task.captain:
                 raise ControllerConflictException("Task already has a captain")
 
@@ -223,7 +225,9 @@ class HelpersController(BaseController):
         with self.database_context.session() as session:
             task = await self.get_task_by_id(task_id, published=True, session=session)
 
-            self._check_can_sign_up(task=task, member_id=user.member_id)
+            await self._check_can_sign_up_as_helper(
+                task=task, member_id=user.member_id, session=session
+            )
             if len(task.helpers) >= task.helper_max_count:
                 raise ControllerConflictException("Task helper limit reached")
 
@@ -546,19 +550,60 @@ class HelpersController(BaseController):
             )
         ).one()
 
-    def _check_can_sign_up(self, *, task: HelperTaskDto, member_id: int) -> None:
+    async def _check_can_sign_up_as_captain(
+        self, *, task: HelperTaskDto, member_id: int
+    ) -> None:
+        await self._check_can_sign_up(task=task, member_id=member_id)
+
+    async def _check_can_sign_up_as_helper(
+        self, *, task: HelperTaskDto, member_id: int, session: Session | None = None
+    ) -> None:
+        await self._check_can_sign_up(task=task, member_id=member_id)
+
+        # Check: helper cannot sign up for multiple surveillance tasks before mid-June:
+        # 1. This allows more members completing one surveillance shift in the beginning of the season
+        # 2. Members who want to do all their tasks early can still do maintenance tasks
+
+        surveillance_task = "surveillance" in task.category.title.lower()
+        mid_june = date(task.year, 6, 15)
+        message = "You cannot sign up for multiple surveillance shifts before mid-June — but you can still sign up for maintenance tasks!"
+
+        if surveillance_task and task.starts_at and task.starts_at.date() < mid_june:
+            # Check if the member has signed up for any other surveillance shift before mid-June
+            other_tasks = await self._find_tasks(
+                year=task.year,
+                task_id=None,
+                published=None,
+                where=and_(
+                    HelperTaskEntity.id != task.id,
+                    HelperTaskEntity.category_id == task.category.id,
+                    HelperTaskEntity.starts_at < mid_june,
+                    or_(
+                        HelperTaskEntity.helpers.any(
+                            HelperTaskHelperEntity.member_id == member_id
+                        ),
+                    ),
+                ),
+                session=session,
+            )
+            if other_tasks:
+                raise ControllerConflictException(message)
+
+    async def _check_can_sign_up(self, *, task: HelperTaskDto, member_id: int) -> None:
         if not task.published:
-            raise ControllerConflictException("Cannot sign up to an unpublished task")
+            raise ControllerConflictException("Cannot sign up for an unpublished task")
         if task.state == HelperTaskState.DONE:
-            raise ControllerConflictException("Cannot sign up to a task marked as done")
+            raise ControllerConflictException(
+                "Cannot sign up for a task marked as done"
+            )
         if task.state == HelperTaskState.VALIDATED:
-            raise ControllerConflictException("Cannot sign up to a validated task")
+            raise ControllerConflictException("Cannot sign up for a validated task")
 
         now = get_now()
         if (task.starts_at and task.starts_at < now) or (
             task.deadline and task.deadline < now
         ):
-            raise ControllerConflictException("Cannot sign up to a task in the past")
+            raise ControllerConflictException("Cannot sign up for a task in the past")
 
         if task.captain and task.captain.member.id == member_id:
             raise ControllerConflictException("Already signed up as captain")
