@@ -1,5 +1,6 @@
 conf/**/config-*.json
 tmp/
+server.log.[0-9]*
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,pycharm+all
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,pycharm+all

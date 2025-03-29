@@ -34,7 +34,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
-from ycc_hull.utils import get_now
+from ycc_hull.utils import deep_diff, get_now
 
 
 class HelpersController(BaseController):
@@ -84,7 +84,6 @@ class HelpersController(BaseController):
     async def create_task(
         self, request: HelperTaskCreationRequestDto, user: User
     ) -> HelperTaskDto:
-        # Admins/editors have full power (e.g., administer things happened in the past)
         with self.database_context.session() as session:
             try:
                 task_entity = HelperTaskEntity(**request.model_dump())
@@ -108,54 +107,10 @@ class HelpersController(BaseController):
         request: HelperTaskUpdateRequestDto,
         user: User,
     ) -> HelperTaskDto:
-        # Admins/editors have full power (e.g., administer things happened in the past)
         with self.database_context.session() as session:
             old_task = await self._get_task_by_id(task_id, session=session)
 
-            anyone_signed_up = old_task.captain or old_task.helpers
-            same_timing = (
-                request.starts_at == old_task.starts_at
-                and request.ends_at == old_task.ends_at
-                and request.deadline == old_task.deadline
-            )
-
-            # Check: cannot change timing if anyone has signed up
-            if anyone_signed_up and not same_timing:
-                raise ControllerConflictException(
-                    "Cannot change timing after anyone has signed up"
-                )
-            # Check: must publish a task after anyone has signed up
-            if anyone_signed_up and not request.published:
-                raise ControllerConflictException(
-                    "You must publish a task after anyone has signed up"
-                )
-            # Check: cannot change timing after the task has been marked as done
-            if not same_timing and old_task.marked_as_done_at:
-                raise ControllerConflictException(
-                    "Cannot change timing after the task has been marked as done"
-                )
-
-            # Check: if a captain has signed up then the new licence must be active for the captain
-            if old_task.captain and request.captain_required_licence_info_id != (
-                old_task.captain_required_licence_info.id
-                if old_task.captain_required_licence_info
-                else None
-            ):
-                captain_entity = old_task.captain.member.get_entity()
-                if not any(
-                    licence_info_entity.infoid
-                    == request.captain_required_licence_info_id
-                    for licence_info_entity in captain_entity.active_licence_infos
-                ):
-                    raise ControllerConflictException(
-                        "Cannot change captain required licence info because the signed up captain does not have the newly specified licence"
-                    )
-
-            # Check: cannot decrease helpers maximum count below signed up helpers count
-            if request.helper_max_count < len(old_task.helpers):
-                raise ControllerConflictException(
-                    "Cannot decrease helpers maximum count below signed up helpers count"
-                )
+            await self._check_can_update_task(request, old_task)
 
             try:
                 task_entity = old_task.get_entity()
@@ -166,18 +121,79 @@ class HelpersController(BaseController):
                 new_task = await HelperTaskDto.create(task_entity)
                 self._logger.info("Updated task: %s, user: %s", new_task, user)
 
+                # Calculate change
+                diff = deep_diff(old_task, new_task)
+
                 self._audit_log(
                     session,
                     user,
                     f"Helpers/Tasks/Update/{task_id}",
-                    {"old": old_task, "new": new_task},
+                    {
+                        "diff": diff,
+                        "old": old_task,
+                        "new": new_task,
+                        "notifySignedUpMembers": request.notify_signed_up_members,
+                    },
                 )
+                if request.notify_signed_up_members:
+                    self._logger.info(
+                        "Notifying signed up members about the task update (ID: %d), updated fields: %s",
+                        task_id,
+                        diff.keys(),
+                    )
+                    self._run_in_background(
+                        self._notifications.on_update(old_task, new_task, diff, user)
+                    )
+                else:
+                    self._logger.info(
+                        "NOT notifying signed up members about the task update (ID: %d), updated fields: %s",
+                        task_id,
+                        diff.keys(),
+                    )
 
                 return new_task
             except DatabaseError as exc:
                 raise self._handle_database_error(  # pylint: disable=raising-bad-type
                     exc, what="update task", user=user, data=request
                 )
+
+    async def _check_can_update_task(
+        self, request: HelperTaskUpdateRequestDto, old_task: HelperTaskDto
+    ) -> None:
+        anyone_signed_up = old_task.captain or old_task.helpers
+
+        # Check: cannot change the task year if anyone has signed up
+        # Active members change over year, but let's rather save the complicated check, since this should not be a main use case
+        if anyone_signed_up and old_task.year != request.year:
+            raise ControllerConflictException(
+                "You cannot change the year of the task after anyone has signed up. Please create a new task instead."
+            )
+
+        if anyone_signed_up and not request.published:
+            raise ControllerConflictException(
+                "You must publish a task after anyone has signed up"
+            )
+
+        # Check: if a captain has signed up then the new licence must be active for the captain
+        if old_task.captain and request.captain_required_licence_info_id != (
+            old_task.captain_required_licence_info.id
+            if old_task.captain_required_licence_info
+            else None
+        ):
+            captain_entity = old_task.captain.member.get_entity()
+            if not any(
+                licence_info_entity.infoid == request.captain_required_licence_info_id
+                for licence_info_entity in captain_entity.active_licence_infos
+            ):
+                raise ControllerConflictException(
+                    "Cannot change captain required licence info because the signed up captain does not have the newly specified licence"
+                )
+
+        # Check: cannot decrease helpers maximum count below signed up helpers count
+        if request.helper_max_count < len(old_task.helpers):
+            raise ControllerConflictException(
+                "Cannot decrease helpers maximum count below signed up helpers count"
+            )
 
     async def sign_up_as_captain(self, task_id: int, user: User) -> None:
         with self.database_context.session() as session:

@@ -68,7 +68,7 @@ class SmtpConnection:
         if not self._smtp:
             raise RuntimeError("SMTP connection is not established")
 
-        subject = f"[{CONFIG.ycc_app.name}] {message['Subject']}"
+        subject = f"{message['Subject']} - {CONFIG.ycc_app.name}"
         del message["Subject"]
         message["Subject"] = subject
 

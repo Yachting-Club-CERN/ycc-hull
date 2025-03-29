@@ -91,13 +91,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     @property
     def year(self) -> int:
-        if self.starts_at:
-            return self.starts_at.year
-        if self.ends_at:
-            return self.ends_at.year
-        if self.deadline:
-            return self.deadline.year
-        raise ValueError("Missing timing")
+        return get_task_year(self)
 
     @property
     def type(self) -> HelperTaskType:
@@ -221,6 +215,10 @@ class HelperTaskMutationRequestBaseDto(CamelisedBaseModel):
     helper_max_count: int
     published: bool
 
+    @property
+    def year(self) -> int:
+        return get_task_year(self)
+
     @field_validator("title", "short_description")
     @classmethod
     def check_not_blank(cls, value: str) -> str:
@@ -265,6 +263,10 @@ class HelperTaskUpdateRequestDto(HelperTaskMutationRequestBaseDto):
     """
     Update request DTO for helper task.
     """
+
+    notify_signed_up_members: bool = Field(
+        description="Notify signed-up members about the update"
+    )
 
 
 class HelperTaskMarkAsDoneRequestDto(CamelisedBaseModel):
@@ -316,6 +318,16 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
             member=await MemberPublicInfoDto.create(member),
             signed_up_at=signed_up_at,
         )
+
+
+def get_task_year(task: HelperTaskDto | HelperTaskMutationRequestBaseDto) -> int:
+    if task.starts_at:
+        return task.starts_at.year
+    if task.ends_at:
+        return task.ends_at.year
+    if task.deadline:
+        return task.deadline.year
+    raise ValueError("Missing timing")
 
 
 HelperTaskCategoryDto.model_rebuild()
