@@ -575,7 +575,7 @@ class HelpersController(BaseController):
                 task_id=None,
                 published=None,
                 where=and_(
-                    HelperTaskEntity.id != task.id,
+                    # Assumes that we only have one surveillance category, good enough
                     HelperTaskEntity.category_id == task.category.id,
                     HelperTaskEntity.starts_at < mid_june,
                     or_(
