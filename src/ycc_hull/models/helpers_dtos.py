@@ -265,7 +265,7 @@ class HelperTaskUpdateRequestDto(HelperTaskMutationRequestBaseDto):
     """
 
     notify_signed_up_members: bool = Field(
-        description="Whether to notify signed-up members about the update"
+        description="Notify signed-up members about the update"
     )
 
 
