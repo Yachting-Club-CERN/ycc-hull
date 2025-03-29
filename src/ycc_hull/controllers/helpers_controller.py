@@ -162,8 +162,9 @@ class HelpersController(BaseController):
     ) -> None:
         anyone_signed_up = old_task.captain or old_task.helpers
 
+        # Check: cannot change the task year if anyone has signed up
+        # Active members change over year, but let's rather save the complicated check, since this should not be a main use case
         if anyone_signed_up and old_task.year != request.year:
-            # Active members change over year, but let's rather save the complicated check, since this should not be a main use case
             raise ControllerConflictException(
                 "You cannot change the year of the task after anyone has signed up. Please create a new task instead."
             )

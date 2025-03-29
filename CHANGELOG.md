@@ -24,7 +24,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hierarchical `config.json` for better readability
 - UTF-8 log file
 
-
 ## [1.1.0] - 2025-03-16
 
 ### Added
