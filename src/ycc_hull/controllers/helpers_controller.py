@@ -179,10 +179,15 @@ class HelpersController(BaseController):
             )
 
         # Check: if a captain has signed up then the new licence must be active for the captain
-        if original_task.captain and request.captain_required_licence_info_id != (
-            original_task.captain_required_licence_info.id
-            if original_task.captain_required_licence_info
-            else None
+        if (
+            original_task.captain
+            and request.captain_required_licence_info_id is not None
+            and request.captain_required_licence_info_id
+            != (
+                original_task.captain_required_licence_info.id
+                if original_task.captain_required_licence_info
+                else None
+            )
         ):
             captain_entity = original_task.captain.member.get_entity()
             if not any(
