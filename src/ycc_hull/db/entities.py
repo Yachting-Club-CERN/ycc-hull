@@ -185,6 +185,12 @@ class HelpersAppPermissionEntity(BaseEntity):
     permission: Mapped[str] = mapped_column(VARCHAR)
     note: Mapped[str | None] = mapped_column(NVARCHAR(200))
 
+    member: Mapped["MemberEntity"] = relationship(
+        foreign_keys=member_id,
+        back_populates="helpers_app_permission",
+        lazy="joined",
+    )
+
 
 class HelperTaskCategoryEntity(BaseEntity):
     """
@@ -428,6 +434,9 @@ class MemberEntity(BaseEntity):
     # Code-only foreign key, not in DB
     fee_records: Mapped[list["FeeRecordEntity"]] = relationship(
         order_by="FeeRecordEntity.paid_date"
+    )
+    helpers_app_permission: Mapped["HelpersAppPermissionEntity | None"] = relationship(
+        back_populates="member",
     )
     helper_tasks_as_contact: Mapped[list["HelperTaskEntity"]] = relationship(
         foreign_keys="HelperTaskEntity.contact_id", back_populates="contact"

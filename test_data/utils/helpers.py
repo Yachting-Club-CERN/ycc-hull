@@ -15,8 +15,10 @@ from ycc_hull.db.entities import (
 
 def generate_helpers_app_permissions() -> list[HelpersAppPermissionEntity]:
     return [
-        HelpersAppPermissionEntity(member_id=1, permission="ADMIN"),
-        HelpersAppPermissionEntity(member_id=2, permission="EDITOR"),
+        HelpersAppPermissionEntity(member_id=1, permission="ADMIN", note="Admin"),
+        HelpersAppPermissionEntity(
+            member_id=2, permission="EDITOR", note="Y Coordinator"
+        ),
         HelpersAppPermissionEntity(member_id=3, permission="EDITOR"),
     ]
 

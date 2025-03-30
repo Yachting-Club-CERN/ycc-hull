@@ -9,6 +9,7 @@ from enum import Enum
 from pydantic import Field, field_validator, model_validator
 
 from ycc_hull.db.entities import (
+    HelpersAppPermissionEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
     HelperTaskHelperEntity,
@@ -36,6 +37,29 @@ class HelperTaskState(str, Enum):
     PENDING = "Pending"
     DONE = "Done"
     VALIDATED = "Validated"
+
+
+class HelpersAppPermissionDto(CamelisedBaseModelWithEntity[HelpersAppPermissionEntity]):
+    """
+    DTO for Helpers App permission.
+    """
+
+    member: MemberPublicInfoDto
+    permission: str
+    note: str | None
+
+    @staticmethod
+    async def create(
+        permission: HelpersAppPermissionEntity,
+    ) -> "HelpersAppPermissionDto":
+        return HelpersAppPermissionDto(
+            entity=permission,
+            member=await MemberPublicInfoDto.create(
+                await permission.awaitable_attrs.member
+            ),
+            permission=permission.permission,
+            note=permission.note,
+        )
 
 
 class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntity]):
@@ -330,6 +354,7 @@ def get_task_year(task: HelperTaskDto | HelperTaskMutationRequestBaseDto) -> int
     raise ValueError("Missing timing")
 
 
+HelpersAppPermissionDto.model_rebuild()
 HelperTaskCategoryDto.model_rebuild()
 HelperTaskDto.model_rebuild()
 HelperTaskCreationRequestDto.model_rebuild()

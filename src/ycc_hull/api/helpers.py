@@ -12,6 +12,7 @@ from ycc_hull.app_controllers import get_helpers_controller
 from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.models.helpers_dtos import (
+    HelpersAppPermissionDto,
     HelperTaskCategoryDto,
     HelperTaskCreationRequestDto,
     HelperTaskDto,
@@ -21,6 +22,19 @@ from ycc_hull.models.helpers_dtos import (
 )
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
+
+
+@api_helpers.get("/api/v1/helpers/permissions")
+async def helpers_app_permissions_get(
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> Sequence[HelpersAppPermissionDto]:
+    if not user.helpers_app_admin:
+        raise create_http_exception_403(
+            "You do not have permission to list permissions"
+        )
+
+    return await controller.find_all_permissions()
 
 
 @api_helpers.get("/api/v1/helpers/task-categories")

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When a task is overdue (only 1 week after for shifts)
   - When a task is updated and a notification is requested
 - Emoji support
+- Add admin API endpoint to list permissions
 
 ### Changed
 
