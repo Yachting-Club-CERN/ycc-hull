@@ -318,6 +318,32 @@ class HelpersController(BaseController):
             self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
             self._run_in_background(self._notifications.on_validate(updated_task, user))
 
+            # Do it before the requests finishes, so the next request gets the updated state
+            await self._unset_urgent_for_validated_tasks(user=user, session=session)
+
+    async def _unset_urgent_for_validated_tasks(self, *, user: User, session: Session):
+        validated_urgent_tasks = (
+            session.scalars(
+                select(HelperTaskEntity).where(
+                    HelperTaskEntity.validated_by_id.is_not(None),
+                    # Need == 1 instead of True for Oracle
+                    HelperTaskEntity.urgent == 1,
+                )
+            )
+            .unique()
+            .all()
+        )
+
+        for task in validated_urgent_tasks:
+            task.urgent = False
+
+        session.commit()
+
+        for task in validated_urgent_tasks:
+            self._audit_log(
+                session, user, f"Helpers/Tasks/UnsetUrgentForValidatedTask/{task.id}"
+            )
+
     async def send_daily_reminders(self) -> None:  # pylint: disable=too-many-locals
         """
         Sends daily reminders to task participants.
