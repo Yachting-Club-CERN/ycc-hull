@@ -15,9 +15,11 @@ Type mapping from Oracle to SQLAlchemy (so we can use SQLite for testing):
 BLOB -> BLOB
 CHAR -> CHAR
 CLOB -> CLOB
+NCLOB -> UnicodeText
 NUMBER -> Integer (or Numeric for non-integers)
 DATE - > DateTime
 VARCHAR2 -> VARCHAR
+NVARCHAR2 -> NVARCHAR
 ```
 
 Note 1: SQLAlchemy requires all tables with PK, but sometimes they are not in
@@ -36,13 +38,14 @@ from typing import Any
 from sqlalchemy import (
     BLOB,
     CHAR,
-    CLOB,
+    NVARCHAR,
     VARCHAR,
     DateTime,
     ForeignKey,
     Index,
     Integer,
     PrimaryKeyConstraint,
+    UnicodeText,
     text,
 )
 from sqlalchemy.ext.asyncio import AsyncAttrs
@@ -76,10 +79,10 @@ class AuditLogEntryEntity(BaseEntity):
         # SYSDATE in Oracle, this is for SQLite (for Oracle it's DB first approach)
         server_default=text("(DATETIME('now','localtime'))"),
     )
-    application: Mapped[str] = mapped_column(VARCHAR(200))
-    principal: Mapped[str] = mapped_column(VARCHAR(200))
-    description: Mapped[str] = mapped_column(VARCHAR(200))
-    data: Mapped[str | None] = mapped_column(CLOB)
+    application: Mapped[str] = mapped_column(NVARCHAR(200))
+    principal: Mapped[str] = mapped_column(NVARCHAR(200))
+    description: Mapped[str] = mapped_column(NVARCHAR(200))
+    data: Mapped[str | None] = mapped_column(UnicodeText)
 
 
 class BoatEntity(BaseEntity):
@@ -180,6 +183,7 @@ class HelpersAppPermissionEntity(BaseEntity):
         Integer, ForeignKey("members.id"), primary_key=True
     )
     permission: Mapped[str] = mapped_column(VARCHAR)
+    note: Mapped[str | None] = mapped_column(NVARCHAR(200))
 
 
 class HelperTaskCategoryEntity(BaseEntity):
@@ -190,9 +194,9 @@ class HelperTaskCategoryEntity(BaseEntity):
     __tablename__ = "helper_task_categories"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(VARCHAR(50))
-    short_description: Mapped[str] = mapped_column(VARCHAR(200))
-    long_description: Mapped[str | None] = mapped_column(CLOB)
+    title: Mapped[str] = mapped_column(NVARCHAR(50))
+    short_description: Mapped[str] = mapped_column(NVARCHAR(200))
+    long_description: Mapped[str | None] = mapped_column(UnicodeText)
 
     tasks: Mapped[list["HelperTaskEntity"]] = relationship(back_populates="category")
 
@@ -208,9 +212,9 @@ class HelperTaskEntity(BaseEntity):
     category_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("helper_task_categories.id")
     )
-    title: Mapped[str] = mapped_column(VARCHAR(50))
-    short_description: Mapped[str] = mapped_column(VARCHAR(200))
-    long_description: Mapped[str | None] = mapped_column(CLOB)
+    title: Mapped[str] = mapped_column(NVARCHAR(50))
+    short_description: Mapped[str] = mapped_column(NVARCHAR(200))
+    long_description: Mapped[str | None] = mapped_column(UnicodeText)
     contact_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
     # Either starts_at & ends_at are specified (shift) or the deadline
     starts_at: Mapped[datetime | None] = mapped_column(DateTime)
@@ -231,12 +235,12 @@ class HelperTaskEntity(BaseEntity):
     marked_as_done_by_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("members.id")
     )
-    marked_as_done_comment: Mapped[str | None] = mapped_column(CLOB)
+    marked_as_done_comment: Mapped[str | None] = mapped_column(UnicodeText)
     validated_at: Mapped[datetime | None] = mapped_column(DateTime)
     validated_by_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("members.id")
     )
-    validation_comment: Mapped[str | None] = mapped_column(CLOB)
+    validation_comment: Mapped[str | None] = mapped_column(UnicodeText)
 
     category: Mapped["HelperTaskCategoryEntity"] = relationship(
         back_populates="tasks", lazy="joined"

@@ -84,10 +84,10 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     marked_as_done_at: datetime | None
     marked_as_done_by: MemberPublicInfoDto | None
-    marked_as_done_comment: str | None
+    marked_as_done_comment: str | None = Field(json_schema_extra={"html": True})
     validated_at: datetime | None
     validated_by: MemberPublicInfoDto | None
-    validation_comment: str | None
+    validation_comment: str | None = Field(json_schema_extra={"html": True})
 
     @property
     def year(self) -> int:
@@ -274,7 +274,7 @@ class HelperTaskMarkAsDoneRequestDto(CamelisedBaseModel):
     Mark as done request DTO for helper task.
     """
 
-    comment: str | None
+    comment: str | None = Field(json_schema_extra={"html": True})
 
 
 class HelperTaskValidationRequestDto(CamelisedBaseModel):
@@ -288,7 +288,7 @@ class HelperTaskValidationRequestDto(CamelisedBaseModel):
     helpers_to_remove: list["HelperTaskHelperDto"] = Field(
         description="List of helpers to remove (e.g., no show)"
     )
-    comment: str | None
+    comment: str | None = Field(json_schema_extra={"html": True})
 
 
 class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
