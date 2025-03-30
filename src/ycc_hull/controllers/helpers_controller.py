@@ -166,8 +166,8 @@ class HelpersController(BaseController):
     ) -> None:
         anyone_signed_up = original_task.captain or original_task.helpers
 
-        # Check: cannot change the task year if anyone has signed up
-        # Active members change over year, but let's rather save the complicated check, since this should not be a main use case
+        # Check: Cannot change the task year if anyone has signed up
+        # Active Members change over year, but let's rather save the complicated check, since this should not be a main use case
         if anyone_signed_up and original_task.year != request.year:
             raise ControllerConflictException(
                 "You cannot change the year of the task after anyone has signed up. Please create a new task instead."
@@ -178,7 +178,7 @@ class HelpersController(BaseController):
                 "You must publish a task after anyone has signed up"
             )
 
-        # Check: if a captain has signed up then the new licence must be active for the captain
+        # Check: If a captain has signed up then the new licence must be active for the captain
         if (
             original_task.captain
             and request.captain_required_licence_info_id is not None
@@ -198,10 +198,11 @@ class HelpersController(BaseController):
                     "Cannot change captain required licence info because the signed up captain does not have the newly specified licence"
                 )
 
-        # Check: cannot decrease helpers maximum count below signed up helpers count
-        if request.helper_max_count < len(original_task.helpers):
+        # Check: Cannot set the maximum number of helpers below the number of already signed-up helpers
+        signed_up_helper_count = len(original_task.helpers)
+        if request.helper_max_count < signed_up_helper_count:
             raise ControllerConflictException(
-                "Cannot decrease helpers maximum count below signed up helpers count"
+                f"Cannot set the maximum number of helpers below the number of already signed-up helpers ({signed_up_helper_count})"
             )
 
     async def sign_up_as_captain(self, task_id: int, user: User) -> None:
