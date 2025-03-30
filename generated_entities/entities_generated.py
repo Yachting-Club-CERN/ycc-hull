@@ -8,7 +8,6 @@ from typing import List, Optional
 
 from sqlalchemy import (
     CHAR,
-    VARCHAR,
     CheckConstraint,
     Column,
     DateTime,
@@ -18,12 +17,13 @@ from sqlalchemy import (
     Index,
     Integer,
     LargeBinary,
+    NVARCHAR,
     PrimaryKeyConstraint,
     Table,
-    Text,
+    VARCHAR,
     text,
 )
-from sqlalchemy.dialects.oracle import NUMBER
+from sqlalchemy.dialects.oracle import NCLOB, NUMBER
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -50,11 +50,11 @@ t_audit_log = Table(
         ),
         nullable=False,
     ),
-    Column("DATE", DateTime, nullable=False, server_default=text("SYSDATE ")),
-    Column("application", VARCHAR(200), nullable=False),
-    Column("USER", VARCHAR(200), nullable=False),
-    Column("description", VARCHAR(200), nullable=False),
-    Column("data", Text),
+    Column("created_at", DateTime, nullable=False, server_default=text("SYSDATE ")),
+    Column("application", NVARCHAR(200), nullable=False),
+    Column("principal", NVARCHAR(200), nullable=False),
+    Column("description", NVARCHAR(200), nullable=False),
+    Column("data", NCLOB),
 )
 
 
@@ -117,9 +117,9 @@ class HelperTaskCategories(Base):
         ),
         primary_key=True,
     )
-    title: Mapped[str] = mapped_column(VARCHAR(50))
-    short_description: Mapped[str] = mapped_column(VARCHAR(200))
-    long_description: Mapped[Optional[str]] = mapped_column(Text)
+    title: Mapped[str] = mapped_column(NVARCHAR(50))
+    short_description: Mapped[str] = mapped_column(NVARCHAR(200))
+    long_description: Mapped[Optional[str]] = mapped_column(NCLOB)
 
     helper_tasks: Mapped[List["HelperTasks"]] = relationship(
         "HelperTasks", back_populates="category"
@@ -138,7 +138,7 @@ t_holidays = Table(
 class ImportantDates(Base):
     __tablename__ = "important_dates"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c009098"),
+        PrimaryKeyConstraint("id", name="sys_c009270"),
         Index("important_dates_uq", "what", unique=True),
     )
 
@@ -149,7 +149,7 @@ class ImportantDates(Base):
 
 class ImportantValues(Base):
     __tablename__ = "important_values"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009055"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c009227"),)
 
     id: Mapped[float] = mapped_column(NUMBER(10, 0, False), primary_key=True)
     what: Mapped[str] = mapped_column(VARCHAR(50))
@@ -187,7 +187,7 @@ class Infolicences(Base):
 
 class InterestLevels(Base):
     __tablename__ = "interest_levels"
-    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c009100"),)
+    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c009272"),)
 
     interest_level: Mapped[float] = mapped_column(NUMBER(1, 0, False), primary_key=True)
     description: Mapped[Optional[str]] = mapped_column(VARCHAR(100))
@@ -303,11 +303,11 @@ t_membership = Table(
 class Boats(Base):
     __tablename__ = "boats"
     __table_args__ = (
-        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c009128"),
-        PrimaryKeyConstraint("boat_id", name="sys_c009093"),
-        Index("sys_c009094", "name", unique=True),
-        Index("sys_c009095", "ycc_num", unique=True),
-        Index("sys_c009096", "table_pos", unique=True),
+        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c009300"),
+        PrimaryKeyConstraint("boat_id", name="sys_c009265"),
+        Index("sys_c009266", "name", unique=True),
+        Index("sys_c009267", "ycc_num", unique=True),
+        Index("sys_c009268", "table_pos", unique=True),
     )
 
     boat_id: Mapped[float] = mapped_column(NUMBER(3, 0, False), primary_key=True)
@@ -339,7 +339,7 @@ class Committee(Base):
     __table_args__ = (
         ForeignKeyConstraint(["member_id"], ["members.id"], name="committee_member_fk"),
         PrimaryKeyConstraint("member_id", "cyear", name="committee_pk"),
-        Index("sys_c009108", "commid", unique=True),
+        Index("sys_c009280", "commid", unique=True),
     )
 
     member_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False), primary_key=True)
@@ -442,14 +442,14 @@ class HelperTasks(Base):
         primary_key=True,
     )
     category_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False))
-    title: Mapped[str] = mapped_column(VARCHAR(50))
-    short_description: Mapped[str] = mapped_column(VARCHAR(200))
+    title: Mapped[str] = mapped_column(NVARCHAR(50))
+    short_description: Mapped[str] = mapped_column(NVARCHAR(200))
     contact_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False))
     urgent: Mapped[float] = mapped_column(NUMBER(1, 0, False))
     helper_min_count: Mapped[float] = mapped_column(NUMBER(asdecimal=False))
     helper_max_count: Mapped[float] = mapped_column(NUMBER(asdecimal=False))
     published: Mapped[float] = mapped_column(NUMBER(1, 0, False))
-    long_description: Mapped[Optional[str]] = mapped_column(Text)
+    long_description: Mapped[Optional[str]] = mapped_column(NCLOB)
     starts_at: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
     ends_at: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
     deadline: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
@@ -462,10 +462,10 @@ class HelperTasks(Base):
     marked_as_done_by_id: Mapped[Optional[float]] = mapped_column(
         NUMBER(asdecimal=False)
     )
-    marked_as_done_comment: Mapped[Optional[str]] = mapped_column(Text)
+    marked_as_done_comment: Mapped[Optional[str]] = mapped_column(NCLOB)
     validated_at: Mapped[Optional[datetime.datetime]] = mapped_column(DateTime)
     validated_by_id: Mapped[Optional[float]] = mapped_column(NUMBER(asdecimal=False))
-    validation_comment: Mapped[Optional[str]] = mapped_column(Text)
+    validation_comment: Mapped[Optional[str]] = mapped_column(NCLOB)
 
     captain: Mapped[Optional["Members"]] = relationship(
         "Members", foreign_keys=[captain_id], back_populates="helper_tasks"
@@ -501,6 +501,7 @@ class HelpersAppPermissions(Members):
 
     member_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False), primary_key=True)
     permission: Mapped[str] = mapped_column(Enum("ADMIN", "EDITOR"))
+    note: Mapped[Optional[str]] = mapped_column(NVARCHAR(200))
 
 
 class Licences(Base):
@@ -509,7 +510,7 @@ class Licences(Base):
         ForeignKeyConstraint(
             ["licence_id"], ["infolicences.infoid"], name="licences_licence_id_fk"
         ),
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009133"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009305"),
         PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
     )
 
@@ -529,9 +530,9 @@ class Licences(Base):
 class WebLogon(Members):
     __tablename__ = "web_logon"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009135"),
-        PrimaryKeyConstraint("member_id", name="sys_c009119"),
-        Index("sys_c009120", "logon_id", unique=True),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009307"),
+        PrimaryKeyConstraint("member_id", name="sys_c009291"),
+        Index("sys_c009292", "logon_id", unique=True),
     )
 
     member_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False), primary_key=True)
@@ -548,9 +549,9 @@ class WebLogon(Members):
 class BoatMaintainer(Base):
     __tablename__ = "boat_maintainer"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009129"),
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009130"),
-        PrimaryKeyConstraint("id", name="sys_c009083"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009301"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c009302"),
+        PrimaryKeyConstraint("id", name="sys_c009255"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -595,8 +596,8 @@ class HelperTaskHelpers(Base):
 class Reservations(Base):
     __tablename__ = "reservations"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009134"),
-        PrimaryKeyConstraint("res_id", name="sys_c009116"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c009306"),
+        PrimaryKeyConstraint("res_id", name="sys_c009288"),
     )
 
     res_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False), primary_key=True)

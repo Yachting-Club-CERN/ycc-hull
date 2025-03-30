@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When a task is upcoming (2 weeks, 3 days ahead and on the day of the task)
   - When a task is overdue (only 1 week after for shifts)
   - When a task is updated and a notification is requested
+- Emoji support
 
 ### Changed
 
