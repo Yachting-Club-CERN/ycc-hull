@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When a task is overdue (only 1 week after for shifts)
   - When a task is updated and a notification is requested
 - Emoji support
+- Add admin API endpoint to list permissions
 
 ### Changed
 
@@ -24,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not allow changing the year of the task if anyone has signed up
 - Do not allow members to sign up as helper for multiple surveillance shifts before mid-June
 - Unset `urgent` for validated tasks 
-- Add admin API endpoint to list permissions
 - Hierarchical `config.json` for better readability
 - UTF-8 log file
 
