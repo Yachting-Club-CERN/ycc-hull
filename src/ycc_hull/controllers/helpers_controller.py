@@ -19,11 +19,14 @@ from ycc_hull.controllers.notifications.helpers_notifications_controller import 
     HelpersNotificationsController,
 )
 from ycc_hull.db.entities import (
+    HelpersAppPermissionEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
     HelperTaskHelperEntity,
+    MemberEntity,
 )
 from ycc_hull.models.helpers_dtos import (
+    HelpersAppPermissionDto,
     HelperTaskCategoryDto,
     HelperTaskCreationRequestDto,
     HelperTaskDto,
@@ -46,6 +49,14 @@ class HelpersController(BaseController):
         super().__init__()
 
         self._notifications = HelpersNotificationsController()
+
+    async def find_all_permissions(self) -> Sequence[HelpersAppPermissionDto]:
+        return await self.database_context.query_all(
+            select(HelpersAppPermissionEntity)
+            .join(HelpersAppPermissionEntity.member)
+            .order_by(MemberEntity.name, MemberEntity.firstname),
+            async_transformer=HelpersAppPermissionDto.create,
+        )
 
     async def find_all_task_categories(self) -> Sequence[HelperTaskCategoryDto]:
         return await self.database_context.query_all(
