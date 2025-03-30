@@ -39,14 +39,14 @@ class _HelperTaskChanges:
 
     def __init__(
         self,
-        old_task: HelperTaskDto,
-        new_task: HelperTaskDto,
+        original_task: HelperTaskDto,
+        updated_task: HelperTaskDto,
         diff: dict[str, DiffEntry],
     ):
         self._logger = logging.getLogger(full_type_name(self.__class__))
 
-        self._old_task = old_task
-        self._new_task = new_task
+        self._original_task = original_task
+        self._updated_task = updated_task
         # Objects should work on their own copy of the diff
         self._diff = copy.deepcopy(diff)
 
@@ -139,25 +139,25 @@ class _HelperTaskChanges:
             (
                 "contact",
                 self._contact_changed,
-                lambda: format_member_info(self._old_task.contact),
+                lambda: format_member_info(self._original_task.contact),
             ),
             (
                 "timing",
                 self._timing_changed,
-                lambda: format_helper_task_timing(self._old_task),
+                lambda: format_helper_task_timing(self._original_task),
             ),
             (
                 "helpers needed",
                 self._helper_min_max_count_changed,
-                lambda: format_helper_task_min_max_helpers(self._old_task),
+                lambda: format_helper_task_min_max_helpers(self._original_task),
             ),
             (
-                "urgent" if self._new_task.urgent else "not urgent",
+                "urgent" if self._updated_task.urgent else "not urgent",
                 self._urgent_changed,
                 None,
             ),
             (
-                "published" if self._new_task.published else "unpublished",
+                "published" if self._updated_task.published else "unpublished",
                 self._published_changed,
                 None,
             ),
@@ -194,15 +194,15 @@ class HelpersNotificationsController(BaseController):
 
     async def on_update(
         self,
-        old_task: HelperTaskDto,
-        new_task: HelperTaskDto,
+        original_task: HelperTaskDto,
+        updated_task: HelperTaskDto,
         diff: dict[str, DiffEntry],
         user: User,
     ) -> None:
         if not CONFIG.emails_enabled(self._logger):
             return
 
-        changes = _HelperTaskChanges(old_task, new_task, diff)
+        changes = _HelperTaskChanges(original_task, updated_task, diff)
 
         if changes.summary:
             changes_str = f"Here is what changed: {', '.join(changes.summary)}."
@@ -220,7 +220,9 @@ class HelpersNotificationsController(BaseController):
 """
 
         message = (
-            _task_notification_email_to_all_participants(new_task, user, old_task)
+            _task_notification_email_to_all_participants(
+                updated_task, user, original_task
+            )
             .content(
                 wrap_email_html(
                     f"""
@@ -230,7 +232,7 @@ class HelpersNotificationsController(BaseController):
 
 <p>{changes_str}</p>
 
-{format_helper_task(new_task)}
+{format_helper_task(updated_task)}
 
 {previous_values_html}
 """
@@ -421,7 +423,7 @@ def _task_notification_email(task: HelperTaskDto) -> EmailMessageBuilder:
 
 
 def _task_notification_email_to_all_participants(
-    task: HelperTaskDto, user: User | None, old_task: HelperTaskDto | None = None
+    task: HelperTaskDto, user: User | None, original_task: HelperTaskDto | None = None
 ) -> EmailMessageBuilder:
 
     builder = (
@@ -433,10 +435,10 @@ def _task_notification_email_to_all_participants(
         .cc(user)
     )
 
-    if old_task:
-        builder.cc(old_task.contact).cc(
-            old_task.captain.member if old_task.captain else None
-        ).cc(helper.member for helper in old_task.helpers)
+    if original_task:
+        builder.cc(original_task.contact).cc(
+            original_task.captain.member if original_task.captain else None
+        ).cc(helper.member for helper in original_task.helpers)
 
     return builder
 

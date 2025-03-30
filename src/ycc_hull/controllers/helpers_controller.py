@@ -91,7 +91,7 @@ class HelpersController(BaseController):
                 session.commit()
 
                 task = await HelperTaskDto.create(task_entity)
-                self._logger.info("Created task: %s, user: %s", task, user)
+                self._logger.info("Created task: %s, user: %s", task.id, user.username)
 
                 self._audit_log(session, user, "Helpers/Tasks/Create", {"new": task})
 
@@ -108,21 +108,23 @@ class HelpersController(BaseController):
         user: User,
     ) -> HelperTaskDto:
         with self.database_context.session() as session:
-            old_task = await self._get_task_by_id(task_id, session=session)
+            original_task = await self._get_task_by_id(task_id, session=session)
 
-            await self._check_can_update_task(request, old_task)
+            await self._check_can_update_task(request, original_task)
 
             try:
-                task_entity = old_task.get_entity()
-                old_task = await HelperTaskDto.create(task_entity)
+                task_entity = original_task.get_entity()
+                original_task = await HelperTaskDto.create(task_entity)
                 self._update_entity_from_dto(task_entity, request)
                 session.commit()
 
-                new_task = await HelperTaskDto.create(task_entity)
-                self._logger.info("Updated task: %s, user: %s", new_task, user)
+                updated_task = await HelperTaskDto.create(task_entity)
+                self._logger.info(
+                    "Updated task: %s, user: %s", updated_task.id, user.username
+                )
 
                 # Calculate change
-                diff = deep_diff(old_task, new_task)
+                diff = deep_diff(original_task, updated_task)
 
                 self._audit_log(
                     session,
@@ -130,8 +132,8 @@ class HelpersController(BaseController):
                     f"Helpers/Tasks/Update/{task_id}",
                     {
                         "diff": diff,
-                        "old": old_task,
-                        "new": new_task,
+                        "old": original_task,
+                        "new": updated_task,
                         "notifySignedUpMembers": request.notify_signed_up_members,
                     },
                 )
@@ -142,7 +144,9 @@ class HelpersController(BaseController):
                         diff.keys(),
                     )
                     self._run_in_background(
-                        self._notifications.on_update(old_task, new_task, diff, user)
+                        self._notifications.on_update(
+                            original_task, updated_task, diff, user
+                        )
                     )
                 else:
                     self._logger.info(
@@ -151,20 +155,20 @@ class HelpersController(BaseController):
                         diff.keys(),
                     )
 
-                return new_task
+                return updated_task
             except DatabaseError as exc:
                 raise self._handle_database_error(  # pylint: disable=raising-bad-type
                     exc, what="update task", user=user, data=request
                 )
 
     async def _check_can_update_task(
-        self, request: HelperTaskUpdateRequestDto, old_task: HelperTaskDto
+        self, request: HelperTaskUpdateRequestDto, original_task: HelperTaskDto
     ) -> None:
-        anyone_signed_up = old_task.captain or old_task.helpers
+        anyone_signed_up = original_task.captain or original_task.helpers
 
         # Check: cannot change the task year if anyone has signed up
         # Active members change over year, but let's rather save the complicated check, since this should not be a main use case
-        if anyone_signed_up and old_task.year != request.year:
+        if anyone_signed_up and original_task.year != request.year:
             raise ControllerConflictException(
                 "You cannot change the year of the task after anyone has signed up. Please create a new task instead."
             )
@@ -175,12 +179,12 @@ class HelpersController(BaseController):
             )
 
         # Check: if a captain has signed up then the new licence must be active for the captain
-        if old_task.captain and request.captain_required_licence_info_id != (
-            old_task.captain_required_licence_info.id
-            if old_task.captain_required_licence_info
+        if original_task.captain and request.captain_required_licence_info_id != (
+            original_task.captain_required_licence_info.id
+            if original_task.captain_required_licence_info
             else None
         ):
-            captain_entity = old_task.captain.member.get_entity()
+            captain_entity = original_task.captain.member.get_entity()
             if not any(
                 licence_info_entity.infoid == request.captain_required_licence_info_id
                 for licence_info_entity in captain_entity.active_licence_infos
@@ -190,7 +194,7 @@ class HelpersController(BaseController):
                 )
 
         # Check: cannot decrease helpers maximum count below signed up helpers count
-        if request.helper_max_count < len(old_task.helpers):
+        if request.helper_max_count < len(original_task.helpers):
             raise ControllerConflictException(
                 "Cannot decrease helpers maximum count below signed up helpers count"
             )
@@ -218,6 +222,12 @@ class HelpersController(BaseController):
             session.commit()
 
             updated_task = await HelperTaskDto.create(task_entity)
+            self._logger.info(
+                "Signed up as captain for task: %s, user: %s",
+                updated_task.id,
+                user.username,
+            )
+
             self._audit_log(session, user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
@@ -241,6 +251,12 @@ class HelpersController(BaseController):
             updated_task = await self.get_task_by_id(
                 task_id, published=True, session=session
             )
+            self._logger.info(
+                "Signed up as helper for task: %s, user: %s",
+                updated_task.id,
+                user.username,
+            )
+
             self._audit_log(session, user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
@@ -264,6 +280,10 @@ class HelpersController(BaseController):
             session.commit()
 
             updated_task = await HelperTaskDto.create(task_entity)
+            self._logger.info(
+                "Marked task as done: %s, user: %s", updated_task.id, user.username
+            )
+
             self._audit_log(session, user, f"Helpers/Tasks/MarkAsDone/{task_id}")
             self._run_in_background(
                 self._notifications.on_mark_as_done(updated_task, user)
@@ -315,8 +335,44 @@ class HelpersController(BaseController):
             session.commit()
 
             updated_task = await HelperTaskDto.create(task_entity)
+            self._logger.info(
+                "Validated task: %s, user: %s", updated_task.id, user.username
+            )
+
             self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
             self._run_in_background(self._notifications.on_validate(updated_task, user))
+
+            # Do it before the requests finishes, so the next request gets the updated state
+            await self._unset_urgent_for_validated_tasks(user=user, session=session)
+
+    async def _unset_urgent_for_validated_tasks(
+        self, *, user: User, session: Session
+    ) -> None:
+        validated_urgent_tasks = (
+            session.scalars(
+                select(HelperTaskEntity).where(
+                    HelperTaskEntity.validated_by_id.is_not(None),
+                    # Need == 1 instead of True for Oracle
+                    HelperTaskEntity.urgent == 1,
+                )
+            )
+            .unique()
+            .all()
+        )
+
+        for task in validated_urgent_tasks:
+            task.urgent = False
+
+        session.commit()
+
+        self._logger.info(
+            "Unset urgent for %d validated task(s)", len(validated_urgent_tasks)
+        )
+
+        for task in validated_urgent_tasks:
+            self._audit_log(
+                session, user, f"Helpers/Tasks/UnsetUrgentForValidatedTask/{task.id}"
+            )
 
     async def send_daily_reminders(self) -> None:  # pylint: disable=too-many-locals
         """
@@ -419,7 +475,7 @@ class HelpersController(BaseController):
 
                 if not timings:
                     # (Invalid) task has no timing information: no reminder
-                    self._logger.warning("Task %s has no timing information", task)
+                    self._logger.warning("Task %s has no timing information", task.id)
                     continue
 
                 timing_earliest = min(timings)
