@@ -8,6 +8,8 @@ from typing import List, Optional
 
 from sqlalchemy import (
     CHAR,
+    NVARCHAR,
+    VARCHAR,
     CheckConstraint,
     Column,
     DateTime,
@@ -17,10 +19,8 @@ from sqlalchemy import (
     Index,
     Integer,
     LargeBinary,
-    NVARCHAR,
     PrimaryKeyConstraint,
     Table,
-    VARCHAR,
     text,
 )
 from sqlalchemy.dialects.oracle import NCLOB, NUMBER
