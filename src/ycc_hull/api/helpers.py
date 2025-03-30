@@ -31,7 +31,7 @@ async def helpers_app_permissions_get(
 ) -> Sequence[HelpersAppPermissionDto]:
     if not user.helpers_app_admin:
         raise create_http_exception_403(
-            "You do not have permission to list all permissions"
+            "You do not have permission to list permissions"
         )
 
     return await controller.find_all_permissions()
