@@ -91,7 +91,7 @@ class HelpersController(BaseController):
                 session.commit()
 
                 task = await HelperTaskDto.create(task_entity)
-                self._logger.info("Created task: %s, user: %s", task, user)
+                self._logger.info("Created task: %s, user: %s", task.id, user.username)
 
                 self._audit_log(session, user, "Helpers/Tasks/Create", {"new": task})
 
@@ -119,7 +119,9 @@ class HelpersController(BaseController):
                 session.commit()
 
                 updated_task = await HelperTaskDto.create(task_entity)
-                self._logger.info("Updated task: %s, user: %s", updated_task, user)
+                self._logger.info(
+                    "Updated task: %s, user: %s", updated_task.id, user.username
+                )
 
                 # Calculate change
                 diff = deep_diff(original_task, updated_task)
@@ -221,7 +223,9 @@ class HelpersController(BaseController):
 
             updated_task = await HelperTaskDto.create(task_entity)
             self._logger.info(
-                "Signed up as captain for task: %s, user: %s", updated_task, user
+                "Signed up as captain for task: %s, user: %s",
+                updated_task.id,
+                user.username,
             )
 
             self._audit_log(session, user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
@@ -248,7 +252,9 @@ class HelpersController(BaseController):
                 task_id, published=True, session=session
             )
             self._logger.info(
-                "Signed up as helper for task: %s, user: %s", updated_task, user
+                "Signed up as helper for task: %s, user: %s",
+                updated_task.id,
+                user.username,
             )
 
             self._audit_log(session, user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
@@ -274,7 +280,9 @@ class HelpersController(BaseController):
             session.commit()
 
             updated_task = await HelperTaskDto.create(task_entity)
-            self._logger.info("Marked task as done: %s, user: %s", updated_task, user)
+            self._logger.info(
+                "Marked task as done: %s, user: %s", updated_task.id, user.username
+            )
 
             self._audit_log(session, user, f"Helpers/Tasks/MarkAsDone/{task_id}")
             self._run_in_background(
@@ -327,7 +335,9 @@ class HelpersController(BaseController):
             session.commit()
 
             updated_task = await HelperTaskDto.create(task_entity)
-            self._logger.info("Validated task: %s, user: %s", updated_task, user)
+            self._logger.info(
+                "Validated task: %s, user: %s", updated_task.id, user.username
+            )
 
             self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
             self._run_in_background(self._notifications.on_validate(updated_task, user))
@@ -465,7 +475,7 @@ class HelpersController(BaseController):
 
                 if not timings:
                     # (Invalid) task has no timing information: no reminder
-                    self._logger.warning("Task %s has no timing information", task)
+                    self._logger.warning("Task %s has no timing information", task.id)
                     continue
 
                 timing_earliest = min(timings)
