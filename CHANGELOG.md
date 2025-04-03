@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When a task is upcoming (2 weeks, 3 days ahead and on the day of the task)
   - When a task is overdue (only 1 week after for shifts)
   - When a task is updated and a notification is requested
+  - When members are added to a task or are removed from a task
 - Emoji support
-- Add admin API endpoint to list permissions
+- Admin API endpoint to list permissions
+- Admin/editor API endpoints to manage members on helper tasks
 
 ### Changed
 
@@ -27,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unset `urgent` for validated tasks 
 - Hierarchical `config.json` for better readability
 - UTF-8 log file
+
+### Removed
+
+- Ability to remove members during helper task validation (it is possible now directly with the new endpoints)
 
 ## [1.1.0] - 2025-03-16
 

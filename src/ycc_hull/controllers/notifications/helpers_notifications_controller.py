@@ -244,6 +244,56 @@ class HelpersNotificationsController(BaseController):
         async with SmtpConnection() as smtp:
             await smtp.send_message(message)
 
+    async def on_add_helper(
+        self, task: HelperTaskDto, helper: MemberPublicInfoDto, user: User
+    ) -> None:
+        if not CONFIG.emails_enabled(self._logger):
+            return
+
+        message = (
+            _add_or_remove_helper_email(task, helper, user)
+            .content(
+                wrap_email_html(
+                    f"""
+<p>Dear {helper.first_name} {_BOAT_PARTY},</p>
+
+<p>{user.full_name} has added you to this task. 🙏</p>
+
+{format_helper_task(task)}
+"""
+                )
+            )
+            .build()
+        )
+
+        async with SmtpConnection() as smtp:
+            await smtp.send_message(message)
+
+    async def on_remove_helper(
+        self, task: HelperTaskDto, helper: MemberPublicInfoDto, user: User
+    ) -> None:
+        if not CONFIG.emails_enabled(self._logger):
+            return
+
+        message = (
+            _add_or_remove_helper_email(task, helper, user)
+            .content(
+                wrap_email_html(
+                    f"""
+<p>Dear {helper.first_name} {_BOAT_PARTY},</p>
+
+<p>{user.full_name} has removed you from this task.</p>
+
+{format_helper_task(task)}
+"""
+                )
+            )
+            .build()
+        )
+
+        async with SmtpConnection() as smtp:
+            await smtp.send_message(message)
+
     async def on_sign_up(self, task: HelperTaskDto, user: User) -> None:
         if not CONFIG.emails_enabled(self._logger):
             return
@@ -401,6 +451,20 @@ class HelpersNotificationsController(BaseController):
         ).build()
 
         await smtp.send_message(message)
+
+
+def _add_or_remove_helper_email(
+    task: HelperTaskDto, helper: MemberPublicInfoDto, user: User
+) -> EmailMessageBuilder:
+    return (
+        EmailMessageBuilder()
+        .to(helper)
+        .cc(task.contact)
+        .cc(task.captain.member if task.captain else None)
+        .cc(user)
+        .reply_to(task.contact)
+        .subject(format_helper_task_subject(task))
+    )
 
 
 def _sign_up_email(task: HelperTaskDto, user: User) -> EmailMessageBuilder:

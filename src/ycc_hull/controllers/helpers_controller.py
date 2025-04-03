@@ -7,7 +7,7 @@ from datetime import date, datetime, timedelta
 
 from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.exc import DatabaseError
-from sqlalchemy.orm import Session, defer, lazyload
+from sqlalchemy.orm import Session, defer
 
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
@@ -23,8 +23,10 @@ from ycc_hull.db.entities import (
     HelperTaskCategoryEntity,
     HelperTaskEntity,
     HelperTaskHelperEntity,
+    LicenceEntity,
     MemberEntity,
 )
+from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
     HelpersAppPermissionDto,
     HelperTaskCategoryDto,
@@ -216,24 +218,176 @@ class HelpersController(BaseController):
                 f"Cannot set the maximum number of helpers below the number of already signed-up helpers ({signed_up_helper_count})"
             )
 
-    async def sign_up_as_captain(self, task_id: int, user: User) -> None:
+    async def set_captain(
+        self, task_id: int, member_id: int, user: User
+    ) -> HelperTaskDto:
+        with self.database_context.session() as session:
+            task = await self._get_task_by_id(task_id, published=True, session=session)
+            await self._check_can_sign_up_as_captain(
+                task=task, member_id=member_id, editor_action=True, session=session
+            )
+
+            task_entity = task.get_entity()
+            task_entity.captain_id = member_id
+            task_entity.captain_signed_up_at = get_now()
+            session.commit()
+
+            updated_task = await HelperTaskDto.create(task_entity)
+            if not updated_task.captain:
+                raise RuntimeError(
+                    f"Did set the captain to {member_id}, but it appears to be unset: {updated_task}"
+                )
+
+            self._logger.info(
+                "Set captain for task: %s, captain: %s, user: %s",
+                updated_task.id,
+                updated_task.captain.member.username,
+                user.username,
+            )
+
+            self._audit_log(
+                session, user, f"Helpers/Tasks/SetCaptain/{task_id}/Captain/{member_id}"
+            )
+            self._run_in_background(
+                self._notifications.on_add_helper(
+                    updated_task, updated_task.captain.member, user
+                )
+            )
+
+            return updated_task
+
+    async def remove_captain(self, task_id: int, user: User) -> HelperTaskDto:
+        with self.database_context.session() as session:
+            original_task = await self._get_task_by_id(
+                task_id, published=True, session=session
+            )
+
+            if not original_task.captain:
+                raise ControllerConflictException("Task has no captain")
+            original_captain = original_task.captain.member
+
+            task_entity = original_task.get_entity()
+            task_entity.captain_id = None
+            task_entity.captain_signed_up_at = None
+            session.commit()
+
+            updated_task = await HelperTaskDto.create(task_entity)
+            self._logger.info(
+                "Removed captain from task: %s, original captain: %s, user: %s",
+                updated_task.id,
+                original_captain.username,
+                user.username,
+            )
+
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Tasks/RemoveCaptain/{task_id}/Captain/{original_captain.id}",
+            )
+            self._run_in_background(
+                self._notifications.on_remove_helper(
+                    updated_task, original_captain, user
+                )
+            )
+
+            return updated_task
+
+    async def add_helper(
+        self, task_id: int, member_id: int, user: User
+    ) -> HelperTaskDto:
+        with self.database_context.session() as session:
+            task = await self._get_task_by_id(task_id, published=True, session=session)
+            await self._check_can_sign_up_as_helper(
+                task=task, member_id=member_id, editor_action=True, session=session
+            )
+
+            helper_entity = HelperTaskHelperEntity(
+                task_id=task.id, member_id=member_id, signed_up_at=get_now()
+            )
+            session.add(helper_entity)
+            session.commit()
+
+            updated_task = await self.get_task_by_id(
+                task_id, published=True, session=session
+            )
+            helper = await MemberPublicInfoDto.create(
+                await helper_entity.awaitable_attrs.member
+            )
+
+            self._logger.info(
+                "Added helper to task: %s, helper: %s, user: %s",
+                updated_task.id,
+                helper.username,
+                user.username,
+            )
+            self._audit_log(
+                session, user, f"Helpers/Tasks/AddHelper/{task_id}/Helper/{member_id}"
+            )
+            self._run_in_background(
+                self._notifications.on_add_helper(updated_task, helper, user)
+            )
+
+            return updated_task
+
+    async def remove_helper(
+        self, task_id: int, member_id: int, user: User
+    ) -> HelperTaskDto:
+        with self.database_context.session() as session:
+            original_task = await self._get_task_by_id(
+                task_id, published=True, session=session
+            )
+            task_entity = original_task.get_entity()
+
+            helper_entity_to_remove = next(
+                (
+                    helper_entity
+                    for helper_entity in await task_entity.awaitable_attrs.helpers
+                    if helper_entity.member_id == member_id
+                ),
+                None,
+            )
+            if not helper_entity_to_remove:
+                raise ControllerNotFoundException("Helper is not on the task")
+
+            helper_to_remove = await MemberPublicInfoDto.create(
+                await helper_entity_to_remove.awaitable_attrs.member
+            )
+
+            session.delete(helper_entity_to_remove)
+            session.commit()
+
+            updated_task = await HelperTaskDto.create(task_entity)
+            self._logger.info(
+                "Removed helper from task: %s, helper: %s, user: %s",
+                updated_task.id,
+                helper_to_remove.username,
+                user.username,
+            )
+
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Tasks/RemoveHelper/{task_id}/Helper/{member_id}",
+            )
+            self._run_in_background(
+                self._notifications.on_remove_helper(
+                    updated_task, helper_to_remove, user
+                )
+            )
+
+            return updated_task
+
+    async def sign_up_as_captain(self, task_id: int, user: User) -> HelperTaskDto:
         with self.database_context.session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
             await self._check_can_sign_up_as_captain(
-                task=task, member_id=user.member_id
+                task=task,
+                member_id=user.member_id,
+                editor_action=False,
+                session=session,
             )
-            if task.captain:
-                raise ControllerConflictException("Task already has a captain")
-
-            if task.captain_required_licence_info:
-                required_licence = task.captain_required_licence_info.licence
-                if not user.has_licence(required_licence):
-                    raise ControllerConflictException(
-                        f"Task captain needs licence: {required_licence}"
-                    )
-
-            task_entity = await self._get_task_entity_by_id(task_id, session=session)
+            task_entity = task.get_entity()
             task_entity.captain_id = user.member_id
             task_entity.captain_signed_up_at = get_now()
             session.commit()
@@ -248,21 +402,23 @@ class HelpersController(BaseController):
             self._audit_log(session, user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
-    async def sign_up_as_helper(self, task_id: int, user: User) -> None:
+            return updated_task
+
+    async def sign_up_as_helper(self, task_id: int, user: User) -> HelperTaskDto:
         with self.database_context.session() as session:
             task = await self.get_task_by_id(task_id, published=True, session=session)
 
             await self._check_can_sign_up_as_helper(
-                task=task, member_id=user.member_id, session=session
+                task=task,
+                member_id=user.member_id,
+                editor_action=False,
+                session=session,
             )
-            if len(task.helpers) >= task.helper_max_count:
-                raise ControllerConflictException("Task helper limit reached")
 
-            helper = HelperTaskHelperEntity(
+            helper_entity = HelperTaskHelperEntity(
                 task_id=task.id, member_id=user.member_id, signed_up_at=get_now()
             )
-            session.add(helper)
-
+            session.add(helper_entity)
             session.commit()
 
             updated_task = await self.get_task_by_id(
@@ -277,9 +433,11 @@ class HelpersController(BaseController):
             self._audit_log(session, user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
+            return updated_task
+
     async def mark_as_done(
         self, task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User
-    ) -> None:
+    ) -> HelperTaskDto:
         with self.database_context.session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
@@ -290,7 +448,7 @@ class HelpersController(BaseController):
                     "Cannot mark a task as done before it starts"
                 )
 
-            task_entity = await self._get_task_entity_by_id(task_id, session=session)
+            task_entity = task.get_entity()
             task_entity.marked_as_done_at = get_now()
             task_entity.marked_as_done_by_id = user.member_id
             task_entity.marked_as_done_comment = request.comment
@@ -306,9 +464,11 @@ class HelpersController(BaseController):
                 self._notifications.on_mark_as_done(updated_task, user)
             )
 
+            return updated_task
+
     async def validate(
         self, task_id: int, request: HelperTaskValidationRequestDto, user: User
-    ) -> None:
+    ) -> HelperTaskDto:
         with self.database_context.session() as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
@@ -319,22 +479,7 @@ class HelpersController(BaseController):
                     "Cannot validate a task before it starts"
                 )
 
-            helper_ids_in_db = set(helper.member.id for helper in task.helpers)
-            helper_ids_in_request = set(
-                helper.member.id
-                for helper in request.helpers_to_validate + request.helpers_to_remove
-            )
-
-            if helper_ids_in_db != helper_ids_in_request:
-                raise ControllerConflictException(
-                    "Validation request is missing helpers"
-                )
-
-            to_be_removed = set(
-                helper.member.id for helper in request.helpers_to_remove
-            )
-
-            task_entity = await self._get_task_entity_by_id(task_id, session=session)
+            task_entity = task.get_entity()
             now = get_now()
 
             if not task_entity.marked_as_done_at:
@@ -344,23 +489,26 @@ class HelpersController(BaseController):
             task_entity.validated_at = now
             task_entity.validated_by_id = user.member_id
             task_entity.validation_comment = request.comment
-
-            for helper_entity in await task_entity.awaitable_attrs.helpers:
-                if helper_entity.member_id in to_be_removed:
-                    session.delete(helper_entity)
-
             session.commit()
 
             updated_task = await HelperTaskDto.create(task_entity)
             self._logger.info(
-                "Validated task: %s, user: %s", updated_task.id, user.username
+                "Validated task: %s, user: %s",
+                updated_task.id,
+                user.username,
             )
 
-            self._audit_log(session, user, f"Helpers/Tasks/Validate/{task_id}")
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Tasks/Validate/{task_id}",
+            )
             self._run_in_background(self._notifications.on_validate(updated_task, user))
 
             # Do it before the requests finishes, so the next request gets the updated state
             await self._unset_urgent_for_validated_tasks(user=user, session=session)
+
+            return updated_task
 
     async def _unset_urgent_for_validated_tasks(
         self, *, user: User, session: Session
@@ -612,71 +760,109 @@ class HelpersController(BaseController):
             "Task not found or not published" if published else "Task not found"
         )
 
-    async def _get_task_entity_by_id(
-        self, task_id: int, *, session: Session
-    ) -> HelperTaskEntity:
-        return (
-            session.scalars(
-                select(HelperTaskEntity)
-                .options(lazyload("*"))
-                .where(HelperTaskEntity.id == task_id)
-            )
-        ).one()
-
     async def _check_can_sign_up_as_captain(
-        self, *, task: HelperTaskDto, member_id: int
+        self,
+        *,
+        task: HelperTaskDto,
+        member_id: int,
+        editor_action: bool,
+        session: Session,
     ) -> None:
-        await self._check_can_sign_up(task=task, member_id=member_id)
+        await self._check_can_sign_up(
+            task=task, member_id=member_id, editor_action=editor_action
+        )
+
+        if task.captain:
+            raise ControllerConflictException("Task already has a captain")
+
+        if task.captain_required_licence_info:
+            has_licence = (
+                session.scalar(
+                    select(LicenceEntity).where(
+                        LicenceEntity.member_id == member_id,
+                        LicenceEntity.licence_id
+                        == task.captain_required_licence_info.id,
+                        LicenceEntity.status > 0,
+                    )
+                )
+                is not None
+            )
+
+            if not has_licence:
+                raise ControllerConflictException(
+                    f"Task captain needs licence: {task.captain_required_licence_info.licence}"
+                )
 
     async def _check_can_sign_up_as_helper(
-        self, *, task: HelperTaskDto, member_id: int, session: Session | None = None
+        self,
+        *,
+        task: HelperTaskDto,
+        member_id: int,
+        editor_action: bool,
+        session: Session,
     ) -> None:
-        await self._check_can_sign_up(task=task, member_id=member_id)
+        await self._check_can_sign_up(
+            task=task, member_id=member_id, editor_action=editor_action
+        )
 
-        # Check: helper cannot sign up for multiple surveillance tasks before mid-June:
-        # 1. This allows more members completing one surveillance shift in the beginning of the season
-        # 2. Members who want to do all their tasks early can still do maintenance tasks
+        if len(task.helpers) >= task.helper_max_count:
+            raise ControllerConflictException("Task helper limit reached")
 
-        surveillance_task = "surveillance" in task.category.title.lower()
-        mid_june = date(task.year, 6, 15)
-        message = "You cannot sign up for multiple surveillance shifts before mid-June — but you can still sign up for maintenance tasks!"
+        if not editor_action:
+            # Check: helper cannot sign up for multiple surveillance tasks before mid-June:
+            # 1. This allows more members completing one surveillance shift in the beginning of the season
+            # 2. Members who want to do all their tasks early can still do maintenance tasks
 
-        if surveillance_task and task.starts_at and task.starts_at.date() < mid_june:
-            # Check if the member has signed up for any other surveillance shift before mid-June
-            other_tasks = await self._find_tasks(
-                year=task.year,
-                task_id=None,
-                published=None,
-                where=and_(
-                    # Assumes that we only have one surveillance category, good enough
-                    HelperTaskEntity.category_id == task.category.id,
-                    HelperTaskEntity.starts_at < mid_june,
-                    or_(
-                        HelperTaskEntity.helpers.any(
-                            HelperTaskHelperEntity.member_id == member_id
+            surveillance_task = "surveillance" in task.category.title.lower()
+            mid_june = date(task.year, 6, 15)
+            message = "You cannot sign up for multiple surveillance shifts before mid-June — but you can still sign up for maintenance tasks!"
+
+            if (
+                surveillance_task
+                and task.starts_at
+                and task.starts_at.date() < mid_june
+            ):
+                # Check if the member has signed up for any other surveillance shift before mid-June
+                other_tasks = await self._find_tasks(
+                    year=task.year,
+                    task_id=None,
+                    published=None,
+                    where=and_(
+                        # Assumes that we only have one surveillance category, good enough
+                        HelperTaskEntity.category_id == task.category.id,
+                        HelperTaskEntity.starts_at < mid_june,
+                        or_(
+                            HelperTaskEntity.helpers.any(
+                                HelperTaskHelperEntity.member_id == member_id
+                            ),
                         ),
                     ),
-                ),
-                session=session,
-            )
-            if other_tasks:
-                raise ControllerConflictException(message)
+                    session=session,
+                )
+                if other_tasks:
+                    raise ControllerConflictException(message)
 
-    async def _check_can_sign_up(self, *, task: HelperTaskDto, member_id: int) -> None:
+    async def _check_can_sign_up(
+        self, *, task: HelperTaskDto, member_id: int, editor_action: bool
+    ) -> None:
         if not task.published:
             raise ControllerConflictException("Cannot sign up for an unpublished task")
-        if task.state == HelperTaskState.DONE:
-            raise ControllerConflictException(
-                "Cannot sign up for a task marked as done"
-            )
-        if task.state == HelperTaskState.VALIDATED:
-            raise ControllerConflictException("Cannot sign up for a validated task")
 
-        now = get_now()
-        if (task.starts_at and task.starts_at < now) or (
-            task.deadline and task.deadline < now
-        ):
-            raise ControllerConflictException("Cannot sign up for a task in the past")
+        if not editor_action:
+            if task.state == HelperTaskState.DONE:
+                raise ControllerConflictException(
+                    "Cannot sign up for a task marked as done"
+                )
+            if task.state == HelperTaskState.VALIDATED:
+                raise ControllerConflictException("Cannot sign up for a validated task")
+
+            now = get_now()
+            if (task.starts_at and task.starts_at < now) or (
+                task.deadline and task.deadline < now
+            ):
+                raise ControllerConflictException(
+                    "Cannot sign up for a task in the past"
+                )
 
         if task.captain and task.captain.member.id == member_id:
             raise ControllerConflictException("Already signed up as captain")

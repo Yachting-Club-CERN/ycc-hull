@@ -32,8 +32,8 @@ class EmailMessageBuilder:
         self,
     ) -> None:
         self._from: str | None = None
-        self._to: list[str] = []
-        self._cc: list[str] = []
+        self._to: set[str] = set()
+        self._cc: set[str] = set()
         self._reply_to: str | None = None
         self._subject: str | None = None
         self._content: str | None = None
@@ -49,7 +49,7 @@ class EmailMessageBuilder:
             )
 
     def _add_contacts(
-        self, target_list: list[str], contact: EmailContacts | None
+        self, target_set: set[str], contact: EmailContacts | None
     ) -> None:
         if not contact:
             return
@@ -57,11 +57,11 @@ class EmailMessageBuilder:
         if isinstance(contact, Iterable) and not isinstance(
             contact, (bytes, str, BaseModel)
         ):
-            target_list.extend(
+            target_set.update(
                 self._extract_address(recipient) for recipient in contact if recipient
             )
         else:
-            target_list.append(self._extract_address(contact))
+            target_set.add(self._extract_address(contact))
 
     def from_(self, contact: EmailContact) -> "EmailMessageBuilder":
         self._from = self._extract_address(contact)
@@ -109,9 +109,8 @@ class EmailMessageBuilder:
         message["From"] = self._from
         message["To"] = ", ".join(self._to)
 
+        self._cc.difference_update(self._to)
         if self._cc:
-            # Remove from CC what is in TO
-            self._cc = [cc for cc in self._cc if cc not in self._to]
             message["Cc"] = ", ".join(self._cc)
         if self._reply_to:
             message["Reply-To"] = self._reply_to
