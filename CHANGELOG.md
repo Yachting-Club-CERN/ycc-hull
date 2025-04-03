@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When a task is updated and a notification is requested
 - Emoji support
 - Add admin API endpoint to list permissions
+- Add admin/editor API endpoints to manage members on helper tasks
 
 ### Changed
 
@@ -27,6 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unset `urgent` for validated tasks 
 - Hierarchical `config.json` for better readability
 - UTF-8 log file
+
+### Removed
+
+- Ability to remove members during task validation (it is possible now directly with the new endpoints)
 
 ## [1.1.0] - 2025-03-16
 

@@ -241,7 +241,7 @@ def format_helper_task(
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>
         <li>Captain: {format_member_info(task.captain.member) if task.captain else "😭"}</li>
-        <li>Helpers ({format_helper_task_min_max_helpers(task)}): {helpers_html}</li>
+        <li>Helpers (needed: {format_helper_task_min_max_helpers(task)}): {helpers_html}</li>
     </ul>
     <p>
         <a

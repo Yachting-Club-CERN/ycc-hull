@@ -306,12 +306,6 @@ class HelperTaskValidationRequestDto(CamelisedBaseModel):
     Validation request DTO for helper task.
     """
 
-    helpers_to_validate: list["HelperTaskHelperDto"] = Field(
-        description="List of helpers to validate"
-    )
-    helpers_to_remove: list["HelperTaskHelperDto"] = Field(
-        description="List of helpers to remove (e.g., no show)"
-    )
     comment: str | None = Field(json_schema_extra={"html": True})
 
 

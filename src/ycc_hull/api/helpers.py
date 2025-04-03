@@ -100,10 +100,9 @@ async def helper_tasks_update(
     user: User = Depends(auth),
     controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
-    if not user.helpers_app_admin and not user.helpers_app_editor:
-        raise create_http_exception_403(
-            "You do not have permission to update helper tasks"
-        )
+    await _check_can_update(
+        task_id, contact_id=request.contact_id, user=user, controller=controller
+    )
 
     existing_task = await helper_tasks_get_by_id(task_id, user, controller)
 
@@ -118,14 +117,68 @@ async def helper_tasks_update(
     return await controller.update_task(task_id, request, user)
 
 
+@api_helpers.put("/api/v1/helpers/tasks/{task_id}/captain/{member_id}")
+async def helper_tasks_captain_set(
+    task_id: int,
+    member_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> HelperTaskDto:
+    await _check_can_update(
+        task_id, contact_id=user.member_id, user=user, controller=controller
+    )
+
+    return await controller.set_captain(task_id, member_id, user)
+
+
+@api_helpers.delete("/api/v1/helpers/tasks/{task_id}/captain")
+async def helper_tasks_captain_remove(
+    task_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> HelperTaskDto:
+    await _check_can_update(
+        task_id, contact_id=user.member_id, user=user, controller=controller
+    )
+
+    return await controller.remove_captain(task_id, user)
+
+
+@api_helpers.put("/api/v1/helpers/tasks/{task_id}/helpers/{member_id}")
+async def helper_tasks_helper_add(
+    task_id: int,
+    member_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> HelperTaskDto:
+    await _check_can_update(
+        task_id, contact_id=user.member_id, user=user, controller=controller
+    )
+
+    return await controller.add_helper(task_id, member_id, user)
+
+
+@api_helpers.delete("/api/v1/helpers/tasks/{task_id}/helpers/{member_id}")
+async def helper_tasks_helper_remove(
+    task_id: int,
+    member_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> HelperTaskDto:
+    await _check_can_update(
+        task_id, contact_id=user.member_id, user=user, controller=controller
+    )
+
+    return await controller.remove_helper(task_id, member_id, user)
+
+
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-captain")
 async def helper_tasks_sign_up_as_captain(
     task_id: int,
     user: User = Depends(auth),
     controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
-    await controller.sign_up_as_captain(task_id, user)
-    return await controller.get_task_by_id(task_id, published=True)
+    return await controller.sign_up_as_captain(task_id, user)
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-helper")
@@ -134,8 +187,7 @@ async def helper_tasks_sign_up_as_helper(
     user: User = Depends(auth),
     controller: HelpersController = Depends(get_helpers_controller),
 ) -> HelperTaskDto:
-    await controller.sign_up_as_helper(task_id, user)
-    return await controller.get_task_by_id(task_id, published=True)
+    return await controller.sign_up_as_helper(task_id, user)
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/mark-as-done")
@@ -191,3 +243,21 @@ def _can_access_year(year: int | None, user: User) -> bool:
         or user.helpers_app_admin
         or user.helpers_app_editor
     )
+
+
+async def _check_can_update(
+    task_id: int, *, contact_id: int, user: User, controller: HelpersController
+) -> None:
+    if not user.helpers_app_admin and not user.helpers_app_editor:
+        raise create_http_exception_403(
+            "You do not have permission to update helper tasks"
+        )
+
+    existing_task = await helper_tasks_get_by_id(task_id, user, controller)
+
+    if user.helpers_app_editor and (
+        contact_id != user.member_id or existing_task.contact.id != user.member_id
+    ):
+        raise create_http_exception_403(
+            "You have to be the contact for the tasks you update"
+        )
