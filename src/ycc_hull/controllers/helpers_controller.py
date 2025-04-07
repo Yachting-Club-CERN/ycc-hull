@@ -129,6 +129,8 @@ class HelpersController(BaseController):
                 task_entity = original_task.get_entity()
                 original_task = await HelperTaskDto.create(task_entity)
                 self._update_entity_from_dto(task_entity, request)
+                if original_task.validated_by is not None:
+                    task_entity.urgent = False
                 session.commit()
 
                 updated_task = await HelperTaskDto.create(task_entity)
