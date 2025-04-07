@@ -212,7 +212,7 @@ def format_helper_task(
     </ul>
 """
     elif task.helper_min_count > 0:
-        helpers_html = "<em>No one yet</em>"
+        helpers_html = "-"
     else:
         helpers_html = "Not needed"
 
@@ -226,7 +226,7 @@ def format_helper_task(
     <p><em>{task.short_description}</em></p>
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>
-        <li>Captain: {format_member_info(task.captain.member) if task.captain else "<em>No one yet</em>"}</li>
+        <li>Captain: {format_member_info(task.captain.member) if task.captain else "-"}</li>
         <li>Helpers (needed: {format_helper_task_min_max_helpers(task)}): {helpers_html}</li>
     </ul>
     <p>
