@@ -1,6 +1,7 @@
 import asyncio
 import copy
 import logging
+import random
 from collections import defaultdict
 from typing import Any
 
@@ -14,7 +15,6 @@ from ycc_hull.controllers.notifications.format_utils import (
     format_helper_task_timing,
     format_helper_tasks_list,
     format_member_info,
-    wrap_email_html,
 )
 from ycc_hull.controllers.notifications.smtp import SmtpConnection
 from ycc_hull.models.dtos import MemberPublicInfoDto
@@ -26,6 +26,28 @@ NOTIFICATION_DELAY_SECONDS = 0.5
 
 _BOAT_PARTY = "⛵️🥳"
 _DEAR_SAILORS = f"<p>Dear Sailors {_BOAT_PARTY},</p>"
+_SIGN_UP_MESSAGES = [
+    "Thank you for signing up for this task! 🙌",
+    "Thanks for taking on this task — we appreciate it! 🙏",
+    "Thank you for stepping up to help the Club with this task! 💪",
+    "Big thanks for jumping in to help out with this task! 👏",
+]
+
+_BRAVO_ZULU_THANK_YOU = """
+<p>Bravo Zulu! Your help keeps the Club sailing smoothly! Thank you! 🙏</p>
+"""
+_SHIFT_REPLACEMENT_REMINDER = """
+<p>
+    <em>If you need to withdraw from a task, please find a replacement first (e.g., in one of the WhatsApp groups),
+    then notify the contact by email (and CC your replacement). The contact will administer the change.</em>
+</p>
+"""
+_SIGNATURE = """
+<p>
+    Fair Winds,<br />
+    YCC
+</p>
+"""
 
 
 class _HelperTaskChanges:
@@ -184,7 +206,9 @@ class _HelperTaskChanges:
             )
             what = camel_case_to_words(remaining_key)
             self.summary.append(what)
-            self.relevant_details[f"Previous {what}"] = self._diff[remaining_key]["old"]
+            self.relevant_details[f"Previous {what}:"] = self._diff[remaining_key][
+                "old"
+            ]
 
 
 class HelpersNotificationsController(BaseController):
@@ -212,9 +236,9 @@ class HelpersNotificationsController(BaseController):
         previous_values_html = ""
         if changes.relevant_details:
             previous_values_html = f"""
-<p>Details:</p>
+<p style="font-size: small;">Change details:</p>
 
-<table>
+<table style="font-size: small;">
     {"\n".join(f"  <tr><td>{key}</td><td>{value}</td></tr>" for key, value in changes.relevant_details.items())}
 </table>
 """
@@ -224,8 +248,7 @@ class HelpersNotificationsController(BaseController):
                 updated_task, user, original_task
             )
             .content(
-                wrap_email_html(
-                    f"""
+                f"""
 {_DEAR_SAILORS}
 
 <p>{user.full_name} has updated this task. 📢</p>
@@ -234,9 +257,11 @@ class HelpersNotificationsController(BaseController):
 
 {format_helper_task(updated_task)}
 
+{_SHIFT_REPLACEMENT_REMINDER}
+{_SIGNATURE}
+
 {previous_values_html}
 """
-                )
             )
             .build()
         )
@@ -253,15 +278,16 @@ class HelpersNotificationsController(BaseController):
         message = (
             _add_or_remove_helper_email(task, helper, user)
             .content(
-                wrap_email_html(
-                    f"""
+                f"""
 <p>Dear {helper.first_name} {_BOAT_PARTY},</p>
 
-<p>{user.full_name} has added you to this task. 🙏</p>
+<p>{user.full_name} has added you to this task.</p>
 
 {format_helper_task(task)}
+
+{_SHIFT_REPLACEMENT_REMINDER}
+{_SIGNATURE}
 """
-                )
             )
             .build()
         )
@@ -278,15 +304,16 @@ class HelpersNotificationsController(BaseController):
         message = (
             _add_or_remove_helper_email(task, helper, user)
             .content(
-                wrap_email_html(
-                    f"""
+                f"""
 <p>Dear {helper.first_name} {_BOAT_PARTY},</p>
 
 <p>{user.full_name} has removed you from this task.</p>
 
 {format_helper_task(task)}
+
+{_SHIFT_REPLACEMENT_REMINDER}
+{_SIGNATURE}
 """
-                )
             )
             .build()
         )
@@ -301,15 +328,16 @@ class HelpersNotificationsController(BaseController):
         message = (
             _sign_up_email(task, user)
             .content(
-                wrap_email_html(
-                    f"""
+                f"""
 <p>Dear {user.first_name} {_BOAT_PARTY},</p>
 
-<p>Thank you for signing up for this task. 🙏</p>
+<p>{random.choice(_SIGN_UP_MESSAGES)}</p>
 
 {format_helper_task(task)}
+
+{_SHIFT_REPLACEMENT_REMINDER}
+{_SIGNATURE}
 """
-                )
             )
             .build()
         )
@@ -324,15 +352,16 @@ class HelpersNotificationsController(BaseController):
         message = (
             _task_notification_email_to_all_participants(task, user)
             .content(
-                wrap_email_html(
-                    f"""
+                f"""
 {_DEAR_SAILORS}
 
-<p>Thank you for your help with this task. {user.full_name} has marked it as done and it is now waiting for validation from {task.contact.full_name}. 🙏</p>
+{_BRAVO_ZULU_THANK_YOU}
+<p>{user.full_name} has marked this task as done and it is now waiting for validation from {task.contact.full_name}.</p>
 
 {format_helper_task(task)}
+
+{_SIGNATURE}
 """
-                )
             )
             .build()
         )
@@ -347,15 +376,16 @@ class HelpersNotificationsController(BaseController):
         message = (
             _task_notification_email_to_all_participants(task, user)
             .content(
-                wrap_email_html(
-                    f"""
+                f"""
 {_DEAR_SAILORS}
 
-<p>Thank you for your help with this task, it has been validated by {user.full_name}. 🙏</p>
+{_BRAVO_ZULU_THANK_YOU}
+<p>This task has been validated by {user.full_name}.</p>
 
 {format_helper_task(task)}
+
+{_SIGNATURE}
 """
-                )
             )
             .build()
         )
@@ -441,11 +471,13 @@ class HelpersNotificationsController(BaseController):
 <p>You can:</p>
 
 <ul>
-    <li>Validate the tasks. During validation you will be asked to mark which members showed up and optionally you can leave a comment.</li>
-    <li>If the task was not done before the deadline, maybe you want to extend it to allow more time for helpers to do it.</li>
-    <li>If you wish to cancel a task, you can do it by validating it (feel free to comment that it is cancelled).</li>
-    <li>If you wish to delete a task, please cancel it instead.</li>
+    <li>If a task has been completed, please validate it.</li>
+    <li>If more time is needed, you can extend the deadline.</li>
+    <li>If the task is no longer necessary, feel free to cancel it by validating it and leaving a comment.</li>
 </ul>
+
+{_SHIFT_REPLACEMENT_REMINDER}
+{_SIGNATURE}
 """
             )
         ).build()

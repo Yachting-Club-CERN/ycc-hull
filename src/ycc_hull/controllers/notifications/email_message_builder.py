@@ -6,8 +6,6 @@ from pydantic import BaseModel
 
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.notifications.format_utils import (
-    SHIFT_REPLACEMENT_REMINDER,
-    YCC_APP_SIGNATURE,
     wrap_email_html,
 )
 from ycc_hull.models.dtos import MemberPublicInfoDto
@@ -117,16 +115,6 @@ class EmailMessageBuilder:
 
         message["Subject"] = self._subject
 
-        message.set_content(
-            wrap_email_html(
-                f"""
-{self._content}
-
-{SHIFT_REPLACEMENT_REMINDER}
-{YCC_APP_SIGNATURE}
-"""
-            ),
-            subtype="html",
-        )
+        message.set_content(wrap_email_html(self._content), subtype="html")
 
         return message

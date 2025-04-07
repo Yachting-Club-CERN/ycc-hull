@@ -142,20 +142,6 @@ def format_member_info(member: MemberPublicInfoDto) -> str:
 # Task Format
 #
 
-SHIFT_REPLACEMENT_REMINDER = """
-<p>
-    <em>📢 Reminder: If you cannot help with a task any more, we kindly ask you to find a replacement
-    (e.g., during an outing or in one of the YCC WhatsApp groups) and let us know.</em>
-</p>
-"""
-
-YCC_APP_SIGNATURE = """
-<p>
-    Kind wishes,<br />
-    YCC Maintenance & Regatta & Surveillance Teams
-</p>
-"""
-
 
 def _get_helper_task_url(task: HelperTaskDto) -> str:
     return f"{CONFIG.ycc_app.base_url}/helpers/tasks/{task.id}"
@@ -226,7 +212,7 @@ def format_helper_task(
     </ul>
 """
     elif task.helper_min_count > 0:
-        helpers_html = "😭"
+        helpers_html = "-"
     else:
         helpers_html = "Not needed"
 
@@ -240,7 +226,7 @@ def format_helper_task(
     <p><em>{task.short_description}</em></p>
     <ul>
         <li>Contact: {format_member_info(task.contact)}</li>
-        <li>Captain: {format_member_info(task.captain.member) if task.captain else "😭"}</li>
+        <li>Captain: {format_member_info(task.captain.member) if task.captain else "-"}</li>
         <li>Helpers (needed: {format_helper_task_min_max_helpers(task)}): {helpers_html}</li>
     </ul>
     <p>
