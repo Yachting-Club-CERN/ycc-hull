@@ -221,7 +221,7 @@ async def run() -> None:
             .content(
                 f"""
 <p>Dear {helper_task.captain.member.first_name},</p>
-<p>Thank you for signing up for this task.</p>
+<p>Thank you for signing up for this task. 🙏</p>
 
 {format_helper_task(helper_task)}
 """
