@@ -14,6 +14,7 @@ from fastapi import FastAPI, Request, Response
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
 
+from ycc_hull.api.audit_log import api_audit_log
 from ycc_hull.api.boats import api_boats
 from ycc_hull.api.errors import (
     create_http_exception_400,
@@ -131,6 +132,7 @@ if CONFIG.api_docs_enabled:
         "scopes": "openid profile email",
     }
 
+app.include_router(api_audit_log)
 app.include_router(api_boats)
 app.include_router(api_helpers)
 app.include_router(api_holidays)

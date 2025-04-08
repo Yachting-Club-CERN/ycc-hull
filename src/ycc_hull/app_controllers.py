@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from fastapi import FastAPI, Request
 
+from ycc_hull.controllers.audit_log_controller import AuditLogController
 from ycc_hull.controllers.boats_controller import BoatsController
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.controllers.holidays_controller import HolidaysController
@@ -17,6 +18,7 @@ class Controllers:
     Holds the controllers for the application.
     """
 
+    audit_log_controller: AuditLogController
     boats_controller: BoatsController
     helpers_controller: HelpersController
     holidays_controller: HolidaysController
@@ -27,6 +29,7 @@ class Controllers:
 def init_app_controllers(app: FastAPI) -> None:
     # Starlette's app.state is perfect to share this with the scheduler
     app.state.controllers = Controllers(
+        audit_log_controller=AuditLogController(),
         boats_controller=BoatsController(),
         helpers_controller=HelpersController(),
         holidays_controller=HolidaysController(),
@@ -38,6 +41,10 @@ def init_app_controllers(app: FastAPI) -> None:
 def get_controllers(app_or_request: FastAPI | Request) -> Controllers:
     app = app_or_request.app if isinstance(app_or_request, Request) else app_or_request
     return app.state.controllers
+
+
+def get_audit_log_controller(app_or_request: Request) -> AuditLogController:
+    return get_controllers(app_or_request).audit_log_controller
 
 
 def get_boats_controller(app_or_request: Request) -> BoatsController:

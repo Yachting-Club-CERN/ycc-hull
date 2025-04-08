@@ -18,8 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - When a task is updated and a notification is requested
   - When members are added to a task or are removed from a task
 - Emoji support
-- Admin API endpoint to list permissions
 - Admin/editor API endpoints to manage members on helper tasks
+- Admin API endpoint to list permissions
+- Admin API endpoint to list and partially clear the audit log
 
 ### Changed
 

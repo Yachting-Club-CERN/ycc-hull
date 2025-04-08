@@ -16,7 +16,7 @@ from ycc_hull.utils import full_type_name
 _APPLICATION = (
     "YCC Hull"
     if CONFIG.environment == Environment.PRODUCTION
-    else f"YCC Hull {CONFIG.environment}"
+    else f"YCC Hull {CONFIG.environment.upper()}"
 )
 
 
