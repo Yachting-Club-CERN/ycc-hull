@@ -19,7 +19,7 @@ from ycc_hull.models.user import User
 
 class AuditLogController(BaseController):
     """
-    Audit Log controller. Returns DTO objects.
+    Audit log controller. Returns DTO objects.
     """
 
     async def find_all_entries(self) -> Sequence[AuditLogEntryDto]:
