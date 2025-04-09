@@ -6,7 +6,6 @@ from collections.abc import Sequence
 from datetime import date, datetime, timedelta
 
 from sqlalchemy import ColumnElement, and_, func, or_, select
-from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session, defer
 
 from ycc_hull.config import CONFIG
@@ -29,6 +28,8 @@ from ycc_hull.db.entities import (
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
     HelpersAppPermissionDto,
+    HelpersAppPermissionGrantRequestDto,
+    HelpersAppPermissionUpdateRequestDto,
     HelperTaskCategoryDto,
     HelperTaskCreationRequestDto,
     HelperTaskDto,
@@ -59,6 +60,107 @@ class HelpersController(BaseController):
             .order_by(MemberEntity.name, MemberEntity.firstname),
             async_transformer=HelpersAppPermissionDto.create,
         )
+
+    async def grant_permission(
+        self, request: HelpersAppPermissionGrantRequestDto, user: User
+    ) -> HelpersAppPermissionDto:
+        with self.database_action(
+            action="Helpers / Grant Permission", user=user, details={"request": request}
+        ) as session:
+            permission_entity = HelpersAppPermissionEntity(**request.model_dump())
+            session.add(permission_entity)
+            session.commit()
+
+            permission = await HelpersAppPermissionDto.create(permission_entity)
+            self._logger.info(
+                "Granted permission: %s, user: %s", permission, user.username
+            )
+
+            self._audit_log(
+                session, user, "Helpers/Permissions/Grant", {"new": permission}
+            )
+
+            return permission
+
+    async def update_permission(
+        self, member_id: int, request: HelpersAppPermissionUpdateRequestDto, user: User
+    ) -> HelpersAppPermissionDto:
+        with self.database_action(
+            action="Helpers / Update Permission",
+            user=user,
+            details={"member_id": member_id, "request": request},
+        ) as session:
+            original_permission = await self._get_permission_by_id(
+                member_id, session=session
+            )
+
+            permission_entity = original_permission.get_entity()
+            self._update_entity_from_dto(permission_entity, request)
+            session.commit()
+
+            updated_permission = await HelpersAppPermissionDto.create(permission_entity)
+            self._logger.info(
+                "Updated permission: %s, user: %s", updated_permission, user.username
+            )
+
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Permissions/Update/{member_id}",
+                {
+                    "diff": deep_diff(original_permission, updated_permission),
+                    "old": original_permission,
+                    "new": updated_permission,
+                },
+            )
+
+            return updated_permission
+
+    async def revoke_permission(self, member_id: int, user: User) -> None:
+        if member_id == user.member_id:
+            raise ControllerConflictException("You cannot revoke your own permissions")
+
+        with self.database_action(
+            action="Helpers / Revoke Permission",
+            user=user,
+            details={"member_id": member_id},
+        ) as session:
+            permission = await self._get_permission_by_id(member_id, session=session)
+
+            permission_entity = permission.get_entity()
+            session.delete(permission_entity)
+            session.commit()
+
+            self._logger.info(
+                "Revoked permission: %s, user: %s",
+                permission,
+                user.username,
+            )
+
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Permissions/Revoke/{member_id}",
+                {
+                    "old": permission,
+                },
+            )
+
+    async def _get_permission_by_id(
+        self, member_id: int, *, session: Session
+    ) -> HelpersAppPermissionDto:
+        entries = await self.database_context.query_all(
+            select(HelpersAppPermissionEntity).where(
+                HelpersAppPermissionEntity.member_id == member_id
+            ),
+            async_transformer=HelpersAppPermissionDto.create,
+            session=session,
+        )
+
+        if entries:
+            return entries[0]
+
+        raise ControllerNotFoundException("Permission not found")
 
     async def find_all_task_categories(self) -> Sequence[HelperTaskCategoryDto]:
         return await self.database_context.query_all(
@@ -97,22 +199,19 @@ class HelpersController(BaseController):
     async def create_task(
         self, request: HelperTaskCreationRequestDto, user: User
     ) -> HelperTaskDto:
-        with self.database_context.session() as session:
-            try:
-                task_entity = HelperTaskEntity(**request.model_dump())
-                session.add(task_entity)
-                session.commit()
+        with self.database_action(
+            action="Helper Task / Create", user=user, details={"request": request}
+        ) as session:
+            task_entity = HelperTaskEntity(**request.model_dump())
+            session.add(task_entity)
+            session.commit()
 
-                task = await HelperTaskDto.create(task_entity)
-                self._logger.info("Created task: %s, user: %s", task.id, user.username)
+            task = await HelperTaskDto.create(task_entity)
+            self._logger.info("Created task: %s, user: %s", task.id, user.username)
 
-                self._audit_log(session, user, "Helpers/Tasks/Create", {"new": task})
+            self._audit_log(session, user, "Helpers/Tasks/Create", {"new": task})
 
-                return task
-            except DatabaseError as exc:
-                raise self._handle_database_error(  # pylint: disable=raising-bad-type
-                    exc, what="create task", user=user, data=request
-                )
+            return task
 
     async def update_task(
         self,
@@ -120,61 +219,59 @@ class HelpersController(BaseController):
         request: HelperTaskUpdateRequestDto,
         user: User,
     ) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Update",
+            user=user,
+            details={"task_id": task_id, "request": request},
+        ) as session:
             original_task = await self._get_task_by_id(task_id, session=session)
 
             await self._check_can_update_task(request, original_task)
 
-            try:
-                task_entity = original_task.get_entity()
-                original_task = await HelperTaskDto.create(task_entity)
-                self._update_entity_from_dto(task_entity, request)
-                if original_task.validated_by is not None:
-                    task_entity.urgent = False
-                session.commit()
+            task_entity = original_task.get_entity()
+            self._update_entity_from_dto(task_entity, request)
+            if original_task.validated_by is not None:
+                task_entity.urgent = False
+            session.commit()
 
-                updated_task = await HelperTaskDto.create(task_entity)
+            updated_task = await HelperTaskDto.create(task_entity)
+            self._logger.info(
+                "Updated task: %s, user: %s", updated_task.id, user.username
+            )
+
+            # Calculate change
+            diff = deep_diff(original_task, updated_task)
+
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Tasks/Update/{task_id}",
+                {
+                    "diff": diff,
+                    "old": original_task,
+                    "new": updated_task,
+                    "notifySignedUpMembers": request.notify_signed_up_members,
+                },
+            )
+            if request.notify_signed_up_members:
                 self._logger.info(
-                    "Updated task: %s, user: %s", updated_task.id, user.username
+                    "Notifying signed up members about the task update (ID: %d), updated fields: %s",
+                    task_id,
+                    diff.keys(),
+                )
+                self._run_in_background(
+                    self._notifications.on_update(
+                        original_task, updated_task, diff, user
+                    )
+                )
+            else:
+                self._logger.info(
+                    "NOT notifying signed up members about the task update (ID: %d), updated fields: %s",
+                    task_id,
+                    diff.keys(),
                 )
 
-                # Calculate change
-                diff = deep_diff(original_task, updated_task)
-
-                self._audit_log(
-                    session,
-                    user,
-                    f"Helpers/Tasks/Update/{task_id}",
-                    {
-                        "diff": diff,
-                        "old": original_task,
-                        "new": updated_task,
-                        "notifySignedUpMembers": request.notify_signed_up_members,
-                    },
-                )
-                if request.notify_signed_up_members:
-                    self._logger.info(
-                        "Notifying signed up members about the task update (ID: %d), updated fields: %s",
-                        task_id,
-                        diff.keys(),
-                    )
-                    self._run_in_background(
-                        self._notifications.on_update(
-                            original_task, updated_task, diff, user
-                        )
-                    )
-                else:
-                    self._logger.info(
-                        "NOT notifying signed up members about the task update (ID: %d), updated fields: %s",
-                        task_id,
-                        diff.keys(),
-                    )
-
-                return updated_task
-            except DatabaseError as exc:
-                raise self._handle_database_error(  # pylint: disable=raising-bad-type
-                    exc, what="update task", user=user, data=request
-                )
+            return updated_task
 
     async def _check_can_update_task(
         self, request: HelperTaskUpdateRequestDto, original_task: HelperTaskDto
@@ -223,7 +320,11 @@ class HelpersController(BaseController):
     async def set_captain(
         self, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Set Captain",
+            user=user,
+            details={"task_id": task_id, "member_id": member_id},
+        ) as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
             await self._check_can_sign_up_as_captain(
                 task=task, member_id=member_id, editor_action=True, session=session
@@ -248,7 +349,9 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session, user, f"Helpers/Tasks/SetCaptain/{task_id}/Captain/{member_id}"
+                session,
+                user,
+                f"Helpers/Tasks/SetCaptain/{task_id}/Captain/{member_id}",
             )
             self._run_in_background(
                 self._notifications.on_add_helper(
@@ -259,7 +362,11 @@ class HelpersController(BaseController):
             return updated_task
 
     async def remove_captain(self, task_id: int, user: User) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Remove Captain",
+            user=user,
+            details={"task_id": task_id},
+        ) as session:
             original_task = await self._get_task_by_id(
                 task_id, published=True, session=session
             )
@@ -297,7 +404,11 @@ class HelpersController(BaseController):
     async def add_helper(
         self, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Add Helper",
+            user=user,
+            details={"task_id": task_id, "member_id": member_id},
+        ) as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
             await self._check_can_sign_up_as_helper(
                 task=task, member_id=member_id, editor_action=True, session=session
@@ -323,7 +434,9 @@ class HelpersController(BaseController):
                 user.username,
             )
             self._audit_log(
-                session, user, f"Helpers/Tasks/AddHelper/{task_id}/Helper/{member_id}"
+                session,
+                user,
+                f"Helpers/Tasks/AddHelper/{task_id}/Helper/{member_id}",
             )
             self._run_in_background(
                 self._notifications.on_add_helper(updated_task, helper, user)
@@ -334,7 +447,11 @@ class HelpersController(BaseController):
     async def remove_helper(
         self, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Remove Helper",
+            user=user,
+            details={"task_id": task_id, "member_id": member_id},
+        ) as session:
             original_task = await self._get_task_by_id(
                 task_id, published=True, session=session
             )
@@ -380,7 +497,11 @@ class HelpersController(BaseController):
             return updated_task
 
     async def sign_up_as_captain(self, task_id: int, user: User) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Sign Up As Captain",
+            user=user,
+            details={"task_id": task_id},
+        ) as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
             await self._check_can_sign_up_as_captain(
@@ -407,7 +528,11 @@ class HelpersController(BaseController):
             return updated_task
 
     async def sign_up_as_helper(self, task_id: int, user: User) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Sign Up As Helper",
+            user=user,
+            details={"task_id": task_id},
+        ) as session:
             task = await self.get_task_by_id(task_id, published=True, session=session)
 
             await self._check_can_sign_up_as_helper(
@@ -440,7 +565,11 @@ class HelpersController(BaseController):
     async def mark_as_done(
         self, task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User
     ) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Mark As Done",
+            user=user,
+            details={"task_id": task_id, "request": request},
+        ) as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
             if task.state != HelperTaskState.PENDING:
@@ -471,7 +600,11 @@ class HelpersController(BaseController):
     async def validate(
         self, task_id: int, request: HelperTaskValidationRequestDto, user: User
     ) -> HelperTaskDto:
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helper Task / Validate",
+            user=user,
+            details={"task_id": task_id, "request": request},
+        ) as session:
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
             if task.state == HelperTaskState.VALIDATED:
@@ -583,7 +716,11 @@ class HelpersController(BaseController):
                 message,
             )
 
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Helpers / Send Daily Reminders",
+            user=None,
+            details=None,
+        ) as session:
             # Query all relevant tasks
             now = get_now()
 
