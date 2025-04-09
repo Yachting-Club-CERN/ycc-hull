@@ -79,7 +79,7 @@ class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntit
             id=category.id,
             title=category.title,
             short_description=category.short_description,
-            long_description=category.long_description,
+            long_description=await category.awaitable_attrs.long_description,
         )
 
 
