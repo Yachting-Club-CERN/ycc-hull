@@ -5,7 +5,7 @@ Helpers API endpoints.
 from collections.abc import Sequence
 from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response, status
 
 from ycc_hull.api.errors import create_http_exception_403
 from ycc_hull.app_controllers import get_helpers_controller
@@ -13,6 +13,8 @@ from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.models.helpers_dtos import (
     HelpersAppPermissionDto,
+    HelpersAppPermissionGrantRequestDto,
+    HelpersAppPermissionUpdateRequestDto,
     HelperTaskCategoryDto,
     HelperTaskCreationRequestDto,
     HelperTaskDto,
@@ -25,16 +27,48 @@ api_helpers = APIRouter(dependencies=[Depends(auth)])
 
 
 @api_helpers.get("/api/v1/helpers/permissions")
-async def helpers_app_permissions_get(
+async def helpers_permissions_get(
     user: User = Depends(auth),
     controller: HelpersController = Depends(get_helpers_controller),
 ) -> Sequence[HelpersAppPermissionDto]:
-    if not user.helpers_app_admin:
-        raise create_http_exception_403(
-            "You do not have permission to list permissions"
-        )
+    _check_can_manage_permissions(user)
 
     return await controller.find_all_permissions()
+
+
+@api_helpers.post("/api/v1/helpers/permissions")
+async def helpers_permissions_grant(
+    request: HelpersAppPermissionGrantRequestDto,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> HelpersAppPermissionDto:
+    _check_can_manage_permissions(user)
+
+    return await controller.grant_permission(request, user)
+
+
+@api_helpers.put("/api/v1/helpers/permissions/{member_id}")
+async def helpers_permissions_update(
+    member_id: int,
+    request: HelpersAppPermissionUpdateRequestDto,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> HelpersAppPermissionDto:
+    _check_can_manage_permissions(user)
+
+    return await controller.update_permission(member_id, request, user)
+
+
+@api_helpers.delete("/api/v1/helpers/permissions/{member_id}")
+async def helpers_permissions_revoke(
+    member_id: int,
+    user: User = Depends(auth),
+    controller: HelpersController = Depends(get_helpers_controller),
+) -> Response:
+    _check_can_manage_permissions(user)
+
+    await controller.revoke_permission(member_id, user)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @api_helpers.get("/api/v1/helpers/task-categories")
@@ -227,6 +261,11 @@ async def helper_tasks_validate(
 
     await controller.validate(task_id, request, user)
     return await controller.get_task_by_id(task_id, published=True)
+
+
+def _check_can_manage_permissions(user: User) -> None:
+    if not user.helpers_app_admin:
+        raise create_http_exception_403("Forbidden")
 
 
 def _published(user: User) -> bool | None:

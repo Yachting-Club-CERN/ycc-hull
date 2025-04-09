@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- API endpoints for granting, updating and revoking permissions
+
 ## [1.2.0] - 2025-04-09
 
 ### Added

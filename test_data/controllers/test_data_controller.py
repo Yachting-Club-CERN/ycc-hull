@@ -101,7 +101,9 @@ class TestDataController(BaseController):
     async def populate(self, add_daily_helper_tasks: bool) -> list[str]:
         log: list[str] = []
 
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Test Data / Populate", user=None, details=None
+        ) as session:
             importer = _TestDataImporter(session=session)
 
             log.extend(await self._populate_holidays(session, importer))
@@ -359,7 +361,9 @@ class TestDataController(BaseController):
                 f"Some entity classes are not handled: {unhandled_class_names}"
             )
 
-        with self.database_context.session() as session:
+        with self.database_action(
+            action="Test Data / Clear", user=None, details=None
+        ) as session:
             for cls in classes:
                 log.append(f"Deleting {short_type_name(cls)} entities")
                 session.execute(delete(cls))

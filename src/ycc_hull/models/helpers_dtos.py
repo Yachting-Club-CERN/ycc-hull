@@ -62,6 +62,24 @@ class HelpersAppPermissionDto(CamelisedBaseModelWithEntity[HelpersAppPermissionE
         )
 
 
+class HelpersAppPermissionGrantRequestDto(CamelisedBaseModel):
+    """
+    DTO for Helpers App permission grant request.
+    """
+
+    member_id: int
+    permission: str
+    note: str | None
+
+
+class HelpersAppPermissionUpdateRequestDto(CamelisedBaseModel):
+    """
+    DTO for Helpers App permission update request.
+    """
+
+    note: str | None
+
+
 class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntity]):
     """
     DTO for a helper task category.
@@ -349,6 +367,8 @@ def get_task_year(task: HelperTaskDto | HelperTaskMutationRequestBaseDto) -> int
 
 
 HelpersAppPermissionDto.model_rebuild()
+HelpersAppPermissionGrantRequestDto.model_rebuild()
+HelpersAppPermissionUpdateRequestDto.model_rebuild()
 HelperTaskCategoryDto.model_rebuild()
 HelperTaskDto.model_rebuild()
 HelperTaskCreationRequestDto.model_rebuild()

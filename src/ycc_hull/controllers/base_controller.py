@@ -6,7 +6,9 @@ import asyncio
 import logging
 import re
 from abc import ABCMeta
-from typing import Any, Coroutine
+from contextlib import contextmanager
+from pprint import pformat
+from typing import Any, Coroutine, Generator
 
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session
@@ -32,16 +34,39 @@ class BaseController(metaclass=ABCMeta):
     def database_context(self) -> DatabaseContext:
         return DatabaseContextHolder.context
 
+    @contextmanager
+    def database_action(
+        self,
+        *,
+        action: str,
+        # None is allowed but must be explicit
+        user: User | None,
+        details: dict[str, Any] | None,
+    ) -> Generator[Session, None, None]:
+        with self.database_context.session() as session:
+            try:
+                yield session
+            except DatabaseError as exc:
+                raise self._handle_database_error(  # pylint: disable=raising-bad-type
+                    exc, action=action, user=user, details=details
+                )
+
     def _handle_database_error(
-        self, exc: DatabaseError, *, what: str, user: User, data: Any
+        self,
+        exc: DatabaseError,
+        *,
+        action: str,
+        user: User | None,
+        details: dict[str, Any] | None,
     ) -> Exception:
-        self._logger.info(
-            "Failed to %s: %s, user: %s, data: %s",
-            what,
-            exc,
-            user,
-            data,
-        )
+        if self._logger.isEnabledFor(logging.INFO):
+            self._logger.info(
+                "Action failed: %s:\n  - Error: %s\n  - User: %s\n  - Details: %s",
+                action,
+                exc,
+                pformat(user),
+                pformat(details),
+            )
         message = str(exc)
 
         user_message = None
@@ -52,6 +77,11 @@ class BaseController(metaclass=ABCMeta):
                 user_message = "Invalid contact"
             elif "HELPER_TASKS_CAPTAIN_REQUIRED_LICENCE_INFO_FK" in message:
                 user_message = "Invalid captain required licence info"
+            elif "HELPERS_APP_PERMISSIONS_MEMBER_FK" in message:
+                user_message = "Invalid member"
+        elif "unique constraint" in message and "violated" in message:
+            if "HELPERS_APP_PERMISSIONS_PK" in message:
+                user_message = "Permission already exists"
         elif "value too large for column" in message:
             # ORA-12899: value too large for column "YCCLOCAL"."HELPER_TASKS"."TITLE" (actual: 69, maximum: 50)\n
             # [SQL: INSERT INTO...
