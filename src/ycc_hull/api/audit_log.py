@@ -1,5 +1,5 @@
 """
-Audit Log API endpoints.
+Audit log API endpoints.
 """
 
 from collections.abc import Sequence

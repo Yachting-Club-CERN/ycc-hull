@@ -48,7 +48,7 @@ class AuditLogController(BaseController):
 
     async def delete_entries(
         self, request: AuditLogEntriesDeleteRequestDto, user: User
-    ) -> int:
+    ) -> None:
         with self.database_context.session() as session:
             self._logger.info(
                 "Deleting audit log entries older than %s, user: %s",
@@ -64,7 +64,12 @@ class AuditLogController(BaseController):
 
             session.commit()
 
+            self._logger.info(
+                "Deleted %d audit log entries older than %s, user: %s",
+                result.rowcount,
+                request.cutoff_date,
+                user.username,
+            )
             self._audit_log(
                 session, user, f"AuditLog/DeleteEntriesBefore/{request.cutoff_date}"
             )
-            return result.rowcount  # Number of rows deleted

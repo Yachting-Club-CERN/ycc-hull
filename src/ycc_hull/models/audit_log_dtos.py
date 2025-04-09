@@ -1,5 +1,5 @@
 """
-Audit Log API DTO classes.
+Audit log API DTO classes.
 """
 
 from datetime import date, datetime
