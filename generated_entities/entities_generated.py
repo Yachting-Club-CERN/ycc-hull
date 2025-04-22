@@ -173,7 +173,7 @@ class Infolicences(Base):
     course_name: Mapped[Optional[str]] = mapped_column(VARCHAR(30))
     course_active: Mapped[Optional[str]] = mapped_column(CHAR(1))
     course_level: Mapped[Optional[float]] = mapped_column(NUMBER(1, 0, False))
-    has_test: Mapped[Optional[float]] = mapped_column(
+    has_test: Mapped[float] = mapped_column(
         NUMBER(1, 0, False), server_default=text("0\n   ")
     )
 

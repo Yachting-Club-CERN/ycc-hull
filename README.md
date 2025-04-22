@@ -102,6 +102,7 @@ You can regenerate entities using the following commands:
 
 ```sh
 poetry run sqlacodegen oracle+oracledb://ycclocal:changeit@127.0.0.1:1521/XE --outfile generated_entities/entities_generated.py
+poetry run isort generated_entities/entities_generated.py
 poetry run black generated_entities/entities_generated.py
 ```
 

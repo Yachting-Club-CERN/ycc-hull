@@ -164,8 +164,7 @@ class FeeRecordEntity(BaseEntity):
         # SYSDATE in Oracle, this is for SQLite (for Oracle it's DB first approach)
         server_default=text("(DATETIME('now','localtime'))"),
     )
-    # Nullable in DB, but filled by a trigger
-    # Code-only primary key, not in DB; autoincrement=True added for SQLite (de-facto unique in Oracle & managed by a trigger)
+    # autoincrement=True added for SQLite (for Oracle it's DB first approach)
     paymentid: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True
     )
