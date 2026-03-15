@@ -6,12 +6,13 @@ from datetime import datetime
 from typing import Any, TypedDict
 
 import humps
-import pytz
+from zoneinfo import ZoneInfo
+
 from pydantic import BaseModel
 
 from ycc_hull.constants import TIME_ZONE_ID
 
-TIME_ZONE = pytz.timezone(TIME_ZONE_ID)
+TIME_ZONE = ZoneInfo(TIME_ZONE_ID)
 
 
 def full_type_name(cls: type) -> str:
@@ -31,7 +32,7 @@ def get_now() -> datetime:
     Returns:
         datetime: The current time.
     """
-    return TIME_ZONE.localize(datetime.now())
+    return datetime.now(tz=TIME_ZONE)
 
 
 def camel_case_to_words(string: str) -> str:

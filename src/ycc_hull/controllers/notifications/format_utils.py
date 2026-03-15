@@ -172,7 +172,7 @@ def format_helper_task_timing_with_extra(task: HelperTaskDto) -> str:
     if not task.published:
         timing_extra.append("HIDDEN")
 
-    timing_extra_str = f" ({", ".join(timing_extra)})" if timing_extra else ""
+    timing_extra_str = f" ({', '.join(timing_extra)})" if timing_extra else ""
 
     return f"{format_helper_task_timing(task)}{timing_extra_str}"
 

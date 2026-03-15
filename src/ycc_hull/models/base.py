@@ -97,7 +97,7 @@ def _get_field_info_extra_bool(
     field_info: FieldInfo | None, key: str, default: bool
 ) -> bool:
     if field_info and field_info.json_schema_extra:
-        value = field_info.json_schema_extra.get(key, default)  # type: ignore
+        value = field_info.json_schema_extra.get(key, default)
 
         if isinstance(value, bool):
             return value
@@ -219,6 +219,6 @@ def sanitise_datetime_input(value: datetime | str | None) -> datetime | None:
         raise ValueError(f"Invalid datetime value: {value}")
 
     if value.tzinfo is None:
-        return TIME_ZONE.localize(value)
+        return value.replace(tzinfo=TIME_ZONE)
 
     return value.astimezone(TIME_ZONE)

@@ -15,7 +15,7 @@ def _get_add_daily_helper_tasks(
     add_daily_helper_tasks: bool = Query(
         False,
         description="If true, daily helper tasks will also be created. This is useful if you need a lot of tasks for testing.",
-    )
+    ),
 ) -> bool:
     return add_daily_helper_tasks
 

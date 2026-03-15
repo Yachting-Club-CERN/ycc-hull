@@ -80,7 +80,7 @@ class SmtpConnection:
 
             if index != -1:
                 offset = len(body_tag)
-                content = f"{content[:index + offset]}\n{self._config.content_header}\n<p>\n{content[index + offset:]}"
+                content = f"{content[: index + offset]}\n{self._config.content_header}\n<p>\n{content[index + offset :]}"
             else:
                 content = f"{self._config.content_header}\n\n{content}"
 
