@@ -11,6 +11,7 @@ import uvicorn
 from fastapi import FastAPI, Request, Response
 from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 
 from ycc_hull.api.audit_log import api_audit_log
 from ycc_hull.api.boats import api_boats
@@ -132,6 +133,23 @@ if CONFIG.api_docs_enabled:
         # These scopes are needed to be able to use the API.
         "scopes": "openid profile email",
     }
+
+@app.get("/", response_class=HTMLResponse)
+async def landing_page() -> str:
+    """Landing page that redirects to the club website."""
+    club_website = "https://yachting.web.cern.ch/"
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="refresh" content="0; url={club_website}" />
+    <script>window.location.href = "{club_website}";</script>
+    <title>YCC Hull</title>
+</head>
+<body>
+    <p>Redirecting to <a href="{club_website}">YCC website</a>...</p>
+</body>
+</html>"""
+
 
 app.include_router(api_audit_log)
 app.include_router(api_boats)

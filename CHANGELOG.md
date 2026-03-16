@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - API endpoints for granting, updating and revoking permissions (deployed in 2025)
 - Tooling: uv, Ruff, ty, Makefile
+- Landing page `/` with HTML redirect to yachting.web.cern.ch
 
 ### Changed
 
