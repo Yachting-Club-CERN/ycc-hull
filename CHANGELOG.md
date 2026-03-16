@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### [1.3.0] - TODO
+### [1.3.0] - 2026-03-??
 
 ### Added
 
 - API endpoints for granting, updating and revoking permissions (deployed in 2025)
+- Tooling: uv, Ruff, ty, Makefile
 
 ### Changed
 
@@ -19,11 +20,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Switch to uv, ruff, ty
   - Remove Poetry, Black, isort, Flake8, PyLint, MyPy
 - Dependency upgrades (2026-03), notable:
-  - TODO
+  - lxml 6
+  - python-keycloak 7
+  - sqlacodegen 4
+- Regenerate test data for 2026
+- Many fixes for the new Ruff rules
 
 ### Removed
 
-- `pytz` dependency TODO
+- Tooling: Poetry, Black, isort, Flake8, PyLint, MyPy
+- `pytz` (using stdlib instead)
 
 ## [1.2.0] - 2025-04-09
 
