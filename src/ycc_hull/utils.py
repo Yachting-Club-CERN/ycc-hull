@@ -112,8 +112,8 @@ def deep_diff(d1: dict | BaseModel, d2: dict | BaseModel) -> dict[str, DiffEntry
     the same structure.)
 
     Args:
-        d1 (dict): The first dictionary.
-        d2 (dict): The second dictionary.
+        d1 (dict | BaseModel): The first dictionary or Pydantic object.
+        d2 (dict | BaseModel): The second dictionary or Pydantic object.
 
     Returns:
         dict: The diff between the two dictionaries.
