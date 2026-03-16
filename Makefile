@@ -1,4 +1,4 @@
-.PHONY: check clean format init lint lint-fix test start db-playground email-playground generate-test-data regenerate-test-data
+.PHONY: check clean format init lint lint-fix test up db-playground email-playground generate-test-data regenerate-test-data
 
 check: lint test
 
