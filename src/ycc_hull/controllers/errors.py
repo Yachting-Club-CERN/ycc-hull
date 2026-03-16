@@ -1,8 +1,8 @@
-"""Controller exceptions."""
+"""Controller errors."""
 
 
 class ControllerError(Exception):
-    """General exception for controllers."""
+    """General error for controllers."""
 
     def __init__(self, message: str) -> None:
         """Initialise with an error message."""

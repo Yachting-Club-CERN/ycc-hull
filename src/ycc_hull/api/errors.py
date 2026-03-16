@@ -12,25 +12,25 @@ def create_http_error(status_code: int, detail: str) -> HTTPException:
 
 
 def create_http_error_400(detail: str) -> HTTPException:
-    """Create a 400 Bad Request exception."""
+    """Create a 400 Bad Request error."""
     return create_http_error(400, detail)
 
 
 def create_http_error_401(detail: str) -> HTTPException:
-    """Create a 401 Unauthorized exception."""
+    """Create a 401 Unauthorized error."""
     return create_http_error(401, detail)
 
 
 def create_http_error_403(detail: str) -> HTTPException:
-    """Create a 403 Forbidden exception."""
+    """Create a 403 Forbidden error."""
     return create_http_error(403, detail)
 
 
 def create_http_error_404(detail: str) -> HTTPException:
-    """Create a 404 Not Found exception."""
+    """Create a 404 Not Found error."""
     return create_http_error(404, detail)
 
 
 def create_http_error_409(detail: str) -> HTTPException:
-    """Create a 409 Conflict exception."""
+    """Create a 409 Conflict error."""
     return create_http_error(409, detail)
