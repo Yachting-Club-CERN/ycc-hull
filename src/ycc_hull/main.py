@@ -1,12 +1,10 @@
-"""
-Application entry point.
-"""
+"""Application entry point."""
 
 import locale
 import logging
-import os
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
+from pathlib import Path
 
 import toml
 import uvicorn
@@ -17,9 +15,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from ycc_hull.api.audit_log import api_audit_log
 from ycc_hull.api.boats import api_boats
 from ycc_hull.api.errors import (
-    create_http_exception_400,
-    create_http_exception_404,
-    create_http_exception_409,
+    create_http_error_400,
+    create_http_error_404,
+    create_http_error_409,
 )
 from ycc_hull.api.helpers import api_helpers
 from ycc_hull.api.holidays import api_holidays
@@ -31,10 +29,10 @@ from ycc_hull.app_controllers import (
 )
 from ycc_hull.config import CONFIG
 from ycc_hull.constants import LOGGING_CONFIG_FILE
-from ycc_hull.controllers.exceptions import (
-    ControllerBadRequestException,
-    ControllerConflictException,
-    ControllerNotFoundException,
+from ycc_hull.controllers.errors import (
+    ControllerBadRequestError,
+    ControllerConflictError,
+    ControllerNotFoundError,
 )
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.scheduler import init_scheduler
@@ -45,22 +43,22 @@ locale.setlocale(locale.LC_ALL, "en_GB.UTF-8")
 
 
 def read_version_from_pyproject_toml() -> str:
-    """
-    Reads the version from the pyproject.toml file.
-    """
+    """Read the version from the pyproject.toml file."""
     for project_dir in ["../", "../../"]:
-        pyproject_toml_file = os.path.realpath(
-            os.path.join(os.path.dirname(__file__), project_dir, "pyproject.toml")
-        )
-        if os.path.exists(pyproject_toml_file):
-            with open(pyproject_toml_file, encoding="utf-8") as file:
+        pyproject_toml_file = (
+            Path(__file__).parent / project_dir / "pyproject.toml"
+        ).resolve()
+        if pyproject_toml_file.exists():
+            with pyproject_toml_file.open(encoding="utf-8") as file:
                 return toml.load(file)["project"]["version"]
 
-    raise FileNotFoundError("pyproject.toml not found")
+    msg = "pyproject.toml not found"
+    raise FileNotFoundError(msg)
 
 
 @asynccontextmanager
 async def lifespan(fastapi_app: FastAPI) -> AsyncGenerator[None, None]:
+    """Manage application startup and shutdown."""
     # Poke the DB or fail early if the connection is wrong
     init_app_controllers(fastapi_app)
 
@@ -92,32 +90,35 @@ app = FastAPI(
 )
 
 
-@app.exception_handler(ControllerBadRequestException)
+@app.exception_handler(ControllerBadRequestError)
 async def controller_400_exception_handler(
     request: Request,
-    exc: ControllerBadRequestException,
+    exc: ControllerBadRequestError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_400(exc.message))
+    """Handle 400 Bad Request exceptions."""
+    return await http_exception_handler(request, create_http_error_400(exc.message))
 
 
-@app.exception_handler(ControllerNotFoundException)
+@app.exception_handler(ControllerNotFoundError)
 async def controller_404_exception_handler(
     request: Request,
-    exc: ControllerNotFoundException,
+    exc: ControllerNotFoundError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_404(exc.message))
+    """Handle 404 Not Found exceptions."""
+    return await http_exception_handler(request, create_http_error_404(exc.message))
 
 
-@app.exception_handler(ControllerConflictException)
+@app.exception_handler(ControllerConflictError)
 async def controller_409_exception_handler(
     request: Request,
-    exc: ControllerConflictException,
+    exc: ControllerConflictError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_409(exc.message))
+    """Handle 409 Conflict exceptions."""
+    return await http_exception_handler(request, create_http_error_409(exc.message))
 
 
 app.add_middleware(
-    CORSMiddleware,
+    CORSMiddleware,  # type: ignore[arg-type]
     allow_origins=CONFIG.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
@@ -146,20 +147,17 @@ if CONFIG.local:
 
 
 def main() -> None:
-    """
-    Application entry point.
-    """
-    if not os.path.exists("log"):
-        os.makedirs("log")
+    """Application entry point."""
+    Path("log").mkdir(parents=True, exist_ok=True)
 
     # This must be in a sync function
     uvicorn.run(
         "ycc_hull.main:app",
-        host="0.0.0.0",
+        host="0.0.0.0",  # noqa: S104
         port=CONFIG.uvicorn_port,
         reload=CONFIG.local,
         log_level="debug",
-        log_config=LOGGING_CONFIG_FILE,
+        log_config=str(LOGGING_CONFIG_FILE),
     )
 
 

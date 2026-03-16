@@ -1,6 +1,4 @@
-"""
-Test data generator component for members & fees.
-"""
+"""Test data generator component for members & fees."""
 
 from collections.abc import Iterator
 from datetime import date, datetime, timedelta
@@ -22,25 +20,27 @@ from ycc_hull.db.entities import (
     UserEntity,
 )
 
-MemberInfo = NamedTuple(
-    "MemberInfo",
-    [
-        ("member", MemberEntity),
-        ("user", UserEntity),
-        ("entrance_fee_record", EntranceFeeRecordEntity | None),
-        ("fee_records", list[FeeRecordEntity]),
-        ("licences", list[LicenceEntity]),
-    ],
-)
+
+class MemberInfo(NamedTuple):
+    """A member with associated user and other entities."""
+
+    member: MemberEntity
+    user: UserEntity
+    entrance_fee_record: EntranceFeeRecordEntity | None
+    fee_records: list[FeeRecordEntity]
+    licences: list[LicenceEntity]
+
 
 _assigned_usernames: set[str] = set()
 
 
 def _fake_username(first_name: str, last_name: str) -> str:
     if not first_name:
-        raise ValueError(f"Invalid first name: f{first_name}")
+        msg = f"Invalid first name: {first_name}"
+        raise ValueError(msg)
     if not last_name:
-        raise ValueError(f"Invalid last name: f{last_name}")
+        msg = f"Invalid last name: {last_name}"
+        raise ValueError(msg)
 
     username: str = f"{first_name[0]}{last_name[0:7]}".upper()
 
@@ -53,22 +53,23 @@ def _fake_username(first_name: str, last_name: str) -> str:
 
 def _fake_username_collision(first_name: str, last_name: str) -> str:
     for i in range(1, 10):
-        username: str = f"{first_name[0]}{last_name[0:6]}{str(i)}".upper()
+        username: str = f"{first_name[0]}{last_name[0:6]}{i!s}".upper()
 
         if username not in _assigned_usernames:
             return username
 
-    raise AssertionError(
-        f"Could not generate username for {first_name} {last_name} - try again or improve the code"
+    msg = (
+        f"Could not generate username for {first_name} {last_name} - try again or "
+        "improve the code"
     )
+    raise AssertionError(msg)
 
 
 def generate_member_infos(
     faker: Faker, licences_to_ids: dict[str, int], count: int
 ) -> list[MemberInfo]:
-    return [
-        _generate_member_info(faker, licences_to_ids, i + 1) for i in range(0, count)
-    ]
+    """Generate member info with associated entities."""
+    return [_generate_member_info(faker, licences_to_ids, i + 1) for i in range(count)]
 
 
 def _generate_member_info(
@@ -106,33 +107,33 @@ def _generate_member(faker: Faker, member_id: int) -> MemberEntity:
         id=member_id,
         name=last_name,
         firstname=first_name,
-        # birthday = Column(DATE)
-        # nationality = Column(VARCHAR2(3))
+        # birthday = Column(DATE)  # noqa: ERA001
+        # nationality = Column(VARCHAR2(3))  # noqa: ERA001
         membership=membership_type,
-        # temp_memb = Column(NUMBER(1, 0))
-        # lang1 = Column(VARCHAR2(3))
-        # lang2 = Column(VARCHAR2(3))
+        # temp_memb = Column(NUMBER(1, 0))  # noqa: ERA001
+        # lang1 = Column(VARCHAR2(3))  # noqa: ERA001
+        # lang2 = Column(VARCHAR2(3))  # noqa: ERA001
         category=_generate_member_category(faker),
-        # work_address1 = Column(VARCHAR2(50))
-        # work_address2 = Column(VARCHAR2(50))
-        # work_towncode = Column(VARCHAR2(7))
-        # work_town = Column(VARCHAR2(25))
-        # work_state = Column(VARCHAR2(5))
+        # work_address1 = Column(VARCHAR2(50))  # noqa: ERA001
+        # work_address2 = Column(VARCHAR2(50))  # noqa: ERA001
+        # work_towncode = Column(VARCHAR2(7))  # noqa: ERA001
+        # work_town = Column(VARCHAR2(25))  # noqa: ERA001
+        # work_state = Column(VARCHAR2(5))  # noqa: ERA001
         work_phone=_generate_phone_number(faker, member_id, 10),
         e_mail=f"{first_name.lower()}.{last_name.lower()}@mailinator.com",
         home_addr="~~~Ignored~~~",
-        # home_towncode = Column(VARCHAR2(7))
-        # home_town = Column(VARCHAR2(25))
-        # home_state = Column(VARCHAR2(5))
+        # home_towncode = Column(VARCHAR2(7))  # noqa: ERA001
+        # home_town = Column(VARCHAR2(25))  # noqa: ERA001
+        # home_state = Column(VARCHAR2(5))  # noqa: ERA001
         home_phone=_generate_phone_number(faker, member_id, 10),
-        # mail_preference = Column(VARCHAR2(1))
-        # favourite_mailing_post = Column(VARCHAR2(1))
+        # mail_preference = Column(VARCHAR2(1))  # noqa: ERA001
+        # favourite_mailing_post = Column(VARCHAR2(1))  # noqa: ERA001
         member_entrance=str(_generate_member_entrance(faker, membership_type)),
         cell_phone=_generate_phone_number(faker, member_id, 90),
-        # gender = Column(CHAR(1))
-        # valid_until_date = Column(DATE)
-        # last_updated_date = Column(DATE)
-        # valid_from_date = Column(DATE)
+        # gender = Column(CHAR(1))  # noqa: ERA001
+        # valid_until_date = Column(DATE)  # noqa: ERA001
+        # last_updated_date = Column(DATE)  # noqa: ERA001
+        # valid_from_date = Column(DATE)  # noqa: ERA001
     )
 
 
@@ -176,7 +177,8 @@ def _generate_user(faker: Faker, member: MemberEntity) -> UserEntity:
     password_hash = hash_ycc_password(username)
 
     if not verify_ycc_password(username, password_hash):
-        raise AssertionError(f"Password hash verification failed for {username}")
+        msg = f"Password hash verification failed for {username}"
+        raise AssertionError(msg)
 
     return UserEntity(
         member_id=member.id,
@@ -217,7 +219,8 @@ def _generate_member_fee_records(
         # Fixed honorary member without any payments
         return fee_records
 
-    # This test data generator really tries to simulate the existing database, e.g., missing payment records from the database
+    # This test data generator really tries to simulate the existing database,
+    # e.g., missing payment records
     for year in range(int(member.member_entrance), CURRENT_YEAR + 1):
         if faker.pybool(truth_probability=95):
             fee_records.append(_create_fee_record(faker, member, year, 350))
@@ -261,6 +264,7 @@ def _generate_paid_mode(faker: Faker) -> str | None:
 
 
 def get_member_info_by_id(member_id: int, member_infos: list[MemberInfo]) -> MemberInfo:
+    """Find a member info by member ID."""
     return next(
         filter(lambda member_info: member_info.member.id == member_id, member_infos)
     )
@@ -269,12 +273,14 @@ def get_member_info_by_id(member_id: int, member_infos: list[MemberInfo]) -> Mem
 def get_members_with_payment_current_year(
     member_infos: list[MemberInfo],
 ) -> Iterator[MemberInfo]:
+    """Filter members who paid fees this year."""
     return filter(_paid_fee_current_year, member_infos)
 
 
 def get_members_without_payment_current_year(
     member_infos: list[MemberInfo],
 ) -> Iterator[MemberInfo]:
+    """Filter members who did not pay fees this year."""
     return filter(
         _did_not_pay_fee_current_year,
         member_infos,
@@ -296,6 +302,7 @@ def _did_not_pay_fee_current_year(member_info: MemberInfo) -> bool:
 def get_members_with_licence(
     member_infos: list[MemberInfo], licence_info_id: int
 ) -> Iterator[MemberInfo]:
+    """Filter members who have a specific licence."""
     return filter(
         lambda member_info: _has_licence(member_info, licence_info_id), member_infos
     )
@@ -304,6 +311,7 @@ def get_members_with_licence(
 def get_members_without_licence(
     member_infos: list[MemberInfo], licence_info_id: int
 ) -> Iterator[MemberInfo]:
+    """Filter members who lack a specific licence."""
     return filter(
         lambda member_info: _lacks_licence(member_info, licence_info_id), member_infos
     )

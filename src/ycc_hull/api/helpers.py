@@ -1,13 +1,11 @@
-"""
-Helpers API endpoints.
-"""
+"""Helpers API endpoints."""
 
 from collections.abc import Sequence
-from datetime import date
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
-from ycc_hull.api.errors import create_http_exception_403
+from ycc_hull.api.errors import create_http_error_403
 from ycc_hull.app_controllers import get_helpers_controller
 from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
@@ -22,15 +20,17 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
+from ycc_hull.utils import get_now
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
 
 
 @api_helpers.get("/api/v1/helpers/permissions")
 async def helpers_permissions_get(
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> Sequence[HelpersAppPermissionDto]:
+    """List all helpers app permissions."""
     _check_can_manage_permissions(user)
 
     return await controller.find_all_permissions()
@@ -39,9 +39,10 @@ async def helpers_permissions_get(
 @api_helpers.post("/api/v1/helpers/permissions")
 async def helpers_permissions_grant(
     request: HelpersAppPermissionGrantRequestDto,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelpersAppPermissionDto:
+    """Grant a helpers app permission."""
     _check_can_manage_permissions(user)
 
     return await controller.grant_permission(request, user)
@@ -51,9 +52,10 @@ async def helpers_permissions_grant(
 async def helpers_permissions_update(
     member_id: int,
     request: HelpersAppPermissionUpdateRequestDto,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelpersAppPermissionDto:
+    """Update a helpers app permission."""
     _check_can_manage_permissions(user)
 
     return await controller.update_permission(member_id, request, user)
@@ -62,9 +64,10 @@ async def helpers_permissions_update(
 @api_helpers.delete("/api/v1/helpers/permissions/{member_id}")
 async def helpers_permissions_revoke(
     member_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> Response:
+    """Revoke a helpers app permission."""
     _check_can_manage_permissions(user)
 
     await controller.revoke_permission(member_id, user)
@@ -73,24 +76,26 @@ async def helpers_permissions_revoke(
 
 @api_helpers.get("/api/v1/helpers/task-categories")
 async def helper_task_categories_get(
-    controller: HelpersController = Depends(get_helpers_controller),
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> Sequence[HelperTaskCategoryDto]:
+    """List all helper task categories."""
     return await controller.find_all_task_categories()
 
 
 @api_helpers.get("/api/v1/helpers/tasks")
 async def helper_tasks_get(
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
     year: int | None = None,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
 ) -> Sequence[HelperTaskDto]:
+    """List helper tasks, optionally filtered by year."""
     if not _can_access_year(year, user):
         error_message = (
             f"You do not have permission to list tasks for {year}"
             if year
             else "You do not have permission to list all tasks"
         )
-        raise create_http_exception_403(error_message)
+        raise create_http_error_403(error_message)
 
     return await controller.find_all_tasks(year=year, published=_published(user))
 
@@ -98,13 +103,15 @@ async def helper_tasks_get(
 @api_helpers.get("/api/v1/helpers/tasks/{task_id}")
 async def helper_tasks_get_by_id(
     task_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Get a helper task by ID."""
     task = await controller.get_task_by_id(task_id, published=_published(user))
 
     if not _can_access_year(task.year, user):
-        raise create_http_exception_403("You do not have permission to view this task")
+        msg = "You do not have permission to view this task"
+        raise create_http_error_403(msg)
 
     return task
 
@@ -112,17 +119,16 @@ async def helper_tasks_get_by_id(
 @api_helpers.post("/api/v1/helpers/tasks")
 async def helper_tasks_create(
     request: HelperTaskCreationRequestDto,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Create a new helper task."""
     if not user.helpers_app_admin and not user.helpers_app_editor:
-        raise create_http_exception_403(
-            "You do not have permission to create helper tasks"
-        )
+        msg = "You do not have permission to create helper tasks"
+        raise create_http_error_403(msg)
     if not user.helpers_app_admin and request.contact_id != user.member_id:
-        raise create_http_exception_403(
-            "You have to be the contact for the tasks you create"
-        )
+        msg = "You have to be the contact for the tasks you create"
+        raise create_http_error_403(msg)
 
     return await controller.create_task(request, user)
 
@@ -131,9 +137,10 @@ async def helper_tasks_create(
 async def helper_tasks_update(
     task_id: int,
     request: HelperTaskUpdateRequestDto,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Update an existing helper task."""
     await _check_can_update(
         task_id, contact_id=request.contact_id, user=user, controller=controller
     )
@@ -144,9 +151,8 @@ async def helper_tasks_update(
         request.contact_id != user.member_id
         or existing_task.contact.id != user.member_id
     ):
-        raise create_http_exception_403(
-            "You have to be the contact for the tasks you update"
-        )
+        msg = "You have to be the contact for the tasks you update"
+        raise create_http_error_403(msg)
 
     return await controller.update_task(task_id, request, user)
 
@@ -155,9 +161,10 @@ async def helper_tasks_update(
 async def helper_tasks_captain_set(
     task_id: int,
     member_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Set the captain for a helper task."""
     await _check_can_update(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
@@ -168,9 +175,10 @@ async def helper_tasks_captain_set(
 @api_helpers.delete("/api/v1/helpers/tasks/{task_id}/captain")
 async def helper_tasks_captain_remove(
     task_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Remove the captain from a helper task."""
     await _check_can_update(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
@@ -182,9 +190,10 @@ async def helper_tasks_captain_remove(
 async def helper_tasks_helper_add(
     task_id: int,
     member_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Add a helper to a task."""
     await _check_can_update(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
@@ -196,9 +205,10 @@ async def helper_tasks_helper_add(
 async def helper_tasks_helper_remove(
     task_id: int,
     member_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Remove a helper from a task."""
     await _check_can_update(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
@@ -209,18 +219,20 @@ async def helper_tasks_helper_remove(
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-captain")
 async def helper_tasks_sign_up_as_captain(
     task_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Sign up as captain for a task."""
     return await controller.sign_up_as_captain(task_id, user)
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-helper")
 async def helper_tasks_sign_up_as_helper(
     task_id: int,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Sign up as helper for a task."""
     return await controller.sign_up_as_helper(task_id, user)
 
 
@@ -228,18 +240,18 @@ async def helper_tasks_sign_up_as_helper(
 async def helper_tasks_mark_as_done(
     task_id: int,
     request: HelperTaskMarkAsDoneRequestDto,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Mark a helper task as done."""
     if not user.helpers_app_admin:
         task = await helper_tasks_get_by_id(task_id, user, controller)
         if not (
             task.contact.id == user.member_id
             or (task.captain and task.captain.member.id == user.member_id)
         ):
-            raise create_http_exception_403(
-                "You do not have permission to mark this task as done"
-            )
+            msg = "You do not have permission to mark this task as done"
+            raise create_http_error_403(msg)
 
     await controller.mark_as_done(task_id, request, user)
     return await controller.get_task_by_id(task_id, published=True)
@@ -249,15 +261,15 @@ async def helper_tasks_mark_as_done(
 async def helper_tasks_validate(
     task_id: int,
     request: HelperTaskValidationRequestDto,
-    user: User = Depends(auth),
-    controller: HelpersController = Depends(get_helpers_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
+    """Validate a completed helper task."""
     if not user.helpers_app_admin:
         task = await helper_tasks_get_by_id(task_id, user, controller)
         if task.contact.id != user.member_id:
-            raise create_http_exception_403(
-                "You do not have permission to validate this task"
-            )
+            msg = "You do not have permission to validate this task"
+            raise create_http_error_403(msg)
 
     await controller.validate(task_id, request, user)
     return await controller.get_task_by_id(task_id, published=True)
@@ -265,7 +277,8 @@ async def helper_tasks_validate(
 
 def _check_can_manage_permissions(user: User) -> None:
     if not user.helpers_app_admin:
-        raise create_http_exception_403("Forbidden")
+        msg = "Forbidden"
+        raise create_http_error_403(msg)
 
 
 def _published(user: User) -> bool | None:
@@ -273,7 +286,7 @@ def _published(user: User) -> bool | None:
 
 
 def _can_access_year(year: int | None, user: User) -> bool:
-    current_year = date.today().year
+    current_year = get_now().year
 
     return (
         year == current_year
@@ -288,15 +301,13 @@ async def _check_can_update(
     task_id: int, *, contact_id: int, user: User, controller: HelpersController
 ) -> None:
     if not user.helpers_app_admin and not user.helpers_app_editor:
-        raise create_http_exception_403(
-            "You do not have permission to update helper tasks"
-        )
+        msg = "You do not have permission to update helper tasks"
+        raise create_http_error_403(msg)
 
     existing_task = await helper_tasks_get_by_id(task_id, user, controller)
 
     if user.helpers_app_editor and (
         contact_id != user.member_id or existing_task.contact.id != user.member_id
     ):
-        raise create_http_exception_403(
-            "You have to be the contact for the tasks you update"
-        )
+        msg = "You have to be the contact for the tasks you update"
+        raise create_http_error_403(msg)

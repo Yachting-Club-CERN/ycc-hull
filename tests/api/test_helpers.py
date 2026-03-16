@@ -1,6 +1,4 @@
-"""
-Helpers API tests.
-"""
+"""Helpers API tests."""
 
 import json
 from datetime import timedelta
@@ -61,33 +59,31 @@ task_update_shift = {**task_creation_shift, "notifySignedUpMembers": True}
 
 task_update_deadline = {**task_creation_deadline, "notifySignedUpMembers": False}
 
-audit_keys = set(
-    [
-        "@type",
-        "id",
-        "category",
-        "title",
-        "shortDescription",
-        "longDescription",
-        "contact",
-        "startsAt",
-        "endsAt",
-        "deadline",
-        "urgent",
-        "captainRequiredLicenceInfo",
-        "helperMinCount",
-        "helperMaxCount",
-        "published",
-        "captain",
-        "helpers",
-        "markedAsDoneAt",
-        "markedAsDoneBy",
-        "markedAsDoneComment",
-        "validatedAt",
-        "validatedBy",
-        "validationComment",
-    ]
-)
+audit_keys = {
+    "@type",
+    "id",
+    "category",
+    "title",
+    "shortDescription",
+    "longDescription",
+    "contact",
+    "startsAt",
+    "endsAt",
+    "deadline",
+    "urgent",
+    "captainRequiredLicenceInfo",
+    "helperMinCount",
+    "helperMaxCount",
+    "published",
+    "captain",
+    "helpers",
+    "markedAsDoneAt",
+    "markedAsDoneBy",
+    "markedAsDoneComment",
+    "validatedAt",
+    "validatedBy",
+    "validationComment",
+}
 
 
 @pytest_asyncio.fixture(scope="module", autouse=True)
@@ -101,7 +97,8 @@ async def get_last_audit_log_entry() -> AuditLogEntryEntity:
             select(AuditLogEntryEntity).order_by(AuditLogEntryEntity.id.desc()).limit(1)
         )
         if not entry:
-            raise AssertionError("No audit log entry found")
+            msg = "No audit log entry found"
+            raise AssertionError(msg)
         return entry
 
 
@@ -161,7 +158,7 @@ async def test_create_task_as_editor() -> None:
     # Then
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
-    assert SANITISED_SHORT_DESCRIPTION == response_dto.short_description
+    assert response_dto.short_description == SANITISED_SHORT_DESCRIPTION
 
     await verify_creation_audit_log_entry(response_dto.short_description)
 
@@ -177,7 +174,7 @@ async def test_create_task_as_admin() -> None:
     # Then
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
-    assert SANITISED_SHORT_DESCRIPTION == response_dto.short_description
+    assert response_dto.short_description == SANITISED_SHORT_DESCRIPTION
 
     await verify_creation_audit_log_entry(response_dto.short_description)
 
@@ -190,7 +187,8 @@ def test_create_task_fails_if_not_admin_nor_editor() -> None:
     response = client.post("/api/v1/helpers/tasks", json=task_creation_shift)
 
     # Then
-    assert response.status_code == 403 and response.json() == {
+    assert response.status_code == 403
+    assert response.json() == {
         "detail": "You do not have permission to create helper tasks"
     }
 
@@ -203,7 +201,8 @@ def test_create_task_fails_if_editor_but_not_contact() -> None:
     response = client.post("/api/v1/helpers/tasks", json=task_creation_deadline)
 
     # Then
-    assert response.status_code == 403 and response.json() == {
+    assert response.status_code == 403
+    assert response.json() == {
         "detail": "You have to be the contact for the tasks you create"
     }
 
@@ -225,7 +224,7 @@ async def test_update_task_as_editor() -> None:
     assert response.status_code == 200
     response_dto = HelperTaskDto(**response.json())
     assert task_id == response_dto.id
-    assert SANITISED_SHORT_DESCRIPTION == response_dto.short_description
+    assert response_dto.short_description == SANITISED_SHORT_DESCRIPTION
 
     await verify_update_audit_log_entry(
         task_id,
@@ -246,7 +245,8 @@ def test_update_task_fails_if_not_admin_nor_editor() -> None:
     response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_update_deadline)
 
     # Then
-    assert response.status_code == 403 and response.json() == {
+    assert response.status_code == 403
+    assert response.json() == {
         "detail": "You do not have permission to update helper tasks"
     }
 
@@ -263,7 +263,8 @@ def test_update_task_fails_if_editor_but_not_contact() -> None:
     response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=task_update_deadline)
 
     # Then
-    assert response.status_code == 403 and response.json() == {
+    assert response.status_code == 403
+    assert response.json() == {
         "detail": "You have to be the contact for the tasks you update"
     }
 
@@ -296,10 +297,8 @@ def test_update_task_if_anyone_signed_up() -> None:
     response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=request)
 
     # Then
-    assert (
-        response.status_code == 200
-        and response.json()["shortDescription"] == "Short description 2"
-    )
+    assert response.status_code == 200
+    assert response.json()["shortDescription"] == "Short description 2"
 
 
 def test_update_task_cannot_unpublish_if_anyone_signed_up() -> None:
@@ -323,6 +322,7 @@ def test_update_task_cannot_unpublish_if_anyone_signed_up() -> None:
     response = client.put(f"/api/v1/helpers/tasks/{task_id}", json=request)
 
     # Then
-    assert response.status_code == 409 and response.json() == {
+    assert response.status_code == 409
+    assert response.json() == {
         "detail": "You must publish a task after anyone has signed up"
     }

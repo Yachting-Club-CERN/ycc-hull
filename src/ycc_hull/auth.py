@@ -1,6 +1,4 @@
-"""
-Keycloak authentication components.
-"""
+"""Keycloak authentication components."""
 
 import logging
 
@@ -9,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from keycloak import KeycloakOpenID
 from keycloak.exceptions import KeycloakAuthenticationError, KeycloakInvalidTokenError
 
-from ycc_hull.api.errors import create_http_exception_401
+from ycc_hull.api.errors import create_http_error_401
 from ycc_hull.config import CONFIG
 from ycc_hull.models.user import User
 from ycc_hull.utils import full_type_name
@@ -33,14 +31,16 @@ _KEYCLOAK = KeycloakOpenID(
 
 
 # Programmatic access to the token endpoint: _KEYCLOAK.well_known()["token_endpoint"]
-TOKEN_ENDPOINT = f"{CONFIG.keycloak.server_url}/realms/{CONFIG.keycloak.realm}/protocol/openid-connect/token"
+TOKEN_ENDPOINT = (
+    f"{CONFIG.keycloak.server_url}/realms/"
+    f"{CONFIG.keycloak.realm}/protocol/openid-connect/token"
+)
 _logger.info("Initialising OAuth 2 scheme with token endpoint: %s", TOKEN_ENDPOINT)
 _OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl=TOKEN_ENDPOINT)
 
 
 def _create_user(user_info: dict, token_info: dict) -> User:
-    """
-    Creates a user.
+    """Create a user.
 
     User info looks like this:
 
@@ -48,7 +48,12 @@ def _create_user(user_info: dict, token_info: dict) -> User:
     {
         'sub': 'f:034bfedc-ed3d-4169-be68-9fd337eddff2:1',
         'email_verified': False,
-        'roles': ['ycc-member-active', 'offline_access', 'ycc-helpers-app-admin', 'uma_authorization'],
+        'roles': [
+            'ycc-member-active',
+            'offline_access',
+            'ycc-helpers-app-admin',
+            'uma_authorization',
+        ],
         'name': 'Michele Huff',
         'groups': ['ycc-members-all-past-and-present'],
         'preferred_username': 'MHUFF',
@@ -79,8 +84,23 @@ def _create_user(user_info: dict, token_info: dict) -> User:
         'email_verified': False,
         'acr': '1',
         'allowed-origins': ['http://localhost:8000'],
-        'realm_access': {'roles': ['ycc-member-active', 'offline_access', 'ycc-helpers-app-admin', 'uma_authorization']},
-        'resource_access': {'account': {'roles': ['manage-account', 'manage-account-links', 'view-profile']}},
+        'realm_access': {
+            'roles': [
+                'ycc-member-active',
+                'offline_access',
+                'ycc-helpers-app-admin',
+                'uma_authorization',
+            ],
+        },
+        'resource_access': {
+            'account': {
+                'roles': [
+                    'manage-account',
+                    'manage-account-links',
+                    'view-profile',
+                ],
+            },
+        },
         'scope': 'openid profile ycc-client-groups-and-roles email',
         'sid': '0b1bdf08-7d0d-4a50-9804-9faffb6daa88',
         'client_id': 'ycc-hull-local-swagger',
@@ -95,8 +115,8 @@ def _create_user(user_info: dict, token_info: dict) -> User:
 
     Returns:
         User: user object
-    """
 
+    """
     return User(
         # 292 is YCC DB ID from sub 'f:a9b693ac-d9aa-43c7-8b68-b3bb7d30cc8e:292'
         member_id=int(user_info.get("sub", token_info.get("sub")).split(":")[-1]),
@@ -115,8 +135,7 @@ def _create_user(user_info: dict, token_info: dict) -> User:
 
 
 async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
-    """
-    Authentication dependency.
+    """Authenticate the request and return a User.
 
     Args:
         token (str): OAuth 2 scheme bearer
@@ -126,26 +145,28 @@ async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
 
     Returns:
         User: user object
+
     """
     _logger.debug("Authenticating...")
     try:
         _logger.debug("Token: %s", token)
 
-        user_info = _KEYCLOAK.userinfo(token)  # cspell:disable-line
+        # Practically it is always a dict, not bytes
+        user_info: dict = _KEYCLOAK.userinfo(token)  # type: ignore[assignment]  # cspell:disable-line
         _logger.debug("User info: %s", user_info)
         token_info = _KEYCLOAK.introspect(token)
         _logger.debug("Token info: %s", token_info)
 
         if not token_info["active"]:
             _logger.warning("Authentication failed")
-            raise create_http_exception_401(_INACTIVE_USER)
+            raise create_http_error_401(_INACTIVE_USER)
 
         user = _create_user(user_info=user_info, token_info=token_info)
         _logger.debug("Authentication succeeded: %s", user)
 
         if not user.active_member:
             _logger.info("Inactive member: %s, roles: %s", user.username, user.roles)
-            raise create_http_exception_401(_INACTIVE_MEMBER)
+            raise create_http_error_401(_INACTIVE_MEMBER)
 
         _logger.info(
             "Active member: %s (%d), groups: %s, roles: %s",
@@ -154,11 +175,9 @@ async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
             user.groups,
             user.roles,
         )
-        return user
+        return user  # noqa: TRY300 - easier to read
     except (KeycloakAuthenticationError, KeycloakInvalidTokenError) as exc:
         _logger.warning(
             "Authentication failed: %s: %s", full_type_name(exc.__class__), exc
         )
-        raise create_http_exception_401(  # pylint: disable=raise-missing-from
-            _AUTHENTICATION_FAILED
-        )
+        raise create_http_error_401(_AUTHENTICATION_FAILED)  # noqa: B904

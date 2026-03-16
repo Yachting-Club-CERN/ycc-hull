@@ -1,6 +1,4 @@
-"""
-Members controller.
-"""
+"""Members controller."""
 
 from collections.abc import Sequence
 
@@ -17,15 +15,14 @@ from ycc_hull.models.dtos import MemberPublicInfoDto, MembershipTypeDto, UserDto
 
 
 class MembersController(BaseController):
-    """
-    Members controller. Returns DTO objects.
-    """
+    """Members controller. Returns DTO objects."""
 
     async def find_all_public_infos(
         self,
         *,
         year: int,
     ) -> Sequence[MemberPublicInfoDto]:
+        """Return public info for all members in a year."""
         query = (
             select(MemberEntity)
             .outerjoin(FeeRecordEntity)
@@ -47,12 +44,14 @@ class MembersController(BaseController):
         )
 
     async def find_all_membership_types(self) -> Sequence[MembershipTypeDto]:
+        """Return all membership types."""
         return await self.database_context.query_all(
             select(MembershipTypeEntity).order_by(MembershipTypeEntity.e_desc),
             async_transformer=MembershipTypeDto.create,
         )
 
     async def find_all_users(self) -> Sequence[UserDto]:
+        """Return all users."""
         return await self.database_context.query_all(
             select(UserEntity).order_by(UserEntity.logon_id),
             async_transformer=UserDto.create,

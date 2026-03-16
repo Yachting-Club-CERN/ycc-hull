@@ -1,6 +1,4 @@
-"""
-Licences controller.
-"""
+"""Licences controller."""
 
 from collections.abc import Sequence
 
@@ -12,11 +10,10 @@ from ycc_hull.models.dtos import LicenceDetailedInfoDto
 
 
 class LicencesController(BaseController):
-    """
-    Licences controller. Returns DTO objects.
-    """
+    """Licences controller. Returns DTO objects."""
 
     async def find_all_licence_infos(self) -> Sequence[LicenceDetailedInfoDto]:
+        """Return all licence infos."""
         return await self.database_context.query_all(
             select(LicenceInfoEntity).order_by(LicenceInfoEntity.nlicence),
             async_transformer=LicenceDetailedInfoDto.create,

@@ -1,6 +1,4 @@
-"""
-Scheduler for running recurring background jobs.
-"""
+"""Scheduler for running recurring background jobs."""
 
 import logging
 
@@ -28,10 +26,12 @@ def _parse_trigger(trigger_str: str | None) -> BaseTrigger | None:
     if trigger_type == "interval-seconds":
         return IntervalTrigger(seconds=int(trigger_value))
 
-    raise ValueError(f"Unsupported trigger type: {trigger_type}")
+    msg = f"Unsupported trigger type: {trigger_type}"
+    raise ValueError(msg)
 
 
 def init_scheduler(app: FastAPI) -> AsyncIOScheduler:
+    """Initialise and configure the task scheduler."""
     scheduler = AsyncIOScheduler(timezone=TIME_ZONE_ID)
 
     trigger = _parse_trigger(CONFIG.notifications.daily_notifications_trigger)

@@ -1,11 +1,15 @@
+"""Test data generator.
+
+Some data can be directly used as it was exported, some needs tailoring, some have to be
+generated.
 """
-Test data generator. Some data can be directly used as it was exported, some needs tailoring, some have to be generated.
-"""
+
+# ruff: noqa: T201
 
 import json
 from collections.abc import Sequence
 from datetime import date, datetime
-from os import path
+from pathlib import Path
 from typing import Any
 
 from faker import Faker
@@ -49,25 +53,29 @@ faker: Faker = Faker()
 Faker.seed(2021)
 
 
-def to_json_dict(obj: Any) -> dict:
+def to_json_dict(obj: Any) -> dict:  # noqa: ANN401
+    """Serialize object for JSON export."""
     # This will cause the importer to handle certain types as objects, not strings
     if isinstance(obj, datetime):
         return {"@type": "datetime", "value": obj.isoformat()}
     if isinstance(obj, date):
         return {"@type": "date", "value": obj.isoformat()}
 
-    raise TypeError(f"Cannot serialize type: {type(obj)}")
+    msg = f"Cannot serialize type: {type(obj)}"
+    raise TypeError(msg)
 
 
 def read_json_file(file_path: str, cls: type[BaseEntity]) -> Sequence[BaseEntity]:
+    """Read entities from a JSON file."""
     print(f"== Reading from {file_path} ...")
-    with open(file_path, "r", encoding="utf-8") as file:
+    with Path(file_path).open(encoding="utf-8") as file:
         return [cls(**entry) for entry in json.load(file)]
 
 
-def write_json_file(file_path: str, entries: Sequence[BaseEntity]) -> None:
+def write_json_file(file_path: Path, entries: Sequence[BaseEntity]) -> None:
+    """Write entities to a JSON file."""
     print(f"Writing {file_path} ...")
-    with open(file_path, "w", encoding="utf-8") as file:
+    with file_path.open("w", encoding="utf-8") as file:
         json.dump(
             [entry.dict() for entry in entries],
             file,
@@ -76,8 +84,9 @@ def write_json_file(file_path: str, entries: Sequence[BaseEntity]) -> None:
         )
 
 
-def generate(force_regenerate: bool = False) -> None:
-    if path.exists(HOLIDAYS_EXPORTED_JSON_FILE) and not force_regenerate:
+def generate(*, force_regenerate: bool = False) -> None:
+    """Generate test data files."""
+    if HOLIDAYS_EXPORTED_JSON_FILE.exists() and not force_regenerate:
         print("== Skipping holidays")
     else:
         print("== Generating holidays...")
@@ -86,17 +95,18 @@ def generate(force_regenerate: bool = False) -> None:
     licence_infos = generate_licence_infos()
     licences_to_ids = {info.nlicence: info.infoid for info in licence_infos}
 
-    if path.exists(LICENCE_INFOS_JSON_FILE) and not force_regenerate:
+    if LICENCE_INFOS_JSON_FILE.exists() and not force_regenerate:
         print("== Skipping licence infos")
     else:
         print("== Generating licence infos...")
         write_json_file(LICENCE_INFOS_JSON_FILE, licence_infos)
 
-    if path.exists(MEMBERS_JSON_FILE) and not force_regenerate:
+    if MEMBERS_JSON_FILE.exists() and not force_regenerate:
         print("== Skipping members")
     else:
         print(
-            "== Generating members (and users, entrance fee records, fee records and licences)..."
+            "== Generating members "
+            "(and users, entrance fee records, fee records and licences)..."
         )
         member_infos = generate_member_infos(faker, licences_to_ids, MEMBER_COUNT)
         members = [member_info.member for member_info in member_infos]
@@ -155,13 +165,13 @@ def generate(force_regenerate: bool = False) -> None:
             + next(get_members_without_licence(member_infos[100:], 9)).user.logon_id
         )
 
-    if path.exists(BOATS_JSON_FILE) and not force_regenerate:
+    if BOATS_JSON_FILE.exists() and not force_regenerate:
         print("== Skipping boats")
     else:
         print("== Generating boats...")
         write_json_file(BOATS_JSON_FILE, generate_boats())
 
-    if path.exists(HELPER_TASKS_JSON_FILE) and not force_regenerate:
+    if HELPER_TASKS_JSON_FILE.exists() and not force_regenerate:
         print("== Skipping helper data")
     else:
         print("== Generating helpers data (categories, tasks, helpers)...")
@@ -176,7 +186,8 @@ def generate(force_regenerate: bool = False) -> None:
 
 
 def regenerate() -> None:
-    generate(True)
+    """Regenerate test data files."""
+    generate(force_regenerate=True)
 
 
 if __name__ == "__main__":

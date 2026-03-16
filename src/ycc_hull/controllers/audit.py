@@ -1,6 +1,4 @@
-"""
-Audit log. Persisted in the DB.
-"""
+"""Audit log. Persisted in the DB."""
 
 import json
 from datetime import date, datetime
@@ -20,7 +18,7 @@ _APPLICATION = (
 )
 
 
-def _to_json_dict(obj: Any) -> dict:
+def _to_json_dict(obj: Any) -> dict:  # noqa: ANN401
     if isinstance(obj, datetime):
         return {"@type": "datetime", "value": obj.isoformat()}
     if isinstance(obj, date):
@@ -29,16 +27,18 @@ def _to_json_dict(obj: Any) -> dict:
         return {"@type": full_type_name(obj.__class__), **obj.model_dump(by_alias=True)}
     # Note: entities are not allowed since it is much better to audit the DTOs
 
-    raise TypeError(f"Cannot serialize type: {type(obj)}")
+    msg = f"Cannot serialize type: {type(obj)}"
+    raise TypeError(msg)
 
 
-def _to_pretty_json(obj: Any) -> str:
+def _to_pretty_json(obj: Any) -> str:  # noqa: ANN401
     return json.dumps(obj, indent=2, default=_to_json_dict)
 
 
 def create_audit_entry(
     user: User, description: str, data: dict | None = None
 ) -> AuditLogEntryEntity:
+    """Create an audit log entry entity."""
     return AuditLogEntryEntity(
         application=_APPLICATION,
         principal=user.username,

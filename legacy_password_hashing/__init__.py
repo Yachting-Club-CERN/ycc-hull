@@ -1,0 +1,1 @@
+"""Legacy password hashing demo."""

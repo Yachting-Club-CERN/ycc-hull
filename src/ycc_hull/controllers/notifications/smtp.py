@@ -1,7 +1,9 @@
+"""SMTP connection and email sending."""
+
 import logging
 from email.message import EmailMessage
 from types import TracebackType
-from typing import Type
+from typing import Self
 
 import aiosmtplib
 
@@ -12,16 +14,18 @@ from ycc_hull.utils import full_type_name
 class SmtpConnection:
     """Context manager for an SMTP connection."""
 
-    def __init__(self, config: EmailConfig | None = None):
-        config_to_use = config if config else CONFIG.email
+    def __init__(self, config: EmailConfig | None = None) -> None:
+        """Initialise the SMTP connection context manager."""
+        config_to_use = config or CONFIG.email
         if config_to_use is None:
-            raise ValueError("Email configuration is not set")
+            msg = "Email configuration is not set"
+            raise ValueError(msg)
 
         self._logger = logging.getLogger(full_type_name(self.__class__))
         self._config = config_to_use
         self._smtp: aiosmtplib.SMTP | None = None
 
-    async def __aenter__(self) -> "SmtpConnection":
+    async def __aenter__(self) -> Self:
         self._logger.info(
             "Connecting to SMTP server %s:%s as username=%s, start TLS: %s",
             self._config.smtp_host,
@@ -44,7 +48,7 @@ class SmtpConnection:
 
     async def __aexit__(
         self,
-        exc_type: Type[BaseException] | None,
+        exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> bool | None:
@@ -65,8 +69,10 @@ class SmtpConnection:
         return False
 
     async def send_message(self, message: EmailMessage) -> None:
+        """Send an email."""
         if not self._smtp:
-            raise RuntimeError("SMTP connection is not established")
+            msg = "SMTP connection is not established"
+            raise RuntimeError(msg)
 
         subject = f"{message['Subject']} - {CONFIG.ycc_app.name}"
         del message["Subject"]
@@ -80,7 +86,12 @@ class SmtpConnection:
 
             if index != -1:
                 offset = len(body_tag)
-                content = f"{content[:index + offset]}\n{self._config.content_header}\n<p>\n{content[index + offset:]}"
+                content = (
+                    f"{content[: index + offset]}\n"
+                    f"{self._config.content_header}\n"
+                    "<p>\n"
+                    f"{content[index + offset :]}"
+                )
             else:
                 content = f"{self._config.content_header}\n\n{content}"
 
@@ -90,7 +101,8 @@ class SmtpConnection:
             )
 
         self._logger.info(
-            "Sending email (Subject: %s, To: %s, Cc: %s, Bcc: %s, Reply-To: %s, content length: %d)",
+            "Sending email (Subject: %s, To: %s, Cc: %s, Bcc: %s, Reply-To: %s, "
+            "content length: %d)",
             message["Subject"],
             message["To"],
             message["Cc"],
@@ -102,5 +114,6 @@ class SmtpConnection:
         await self._smtp.send_message(message)
 
     async def send_messages(self, messages: list[EmailMessage]) -> None:
+        """Send multiple emails."""
         for message in messages:
             await self.send_message(message)

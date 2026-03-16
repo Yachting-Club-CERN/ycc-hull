@@ -1,13 +1,11 @@
-"""
-Load test configuration.
-"""
+"""Load test configuration."""
 
 from ycc_hull.config import Environment
 
 AUTH_ENVIRONMENT = Environment.DEVELOPMENT
 
 ADMIN_USER = "MHUFF"
-OTHER_USER = "TMCDONAL"
+OTHER_USER = "JYORK"
 API_BASE_URL = "/api/v1"
 
 if AUTH_ENVIRONMENT == Environment.DEVELOPMENT:
@@ -19,6 +17,5 @@ elif AUTH_ENVIRONMENT == Environment.LOCAL:
     AUTH_REALM = "YCC-LOCAL"
     AUTH_CLIENT_ID = "ycc-load-test-local"
 else:
-    raise AssertionError(
-        f"Unsupported load testing auth environment: {AUTH_ENVIRONMENT}"
-    )
+    msg = f"Unsupported load testing auth environment: {AUTH_ENVIRONMENT}"
+    raise AssertionError(msg)

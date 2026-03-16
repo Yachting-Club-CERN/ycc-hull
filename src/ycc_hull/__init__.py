@@ -1,0 +1,1 @@
+"""YCC Hull application."""

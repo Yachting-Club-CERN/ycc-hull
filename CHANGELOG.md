@@ -7,9 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### [1.3.0] - 2026-03-??
+
 ### Added
 
-- API endpoints for granting, updating and revoking permissions
+- API endpoints for granting, updating and revoking permissions (deployed in 2025)
+- Tooling: uv, Ruff, ty, Makefile
+
+### Changed
+
+- Dependency upgrades (2026-03), notable:
+  - lxml 6
+  - python-keycloak 7
+  - sqlacodegen 4
+- Regenerate test data for 2026
+- Many fixes for the new Ruff rules
+
+### Removed
+
+- Tooling: Poetry, Black, isort, Flake8, PyLint, MyPy
+- `pytz` (using stdlib instead)
 
 ## [1.2.0] - 2025-04-09
 
@@ -33,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow editors to change timing of helper tasks
 - Do not allow changing the year of the task if anyone has signed up
 - Do not allow members to sign up as helper for multiple surveillance shifts before mid-June
-- Unset `urgent` for validated tasks 
+- Unset `urgent` for validated tasks
 - Hierarchical `config.json` for better readability
 - UTF-8 log file
 

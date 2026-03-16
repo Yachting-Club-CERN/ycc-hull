@@ -1,6 +1,4 @@
-"""
-Database playground.
-"""
+"""Database playground."""
 
 import asyncio
 
@@ -25,6 +23,7 @@ def _username(member: MemberEntity) -> str:
 
 
 async def dump_members_and_fees() -> None:
+    """Dump all members with their fee records."""
     with database_context.session() as session:
         members: ScalarResult[MemberEntity] = (
             session.scalars(select(MemberEntity).order_by(MemberEntity.id))
@@ -54,6 +53,7 @@ async def dump_members_and_fees() -> None:
 
 
 async def dump_members_and_licences() -> None:
+    """Dump all members with their licences."""
     with database_context.session() as session:
         print("=" * 80)
         members: ScalarResult[MemberEntity] = (
@@ -75,19 +75,24 @@ async def dump_members_and_licences() -> None:
                 if not licence.status
             ]
             print(
-                f"> {_username(member)}: {active_licences} (inactive: {inactive_licences}))"
+                f"> {_username(member)}: {active_licences} "
+                f"(inactive: {inactive_licences}))"
             )
 
 
 async def dump_helper_tasks() -> None:
+    """Dump all helper tasks with details."""
     print(
-        f"COUNT(HelperTaskCategoryEntity): {await database_context.query_count(HelperTaskCategoryEntity)}"
+        "COUNT(HelperTaskCategoryEntity): "
+        f"{await database_context.query_count(HelperTaskCategoryEntity)}"
     )
     print(
-        f"COUNT(HelperTaskEntity): {await database_context.query_count(HelperTaskEntity)}"
+        "COUNT(HelperTaskEntity): "
+        f"{await database_context.query_count(HelperTaskEntity)}"
     )
     print(
-        f"COUNT(HelperTaskHelperEntity): {await database_context.query_count(HelperTaskHelperEntity)}"
+        "COUNT(HelperTaskHelperEntity): "
+        f"{await database_context.query_count(HelperTaskHelperEntity)}"
     )
 
     with database_context.session() as session:
@@ -108,7 +113,8 @@ async def dump_helper_tasks() -> None:
             print(">")
             print(f"> {helper_task.category.title} / {helper_task.title}")
             print(
-                f">   Timing: {helper_task.starts_at} / {helper_task.ends_at} / {helper_task.deadline}"
+                f">   Timing: {helper_task.starts_at} / {helper_task.ends_at} / "
+                f"{helper_task.deadline}"
             )
 
             captain_required_licence_info = (
@@ -117,7 +123,8 @@ async def dump_helper_tasks() -> None:
             if captain_required_licence_info:
                 print(f">   Required licence: {captain_required_licence_info.nlicence}")
             print(
-                f">   Helpers needed: {helper_task.helper_min_count} - {helper_task.helper_max_count}"
+                f">   Helpers needed: {helper_task.helper_min_count} - "
+                f"{helper_task.helper_max_count}"
             )
             print(">")
             print()
@@ -136,6 +143,7 @@ async def dump_helper_tasks() -> None:
 
 
 async def run() -> None:
+    """Run the playground queries."""
     await dump_members_and_fees()
 
     print("=" * 80)
@@ -152,6 +160,7 @@ async def run() -> None:
 
 
 def main() -> None:
+    """Entry point for the playground script."""
     asyncio.run(run())
 
 

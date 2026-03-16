@@ -9,34 +9,20 @@ jobs:
     # Avoid duplicated CI
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Set Up Poetry
-        uses: abatilo/actions-poetry@v4
-      - name: Install
-        run: poetry install
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+      - name: Init
+        run: make init
       - name: Build
-        run: poetry build
+        run: uv build
       - name: Run test data generator
         run: |
-          poetry run regenerate-test-data
+          make regenerate-test-data
           git status
-      - name: Test
-        run: poetry run pytest --cov=ycc_hull --cov-branch
-      - name: Quick Lint
-        run: |
-          set -x
-          poetry run isort .
-          poetry run black .
-          git status
-          poetry run mypy .
-          poetry run flake8 .
-          set +x
-      - name: Pylint
-        run: |
-          set -x
-          poetry run pylint --jobs 0 legacy_password_hashing load_tests test_data tests ycc_hull
-          set +x
+      - name: Check
+        run: make check

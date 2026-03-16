@@ -1,20 +1,19 @@
-"""
-Base controller.
-"""
+"""Base controller."""
 
 import asyncio
 import logging
 import re
 from abc import ABCMeta
+from collections.abc import Coroutine, Generator
 from contextlib import contextmanager
 from pprint import pformat
-from typing import Any, Coroutine, Generator
+from typing import Any
 
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session
 
 from ycc_hull.controllers.audit import create_audit_entry
-from ycc_hull.controllers.exceptions import ControllerConflictException
+from ycc_hull.controllers.errors import ControllerConflictError
 from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
 from ycc_hull.db.entities import BaseEntity
 from ycc_hull.models.base import CamelisedBaseModel
@@ -22,16 +21,17 @@ from ycc_hull.models.user import User
 from ycc_hull.utils import full_type_name
 
 
-class BaseController(metaclass=ABCMeta):
-    """
-    Base controller.
-    """
+class BaseController(metaclass=ABCMeta):  # noqa: B024
+    """Base controller."""
 
     def __init__(self) -> None:
+        """Initialise the controller."""
         self._logger = logging.getLogger(full_type_name(self.__class__))
+        self._background_tasks: set[asyncio.Task] = set()
 
     @property
     def database_context(self) -> DatabaseContext:
+        """Return the shared database context."""
         return DatabaseContextHolder.context
 
     @contextmanager
@@ -43,15 +43,16 @@ class BaseController(metaclass=ABCMeta):
         user: User | None,
         details: dict[str, Any] | None,
     ) -> Generator[Session, None, None]:
+        """Open a database session with error handling."""
         with self.database_context.session() as session:
             try:
                 yield session
             except DatabaseError as exc:
-                raise self._handle_database_error(  # pylint: disable=raising-bad-type
+                raise self._handle_database_error(  # noqa: B904
                     exc, action=action, user=user, details=details
                 )
 
-    def _handle_database_error(
+    def _handle_database_error(  # noqa: C901
         self,
         exc: DatabaseError,
         *,
@@ -83,16 +84,21 @@ class BaseController(metaclass=ABCMeta):
             if "HELPERS_APP_PERMISSIONS_PK" in message:
                 user_message = "Permission already exists"
         elif "value too large for column" in message:
-            # ORA-12899: value too large for column "YCCLOCAL"."HELPER_TASKS"."TITLE" (actual: 69, maximum: 50)\n
+            # ORA-12899: value too large for column "YCCLOCAL"."HELPER_TASKS"."TITLE"
+            # (actual: 69, maximum: 50)\n
             # [SQL: INSERT INTO...
             user_message = "Value too large"
-            match = re.search(r"value too large for column\s+([^\s]+)", message)
+            match = re.search(
+                r"value too large for column\s+([^\s]+)",
+                message,
+            )
             if match:
-                # Rudimentary solution to at least provide some essential info to the user without
+                # Rudimentary solution to at least provide some essential info to the
+                # user without
                 user_message += ": " + match.group(1).replace('"', "")
 
         if user_message:
-            raise ControllerConflictException(user_message)
+            raise ControllerConflictError(user_message)
 
         raise exc
 
@@ -115,7 +121,9 @@ class BaseController(metaclass=ABCMeta):
         async def wrapper() -> None:
             try:
                 await coroutine
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:
                 self._logger.exception("Background task failed")
 
-        asyncio.create_task(wrapper())
+        task = asyncio.create_task(wrapper())
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)

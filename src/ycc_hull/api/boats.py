@@ -1,6 +1,4 @@
-"""
-Boat API endpoints.
-"""
+"""Boat API endpoints."""
 
 from collections.abc import Sequence
 
@@ -16,4 +14,5 @@ controller = BoatsController()
 
 @api_boats.get("/api/v1/boats")
 async def boats_get() -> Sequence[BoatDto]:
+    """List all boats."""
     return await controller.find_all()

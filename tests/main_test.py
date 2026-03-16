@@ -1,24 +1,22 @@
-"""
-Test app & utilities.
-"""
+"""Test app & utilities."""
 
-import os
+from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
 from fastapi.exception_handlers import http_exception_handler
 
 from test_data.controllers.test_data_controller import TestDataController
 from ycc_hull.api.errors import (
-    create_http_exception_400,
-    create_http_exception_404,
-    create_http_exception_409,
+    create_http_error_400,
+    create_http_error_404,
+    create_http_error_409,
 )
 from ycc_hull.app_controllers import init_app_controllers
 from ycc_hull.auth import auth
-from ycc_hull.controllers.exceptions import (
-    ControllerBadRequestException,
-    ControllerConflictException,
-    ControllerNotFoundException,
+from ycc_hull.controllers.errors import (
+    ControllerBadRequestError,
+    ControllerConflictError,
+    ControllerNotFoundError,
 )
 from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
 from ycc_hull.db.entities import BaseEntity
@@ -28,34 +26,32 @@ app_test = FastAPI()
 init_app_controllers(app_test)
 
 
-@app_test.exception_handler(ControllerBadRequestException)
+@app_test.exception_handler(ControllerBadRequestError)
 async def controller_400_exception_handler(
     request: Request,
-    exc: ControllerBadRequestException,
+    exc: ControllerBadRequestError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_400(exc.message))
+    return await http_exception_handler(request, create_http_error_400(exc.message))
 
 
-@app_test.exception_handler(ControllerNotFoundException)
+@app_test.exception_handler(ControllerNotFoundError)
 async def controller_404_exception_handler(
     request: Request,
-    exc: ControllerNotFoundException,
+    exc: ControllerNotFoundError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_404(exc.message))
+    return await http_exception_handler(request, create_http_error_404(exc.message))
 
 
-@app_test.exception_handler(ControllerConflictException)
+@app_test.exception_handler(ControllerConflictError)
 async def controller_409_exception_handler(
     request: Request,
-    exc: ControllerConflictException,
+    exc: ControllerConflictError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_409(exc.message))
+    return await http_exception_handler(request, create_http_error_409(exc.message))
 
 
 class FakeAuth:
-    """
-    Mocks app authentication dependency.
-    """
+    """Mocks app authentication dependency."""
 
     _member_id: int = -1
 
@@ -67,7 +63,7 @@ class FakeAuth:
             email="testuser@example.com",
             first_name="Test",
             last_name="User",
-            groups=[],
+            groups=(),
             roles=roles,
         )
 
@@ -95,28 +91,30 @@ class FakeAuth:
 
     @classmethod
     def set_member(cls, member_id: int = 100) -> None:
+        """Set up auth as a regular member."""
         cls._member_id = member_id
         app_test.dependency_overrides[auth] = cls._create_member
 
     @classmethod
     def set_helpers_app_admin(cls) -> None:
+        """Set up auth as an admin."""
         cls._member_id = 1
         app_test.dependency_overrides[auth] = cls._create_helpers_app_admin
 
     @classmethod
     def set_helpers_app_editor(cls) -> None:
+        """Set up auth as an editor."""
         cls._member_id = 2
         app_test.dependency_overrides[auth] = cls._create_helpers_app_editor
 
 
 async def init_test_database(name: str) -> None:
-    if not os.path.exists("tmp"):
-        os.makedirs("tmp", exist_ok=True)
+    Path("tmp").mkdir(parents=True, exist_ok=True)  # noqa: ASYNC240
     DatabaseContextHolder.context = DatabaseContext(
         database_url=f"sqlite:///tmp/test-{name}.db", echo=False
     )
-    engine = DatabaseContextHolder.context._engine  # pylint: disable=protected-access
+    engine = DatabaseContextHolder.context._engine  # noqa: SLF001
     BaseEntity.metadata.drop_all(bind=engine)
     BaseEntity.metadata.create_all(bind=engine)
 
-    await TestDataController().repopulate(False)
+    await TestDataController().repopulate(add_daily_helper_tasks=False)

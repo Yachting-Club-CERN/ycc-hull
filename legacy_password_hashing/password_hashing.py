@@ -1,6 +1,4 @@
-"""
-YCC Legacy Password Hashing
-"""
+"""YCC Legacy Password Hashing."""
 
 import base64
 import logging
@@ -28,19 +26,19 @@ _PERL_HASH_FORMAT_RE: Pattern = re.compile(r"^{X-PBKDF2}HMACSHA1:(.+):(.+):(.+)$
 
 _HASHER: PrefixWrapper = _create_hasher()
 
-_ERROR_PASSWORD_NOT_STRING = "The password must be a string"
+_ERROR_PASSWORD_NOT_STRING = "The password must be a string"  # noqa: S105
 _ERROR_HASH_NOT_STRING = "The hash must be a string"
 
 
 def hash_ycc_password(password: str) -> str:
-    """
-    Hashes a YCC legacy password.
+    """Hashes a YCC legacy password.
 
     Args:
         password (str): password
 
     Returns:
         str: password hash
+
     """
     if not isinstance(password, str):
         raise TypeError(_ERROR_PASSWORD_NOT_STRING)
@@ -49,8 +47,7 @@ def hash_ycc_password(password: str) -> str:
 
 
 def verify_ycc_password(password: str, password_hash: str) -> bool:
-    """
-    Verifies a YCC legacy password.
+    """Verify a YCC legacy password.
 
     Args:
         password (str): password
@@ -58,6 +55,7 @@ def verify_ycc_password(password: str, password_hash: str) -> bool:
 
     Returns:
         bool: verification result
+
     """
     if not isinstance(password, str):
         raise TypeError(_ERROR_PASSWORD_NOT_STRING)
@@ -75,7 +73,8 @@ def _hash_to_perl(python_hash: str) -> str:
     match: Match | None = _PYTHON_HASH_FORMAT_RE.search(python_hash.replace(".", "+"))
     if not match:
         _logger.debug("The Python hash seems invalid: %s", python_hash)
-        raise ValueError("The Python hash seems invalid")
+        msg = "The Python hash seems invalid"
+        raise ValueError(msg)
 
     rounds: str = _pack(int(match.group(1))).replace(
         "=", ""
@@ -91,7 +90,8 @@ def _hash_to_python(perl_hash: str) -> str:
     match: Match | None = _PERL_HASH_FORMAT_RE.search(perl_hash.replace("+", "."))
     if not match:
         _logger.debug("The Perl hash seems invalid: %s", perl_hash)
-        raise ValueError("The Perl hash seems invalid")
+        msg = "The Perl hash seems invalid"
+        raise ValueError(msg)
 
     rounds: int = _unpack_int(match.group(1) + "==")  # Legacy code removes padding
     return f"{{PBKDF2}}{rounds}${match.group(2)}${match.group(3)}"
@@ -99,7 +99,8 @@ def _hash_to_python(perl_hash: str) -> str:
 
 def _pack(data: int) -> str:
     if not isinstance(data, int):
-        raise TypeError(f"Unsupported value type: {type(data)}")
+        msg = f"Unsupported value type: {type(data)}"
+        raise TypeError(msg)
 
     # Perl pack('N', ...) is 32-bit big-endian (https://perldoc.perl.org/functions/pack)
     # It translates to `>I` in Python struct.pack (https://docs.python.org/3/library/struct.html#format-strings)
@@ -108,6 +109,7 @@ def _pack(data: int) -> str:
 
 def _unpack_int(data: str) -> int:
     if not isinstance(data, str):
-        raise TypeError("The data must be a string")
+        msg = "The data must be a string"
+        raise TypeError(msg)
 
     return struct.unpack(">I", base64.b64decode(data.encode("ascii")))[0]

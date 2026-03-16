@@ -14,9 +14,7 @@ from ycc_hull.controllers.members_controller import MembersController
 
 @dataclass(frozen=True)
 class Controllers:
-    """
-    Holds the controllers for the application.
-    """
+    """Holds the controllers for the application."""
 
     audit_log_controller: AuditLogController
     boats_controller: BoatsController
@@ -27,6 +25,7 @@ class Controllers:
 
 
 def init_app_controllers(app: FastAPI) -> None:
+    """Initialize and attach controllers to the app."""
     # Starlette's app.state is perfect to share this with the scheduler
     app.state.controllers = Controllers(
         audit_log_controller=AuditLogController(),
@@ -39,29 +38,36 @@ def init_app_controllers(app: FastAPI) -> None:
 
 
 def get_controllers(app_or_request: FastAPI | Request) -> Controllers:
+    """Return the controllers."""
     app = app_or_request.app if isinstance(app_or_request, Request) else app_or_request
     return app.state.controllers
 
 
 def get_audit_log_controller(app_or_request: Request) -> AuditLogController:
+    """Return the audit log controller."""
     return get_controllers(app_or_request).audit_log_controller
 
 
 def get_boats_controller(app_or_request: Request) -> BoatsController:
+    """Return the boats controller."""
     return get_controllers(app_or_request).boats_controller
 
 
 def get_helpers_controller(app_or_request: Request) -> HelpersController:
+    """Return the helpers controller."""
     return get_controllers(app_or_request).helpers_controller
 
 
 def get_holidays_controller(app_or_request: Request) -> HolidaysController:
+    """Return the holidays controller."""
     return get_controllers(app_or_request).holidays_controller
 
 
 def get_licences_controller(app_or_request: Request) -> LicencesController:
+    """Return the licences controller."""
     return get_controllers(app_or_request).licences_controller
 
 
 def get_members_controller(app_or_request: Request) -> MembersController:
+    """Return the members controller."""
     return get_controllers(app_or_request).members_controller

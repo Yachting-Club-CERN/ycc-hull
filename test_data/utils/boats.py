@@ -1,6 +1,4 @@
-"""
-Test data generator component for boats.
-"""
+"""Test data generator component for boats."""
 
 import copy
 import json
@@ -10,7 +8,8 @@ from ycc_hull.db.entities import BoatEntity
 
 
 def generate_boats() -> list[BoatEntity]:
-    with open(BOATS_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
+    """Generate boat entities from exported data."""
+    with BOATS_EXPORTED_JSON_FILE.open(encoding="utf-8") as file:
         return [_create_boat(boat) for boat in json.load(file)["results"][0]["items"]]
 
 

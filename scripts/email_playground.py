@@ -1,6 +1,4 @@
-"""
-Email playground.
-"""
+"""Email playground."""
 
 import asyncio
 import secrets
@@ -77,8 +75,8 @@ helper_task = HelperTaskDto(
     short_description="Club night!",
     long_description=None,
     contact=member_alice,
-    starts_at="2024-04-25T18:00:00",
-    ends_at="2024-04-25T20:30:00",
+    starts_at="2024-04-25T18:00:00",  # ty: ignore[invalid-argument-type]
+    ends_at="2024-04-25T20:30:00",  # ty: ignore[invalid-argument-type]
     deadline=None,
     urgent=False,
     captain_required_licence_info=LicenceInfoDto(id=9, licence="M"),
@@ -87,16 +85,16 @@ helper_task = HelperTaskDto(
     published=True,
     captain=HelperTaskHelperDto(
         member=member_bob,
-        signed_up_at="2024-04-01T09:00:00",
+        signed_up_at="2024-04-01T09:00:00",  # ty: ignore[invalid-argument-type]
     ),
     helpers=[
         HelperTaskHelperDto(
             member=member_john,
-            signed_up_at="2024-04-01T09:01:00",
+            signed_up_at="2024-04-01T09:01:00",  # ty: ignore[invalid-argument-type]
         ),
         HelperTaskHelperDto(
             member=member_marie,
-            signed_up_at="2024-04-01T09:02:00",
+            signed_up_at="2024-04-01T09:02:00",  # ty: ignore[invalid-argument-type]
         ),
     ],
     marked_as_done_at=None,
@@ -109,8 +107,10 @@ helper_task = HelperTaskDto(
 
 
 def create_message(subject: str, content: str) -> EmailMessage:
+    """Create an email message for testing."""
     if CONFIG.email is None:
-        raise ValueError("Email configuration is not set")
+        msg = "Email configuration is not set"
+        raise ValueError(msg)
 
     email = EmailMessage()
     email["From"] = CONFIG.email.from_email
@@ -121,12 +121,14 @@ def create_message(subject: str, content: str) -> EmailMessage:
 
 
 async def send_message(smtp: SmtpConnection, email: EmailMessage) -> None:
+    """Send an email."""
     print("Sending email...")
     await smtp.send_message(email)
     print("Email sent")
 
 
 async def run() -> None:
+    """Run the email playground tests."""
     prefix = f"Test {secrets.token_hex(2).upper()} - "
 
     print("Connecting to SMTP server...")
@@ -208,11 +210,14 @@ async def run() -> None:
         )
 
         if helper_task.captain is None:
-            raise ValueError(f"Captain is not set: {helper_task}")
+            msg = f"Captain is not set: {helper_task}"
+            raise ValueError(msg)
 
         await send_message(
             smtp,
-            EmailMessageBuilder().to(helper_task.captain.member).cc(helper_task.contact)
+            EmailMessageBuilder()
+            .to(helper_task.captain.member)
+            .cc(helper_task.contact)
             # CC is removed by the builder if it is the same as TO
             .cc(helper_task.captain.member)
             .cc(helper.member for helper in helper_task.helpers)
@@ -231,6 +236,7 @@ async def run() -> None:
 
 
 def main() -> None:
+    """Entry point for the email playground script."""
     asyncio.run(run())
 
 
