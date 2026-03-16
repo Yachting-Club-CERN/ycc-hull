@@ -201,7 +201,12 @@ def _parse_html(text: str) -> lxml.html.HtmlElement | None:
         return None
 
     try:
-        return lxml.html.fromstring(stripped)
+        element = lxml.html.fromstring(stripped)
+        # libxml2 wraps plain text in <p> (<=2.11) or <span> (>=2.14).
+        # Normalise to <p> for consistent output across platforms.
+        if element.tag == "span" and not element.attrib:
+            element.tag = "p"
+        return element  # noqa: TRY300 - easier to read
     except Exception as exc:
         # Detect lxml.etree.ParseError("Document is empty")
         # (Cannot catch directly)
