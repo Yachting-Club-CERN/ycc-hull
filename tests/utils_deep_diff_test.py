@@ -48,3 +48,33 @@ def test_type_mismatch() -> None:
     d1 = {"a": {"b": 1}}
     d2 = {"a": [1, 2]}
     assert deep_diff(d1, d2) == {"a": {"old": {"b": 1}, "new": [1, 2]}}
+
+
+def test_identical_lists() -> None:
+    d1 = {"items": [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]}
+    d2 = {"items": [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]}
+    assert len(deep_diff(d1, d2)) == 0
+
+
+def test_list_element_changed() -> None:
+    d1 = {"items": [{"id": 1, "name": "a"}, {"id": 2, "name": "b"}]}
+    d2 = {"items": [{"id": 1, "name": "a"}, {"id": 2, "name": "changed"}]}
+    assert deep_diff(d1, d2) == {"items.1.name": {"old": "b", "new": "changed"}}
+
+
+def test_list_length_changed() -> None:
+    d1 = {"items": [{"id": 1}, {"id": 2}]}
+    d2 = {"items": [{"id": 1}]}
+    assert deep_diff(d1, d2) == {"items.1": {"old": {"id": 2}, "new": None}}
+
+
+def test_list_element_added() -> None:
+    d1 = {"items": [{"id": 1}]}
+    d2 = {"items": [{"id": 1}, {"id": 2}]}
+    assert deep_diff(d1, d2) == {"items.1": {"old": None, "new": {"id": 2}}}
+
+
+def test_nested_list_in_dict() -> None:
+    d1 = {"a": {"items": [1, 2, 3]}}
+    d2 = {"a": {"items": [1, 2, 4]}}
+    assert deep_diff(d1, d2) == {"a.items.2": {"old": 3, "new": 4}}

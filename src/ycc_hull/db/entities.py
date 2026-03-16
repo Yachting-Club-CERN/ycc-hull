@@ -248,7 +248,9 @@ class HelperTaskEntity(BaseEntity):
         lazy="joined",
     )
     helpers: Mapped[list["HelperTaskHelperEntity"]] = relationship(
-        back_populates="helper_task", lazy="joined"
+        back_populates="helper_task",
+        lazy="joined",
+        order_by="HelperTaskHelperEntity.signed_up_at",
     )
     marked_as_done_by: Mapped["MemberEntity | None"] = relationship(
         foreign_keys=marked_as_done_by_id,

@@ -69,6 +69,23 @@ class DiffEntry(TypedDict):
     new: Any
 
 
+def _deep_diff_values(
+    v1: Any,  # noqa: ANN401
+    v2: Any,  # noqa: ANN401
+    diff: dict[str, DiffEntry],
+    path: str,
+) -> None:
+    if isinstance(v1, dict) and isinstance(v2, dict):
+        _deep_diff(v1, v2, diff, f"{path}.")
+    elif isinstance(v1, list) and isinstance(v2, list):
+        for i in range(max(len(v1), len(v2))):
+            elem1 = v1[i] if i < len(v1) else None
+            elem2 = v2[i] if i < len(v2) else None
+            _deep_diff_values(elem1, elem2, diff, f"{path}.{i}")
+    elif v1 != v2:
+        diff[path] = {"old": v1, "new": v2}
+
+
 def _deep_diff(
     d1: dict,
     d2: dict,
@@ -83,10 +100,7 @@ def _deep_diff(
         v1 = d1.get(key)
         v2 = d2.get(key)
 
-        if isinstance(v1, dict) and isinstance(v2, dict):
-            _deep_diff(v1, v2, diff, f"{path}.")
-        elif v1 != v2:
-            diff[path] = {"old": v1, "new": v2}
+        _deep_diff_values(v1, v2, diff, path)
 
 
 def deep_diff(d1: dict | BaseModel, d2: dict | BaseModel) -> dict[str, DiffEntry]:
@@ -98,8 +112,8 @@ def deep_diff(d1: dict | BaseModel, d2: dict | BaseModel) -> dict[str, DiffEntry
     the same structure.)
 
     Args:
-        d1 (dict): The first dictionary.
-        d2 (dict): The second dictionary.
+        d1 (dict | BaseModel): The first dictionary or Pydantic object.
+        d2 (dict | BaseModel): The second dictionary or Pydantic object.
 
     Returns:
         dict: The diff between the two dictionaries.
