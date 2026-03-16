@@ -223,7 +223,7 @@ def format_helper_task(
     warnings_html = (
         f"""
     <p style="color: #ff0000;">
-        {"<br />\n".join(warning for warning in warnings)}
+        {"<br />\n".join(warnings)}
     </p>
 """
         if warnings
