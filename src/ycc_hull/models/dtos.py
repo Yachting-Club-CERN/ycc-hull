@@ -1,6 +1,4 @@
-"""
-General API DTO classes.
-"""
+"""General API DTO classes."""
 
 from datetime import date
 
@@ -21,9 +19,7 @@ _UNKNOWN_EMAIL = "unknown@email"
 
 
 class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
-    """
-    DTO for a boat.
-    """
+    """DTO for a boat."""
 
     id: int
     name: str
@@ -38,22 +34,21 @@ class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
     async def create(
         boat: BoatEntity,
     ) -> "BoatDto":
-        return BoatDto(
+        """Create a DTO from a boat entity."""
+        return BoatDto(  # type: ignore[missing-argument]
             entity=boat,
             id=boat.boat_id,
             name=boat.name,
             type=boat.type,
             licence=boat.license,
-            class_=boat.class_,
+            class_=boat.class_,  # type: ignore[missing-argument]
             capacity=boat.capacity,
             table_position=boat.table_pos,
         )
 
 
 class HolidayDto(CamelisedBaseModelWithEntity[HolidayEntity]):
-    """
-    DTO for a holiday.
-    """
+    """DTO for a holiday."""
 
     date: date
     label: str
@@ -63,6 +58,7 @@ class HolidayDto(CamelisedBaseModelWithEntity[HolidayEntity]):
     async def create(
         holiday: HolidayEntity,
     ) -> "HolidayDto":
+        """Create a DTO from a holiday entity."""
         return HolidayDto(
             entity=holiday,
             date=holiday.day.date(),
@@ -71,9 +67,7 @@ class HolidayDto(CamelisedBaseModelWithEntity[HolidayEntity]):
 
 
 class LicenceInfoDto(CamelisedBaseModelWithEntity[LicenceInfoEntity]):
-    """
-    DTO for a YCC licence info.
-    """
+    """DTO for a YCC licence info."""
 
     id: int
     licence: str
@@ -82,6 +76,7 @@ class LicenceInfoDto(CamelisedBaseModelWithEntity[LicenceInfoEntity]):
     async def create(
         licence_info: LicenceInfoEntity,
     ) -> "LicenceInfoDto":
+        """Create a DTO from a licence info entity."""
         return LicenceInfoDto(
             entity=licence_info,
             id=licence_info.infoid,
@@ -90,9 +85,7 @@ class LicenceInfoDto(CamelisedBaseModelWithEntity[LicenceInfoEntity]):
 
 
 class LicenceDetailedInfoDto(LicenceInfoDto):
-    """
-    DTO for a YCC licence detailed info.
-    """
+    """DTO for a YCC licence detailed info."""
 
     description: str
     licence: str
@@ -101,15 +94,14 @@ class LicenceDetailedInfoDto(LicenceInfoDto):
     async def create(
         licence_info: LicenceInfoEntity,
     ) -> "LicenceDetailedInfoDto":
+        """Create a detailed DTO from a licence info entity."""
         props = (await LicenceInfoDto.create(licence_info)).model_dump()
         props["description"] = licence_info.description
         return LicenceDetailedInfoDto(**props)
 
 
 class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
-    """
-    DTO for a member, containing information public to all active members.
-    """
+    """DTO for a member, containing information public to all active members."""
 
     id: int
     username: str
@@ -122,12 +114,14 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
 
     @property
     def full_name(self) -> str:
+        """Return the member's full name."""
         return f"{self.first_name} {self.last_name}"
 
     @staticmethod
     async def create(
         member: MemberEntity,
     ) -> "MemberPublicInfoDto":
+        """Create a DTO from a member entity."""
         return MemberPublicInfoDto(
             entity=member,
             id=member.id,
@@ -135,7 +129,7 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
             first_name=member.firstname,
             last_name=member.name,
             # Unknown email for active members is clearly a WTF
-            email=member.e_mail if member.e_mail else _UNKNOWN_EMAIL,
+            email=member.e_mail or _UNKNOWN_EMAIL,
             mobile_phone=member.cell_phone,
             home_phone=member.home_phone,
             work_phone=member.work_phone,
@@ -143,8 +137,9 @@ class MemberPublicInfoDto(CamelisedBaseModelWithEntity[MemberEntity]):
 
 
 class MemberSensitiveInfoDto(MemberPublicInfoDto):
-    """
-    DTO for a member, containing both information public to all active members and sensitive information.
+    """DTO for a member.
+
+    Contains both information public to all active members and sensitive information.
     """
 
     id: int
@@ -154,6 +149,7 @@ class MemberSensitiveInfoDto(MemberPublicInfoDto):
     async def create(
         member: MemberEntity,
     ) -> "MemberSensitiveInfoDto":
+        """Create a sensitive DTO from a member entity."""
         props = (await MemberPublicInfoDto.create(member)).model_dump()
         props["id"] = member.id
         props["membership_type"] = member.membership
@@ -161,9 +157,7 @@ class MemberSensitiveInfoDto(MemberPublicInfoDto):
 
 
 class MembershipTypeDto(CamelisedBaseModelWithEntity[MembershipTypeEntity]):
-    """
-    DTO for a membership type.
-    """
+    """DTO for a membership type."""
 
     id: int
     name: str
@@ -175,6 +169,7 @@ class MembershipTypeDto(CamelisedBaseModelWithEntity[MembershipTypeEntity]):
     async def create(
         membership_type: MembershipTypeEntity,
     ) -> "MembershipTypeDto":
+        """Create a DTO from a membership type entity."""
         return MembershipTypeDto(
             entity=membership_type,
             id=membership_type.mb_id,
@@ -186,9 +181,7 @@ class MembershipTypeDto(CamelisedBaseModelWithEntity[MembershipTypeEntity]):
 
 
 class UserDto(CamelisedBaseModelWithEntity[UserEntity]):
-    """
-    DTO for a user.
-    """
+    """DTO for a user."""
 
     id: int
     username: str
@@ -197,6 +190,7 @@ class UserDto(CamelisedBaseModelWithEntity[UserEntity]):
     async def create(
         user: UserEntity,
     ) -> "UserDto":
+        """Create a DTO from a user entity."""
         return UserDto(
             entity=user,
             id=user.member_id,

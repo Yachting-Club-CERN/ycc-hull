@@ -1,6 +1,4 @@
-# pylint: disable=unsubscriptable-object
-"""
-Handwritten Database entities containing only the relevant tables.
+"""Handwritten Database entities containing only the relevant tables.
 
 For mapping use SQLAlchemy types, so we can also use the entities for
 testing/local development with SQLite. The generated DDL is not used for Oracle
@@ -56,11 +54,10 @@ from ycc_hull.utils import short_type_name
 
 
 class BaseEntity(AsyncAttrs, DeclarativeBase):
-    """
-    Base class for DB entities.
-    """
+    """Base class for DB entities."""
 
     def dict(self) -> dict[str, Any]:
+        """Return entity fields as a dictionary."""
         return {k: v for k, v in sorted(self.__dict__.items()) if not k.startswith("_")}
 
     def __repr__(self) -> str:
@@ -68,9 +65,7 @@ class BaseEntity(AsyncAttrs, DeclarativeBase):
 
 
 class AuditLogEntryEntity(BaseEntity):
-    """
-    Represents an audit log entry.
-    """
+    """Represents an audit log entry."""
 
     __tablename__ = "audit_log"
 
@@ -87,23 +82,22 @@ class AuditLogEntryEntity(BaseEntity):
 
 
 class BoatEntity(BaseEntity):
-    """
-    Represents a boat.
-    """
+    """Represents a boat."""
 
     __tablename__ = "boats"
 
-    # NUMBER(3, 0) in DB
+    # NUMBER(3, 0) in DB  # noqa: ERA001
     boat_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(VARCHAR(20), unique=True)
     type: Mapped[str] = mapped_column(VARCHAR(20))
     license: Mapped[str] = mapped_column(VARCHAR(5))
     class_: Mapped[str] = mapped_column("class", VARCHAR(5))
-    # NUMBER(5, 0) in DB
+    # NUMBER(5, 0) in DB  # noqa: ERA001
     table_pos: Mapped[int | None] = mapped_column(Integer, unique=True)
-    # NUMBER(3, 0) in DB
+    # NUMBER(3, 0) in DB  # noqa: ERA001
     ycc_num: Mapped[int | None] = mapped_column(Integer, unique=True)
-    # Maintainer and maintainer2 are used for sending emails to maintainers, e.g., upon Warning/Out of order log entries
+    # Maintainer and maintainer2 are used for sending emails to maintainers,
+    # e.g., upon Warning/Out of order log entries
     maintainer_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("members.id"))
     ext_reg_cat: Mapped[str | None] = mapped_column(VARCHAR(2))
     maintainer_id2: Mapped[int | None] = mapped_column(
@@ -114,9 +108,7 @@ class BoatEntity(BaseEntity):
 
 
 class EntranceFeeRecordEntity(BaseEntity):
-    """
-    Represents an entrance fee record paid by a new member.
-    """
+    """Represents an entrance fee record paid by a new member."""
 
     __tablename__ = "entrance_feesrecords"
     __table_args__ = (Index("entrance_fee_uq", "member_id", "year_f", unique=True),)
@@ -126,7 +118,8 @@ class EntranceFeeRecordEntity(BaseEntity):
         Integer, ForeignKey("members.id"), primary_key=True
     )
     """
-    This field is nullable, however, it is only null for some members who joined 2010 or before. (Lajos, 2023-03)
+    This field is nullable, however, it is only null for some members who joined 2010 or
+    before. (Lajos, 2023-03)
 
     SELECT
         '' as "-- MEMBERS --",
@@ -140,25 +133,23 @@ class EntranceFeeRecordEntity(BaseEntity):
     WHERE efr.YEAR_F IS NULL
     ORDER BY m.MEMBER_ENTRANCE DESC, m.NAME ASC;
     """
-    # NUMBER(4, 0) in DB
+    # NUMBER(4, 0) in DB  # noqa: ERA001
     year_f: Mapped[int | None] = mapped_column(Integer)
 
 
 class FeeRecordEntity(BaseEntity):
-    """
-    Represents a fee record paid by a member (membership fee, course fee, etc.).
-    """
+    """Represents a fee record paid by a member (membership fee, course fee, etc.)."""
 
     # Note: FEESRECORDS_TRG trigger may fill entered_date and paymentid
     __tablename__ = "feesrecords"
 
     # Code-only foreign key, not in DB
     member_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
-    # NUMBER(4, 0) in DB
+    # NUMBER(4, 0) in DB  # noqa: ERA001
     year_f: Mapped[int] = mapped_column(Integer)
     paid_date: Mapped[datetime | None] = mapped_column(DateTime)
     paid_mode: Mapped[str | None] = mapped_column(VARCHAR(4))
-    # NUMBER(4, 0) in DB
+    # NUMBER(4, 0) in DB  # noqa: ERA001
     fee: Mapped[int] = mapped_column(Integer)
     entered_date: Mapped[datetime | None] = mapped_column(
         DateTime,
@@ -173,9 +164,7 @@ class FeeRecordEntity(BaseEntity):
 
 
 class HelpersAppPermissionEntity(BaseEntity):
-    """
-    Represents a Helpers App permission.
-    """
+    """Represents a Helpers App permission."""
 
     __tablename__ = "helpers_app_permissions"
 
@@ -193,9 +182,7 @@ class HelpersAppPermissionEntity(BaseEntity):
 
 
 class HelperTaskCategoryEntity(BaseEntity):
-    """
-    Represents a helper task category.
-    """
+    """Represents a helper task category."""
 
     __tablename__ = "helper_task_categories"
 
@@ -208,9 +195,7 @@ class HelperTaskCategoryEntity(BaseEntity):
 
 
 class HelperTaskEntity(BaseEntity):
-    """
-    Represents a helper task.
-    """
+    """Represents a helper task."""
 
     __tablename__ = "helper_tasks"
 
@@ -226,14 +211,14 @@ class HelperTaskEntity(BaseEntity):
     starts_at: Mapped[datetime | None] = mapped_column(DateTime)
     ends_at: Mapped[datetime | None] = mapped_column(DateTime)
     deadline: Mapped[datetime | None] = mapped_column(DateTime)
-    # NUMBER(1, 0) in DB
+    # NUMBER(1, 0) in DB  # noqa: ERA001
     urgent: Mapped[bool] = mapped_column(Integer)
     captain_required_licence_info_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("infolicences.infoid")
     )
     helper_min_count: Mapped[int] = mapped_column(Integer)
     helper_max_count: Mapped[int] = mapped_column(Integer)
-    # NUMBER(1, 0) in DB
+    # NUMBER(1, 0) in DB  # noqa: ERA001
     published: Mapped[bool] = mapped_column(Integer)
     captain_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("members.id"))
     captain_signed_up_at: Mapped[datetime | None] = mapped_column(DateTime)
@@ -278,9 +263,7 @@ class HelperTaskEntity(BaseEntity):
 
 
 class HelperTaskHelperEntity(BaseEntity):
-    """
-    Association between helper tasks and helpers.
-    """
+    """Association between helper tasks and helpers."""
 
     __tablename__ = "helper_task_helpers"
 
@@ -301,13 +284,15 @@ class HelperTaskHelperEntity(BaseEntity):
 
 
 class HolidayEntity(BaseEntity):
-    """
-    Represents a holiday. Holidays are usually the CERN holidays and are used for boat booking rules.
+    """Represents a holiday.
+
+    Holidays are usually the CERN holidays and are used for boat booking rules.
     """
 
     __tablename__ = "holidays"
 
-    # Code-only primary key on day, since the id field is nullable in the DB and it is often null
+    # Code-only primary key on day, since the id field is nullable in the DB and it is
+    # often null
     day: Mapped[datetime] = mapped_column(DateTime, primary_key=True)
     label: Mapped[str] = mapped_column(VARCHAR(20))
     # Lot of nulls in the DB
@@ -315,9 +300,7 @@ class HolidayEntity(BaseEntity):
 
 
 class LicenceEntity(BaseEntity):
-    """
-    Represents a licence belonging to a member.
-    """
+    """Represents a licence belonging to a member."""
 
     __tablename__ = "licences"
     __table_args__ = (
@@ -325,10 +308,10 @@ class LicenceEntity(BaseEntity):
     )
 
     member_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
-    # NUMBER(2, 0) in DB
+    # NUMBER(2, 0) in DB  # noqa: ERA001
     licence_id: Mapped[int] = mapped_column(Integer, ForeignKey("infolicences.infoid"))
     # Year when the licence was issued
-    # NUMBER(4, 0) in DB
+    # NUMBER(4, 0) in DB  # noqa: ERA001
     lyear: Mapped[int] = mapped_column(Integer)
     # Most often "Registered by Firstname LASTNAME"
     lcomments: Mapped[str | None] = mapped_column(VARCHAR(100))
@@ -342,10 +325,10 @@ class LicenceEntity(BaseEntity):
 
 
 class LicenceInfoEntity(BaseEntity):
-    """
-    Represents a YCC licence.
+    """Represents a YCC licence.
 
-    This table is a bit of a mess, but it is used for the boat booking rules, courses, etc.
+    This table is a bit of a mess, but it is used for the boat booking rules, courses,
+    etc.
     """
 
     __tablename__ = "infolicences"
@@ -354,29 +337,29 @@ class LicenceInfoEntity(BaseEntity):
     infoid: Mapped[int] = mapped_column(Integer, primary_key=True)
     # Course identifier, e.g., "GS", sometimes NULL
     ncourse: Mapped[str | None] = mapped_column(VARCHAR(2))
-    # This is actually the licence ID, same as BoatEntity.license (note the inconsistency in the spelling).
-    # However, boats do not have licence in their table what is here, for example Laser is listed as L here,
+    # This is actually the licence ID, same as BoatEntity.license
+    # (note the inconsistency in the spelling).
+    # However, boats do not have licence in their table what is here, for example Laser
+    # is listed as L here,
     # but for booking a Laser one needs a D licence (at least as of 2023)
     nlicence: Mapped[str] = mapped_column(VARCHAR(2))
     # Probably we can ignore this one, often NULL, especially for new entries
     nkey: Mapped[str | None] = mapped_column(VARCHAR(2))
     description: Mapped[str] = mapped_column(VARCHAR(50))
-    # NULL, 0, 90, 170, ... (NUMBER(4, 0) in DB)
+    # NULL, 0, 90, 170, ... (NUMBER(4, 0) in DB)  # noqa: ERA001
     coursefee: Mapped[int | None] = mapped_column(Integer)
     # NULL, "Cabin keel-boat", ...
     course_name: Mapped[str | None] = mapped_column(VARCHAR(30))
     # NULL, Y, N
     course_active: Mapped[str | None] = mapped_column(CHAR(1))
-    # NULL, 1, 2, 3 (NUMBER(1, 0) in DB)
+    # NULL, 1, 2, 3 (NUMBER(1, 0) in DB)  # noqa: ERA001
     course_level: Mapped[int | None] = mapped_column(Integer)
-    # 0, 1 (NUMBER(1, 0) in DB)
+    # 0, 1 (NUMBER(1, 0) in DB)  # noqa: ERA001
     has_test: Mapped[int] = mapped_column(Integer)
 
 
 class MemberEntity(BaseEntity):
-    """
-    Represents a YCC member.
-    """
+    """Represents a YCC member."""
 
     __tablename__ = "members"
 
@@ -386,7 +369,7 @@ class MemberEntity(BaseEntity):
     birthday: Mapped[datetime | None] = mapped_column(DateTime)
     nationality: Mapped[str | None] = mapped_column(VARCHAR(3))
     membership: Mapped[str] = mapped_column(VARCHAR(2))
-    # NUMBER(1, 0) in DB
+    # NUMBER(1, 0) in DB  # noqa: ERA001
     temp_memb: Mapped[int | None] = mapped_column(Integer)
     lang1: Mapped[str | None] = mapped_column(VARCHAR(3))
     lang2: Mapped[str | None] = mapped_column(VARCHAR(3))
@@ -454,16 +437,12 @@ class MemberEntity(BaseEntity):
 
     @property
     def all_licence_infos(self) -> Sequence["LicenceInfoEntity"]:
-        """
-        Returns all licences, including expired ones.
-        """
+        """Returns all licences, including expired ones."""
         return [licence.licence_info for licence in self.licences]
 
     @property
     def active_licence_infos(self) -> Sequence["LicenceInfoEntity"]:
-        """
-        Returns all active licences.
-        """
+        """Returns all active licences."""
         return [
             licence.licence_info
             for licence in self.licences
@@ -472,13 +451,11 @@ class MemberEntity(BaseEntity):
 
 
 class MembershipTypeEntity(BaseEntity):
-    """
-    Represents a YCC membership type.
-    """
+    """Represents a YCC membership type."""
 
     __tablename__ = "membership"
 
-    # NUMBER(2, 0) in DB
+    # NUMBER(2, 0) in DB  # noqa: ERA001
     mb_id: Mapped[int] = mapped_column(
         Integer,
         # Code-only primary key, not in DB
@@ -495,9 +472,7 @@ class MembershipTypeEntity(BaseEntity):
 
 
 class UserEntity(BaseEntity):
-    """
-    Represents a YCC member's login details.
-    """
+    """Represents a YCC member's login details."""
 
     __tablename__ = "web_logon"
 

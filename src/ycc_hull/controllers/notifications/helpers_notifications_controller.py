@@ -1,3 +1,5 @@
+"""Helpers notification controller."""
+
 import asyncio
 import copy
 import logging
@@ -38,8 +40,9 @@ _BRAVO_ZULU_THANK_YOU = """
 """
 _SHIFT_REPLACEMENT_REMINDER = """
 <p>
-    <em>If you need to withdraw from a task, please find a replacement first (e.g., in one of the WhatsApp groups),
-    then notify the contact by email (and CC your replacement). The contact will administer the change.</em>
+    <em>If you need to withdraw from a task, please find a replacement first (e.g., in
+    one of the WhatsApp groups), then notify the contact by email (and CC your
+    replacement). The contact will administer the change.</em>
 </p>
 """
 _SIGNATURE = """
@@ -51,12 +54,14 @@ _SIGNATURE = """
 
 
 class _HelperTaskChanges:
-    """
-    Responsible for computing the changes between two helper tasks.
+    """Responsible for computing the changes between two helper tasks.
 
     Attributes:
-        summary (list[str]): A list of labels representing the fields that have changed.
-        relevant_details (dict[str, Any]): A dictionary mapping descriptive labels to values.
+        summary (list[str]): A list of labels representing the fields that have
+            changed.
+        relevant_details (dict[str, Any]): A dictionary mapping descriptive labels to
+            values.
+
     """
 
     def __init__(
@@ -64,7 +69,7 @@ class _HelperTaskChanges:
         original_task: HelperTaskDto,
         updated_task: HelperTaskDto,
         diff: dict[str, DiffEntry],
-    ):
+    ) -> None:
         self._logger = logging.getLogger(full_type_name(self.__class__))
 
         self._original_task = original_task
@@ -97,7 +102,9 @@ class _HelperTaskChanges:
         self._compute_known()
         self._collect_undetected_changes()
 
-    def _add_detailed_change(self, label: str, previous_value: Any) -> None:
+    def _add_detailed_change(
+        self, label: str, previous_value: Any  # noqa: ANN401
+    ) -> None:
         self.summary.append(label)
         self.relevant_details[f"Previous {label}"] = previous_value
 
@@ -105,24 +112,16 @@ class _HelperTaskChanges:
         # Group fields covering the same concept and remove keys we never want to report
         for remaining_key in list(self._diff.keys()):
             if (
-                remaining_key == "id"
-                or remaining_key.endswith(".id")
-                or remaining_key.endswith("Id")
-            ):
-                self._diff.pop(remaining_key)
-            elif remaining_key.startswith("category."):
+                remaining_key == "id" or remaining_key.endswith((".id", "Id"))
+            ) or remaining_key.startswith("category."):
                 self._diff.pop(remaining_key)
             elif remaining_key.startswith("contact."):
                 self._contact_changed = True
                 self._diff.pop(remaining_key)
-            elif (
-                remaining_key == "startsAt"
-                or remaining_key == "endsAt"
-                or remaining_key == "deadline"
-            ):
+            elif remaining_key in {"startsAt", "endsAt", "deadline"}:
                 self._timing_changed = True
                 self._diff.pop(remaining_key)
-            elif remaining_key == "helperMinCount" or remaining_key == "helperMaxCount":
+            elif remaining_key in {"helperMinCount", "helperMaxCount"}:
                 self._helper_min_max_count_changed = True
                 self._diff.pop(remaining_key)
             elif remaining_key.startswith("captain."):
@@ -131,10 +130,8 @@ class _HelperTaskChanges:
             elif remaining_key.startswith("helpers."):
                 self._helpers_changed = True
                 self._diff.pop(remaining_key)
-            elif (
-                remaining_key.startswith("marked_as_done_")
-                or remaining_key.startswith("validated_")
-                or remaining_key.startswith("validation_")
+            elif remaining_key.startswith(
+                ("marked_as_done_", "validated_", "validation_")
             ):
                 self._status_changed = True
                 self._diff.pop(remaining_key)
@@ -200,7 +197,7 @@ class _HelperTaskChanges:
                     self.summary.append(label)
 
     def _collect_undetected_changes(self) -> None:
-        for remaining_key in self._diff.keys():
+        for remaining_key in self._diff:
             self._logger.warning(
                 "Unhandled field for task update notification: %s", remaining_key
             )
@@ -212,9 +209,7 @@ class _HelperTaskChanges:
 
 
 class HelpersNotificationsController(BaseController):
-    """
-    Controller for sending helper task notifications.
-    """
+    """Controller for sending helper task notifications."""
 
     async def on_update(
         self,
@@ -223,6 +218,7 @@ class HelpersNotificationsController(BaseController):
         diff: dict[str, DiffEntry],
         user: User,
     ) -> None:
+        """Notify signed-up members about a task update."""
         if not CONFIG.emails_enabled(self._logger):
             return
 
@@ -231,7 +227,10 @@ class HelpersNotificationsController(BaseController):
         if changes.summary:
             changes_str = f"Here is what changed: {', '.join(changes.summary)}."
         else:
-            changes_str = "Nothing seems to have changed — but it's still worth checking in the app! 😊"
+            changes_str = (
+                "Nothing seems to have changed — but it's still worth checking in the "
+                "app! 😊"
+            )
 
         previous_values_html = ""
         if changes.relevant_details:
@@ -239,7 +238,10 @@ class HelpersNotificationsController(BaseController):
 <p style="font-size: small;">Change details:</p>
 
 <table style="font-size: small;">
-    {"\n".join(f"  <tr><td>{key}</td><td>{value}</td></tr>" for key, value in changes.relevant_details.items())}
+    {"\n".join(
+        f"  <tr><td>{key}</td><td>{value}</td></tr>"
+        for key, value in changes.relevant_details.items()
+    )}
 </table>
 """
 
@@ -272,6 +274,7 @@ class HelpersNotificationsController(BaseController):
     async def on_add_helper(
         self, task: HelperTaskDto, helper: MemberPublicInfoDto, user: User
     ) -> None:
+        """Notify about a helper being added to a task."""
         if not CONFIG.emails_enabled(self._logger):
             return
 
@@ -298,6 +301,7 @@ class HelpersNotificationsController(BaseController):
     async def on_remove_helper(
         self, task: HelperTaskDto, helper: MemberPublicInfoDto, user: User
     ) -> None:
+        """Notify about a helper being removed from a task."""
         if not CONFIG.emails_enabled(self._logger):
             return
 
@@ -322,8 +326,11 @@ class HelpersNotificationsController(BaseController):
             await smtp.send_message(message)
 
     async def on_sign_up(self, task: HelperTaskDto, user: User) -> None:
+        """Notify the contact about a member sign-up."""
         if not CONFIG.emails_enabled(self._logger):
             return
+
+        sign_up_message = random.choice(_SIGN_UP_MESSAGES)  # noqa: S311
 
         message = (
             _sign_up_email(task, user)
@@ -331,7 +338,7 @@ class HelpersNotificationsController(BaseController):
                 f"""
 <p>Dear {user.first_name} {_BOAT_PARTY},</p>
 
-<p>{random.choice(_SIGN_UP_MESSAGES)}</p>
+<p>{sign_up_message}</p>
 
 {format_helper_task(task)}
 
@@ -346,6 +353,7 @@ class HelpersNotificationsController(BaseController):
             await smtp.send_message(message)
 
     async def on_mark_as_done(self, task: HelperTaskDto, user: User) -> None:
+        """Notify about a task being marked as done."""
         if not CONFIG.emails_enabled(self._logger):
             return
 
@@ -356,7 +364,8 @@ class HelpersNotificationsController(BaseController):
 {_DEAR_SAILORS}
 
 {_BRAVO_ZULU_THANK_YOU}
-<p>{user.full_name} has marked this task as done and it is now waiting for validation from {task.contact.full_name}.</p>
+<p>{user.full_name} has marked this task as done and it is now waiting for validation
+from {task.contact.full_name}.</p>
 
 {format_helper_task(task)}
 
@@ -370,6 +379,7 @@ class HelpersNotificationsController(BaseController):
             await smtp.send_message(message)
 
     async def on_validate(self, task: HelperTaskDto, user: User) -> None:
+        """Notify about a task being validated."""
         if not CONFIG.emails_enabled(self._logger):
             return
 
@@ -398,6 +408,7 @@ class HelpersNotificationsController(BaseController):
         upcoming_tasks: list[HelperTaskDto],
         overdue_tasks: list[HelperTaskDto],
     ) -> None:
+        """Send reminder emails for upcoming and overdue tasks."""
         if not CONFIG.emails_enabled(self._logger):
             return
 
@@ -412,7 +423,7 @@ class HelpersNotificationsController(BaseController):
             for task in overdue_tasks:
                 overdue_tasks_by_contact_id[task.contact.id].append(task)
 
-            for _, tasks in overdue_tasks_by_contact_id.items():
+            for tasks in overdue_tasks_by_contact_id.values():
                 if not tasks:
                     continue
 
@@ -473,7 +484,8 @@ class HelpersNotificationsController(BaseController):
 <ul>
     <li>If a task has been completed, please validate it.</li>
     <li>If more time is needed, you can extend the deadline.</li>
-    <li>If the task is no longer necessary, feel free to cancel it by validating it and leaving a comment.</li>
+    <li>If the task is no longer necessary, feel free to cancel it by validating it and
+    leaving a comment.</li>
 </ul>
 
 {_SHIFT_REPLACEMENT_REMINDER}
@@ -571,7 +583,8 @@ def _get_task_warnings(task: HelperTaskDto) -> list[str]:
         )
 
         warnings.append(
-            f"{helper_count_str} signed up &mdash; at least {required_helpers_str} required."
+            f"{helper_count_str} signed up &mdash; at least {required_helpers_str} "
+            "required."
         )
 
     return warnings

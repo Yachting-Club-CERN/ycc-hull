@@ -1,13 +1,10 @@
-"""
-General utilities.
-"""
+"""General utilities."""
 
 from datetime import datetime
 from typing import Any, TypedDict
-
-import humps
 from zoneinfo import ZoneInfo
 
+import humps
 from pydantic import BaseModel
 
 from ycc_hull.constants import TIME_ZONE_ID
@@ -16,6 +13,7 @@ TIME_ZONE = ZoneInfo(TIME_ZONE_ID)
 
 
 def full_type_name(cls: type) -> str:
+    """Return the fully qualified type name."""
     module = cls.__module__
     if module == "builtins":
         return cls.__qualname__
@@ -23,6 +21,7 @@ def full_type_name(cls: type) -> str:
 
 
 def short_type_name(cls: type) -> str:
+    """Return the short type name."""
     return cls.__qualname__
 
 
@@ -31,13 +30,13 @@ def get_now() -> datetime:
 
     Returns:
         datetime: The current time.
+
     """
     return datetime.now(tz=TIME_ZONE)
 
 
 def camel_case_to_words(string: str) -> str:
-    """
-    Converts a camelCase string into a space-separated lowercase string.
+    """Convert a camelCase string into a space-separated lowercase string.
 
     Also replaces dots (.) with spaces to support dotted paths.
 
@@ -56,6 +55,7 @@ def camel_case_to_words(string: str) -> str:
 
     Returns:
         str: A human-readable, space-separated version of the input.
+
     """
     return (
         humps.decamelize(string.replace(" ", "_")).replace("_", " ").replace(".", " ")
@@ -63,9 +63,7 @@ def camel_case_to_words(string: str) -> str:
 
 
 class DiffEntry(TypedDict):
-    """
-    Represents a difference between two values.
-    """
+    """Represents a difference between two values."""
 
     old: Any
     new: Any
@@ -82,8 +80,8 @@ def _deep_diff(
     for key in keys:
         path = f"{prefix}{key}"
 
-        v1 = d1[key] if key in d1 else None
-        v2 = d2[key] if key in d2 else None
+        v1 = d1.get(key)
+        v2 = d2.get(key)
 
         if isinstance(v1, dict) and isinstance(v2, dict):
             _deep_diff(v1, v2, diff, f"{path}.")
@@ -92,11 +90,12 @@ def _deep_diff(
 
 
 def deep_diff(d1: dict | BaseModel, d2: dict | BaseModel) -> dict[str, DiffEntry]:
-    """Computes a deep diff between two dictionaries or Pydantic objects.
+    """Compute a deep diff between two dictionaries or Pydantic objects.
 
     Keys that are missing in one dictionary are treated as having the value `None`.
     As a result, a key explicitly set to `None` is considered equal to a missing key.
-    (This is good enough as the main use of this function is to compare dictionaries of the same structure.)
+    (This is good enough as the main use of this function is to compare dictionaries of
+    the same structure.)
 
     Args:
         d1 (dict): The first dictionary.
@@ -104,6 +103,7 @@ def deep_diff(d1: dict | BaseModel, d2: dict | BaseModel) -> dict[str, DiffEntry
 
     Returns:
         dict: The diff between the two dictionaries.
+
     """
     if isinstance(d1, BaseModel):
         d1 = d1.model_dump(by_alias=True)

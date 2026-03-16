@@ -1,6 +1,4 @@
-"""
-Boats controller.
-"""
+"""Boats controller."""
 
 from collections.abc import Sequence
 
@@ -12,11 +10,10 @@ from ycc_hull.models.dtos import BoatDto
 
 
 class BoatsController(BaseController):
-    """
-    Boats controller. Returns DTO objects.
-    """
+    """Boats controller. Returns DTO objects."""
 
     async def find_all(self) -> Sequence[BoatDto]:
+        """Return all boats."""
         return await self.database_context.query_all(
             select(BoatEntity).order_by(BoatEntity.table_pos),
             async_transformer=BoatDto.create,

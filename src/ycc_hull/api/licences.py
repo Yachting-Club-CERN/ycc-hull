@@ -1,8 +1,7 @@
-"""
-Licence API endpoints.
-"""
+"""Licence API endpoints."""
 
 from collections.abc import Sequence
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
@@ -16,6 +15,7 @@ api_licences = APIRouter(dependencies=[Depends(auth)])
 
 @api_licences.get("/api/v1/licence-infos")
 async def licence_infos_get(
-    controller: LicencesController = Depends(get_licences_controller),
+    controller: Annotated[LicencesController, Depends(get_licences_controller)],
 ) -> Sequence[LicenceDetailedInfoDto]:
+    """List all licence infos."""
     return await controller.find_all_licence_infos()

@@ -1,9 +1,7 @@
-"""
-Base model.
-"""
+"""Base model."""
 
 from datetime import datetime
-from typing import Any, Generic, TypeVar
+from typing import Any
 
 import lxml
 import lxml.etree
@@ -16,12 +14,11 @@ from pydantic.fields import FieldInfo
 
 from ycc_hull.utils import TIME_ZONE, full_type_name
 
-EntityT = TypeVar("EntityT")
-
 
 class CamelisedBaseModel(BaseModel):
-    """
-    Base class for all model classes which will convert snake_case attributes to camelCase when converting to JSON.
+    """Base class for all model classes.
+
+    It will convert snake_case attributes to camelCase when converting to JSON.
     """
 
     model_config = ConfigDict(
@@ -32,12 +29,11 @@ class CamelisedBaseModel(BaseModel):
     )
 
     # We are fighting XSS attacks here, so we need to sanitise all HTML input/output.
-    # If you want to mark a field as HTML, use the following syntax:
-    #
-    # long_description: str | None = Field(json_schema_extra={"html": True})
+    # If you want to mark a field as HTML, use Field(json_schema_extra={"html": True})
     @model_validator(mode="before")
     @classmethod
     def sanitise_values(cls, values: dict) -> dict:
+        """Sanitise all input values before validation."""
         sanitised_values: dict = {}
 
         # Known fields
@@ -62,13 +58,15 @@ class CamelisedBaseModel(BaseModel):
         field_info: FieldInfo,
         values: dict,
         sanitised_values: dict,
-    ) -> Any:
+    ) -> Any:  # noqa: ANN401
         if key in values:
             value = values.pop(key)
             sanitised_values[key] = cls._sanitise_value(field_info, value)
 
     @staticmethod
-    def _sanitise_value(field_info: FieldInfo | None, value: Any) -> Any:
+    def _sanitise_value(
+        field_info: FieldInfo | None, value: Any  # noqa: ANN401
+    ) -> Any:  # noqa: ANN401
         is_str = isinstance(value, str)
         is_datetime = isinstance(value, datetime)
         is_datetime_field = field_info and field_info.annotation in (
@@ -80,13 +78,12 @@ class CamelisedBaseModel(BaseModel):
             if value is None or is_str or is_datetime:
                 return sanitise_datetime_input(value)
 
-            msg_field = " for field {field_info.alias}" if field_info else ""
-            raise ValueError(
-                f"Invalid datetime value{msg_field}: {value} (type: {type(value)})"
-            )
+            msg_field = f" for field {field_info.alias}" if field_info else ""
+            msg = f"Invalid datetime value{msg_field}: {value} (type: {type(value)})"
+            raise ValueError(msg)
 
-        if is_str and _get_field_info_extra_bool(field_info, "sanitise", True):
-            if _get_field_info_extra_bool(field_info, "html", False):
+        if is_str and _get_field_info_extra_bool(field_info, "sanitise", default=True):
+            if _get_field_info_extra_bool(field_info, "html", default=False):
                 return sanitise_html_input(value)
             return sanitise_text_input(value)
 
@@ -94,38 +91,45 @@ class CamelisedBaseModel(BaseModel):
 
 
 def _get_field_info_extra_bool(
-    field_info: FieldInfo | None, key: str, default: bool
+    field_info: FieldInfo | None, key: str, *, default: bool
 ) -> bool:
     if field_info and field_info.json_schema_extra:
-        value = field_info.json_schema_extra.get(key, default)
+        value = field_info.json_schema_extra.get(key, default)  # type: ignore[arg-type]
 
         if isinstance(value, bool):
             return value
 
-        raise ValueError(f"Invalid value for JSON schema extra key '{key}': {value}")
+        msg = f"Invalid value for JSON schema extra key '{key}': {value}"
+        raise ValueError(msg)
 
     return default
 
 
-class CamelisedBaseModelWithEntity(CamelisedBaseModel, Generic[EntityT]):
-    """
-    Base class for all model classes related to entities.
-    """
+class CamelisedBaseModelWithEntity[EntityT](CamelisedBaseModel):
+    """Base class for all model classes related to entities."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     entity: EntityT | None = Field(exclude=True, default=None)
-    """The entity associated with this model, if available. This allows to write model-oriented code, but still have access to the underlying entity."""
+    """The entity associated with this model, if available.
+
+    This allows to write model-oriented code, but still have access to the underlying
+    entity.
+    """
 
     def get_entity(self) -> EntityT:
+        """Return the associated entity or raise."""
         if not self.entity:
-            raise ValueError(
-                f"No entity is associated with this model: {full_type_name(self.__class__)}{self.model_dump()}"
+            msg = (
+                "No entity is associated with this model:"
+                f" {full_type_name(self.__class__)}{self.model_dump()}"
             )
+            raise ValueError(msg)
         return self.entity
 
 
 def sanitise_text_input(text: str | None) -> str | None:
+    """Strip HTML tags and return plain text."""
     if not text:
         return None
 
@@ -136,12 +140,14 @@ def sanitise_text_input(text: str | None) -> str | None:
             return None
 
         clean_text = clean_html(element).text_content().strip()
-        return clean_text if clean_text else None
+        return clean_text or None  # noqa: TRY300 - easier to read
     except Exception as exc:
-        raise ValueError(f"Failed to sanitise text input: {text}") from exc
+        msg = f"Failed to sanitise text input: {text}"
+        raise ValueError(msg) from exc
 
 
 def sanitise_html_input(html: str | None) -> str | None:
+    """Clean and sanitise HTML input."""
     if not html:
         return None
     if sanitise_text_input(html) is None:
@@ -183,7 +189,8 @@ def sanitise_html_input(html: str | None) -> str | None:
         # clean_element could be wrapped in an extra <div> or <p> tag, it's OK
         return lxml.etree.tostring(clean_element, encoding="unicode", method="html")
     except Exception as exc:
-        raise ValueError(f"Failed to sanitise HTML input: {html}") from exc
+        msg = f"Failed to sanitise HTML input: {html}"
+        raise ValueError(msg) from exc
 
 
 def _parse_html(text: str) -> lxml.html.HtmlElement | None:
@@ -200,10 +207,12 @@ def _parse_html(text: str) -> lxml.html.HtmlElement | None:
         # (Cannot catch directly)
         if "Document is empty" in str(exc):
             return None
-        raise ValueError(f"Failed to parse text input: {text}") from exc
+        msg = f"Failed to parse text input: {text}"
+        raise ValueError(msg) from exc
 
 
 def sanitise_datetime_input(value: datetime | str | None) -> datetime | None:
+    """Parse and sanitise a datetime input."""
     if value is None:
         return None
 
@@ -216,7 +225,8 @@ def sanitise_datetime_input(value: datetime | str | None) -> datetime | None:
         value = datetime.fromisoformat(value)
 
     if not isinstance(value, datetime):
-        raise ValueError(f"Invalid datetime value: {value}")
+        msg = f"Invalid datetime value: {value} (type: {type(value)})"
+        raise TypeError(msg)
 
     if value.tzinfo is None:
         return value.replace(tzinfo=TIME_ZONE)

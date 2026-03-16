@@ -1,6 +1,4 @@
-"""
-Test data generator component for licences.
-"""
+"""Test data generator component for licences."""
 
 from faker import Faker
 
@@ -16,6 +14,7 @@ _LICENCES_OTHER = ["M"]
 def generate_licences(
     faker: Faker, licences_to_ids: dict[str, int], member: MemberEntity
 ) -> list[LicenceEntity]:
+    """Generate licence entities for a member."""
     return [
         _create_licence(faker, member, licences_to_ids[licence])
         for licence in sorted(_generate_licence_list(faker, member))

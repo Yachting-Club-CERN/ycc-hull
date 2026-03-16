@@ -1,6 +1,6 @@
-"""
-Notifications format utils test.
-"""
+"""Notifications format utils test."""
+
+# ruff: noqa: DTZ001
 
 from datetime import datetime
 
@@ -20,7 +20,7 @@ from ycc_hull.controllers.notifications.format_utils import (
 
 
 @pytest.mark.parametrize(
-    "input_date, expected",
+    ("input_date", "expected"),
     [
         (None, None),
         (datetime(2025, 1, 1), "01/01/2025"),
@@ -33,7 +33,7 @@ def test_format_date(input_date: datetime | None, expected: str | None) -> None:
 
 
 @pytest.mark.parametrize(
-    "input_date, expected",
+    ("input_date", "expected"),
     [
         (None, None),
         (datetime(2025, 1, 1), "Wednesday, 1 January 2025"),
@@ -48,7 +48,7 @@ def test_format_date_with_day(
 
 
 @pytest.mark.parametrize(
-    "input_date, expected",
+    ("input_date", "expected"),
     [
         (None, None),
         (datetime(2025, 1, 1, 0, 0), "00:00"),
@@ -62,7 +62,7 @@ def test_format_time(input_date: datetime | None, expected: str | None) -> None:
 
 
 @pytest.mark.parametrize(
-    "input_date, expected",
+    ("input_date", "expected"),
     [
         (None, None),
         (datetime(2025, 1, 1, 0, 0), "01/01/2025 00:00"),
@@ -80,7 +80,7 @@ def test_format_date_time(input_date: datetime | None, expected: str | None) -> 
 
 
 @pytest.mark.parametrize(
-    "input_phone, expected",
+    ("input_phone", "expected"),
     [
         (None, None),
         ("", None),

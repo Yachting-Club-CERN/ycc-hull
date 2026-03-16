@@ -1,6 +1,4 @@
-"""
-Test data generator component for helpers.
-"""
+"""Test data generator component for helpers."""
 
 from datetime import datetime
 
@@ -14,6 +12,7 @@ from ycc_hull.db.entities import (
 
 
 def generate_helpers_app_permissions() -> list[HelpersAppPermissionEntity]:
+    """Generate permission entities."""
     return [
         HelpersAppPermissionEntity(member_id=1, permission="ADMIN", note="Admin"),
         HelpersAppPermissionEntity(
@@ -24,6 +23,7 @@ def generate_helpers_app_permissions() -> list[HelpersAppPermissionEntity]:
 
 
 def generate_helper_task_categories() -> list[HelperTaskCategoryEntity]:
+    """Generate helper task category entities."""
     return [
         HelperTaskCategoryEntity(
             id=1, title="Surveillance", short_description="Q-boat surveillance"
@@ -35,6 +35,7 @@ def generate_helper_task_categories() -> list[HelperTaskCategoryEntity]:
 
 
 def generate_helper_tasks() -> list[HelperTaskEntity]:
+    """Generate helper task entities."""
     # Past: to test that one cannot sign up
     # Present: to test sign up
     return [
@@ -182,6 +183,7 @@ def generate_helper_tasks() -> list[HelperTaskEntity]:
 
 
 def generate_helper_task_helpers() -> list[HelperTaskHelperEntity]:
+    """Generate helper task helper entities."""
     return [
         HelperTaskHelperEntity(
             task_id=2012,

@@ -1,8 +1,7 @@
-"""
-Audit log API endpoints.
-"""
+"""Audit log API endpoints."""
 
 from collections.abc import Sequence
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
@@ -20,9 +19,10 @@ api_audit_log = APIRouter(dependencies=[Depends(auth)])
 
 @api_audit_log.get("/api/v1/audit-log/entries")
 async def audit_log_entries_get(
-    user: User = Depends(auth),
-    controller: AuditLogController = Depends(get_audit_log_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[AuditLogController, Depends(get_audit_log_controller)],
 ) -> Sequence[AuditLogEntryDto]:
+    """List all audit log entries."""
     _check_can_access(user)
 
     return await controller.find_all_entries()
@@ -31,9 +31,10 @@ async def audit_log_entries_get(
 @api_audit_log.get("/api/v1/audit-log/entries/{entry_id}")
 async def audit_log_entries_get_by_id(
     entry_id: int,
-    user: User = Depends(auth),
-    controller: AuditLogController = Depends(get_audit_log_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[AuditLogController, Depends(get_audit_log_controller)],
 ) -> AuditLogEntryDto:
+    """Get an audit log entry by ID."""
     _check_can_access(user)
 
     return await controller.get_entry_by_id(entry_id)
@@ -42,9 +43,10 @@ async def audit_log_entries_get_by_id(
 @api_audit_log.delete("/api/v1/audit-log/entries")
 async def audit_log_entries_delete(
     request: AuditLogEntriesDeleteRequestDto,
-    user: User = Depends(auth),
-    controller: AuditLogController = Depends(get_audit_log_controller),
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[AuditLogController, Depends(get_audit_log_controller)],
 ) -> Response:
+    """Delete audit log entries."""
     _check_can_access(user)
 
     await controller.delete_entries(request, user)
@@ -53,4 +55,5 @@ async def audit_log_entries_delete(
 
 def _check_can_access(user: User) -> None:
     if not user.helpers_app_admin:
-        raise create_http_exception_403("Forbidden")
+        msg = "Forbidden"
+        raise create_http_exception_403(msg)

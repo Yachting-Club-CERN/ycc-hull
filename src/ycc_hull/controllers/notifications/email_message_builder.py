@@ -1,6 +1,8 @@
+"""Email message builder."""
+
+from collections.abc import Iterable
 from email.message import EmailMessage
 from email.utils import formataddr
-from typing import Iterable
 
 from pydantic import BaseModel
 
@@ -20,8 +22,7 @@ EmailContacts = EmailContact | Iterable[EmailContact | None]
 
 
 class EmailMessageBuilder:
-    """
-    Type-safe builder for email.message.EmailMessage.
+    """Type-safe builder for email.message.EmailMessage.
 
     build(...) wraps the main content with the rest of the HTML code and text.
     """
@@ -29,6 +30,7 @@ class EmailMessageBuilder:
     def __init__(
         self,
     ) -> None:
+        """Initialise the email message builder."""
         self._from: str | None = None
         self._to: set[str] = set()
         self._cc: set[str] = set()
@@ -39,12 +41,10 @@ class EmailMessageBuilder:
     def _extract_address(self, recipient: EmailContact) -> str:
         if isinstance(recipient, str):
             return recipient
-        elif isinstance(recipient, (MemberPublicInfoDto, User)):
+        if isinstance(recipient, (MemberPublicInfoDto, User)):
             return formataddr((recipient.full_name, recipient.email))
-        else:
-            raise TypeError(
-                f"Expected string, MemberPublicInfoDto or User, got {recipient}"
-            )
+        msg = f"Expected string, MemberPublicInfoDto or User, got {recipient}"
+        raise TypeError(msg)
 
     def _add_contacts(
         self, target_set: set[str], contact: EmailContacts | None
@@ -59,49 +59,61 @@ class EmailMessageBuilder:
                 self._extract_address(recipient) for recipient in contact if recipient
             )
         else:
-            target_set.add(self._extract_address(contact))
+            target_set.add(self._extract_address(contact))  # type: ignore[arg-type]
 
     def from_(self, contact: EmailContact) -> "EmailMessageBuilder":
+        """Set the FROM address."""
         self._from = self._extract_address(contact)
         return self
 
     def to(
         self, contacts: EmailContact | EmailContacts | None
     ) -> "EmailMessageBuilder":
+        """Add TO recipients."""
         self._add_contacts(self._to, contacts)
         return self
 
     def cc(
         self, contacts: EmailContact | EmailContacts | None
     ) -> "EmailMessageBuilder":
+        """Add CC recipients."""
         self._add_contacts(self._cc, contacts)
         return self
 
     def reply_to(self, contact: EmailContact) -> "EmailMessageBuilder":
+        """Set the Reply-To address."""
         self._reply_to = self._extract_address(contact)
         return self
 
     def subject(self, subject: str) -> "EmailMessageBuilder":
+        """Set the email subject."""
         self._subject = subject
         return self
 
     def content(self, content: str) -> "EmailMessageBuilder":
+        """Set the email content."""
         self._content = content
         return self
 
     def build(self) -> EmailMessage:
+        """Build and return the email message."""
         if not self._from:
             if not CONFIG.email:
-                raise ValueError(
-                    "Email configuration is not set, cannot determine default FROM address"
+                msg = (
+                    "Email configuration is not set, cannot determine default FROM "
+                    "address"
                 )
+                raise ValueError(msg)
             self.from_(formataddr((CONFIG.ycc_app.name, CONFIG.email.from_email)))
         if not self._to:
-            raise RuntimeError("Recipient (TO) is not set")
+            msg = "Recipient (TO) is not set"
+            raise RuntimeError(msg)
         if not self._subject:
-            raise RuntimeError("Subject is not set")
+            msg = "Subject is not set"
+            raise RuntimeError(msg)
         if not self._content:
-            raise RuntimeError("Content is not set")
+            msg = "Content is not set"
+            raise RuntimeError(msg)
 
         message = EmailMessage()
         message["From"] = self._from

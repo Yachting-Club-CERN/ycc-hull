@@ -2,14 +2,13 @@
 
 YCC backend service.
 
-Sad news as of 2025-03: This approach did not catch on, Enrico decided to do his own thing with Flask and Vue.js and Bartek is also doing his own thing. Stays for now as backend for the YCC App & Python practice project.
+Sad news as of 2025-03: This approach did not catch on, Enrico decided to do his own thing with Flask and Vue.js and Bartek is also doing his own thing. Stays for now as backend for the YCC App & as a Python practice project.
 
 ## Prerequisites
 
 - Install Python 3.12
 - Install Oracle Instant Client
-- Install Poetry & [poetry-plugin-up](https://github.com/MousaZeidBaker/poetry-plugin-up)
-  - `pipx install poetry && pipx inject poetry poetry-plugin-up`
+- Install uv
 - Optionally install Docker & Docker Compose if you want to run the full stack locally
 
 ## Run Application Locally
@@ -19,7 +18,7 @@ _Note: these instructions guide you to run everything locally. But you can also 
 Initialise environment:
 
 ```sh
-poetry install
+make init
 ```
 
 Start database:
@@ -48,7 +47,7 @@ docker run -d --name=mailpit --restart unless-stopped -e TZ=Europe/Zurich -p 802
 Start application:
 
 ```sh
-poetry run start
+make up
 ```
 
 - Address: [http://localhost:8000/](http://localhost:8000/)
@@ -57,8 +56,8 @@ poetry run start
 You can also separately verify the DB and the email configuration:
 
 ```sh
-poetry run db-playground
-poetry run email-playground
+make db-playground
+make email-playground
 ```
 
 ## Keycloak Client Configuration
@@ -101,9 +100,9 @@ For the Swagger UI (optional) create a client with:
 You can regenerate entities using the following commands:
 
 ```sh
-poetry run sqlacodegen oracle+oracledb://ycclocal:changeit@127.0.0.1:1521/XE --outfile generated_entities/entities_generated.py
-poetry run isort generated_entities/entities_generated.py
-poetry run black generated_entities/entities_generated.py
+uv run sqlacodegen oracle+oracledb://ycclocal:changeit@127.0.0.1:1521/XE --outfile generated_entities/entities_generated.py
+uv run ruff format generated_entities/entities_generated.py
+uv run ruff check --fix generated_entities/entities_generated.py
 ```
 
 Generated entities does not work as good as handwritten ones. Please use the generated entities as a reference for updating handwritten entities in `entities.py`.
@@ -112,28 +111,21 @@ Generated entities does not work as good as handwritten ones. Please use the gen
 
 For non-sensitive data such as membership types or boats, we can use directly the real YCC data.
 
-For sensitive data (names, addresses, bookings, _boat logs_), automatic one-shot generation is preferred with tools like [Faker](https://faker.readthedocs.io) or [Mockaroo](https://www.mockaroo.com/).
-
-### Dependency Upgrade
-
-Upgrade to latest compatible versions:
-
-`poetry up`
-
-Upgrade to latest versions:
-
-`poetry up --latest`
+For sensitive data (names, addresses, bookings, _boat logs_), automatic one-shot generation is preferred with [Faker](https://faker.readthedocs.io).
 
 ### Basic QA
 
 ```sh
-poetry run pytest --cov=ycc_hull --cov-branch --cov-report=html -x -vvv
+make check
+```
 
-poetry run isort .
-poetry run black .
-poetry run mypy .
-poetry run flake8 .
-poetry run pylint --jobs 0 legacy_password_hashing load_tests test_data tests ycc_hull
+Or run individually:
+
+```sh
+make test
+make lint
+make lint-fix
+make format
 ```
 
 ## Load Testing
@@ -142,15 +134,15 @@ Load tests are located in `load_tests`. They are written using [Locust](https://
 
 ```sh
 # LOCAL
-poetry run locust --locustfile load_tests/load_test_helpers.py --host http://localhost:8000
+uv run locust --locustfile load_tests/load_test_helpers.py --host http://localhost:8000
 
 # DEV
-poetry run locust --locustfile load_tests/load_test_helpers.py --host https://ycc-hull-dev.web.cern.ch
+uv run locust --locustfile load_tests/load_test_helpers.py --host https://ycc-hull-dev.web.cern.ch
 ```
 
 You can use either YCC-DEV or YCC-LOCAL for auth (you can configure it in `load_tests/load_test_config.py`).
 
-For more info about test execution see `poetry run locust --help`.
+For more info about test execution see `uv run locust --help`.
 
 ### Database Schema Upgrade
 

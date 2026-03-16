@@ -1,6 +1,4 @@
-"""
-Audit log API DTO classes.
-"""
+"""Audit log API DTO classes."""
 
 from datetime import date, datetime
 
@@ -9,9 +7,7 @@ from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntit
 
 
 class AuditLogEntryDto(CamelisedBaseModelWithEntity[AuditLogEntryEntity]):
-    """
-    DTO for an audit log entry.
-    """
+    """DTO for an audit log entry."""
 
     id: int
     created_at: datetime
@@ -22,6 +18,7 @@ class AuditLogEntryDto(CamelisedBaseModelWithEntity[AuditLogEntryEntity]):
 
     @classmethod
     async def create(cls, entry: AuditLogEntryEntity) -> "AuditLogEntryDto":
+        """Create a DTO from an audit log entry."""
         return await cls._create(
             entry,
             data=await entry.awaitable_attrs.data,
@@ -31,6 +28,7 @@ class AuditLogEntryDto(CamelisedBaseModelWithEntity[AuditLogEntryEntity]):
     async def create_without_large_fields(
         cls, entry: AuditLogEntryEntity
     ) -> "AuditLogEntryDto":
+        """Create a DTO without large data fields."""
         return await cls._create(
             entry,
             data=None,
@@ -54,8 +52,6 @@ class AuditLogEntryDto(CamelisedBaseModelWithEntity[AuditLogEntryEntity]):
 
 
 class AuditLogEntriesDeleteRequestDto(CamelisedBaseModel):
-    """
-    DTO for an audit log delete request.
-    """
+    """DTO for an audit log delete request."""
 
     cutoff_date: date

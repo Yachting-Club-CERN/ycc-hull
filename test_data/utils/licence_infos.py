@@ -1,6 +1,4 @@
-"""
-Test data generator component for licence infos.
-"""
+"""Test data generator component for licence infos."""
 
 import copy
 import json
@@ -10,7 +8,8 @@ from ycc_hull.db.entities import LicenceInfoEntity
 
 
 def generate_licence_infos() -> list[LicenceInfoEntity]:
-    with open(LICENCE_INFOS_EXPORTED_JSON_FILE, "r", encoding="utf-8") as file:
+    """Generate licence info entities from exported data."""
+    with LICENCE_INFOS_EXPORTED_JSON_FILE.open(encoding="utf-8") as file:
         return [
             _create_licence_info(boat)
             for boat in json.load(file)["results"][0]["items"]

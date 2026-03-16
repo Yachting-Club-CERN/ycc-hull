@@ -1,6 +1,4 @@
-"""
-Holidays controller.
-"""
+"""Holidays controller."""
 
 from collections.abc import Sequence
 
@@ -12,11 +10,10 @@ from ycc_hull.models.dtos import HolidayDto
 
 
 class HolidaysController(BaseController):
-    """
-    Holidays controller. Returns DTO objects.
-    """
+    """Holidays controller. Returns DTO objects."""
 
     async def find_all(self) -> Sequence[HolidayDto]:
+        """Return all holidays."""
         return await self.database_context.query_all(
             select(HolidayEntity).order_by(HolidayEntity.day),
             async_transformer=HolidayDto.create,

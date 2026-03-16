@@ -1,9 +1,8 @@
-"""
-Test Data API endpoints.
-"""
+"""Test Data API endpoints."""
 
 import json
 from datetime import date, datetime, time, timedelta
+from pathlib import Path
 
 import aiofiles
 from sqlalchemy import delete
@@ -46,32 +45,30 @@ from ycc_hull.utils import full_type_name, short_type_name
 
 
 class _TestDataImporter:
-    """
-    Test data importer. Able to import data from exported and generated files.
-    """
+    """Test data importer. Able to import data from exported and generated files."""
 
     def __init__(self, session: Session) -> None:
         self._session = session
 
     async def import_exported(
-        self, file_path: str, cls: type, commit_on_each: bool = False
+        self, file_path: Path, cls: type, *, commit_on_each: bool = False
     ) -> list:
-        async with aiofiles.open(file_path, "r", encoding="utf-8") as file:
+        async with aiofiles.open(file_path, encoding="utf-8") as file:
             data = json.loads(await file.read())
             return await self._import(
                 cls, data["results"][0]["items"], commit_on_each=commit_on_each
             )
 
     async def import_generated(
-        self, file_path: str, cls: type, commit_on_each: bool = False
+        self, file_path: Path, cls: type, *, commit_on_each: bool = False
     ) -> list:
-        async with aiofiles.open(file_path, "r", encoding="utf-8") as file:
+        async with aiofiles.open(file_path, encoding="utf-8") as file:
             data = json.loads(await file.read())
             return await self._import(cls, data, commit_on_each=commit_on_each)
 
-    async def _import(self, cls: type, entries: list, commit_on_each: bool) -> list:
-        for entry in entries:
-            entry = self._prepare(entry)
+    async def _import(self, cls: type, entries: list, *, commit_on_each: bool) -> list:
+        for raw_entry in entries:
+            entry = self._prepare(raw_entry)
             self._session.add(cls(**entry))
             if commit_on_each:
                 self._session.commit()
@@ -85,20 +82,20 @@ class _TestDataImporter:
                 elif value["@type"] == "datetime":
                     entry[key] = datetime.fromisoformat(value["value"])
                 else:
-                    raise TypeError(f"Cannot prepare field {key}: {value}")
+                    msg = f"Cannot prepare field {key}: {value}"
+                    raise TypeError(msg)
 
         # Not necessary to copy the dict
         return entry
 
 
 class TestDataController(BaseController):
-    """
-    Test data controller.
-    """
+    """Test data controller."""
 
     __test__ = False
 
-    async def populate(self, add_daily_helper_tasks: bool) -> list[str]:
+    async def populate(self, *, add_daily_helper_tasks: bool) -> list[str]:
+        """Populate the database with test data."""
         log: list[str] = []
 
         with self.database_action(
@@ -106,22 +103,30 @@ class TestDataController(BaseController):
         ) as session:
             importer = _TestDataImporter(session=session)
 
-            log.extend(await self._populate_holidays(session, importer))
-            log.extend(await self._populate_members(session, importer))
-            log.extend(await self._populate_boats(session, importer))
-            log.extend(await self._populate_licences(session, importer))
+            log.extend(
+                await self._populate_holidays(session=session, importer=importer)
+            )
+            log.extend(await self._populate_members(session=session, importer=importer))
+            log.extend(await self._populate_boats(session=session, importer=importer))
+            log.extend(
+                await self._populate_licences(session=session, importer=importer)
+            )
 
             session.commit()
             log.append("Commit")
 
             log.extend(
-                await self._populate_helpers(add_daily_helper_tasks, session, importer)
+                await self._populate_helpers(
+                    session=session,
+                    importer=importer,
+                    add_daily_helper_tasks=add_daily_helper_tasks,
+                )
             )
 
         return log
 
     async def _populate_holidays(
-        self, session: Session, importer: _TestDataImporter
+        self, *, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -134,7 +139,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_members(
-        self, session: Session, importer: _TestDataImporter
+        self, *, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -171,7 +176,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_boats(
-        self, session: Session, importer: _TestDataImporter
+        self, *, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -184,7 +189,7 @@ class TestDataController(BaseController):
         return log
 
     async def _populate_licences(
-        self, session: Session, importer: _TestDataImporter
+        self, *, session: Session, importer: _TestDataImporter
     ) -> list[str]:
         log: list[str] = []
 
@@ -206,9 +211,10 @@ class TestDataController(BaseController):
 
     async def _populate_helpers(
         self,
-        add_daily_helper_tasks: bool,
+        *,
         session: Session,
         importer: _TestDataImporter,
+        add_daily_helper_tasks: bool,
     ) -> list[str]:
         log: list[str] = []
 
@@ -259,12 +265,13 @@ class TestDataController(BaseController):
         log.append("Commit")
 
         if add_daily_helper_tasks:
-            log.extend(await self._create_daily_helper_tasks(session))
+            log.extend(await self._create_daily_helper_tasks(session=session))
 
         return log
 
     async def _create_daily_helper_tasks(
         self,
+        *,
         session: Session,
     ) -> list[str]:
         log: list[str] = []
@@ -327,6 +334,7 @@ class TestDataController(BaseController):
         return log
 
     async def clear(self) -> list[str]:
+        """Clear all test data from the database."""
         log: list[str] = []
         classes = (
             # Helpers
@@ -357,9 +365,8 @@ class TestDataController(BaseController):
         ]
 
         if unhandled_class_names:
-            raise AssertionError(
-                f"Some entity classes are not handled: {unhandled_class_names}"
-            )
+            msg = f"Some entity classes are not handled: {unhandled_class_names}"
+            raise AssertionError(msg)
 
         with self.database_action(
             action="Test Data / Clear", user=None, details=None
@@ -373,10 +380,11 @@ class TestDataController(BaseController):
 
         return log
 
-    async def repopulate(self, add_daily_helper_tasks: bool) -> list[str]:
+    async def repopulate(self, *, add_daily_helper_tasks: bool) -> list[str]:
+        """Repopulate test data."""
         log: list[str] = []
 
         log.extend(await self.clear())
-        log.extend(await self.populate(add_daily_helper_tasks))
+        log.extend(await self.populate(add_daily_helper_tasks=add_daily_helper_tasks))
 
         return log

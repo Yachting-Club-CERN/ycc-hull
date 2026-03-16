@@ -1,10 +1,7 @@
-"""
-Application configuration.
-"""
+"""Application configuration."""
 
 import json
-import os
-from enum import Enum
+from enum import StrEnum
 from logging import Logger
 
 from pydantic import ConfigDict, Field
@@ -13,10 +10,8 @@ from ycc_hull.constants import CONFIG_FILE
 from ycc_hull.models.base import CamelisedBaseModel
 
 
-class Environment(str, Enum):
-    """
-    Environment enumeration.
-    """
+class Environment(StrEnum):
+    """Environment enumeration."""
 
     PRODUCTION = "PRODUCTION"
     TEST = "TEST"
@@ -25,9 +20,7 @@ class Environment(str, Enum):
 
 
 class EmailConfig(CamelisedBaseModel):
-    """
-    Email configuration.
-    """
+    """Email configuration."""
 
     from_email: str
     content_header: str | None = Field(
@@ -41,9 +34,7 @@ class EmailConfig(CamelisedBaseModel):
 
 
 class KeycloakConfig(CamelisedBaseModel):
-    """
-    Keycloak configuration.
-    """
+    """Keycloak configuration."""
 
     server_url: str
     realm: str
@@ -53,31 +44,26 @@ class KeycloakConfig(CamelisedBaseModel):
 
 
 class NotificationsConfig(CamelisedBaseModel):
-    """
-    Notifications configuration.
-    """
+    """Notifications configuration."""
 
     daily_notifications_trigger: str | None = Field(
         description=(
-            "Trigger for daily notifications. For production it could be e.g., `cron: 4 9 * * *` for testing you can also use `interval-seconds: 120`."
+            "Trigger for daily notifications. For production it could be e.g., "
+            "`cron: 4 9 * * *` for testing you can also use `interval-seconds: 120`. "
             "If None, notifications are disabled."
         )
     )
 
 
 class YccAppConfig(CamelisedBaseModel):
-    """
-    YCC App configuration.
-    """
+    """YCC App configuration."""
 
     name: str
     base_url: str
 
 
 class Config(CamelisedBaseModel):
-    """
-    Application configuration.
-    """
+    """Application configuration."""
 
     model_config = ConfigDict(frozen=True)
 
@@ -92,13 +78,16 @@ class Config(CamelisedBaseModel):
 
     @property
     def local(self) -> bool:
+        """Check if running in local environment."""
         return self.environment == Environment.LOCAL
 
     @property
     def api_docs_enabled(self) -> bool:
+        """Check if API docs should be enabled."""
         return self.environment in (Environment.LOCAL, Environment.DEVELOPMENT)
 
     def emails_enabled(self, logger: Logger) -> bool:
+        """Check if email sending is configured."""
         if self.email:
             return True
 
@@ -109,9 +98,10 @@ class Config(CamelisedBaseModel):
 CONFIG: Config
 
 
-if os.path.isfile(CONFIG_FILE):
-    with open(CONFIG_FILE, "r", encoding="utf-8") as file:
+if CONFIG_FILE.is_file():
+    with CONFIG_FILE.open(encoding="utf-8") as file:
         _config_data = json.load(file)
         CONFIG = Config(**_config_data)
 else:
-    raise AssertionError(f"Missing configuration file: {CONFIG_FILE}")
+    msg = f"Missing configuration file: {CONFIG_FILE}"
+    raise AssertionError(msg)

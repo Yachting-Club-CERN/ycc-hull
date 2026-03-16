@@ -1,10 +1,8 @@
-"""
-Helpers API DTO classes.
-"""
+"""Helpers API DTO classes."""
 
 from collections.abc import Sequence
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import Field, field_validator, model_validator
 
@@ -19,20 +17,16 @@ from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntit
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
 
-class HelperTaskType(str, Enum):
-    """
-    Helper task type enumeration.
-    """
+class HelperTaskType(StrEnum):
+    """Helper task type enumeration."""
 
     SHIFT = "Shift"
     DEADLINE = "Deadline"
     UNKNOWN = "Unknown"
 
 
-class HelperTaskState(str, Enum):
-    """
-    Helper task state enumeration.
-    """
+class HelperTaskState(StrEnum):
+    """Helper task state enumeration."""
 
     PENDING = "Pending"
     DONE = "Done"
@@ -40,9 +34,7 @@ class HelperTaskState(str, Enum):
 
 
 class HelpersAppPermissionDto(CamelisedBaseModelWithEntity[HelpersAppPermissionEntity]):
-    """
-    DTO for Helpers App permission.
-    """
+    """DTO for Helpers App permission."""
 
     member: MemberPublicInfoDto
     permission: str
@@ -52,6 +44,7 @@ class HelpersAppPermissionDto(CamelisedBaseModelWithEntity[HelpersAppPermissionE
     async def create(
         permission: HelpersAppPermissionEntity,
     ) -> "HelpersAppPermissionDto":
+        """Create a DTO from a permission entity."""
         return HelpersAppPermissionDto(
             entity=permission,
             member=await MemberPublicInfoDto.create(
@@ -63,9 +56,7 @@ class HelpersAppPermissionDto(CamelisedBaseModelWithEntity[HelpersAppPermissionE
 
 
 class HelpersAppPermissionGrantRequestDto(CamelisedBaseModel):
-    """
-    DTO for Helpers App permission grant request.
-    """
+    """DTO for Helpers App permission grant request."""
 
     member_id: int
     permission: str
@@ -73,17 +64,13 @@ class HelpersAppPermissionGrantRequestDto(CamelisedBaseModel):
 
 
 class HelpersAppPermissionUpdateRequestDto(CamelisedBaseModel):
-    """
-    DTO for Helpers App permission update request.
-    """
+    """DTO for Helpers App permission update request."""
 
     note: str | None
 
 
 class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntity]):
-    """
-    DTO for a helper task category.
-    """
+    """DTO for a helper task category."""
 
     id: int
     title: str
@@ -92,6 +79,7 @@ class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntit
 
     @staticmethod
     async def create(category: HelperTaskCategoryEntity) -> "HelperTaskCategoryDto":
+        """Create a DTO from a category entity."""
         return HelperTaskCategoryDto(
             entity=category,
             id=category.id,
@@ -102,9 +90,7 @@ class HelperTaskCategoryDto(CamelisedBaseModelWithEntity[HelperTaskCategoryEntit
 
 
 class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
-    """
-    DTO for a helper task.
-    """
+    """DTO for a helper task."""
 
     id: int
     category: HelperTaskCategoryDto
@@ -133,10 +119,12 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     @property
     def year(self) -> int:
+        """Return the year of the task."""
         return get_task_year(self)
 
     @property
     def type(self) -> HelperTaskType:
+        """Return the type of the task."""
         if self.starts_at and self.ends_at and not self.deadline:
             return HelperTaskType.SHIFT
         if not self.starts_at and not self.ends_at and self.deadline:
@@ -145,6 +133,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     @property
     def state(self) -> HelperTaskState:
+        """Return the state of the task."""
         if self.validated_at:
             return HelperTaskState.VALIDATED
         if self.marked_as_done_at:
@@ -153,6 +142,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
     @classmethod
     async def create(cls, task: HelperTaskEntity) -> "HelperTaskDto":
+        """Create a DTO from a task entity."""
         return await cls._create(
             task,
             long_description=await task.awaitable_attrs.long_description,
@@ -164,6 +154,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     async def create_without_large_fields(
         cls, task: HelperTaskEntity
     ) -> "HelperTaskDto":
+        """Create a DTO without large text fields."""
         return await cls._create(
             task,
             long_description=None,
@@ -214,7 +205,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
                 await HelperTaskHelperDto.create_from_member_entity(
                     # Either both or none are present
                     captain,
-                    task.captain_signed_up_at,  # type: ignore
+                    task.captain_signed_up_at,  # type: ignore[arg-type]
                 )
                 if task.captain
                 else None
@@ -239,9 +230,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
 
 
 class HelperTaskMutationRequestBaseDto(CamelisedBaseModel):
-    """
-    Base DTO for helper task mutation requests.
-    """
+    """Base DTO for helper task mutation requests."""
 
     category_id: int
     title: str
@@ -259,52 +248,56 @@ class HelperTaskMutationRequestBaseDto(CamelisedBaseModel):
 
     @property
     def year(self) -> int:
+        """Return the year of the task."""
         return get_task_year(self)
 
     @field_validator("title", "short_description")
     @classmethod
     def check_not_blank(cls, value: str) -> str:
+        """Validate that the field is not blank."""
         if not value.strip():
-            raise ValueError("Field must not be blank")
+            msg = "Field must not be blank"
+            raise ValueError(msg)
         return value
 
     @model_validator(mode="after")
     def check_timing(self) -> "HelperTaskMutationRequestBaseDto":
+        """Validate task timing fields are consistent."""
         if self.starts_at and self.ends_at and not self.deadline:
             # Shifts have extra conditions
             if self.starts_at >= self.ends_at:
-                raise ValueError("Invalid timing: start time must be before end time")
+                msg = "Invalid timing: start time must be before end time"
+                raise ValueError(msg)
             if self.starts_at.year != self.ends_at.year:
-                raise ValueError(
-                    "Invalid timing: start and end time must be in the same year"
-                )
+                msg = "Invalid timing: start and end time must be in the same year"
+                raise ValueError(msg)
         elif not self.starts_at and not self.ends_at and self.deadline:
             # Nothing more to validate on one value
             pass
         else:
-            raise ValueError(
-                "Invalid timing: either specify both start and end time for a shift or a deadline for a task"
+            msg = (
+                "Invalid timing: either specify both start and end time for a shift "
+                "or a deadline for a task"
             )
+            raise ValueError(msg)
 
         return self
 
     @model_validator(mode="after")
     def check_helper_min_max_count(self) -> "HelperTaskMutationRequestBaseDto":
+        """Validate helper min/max count."""
         if 0 <= self.helper_min_count <= self.helper_max_count:
             return self
-        raise ValueError("Invalid minimum/maximum helper count")
+        msg = "Invalid minimum/maximum helper count"
+        raise ValueError(msg)
 
 
 class HelperTaskCreationRequestDto(HelperTaskMutationRequestBaseDto):
-    """
-    Creation request DTO for helper task.
-    """
+    """Creation request DTO for helper task."""
 
 
 class HelperTaskUpdateRequestDto(HelperTaskMutationRequestBaseDto):
-    """
-    Update request DTO for helper task.
-    """
+    """Update request DTO for helper task."""
 
     notify_signed_up_members: bool = Field(
         description="Notify signed-up members about the update"
@@ -312,25 +305,19 @@ class HelperTaskUpdateRequestDto(HelperTaskMutationRequestBaseDto):
 
 
 class HelperTaskMarkAsDoneRequestDto(CamelisedBaseModel):
-    """
-    Mark as done request DTO for helper task.
-    """
+    """Mark as done request DTO for helper task."""
 
     comment: str | None = Field(json_schema_extra={"html": True})
 
 
 class HelperTaskValidationRequestDto(CamelisedBaseModel):
-    """
-    Validation request DTO for helper task.
-    """
+    """Validation request DTO for helper task."""
 
     comment: str | None = Field(json_schema_extra={"html": True})
 
 
 class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
-    """
-    DTO for helper task helper.
-    """
+    """DTO for helper task helper."""
 
     member: MemberPublicInfoDto
     signed_up_at: datetime
@@ -339,6 +326,7 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
     async def create(
         helper: HelperTaskHelperEntity,
     ) -> "HelperTaskHelperDto":
+        """Create a DTO from a helper entity."""
         return HelperTaskHelperDto(
             entity=None,
             member=await MemberPublicInfoDto.create(helper.member),
@@ -349,6 +337,7 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
     async def create_from_member_entity(
         member: MemberEntity, signed_up_at: datetime
     ) -> "HelperTaskHelperDto":
+        """Create a DTO from a member entity."""
         return HelperTaskHelperDto(
             entity=None,
             member=await MemberPublicInfoDto.create(member),
@@ -357,13 +346,15 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
 
 
 def get_task_year(task: HelperTaskDto | HelperTaskMutationRequestBaseDto) -> int:
+    """Return the year of a task from its timing fields."""
     if task.starts_at:
         return task.starts_at.year
     if task.ends_at:
         return task.ends_at.year
     if task.deadline:
         return task.deadline.year
-    raise ValueError("Missing timing")
+    msg = "Missing timing"
+    raise ValueError(msg)
 
 
 HelpersAppPermissionDto.model_rebuild()

@@ -1,6 +1,4 @@
-"""
-Helpers API utilities for load tests.
-"""
+"""Helpers API utilities for load tests."""
 
 import random
 from datetime import datetime, timedelta
@@ -9,9 +7,11 @@ from locust.clients import HttpSession
 
 from load_tests.load_test_auth_utils import create_auth_header
 from load_tests.load_test_config import API_BASE_URL
+from ycc_hull.utils import TIME_ZONE
 
 
 def get_task_categories(client: HttpSession, access_token: str) -> list[dict]:
+    """Fetch all task categories."""
     response = client.get(
         f"{API_BASE_URL}/helpers/task-categories",
         headers=create_auth_header(access_token),
@@ -25,8 +25,11 @@ def get_task_categories(client: HttpSession, access_token: str) -> list[dict]:
 
 
 def get_tasks(client: HttpSession, access_token: str) -> list[dict]:
+    """Fetch all helper tasks."""
     response = client.get(
-        f"{API_BASE_URL}/helpers/tasks", headers=create_auth_header(access_token)
+        f"{API_BASE_URL}/helpers/tasks",
+        params={"year": datetime.now(tz=TIME_ZONE).year},
+        headers=create_auth_header(access_token),
     )
     assert response.status_code == 200, response
 
@@ -37,6 +40,7 @@ def get_tasks(client: HttpSession, access_token: str) -> list[dict]:
 
 
 def get_task(client: HttpSession, task_id: int, access_token: str) -> dict:
+    """Fetch a single helper task by ID."""
     response = client.get(
         f"{API_BASE_URL}/helpers/tasks/{task_id}",
         headers=create_auth_header(access_token),
@@ -50,9 +54,12 @@ def get_task(client: HttpSession, task_id: int, access_token: str) -> dict:
 
 
 def create_task(client: HttpSession, contact_id: int, access_token: str) -> dict:
-    category_id = random.choice(get_task_categories(client, access_token))["id"]
-    now = datetime.now()
-    deadline = now + timedelta(hours=random.randint(24, 24 * 10))
+    """Create a helper task via the API."""
+    category_id = random.choice(  # noqa: S311
+        get_task_categories(client, access_token)
+    )["id"]
+    now = datetime.now(tz=TIME_ZONE)
+    deadline = now + timedelta(hours=random.randint(24, 24 * 10))  # noqa: S311
 
     response = client.post(
         f"{API_BASE_URL}/helpers/tasks",
@@ -83,6 +90,7 @@ def create_task(client: HttpSession, contact_id: int, access_token: str) -> dict
 
 
 def sign_up_as_captain(client: HttpSession, task_id: int, access_token: str) -> dict:
+    """Sign up as captain for a task."""
     response = client.post(
         f"{API_BASE_URL}/helpers/tasks/{task_id}/sign-up-as-captain",
         headers=create_auth_header(access_token),
@@ -97,6 +105,7 @@ def sign_up_as_captain(client: HttpSession, task_id: int, access_token: str) -> 
 
 
 def sign_up_as_helper(client: HttpSession, task_id: int, access_token: str) -> dict:
+    """Sign up as helper for a task."""
     response = client.post(
         f"{API_BASE_URL}/helpers/tasks/{task_id}/sign-up-as-helper",
         headers=create_auth_header(access_token),

@@ -1,12 +1,12 @@
-"""
-Utility functions for formatting email content.
+"""Utility functions for formatting email content.
 
-We could use Jinja2, but we would still need to implement most helpers in Python, so sticking to plain Python formatting makes things simpler.
+We could use Jinja2, but we would still need to implement most helpers in Python, so
+sticking to plain Python formatting makes things simpler.
 """
 
 import sys
+from collections.abc import Iterable
 from datetime import datetime
-from typing import Iterable
 
 import phonenumbers
 
@@ -20,8 +20,9 @@ from ycc_hull.models.helpers_dtos import HelperTaskDto, HelperTaskType
 
 
 def wrap_email_html(content: str) -> str:
-    """
-    Wraps the given content in a table layout to improve compatibility across different email clients.
+    """Wrap the given content in a table layout.
+
+    This improves compatibility across different email clients.
     """
     return f"""
 <html>
@@ -49,11 +50,13 @@ def wrap_email_html(content: str) -> str:
 
 
 def format_date(date: datetime | None) -> str | None:
+    """Format a date."""
     # Example: 01/01/2025
     return date.strftime("%d/%m/%Y") if date else None
 
 
 def format_date_with_day(date: datetime | None) -> str | None:
+    """Format a date with day name."""
     # Example: Wednesday, 1 January 2025
     if not date:
         return None
@@ -63,11 +66,13 @@ def format_date_with_day(date: datetime | None) -> str | None:
 
 
 def format_time(date: datetime | None) -> str | None:
+    """Format a time."""
     # Example: 12:00
     return date.strftime("%H:%M") if date else None
 
 
 def format_date_time(date: datetime | None) -> str | None:
+    """Format a date and time."""
     # Example: 01/01/2025, 12:00
     return date.strftime("%d/%m/%Y %H:%M") if date else None
 
@@ -78,6 +83,7 @@ def format_date_time(date: datetime | None) -> str | None:
 
 
 def format_email_link(email: str) -> str:
+    """Return an HTML mailto link for an email address."""
     return f'<a href="mailto:{email}">{email}</a>'
 
 
@@ -87,6 +93,7 @@ def format_email_link(email: str) -> str:
 
 
 def format_phone(phone: str | None) -> str | None:
+    """Format a phone number internationally."""
     if not phone:
         return None
 
@@ -102,6 +109,7 @@ def format_phone(phone: str | None) -> str | None:
 
 
 def format_phone_link(phone: str | None) -> str | None:
+    """Return an HTML tel link for a phone number."""
     if not phone:
         return None
 
@@ -110,6 +118,7 @@ def format_phone_link(phone: str | None) -> str | None:
 
 
 def format_phone_links(member: MemberPublicInfoDto) -> str | None:
+    """Return formatted phone links for a member."""
     phones = []
     if member.mobile_phone:
         phones.append(f"Mobile: {format_phone_link(member.mobile_phone)}")
@@ -128,6 +137,7 @@ def format_phone_links(member: MemberPublicInfoDto) -> str | None:
 
 
 def format_member_info(member: MemberPublicInfoDto) -> str:
+    """Format member name, username, email and phone."""
     member_info = (
         f"{member.full_name} ({member.username}): {format_email_link(member.email)}"
     )
@@ -148,6 +158,7 @@ def _get_helper_task_url(task: HelperTaskDto) -> str:
 
 
 def format_helper_task_timing(task: HelperTaskDto) -> str:
+    """Format the timing of a helper task as HTML."""
     # Note: Also used in email subjects as plain text
     if task.type == HelperTaskType.SHIFT:
         same_day_end = (
@@ -156,16 +167,28 @@ def format_helper_task_timing(task: HelperTaskDto) -> str:
             and task.starts_at.date() == task.ends_at.date()
         )
         if same_day_end:
-            return f"Shift: {format_date_with_day(task.starts_at)} {format_time(task.starts_at)} &ndash; {format_time(task.ends_at)}"
-        else:
-            return f"Multi-Day Shift: {format_date_time(task.starts_at)} &ndash; {format_date_time(task.ends_at)}"
-    elif task.type == HelperTaskType.DEADLINE:
-        return f"Deadline: {format_date_with_day(task.deadline)} {format_time(task.deadline)}"
-    else:
-        return f"Start: {format_date_time(task.starts_at)} End: {format_date_time(task.ends_at)} Deadline: {format_date_time(task.deadline)}"
+            return (
+                f"Shift: {format_date_with_day(task.starts_at)} "
+                f"{format_time(task.starts_at)} &ndash; {format_time(task.ends_at)}"
+            )
+        return (
+            f"Multi-Day Shift: {format_date_time(task.starts_at)} &ndash; "
+            f"{format_date_time(task.ends_at)}"
+        )
+    if task.type == HelperTaskType.DEADLINE:
+        return (
+            f"Deadline: {format_date_with_day(task.deadline)} "
+            f"{format_time(task.deadline)}"
+        )
+    return (
+        f"Start: {format_date_time(task.starts_at)} "
+        f"End: {format_date_time(task.ends_at)} "
+        f"Deadline: {format_date_time(task.deadline)}"
+    )
 
 
 def format_helper_task_timing_with_extra(task: HelperTaskDto) -> str:
+    """Format task timing with urgent/hidden flags."""
     timing_extra = []
     if task.urgent:
         timing_extra.append("URGENT")
@@ -178,13 +201,14 @@ def format_helper_task_timing_with_extra(task: HelperTaskDto) -> str:
 
 
 def format_helper_task_min_max_helpers(task: HelperTaskDto) -> str:
+    """Format the min/max helper count for a task."""
     if task.helper_min_count == task.helper_max_count:
         return f"{task.helper_min_count}"
-    else:
-        return f"{task.helper_min_count} - {task.helper_max_count}"
+    return f"{task.helper_min_count} - {task.helper_max_count}"
 
 
 def format_helper_task_subject(task: HelperTaskDto) -> str:
+    """Format the email subject line for a task."""
     return (
         f"⛵🔔 {task.title} ({format_helper_task_timing(task).replace('&ndash;', '-')})"
     )
@@ -193,6 +217,7 @@ def format_helper_task_subject(task: HelperTaskDto) -> str:
 def format_helper_task(
     task: HelperTaskDto, *, warnings: list[str] | None = None
 ) -> str:
+    """Format a helper task as an HTML block."""
     task_url = _get_helper_task_url(task)
 
     warnings_html = (
@@ -208,7 +233,10 @@ def format_helper_task(
     if task.helpers:
         helpers_html = f"""
     <ul>
-        {"\n".join(f"<li>{format_member_info(helper.member)}</li>" for helper in task.helpers)}
+        {"\n".join(
+            f"<li>{format_member_info(helper.member)}</li>"
+            for helper in task.helpers)
+        }
     </ul>
 """
     elif task.helper_min_count > 0:
@@ -216,18 +244,23 @@ def format_helper_task(
     else:
         helpers_html = "Not needed"
 
+    timing = format_helper_task_timing_with_extra(task)
+    contact = format_member_info(task.contact)
+    captain = format_member_info(task.captain.member) if task.captain else "-"
+    min_max = format_helper_task_min_max_helpers(task)
+
     return f"""
 <div>
     <p style="font-size: x-large;">
         <strong>{task.title} ({task.category.title})</strong>
     </p>
-    <p style="font-size: large;"><strong>{format_helper_task_timing_with_extra(task)}</strong></p>
+    <p style="font-size: large;"><strong>{timing}</strong></p>
     {warnings_html}
     <p><em>{task.short_description}</em></p>
     <ul>
-        <li>Contact: {format_member_info(task.contact)}</li>
-        <li>Captain: {format_member_info(task.captain.member) if task.captain else "-"}</li>
-        <li>Helpers (needed: {format_helper_task_min_max_helpers(task)}): {helpers_html}</li>
+        <li>Contact: {contact}</li>
+        <li>Captain: {captain}</li>
+        <li>Helpers (needed: {min_max}): {helpers_html}</li>
     </ul>
     <p>
         <a
@@ -250,6 +283,8 @@ def format_helper_task(
 
 
 def format_helper_tasks_list(tasks: Iterable[HelperTaskDto]) -> str:
+    """Format a list of helper tasks as HTML."""
+
     def format_task_li(task: HelperTaskDto) -> str:
         task_url = _get_helper_task_url(task)
 

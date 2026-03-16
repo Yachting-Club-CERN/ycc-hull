@@ -1,6 +1,4 @@
-"""
-Helpers controller.
-"""
+"""Helpers controller."""
 
 from collections.abc import Sequence
 from datetime import date, datetime, timedelta
@@ -11,8 +9,8 @@ from sqlalchemy.orm import Session, defer
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.exceptions import (
-    ControllerConflictException,
-    ControllerNotFoundException,
+    ControllerConflictError,
+    ControllerNotFoundError,
 )
 from ycc_hull.controllers.notifications.helpers_notifications_controller import (
     HelpersNotificationsController,
@@ -44,16 +42,16 @@ from ycc_hull.utils import deep_diff, get_now
 
 
 class HelpersController(BaseController):
-    """
-    Helpers controller. Returns DTO objects.
-    """
+    """Helpers controller. Returns DTO objects."""
 
     def __init__(self) -> None:
+        """Initialise the helpers controller."""
         super().__init__()
 
         self._notifications = HelpersNotificationsController()
 
     async def find_all_permissions(self) -> Sequence[HelpersAppPermissionDto]:
+        """Return permissions."""
         return await self.database_context.query_all(
             select(HelpersAppPermissionEntity)
             .join(HelpersAppPermissionEntity.member)
@@ -64,6 +62,7 @@ class HelpersController(BaseController):
     async def grant_permission(
         self, request: HelpersAppPermissionGrantRequestDto, user: User
     ) -> HelpersAppPermissionDto:
+        """Grant a permission to a member."""
         with self.database_action(
             action="Helpers / Grant Permission", user=user, details={"request": request}
         ) as session:
@@ -85,6 +84,7 @@ class HelpersController(BaseController):
     async def update_permission(
         self, member_id: int, request: HelpersAppPermissionUpdateRequestDto, user: User
     ) -> HelpersAppPermissionDto:
+        """Update a permission."""
         with self.database_action(
             action="Helpers / Update Permission",
             user=user,
@@ -117,8 +117,10 @@ class HelpersController(BaseController):
             return updated_permission
 
     async def revoke_permission(self, member_id: int, user: User) -> None:
+        """Revoke a permission from a member."""
         if member_id == user.member_id:
-            raise ControllerConflictException("You cannot revoke your own permissions")
+            msg = "You cannot revoke your own permissions"
+            raise ControllerConflictError(msg)
 
         with self.database_action(
             action="Helpers / Revoke Permission",
@@ -160,9 +162,11 @@ class HelpersController(BaseController):
         if entries:
             return entries[0]
 
-        raise ControllerNotFoundException("Permission not found")
+        msg = "Permission not found"
+        raise ControllerNotFoundError(msg)
 
     async def find_all_task_categories(self) -> Sequence[HelperTaskCategoryDto]:
+        """Return all helper task categories."""
         return await self.database_context.query_all(
             select(HelperTaskCategoryEntity).order_by(HelperTaskCategoryEntity.title),
             async_transformer=HelperTaskCategoryDto.create,
@@ -171,6 +175,7 @@ class HelpersController(BaseController):
     async def find_all_tasks(
         self, *, year: int | None = None, published: bool | None = None
     ) -> Sequence[HelperTaskDto]:
+        """Return all helper tasks, optionally filtered."""
         return await self._find_tasks(year=year, task_id=None, published=published)
 
     async def find_task_by_id(
@@ -180,6 +185,7 @@ class HelpersController(BaseController):
         published: bool | None = None,
         session: Session | None = None,
     ) -> HelperTaskDto | None:
+        """Find a helper task by ID, or return None."""
         return await self._find_task_by_id(
             task_id, published=published, session=session
         )
@@ -191,14 +197,17 @@ class HelpersController(BaseController):
         published: bool | None = None,
         session: Session | None = None,
     ) -> HelperTaskDto:
+        """Get a helper task by ID, or raise not found."""
         task = await self.find_task_by_id(task_id, published=published, session=session)
         if task:
             return task
-        raise ControllerNotFoundException("Task not found")
+        msg = "Task not found"
+        raise ControllerNotFoundError(msg)
 
     async def create_task(
         self, request: HelperTaskCreationRequestDto, user: User
     ) -> HelperTaskDto:
+        """Create a new task."""
         with self.database_action(
             action="Helper Task / Create", user=user, details={"request": request}
         ) as session:
@@ -219,6 +228,7 @@ class HelpersController(BaseController):
         request: HelperTaskUpdateRequestDto,
         user: User,
     ) -> HelperTaskDto:
+        """Update an existing task."""
         with self.database_action(
             action="Helper Task / Update",
             user=user,
@@ -255,7 +265,8 @@ class HelpersController(BaseController):
             )
             if request.notify_signed_up_members:
                 self._logger.info(
-                    "Notifying signed up members about the task update (ID: %d), updated fields: %s",
+                    "Notifying signed up members about the task update "
+                    "(ID: %d), updated fields: %s",
                     task_id,
                     diff.keys(),
                 )
@@ -266,7 +277,8 @@ class HelpersController(BaseController):
                 )
             else:
                 self._logger.info(
-                    "NOT notifying signed up members about the task update (ID: %d), updated fields: %s",
+                    "NOT notifying signed up members about the task update "
+                    "(ID: %d), updated fields: %s",
                     task_id,
                     diff.keys(),
                 )
@@ -279,18 +291,21 @@ class HelpersController(BaseController):
         anyone_signed_up = original_task.captain or original_task.helpers
 
         # Check: Cannot change the task year if anyone has signed up
-        # Active Members change over year, but let's rather save the complicated check, since this should not be a main use case
+        # Active Members change over year, but let's rather save the complicated check,
+        # since this should not be a main use case
         if anyone_signed_up and original_task.year != request.year:
-            raise ControllerConflictException(
-                "You cannot change the year of the task after anyone has signed up. Please create a new task instead."
+            msg = (
+                "You cannot change the year of the task after anyone has signed up. "
+                "Please create a new task instead."
             )
+            raise ControllerConflictError(msg)
 
         if anyone_signed_up and not request.published:
-            raise ControllerConflictException(
-                "You must publish a task after anyone has signed up"
-            )
+            msg = "You must publish a task after anyone has signed up"
+            raise ControllerConflictError(msg)
 
-        # Check: If a captain has signed up then the new licence must be active for the captain
+        # Check: If a captain has signed up then the new licence must be active for the
+        # captain
         if (
             original_task.captain
             and request.captain_required_licence_info_id is not None
@@ -306,20 +321,26 @@ class HelpersController(BaseController):
                 licence_info_entity.infoid == request.captain_required_licence_info_id
                 for licence_info_entity in captain_entity.active_licence_infos
             ):
-                raise ControllerConflictException(
-                    "Cannot change captain required licence info because the signed up captain does not have the newly specified licence"
+                msg = (
+                    "Cannot change captain required licence info because the signed "
+                    "up captain does not have the newly specified licence"
                 )
+                raise ControllerConflictError(msg)
 
-        # Check: Cannot set the maximum number of helpers below the number of already signed-up helpers
+        # Check: Cannot set the maximum number of helpers below the number of already
+        # signed-up helpers
         signed_up_helper_count = len(original_task.helpers)
         if request.helper_max_count < signed_up_helper_count:
-            raise ControllerConflictException(
-                f"Cannot set the maximum number of helpers below the number of already signed-up helpers ({signed_up_helper_count})"
+            msg = (
+                "Cannot set the maximum number of helpers below the number of already "
+                f"signed-up helpers ({signed_up_helper_count})"
             )
+            raise ControllerConflictError(msg)
 
     async def set_captain(
         self, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
+        """Set the captain for a task."""
         with self.database_action(
             action="Helper Task / Set Captain",
             user=user,
@@ -337,9 +358,11 @@ class HelpersController(BaseController):
 
             updated_task = await HelperTaskDto.create(task_entity)
             if not updated_task.captain:
-                raise RuntimeError(
-                    f"Did set the captain to {member_id}, but it appears to be unset: {updated_task}"
+                msg = (
+                    f"Did set the captain to {member_id}, but it appears to be unset: "
+                    f"{updated_task}"
                 )
+                raise RuntimeError(msg)
 
             self._logger.info(
                 "Set captain for task: %s, captain: %s, user: %s",
@@ -362,6 +385,7 @@ class HelpersController(BaseController):
             return updated_task
 
     async def remove_captain(self, task_id: int, user: User) -> HelperTaskDto:
+        """Remove the captain from a task."""
         with self.database_action(
             action="Helper Task / Remove Captain",
             user=user,
@@ -372,7 +396,8 @@ class HelpersController(BaseController):
             )
 
             if not original_task.captain:
-                raise ControllerConflictException("Task has no captain")
+                msg = "Task has no captain"
+                raise ControllerConflictError(msg)
             original_captain = original_task.captain.member
 
             task_entity = original_task.get_entity()
@@ -404,6 +429,7 @@ class HelpersController(BaseController):
     async def add_helper(
         self, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
+        """Add a helper to a task."""
         with self.database_action(
             action="Helper Task / Add Helper",
             user=user,
@@ -447,6 +473,7 @@ class HelpersController(BaseController):
     async def remove_helper(
         self, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
+        """Remove a helper from a task."""
         with self.database_action(
             action="Helper Task / Remove Helper",
             user=user,
@@ -466,7 +493,8 @@ class HelpersController(BaseController):
                 None,
             )
             if not helper_entity_to_remove:
-                raise ControllerNotFoundException("Helper is not on the task")
+                msg = "Helper is not on the task"
+                raise ControllerNotFoundError(msg)
 
             helper_to_remove = await MemberPublicInfoDto.create(
                 await helper_entity_to_remove.awaitable_attrs.member
@@ -497,6 +525,7 @@ class HelpersController(BaseController):
             return updated_task
 
     async def sign_up_as_captain(self, task_id: int, user: User) -> HelperTaskDto:
+        """Sign up the current user as captain for a task."""
         with self.database_action(
             action="Helper Task / Sign Up As Captain",
             user=user,
@@ -528,6 +557,7 @@ class HelpersController(BaseController):
             return updated_task
 
     async def sign_up_as_helper(self, task_id: int, user: User) -> HelperTaskDto:
+        """Sign up the current user as helper for a task."""
         with self.database_action(
             action="Helper Task / Sign Up As Helper",
             user=user,
@@ -565,6 +595,7 @@ class HelpersController(BaseController):
     async def mark_as_done(
         self, task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User
     ) -> HelperTaskDto:
+        """Mark a task as done."""
         with self.database_action(
             action="Helper Task / Mark As Done",
             user=user,
@@ -573,11 +604,11 @@ class HelpersController(BaseController):
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
             if task.state != HelperTaskState.PENDING:
-                raise ControllerConflictException("Task already marked as done")
+                msg = "Task already marked as done"
+                raise ControllerConflictError(msg)
             if self._starts_in_the_future(task):
-                raise ControllerConflictException(
-                    "Cannot mark a task as done before it starts"
-                )
+                msg = "Cannot mark a task as done before it starts"
+                raise ControllerConflictError(msg)
 
             task_entity = task.get_entity()
             task_entity.marked_as_done_at = get_now()
@@ -600,6 +631,7 @@ class HelpersController(BaseController):
     async def validate(
         self, task_id: int, request: HelperTaskValidationRequestDto, user: User
     ) -> HelperTaskDto:
+        """Validate a task."""
         with self.database_action(
             action="Helper Task / Validate",
             user=user,
@@ -608,11 +640,11 @@ class HelpersController(BaseController):
             task = await self._get_task_by_id(task_id, published=True, session=session)
 
             if task.state == HelperTaskState.VALIDATED:
-                raise ControllerConflictException("Task already validated")
+                msg = "Task already validated"
+                raise ControllerConflictError(msg)
             if self._starts_in_the_future(task):
-                raise ControllerConflictException(
-                    "Cannot validate a task before it starts"
-                )
+                msg = "Cannot validate a task before it starts"
+                raise ControllerConflictError(msg)
 
             task_entity = task.get_entity()
             now = get_now()
@@ -640,7 +672,8 @@ class HelpersController(BaseController):
             )
             self._run_in_background(self._notifications.on_validate(updated_task, user))
 
-            # Do it before the requests finishes, so the next request gets the updated state
+            # Do it before the requests finishes, so the next request gets the updated
+            # state
             await self._unset_urgent_for_validated_tasks(user=user, session=session)
 
             return updated_task
@@ -674,9 +707,8 @@ class HelpersController(BaseController):
                 session, user, f"Helpers/Tasks/UnsetUrgentForValidatedTask/{task.id}"
             )
 
-    async def send_daily_reminders(self) -> None:  # pylint: disable=too-many-locals
-        """
-        Sends daily reminders to task participants.
+    async def send_daily_reminders(self) -> None:
+        """Send daily reminders to task participants.
 
         Never send reminders for:
         - Tasks that are started and are not yet finished (especially multi-day shifts)
@@ -690,17 +722,26 @@ class HelpersController(BaseController):
         Overdue tasks (not validated tasks in the past; to speed up task validation):
         - Reminders are sent per contact, not per task
         - Shifts (and invalid timing):
-            - A reminder is sent every day to the contact 1 week after the shift is finished.
-            - The delay gives a window for shift organisers to validate tasks (as shifts "just happen" anyway").
-            - No immediate pressure on shift organisers, especially as the shifts often happen in batches (regattas, surveillance etc.)
+            - A reminder is sent every day to the contact 1 week after the shift is
+              finished.
+            - The delay gives a window for shift organisers to validate tasks (as
+              shifts "just happen" anyway").
+            - No immediate pressure on shift organisers, especially as the shifts often
+              happen in batches (regattas, surveillance etc.)
         - Deadline tasks:
-            - A reminder is sent every day to the contact the if the deadline has expired.
-            - Deadline tasks are usually one-off maintenance tasks and in the past the experience was that they are often forgotten
-            - After the deadline expires, it is either done (and should have been validated) or the deadline should be extended
+            - A reminder is sent every day to the contact the if the deadline has
+              expired.
+            - Deadline tasks are usually one-off maintenance tasks and in the past the
+              experience was that they are often forgotten
+            - After the deadline expires, it is either done (and should have been
+              validated) or the deadline should be extended
 
         Notes:
-        - Also send reminders for past years (avoid hanging tasks; tasks can have a deadline on 31 December)
-        - Also send reminders for unpublished tasks (tasks with helpers should not be unpublished)
+        - Also send reminders for past years (avoid hanging tasks; tasks can have a
+          deadline on 31 December)
+        - Also send reminders for unpublished tasks (tasks with helpers should not be
+          unpublished)
+
         """
         if not CONFIG.emails_enabled(self._logger):
             return
@@ -785,7 +826,8 @@ class HelpersController(BaseController):
                 timing_earliest = min(timings)
                 timing_latest = max(timings)
 
-                # Note that here we are actually comparing to now, not to the start of the day
+                # Note that here we are actually comparing to now, not to the start
+                # of the day
                 task_upcoming = now < timing_earliest
                 task_due = timing_latest < now
 
@@ -799,7 +841,8 @@ class HelpersController(BaseController):
                     and task.type == HelperTaskType.SHIFT
                     and one_week_ago < timing_latest
                 ):
-                    # Shifts: skip reminder if timing_latest is more recent (greater) than one week ago
+                    # Shifts: skip reminder if timing_latest is more recent (greater)
+                    # than one week ago
                     debug(task, "Overdue shift in grace period")
                     continue
 
@@ -817,7 +860,7 @@ class HelpersController(BaseController):
         )
         await self._notifications.send_reminders(upcoming_tasks, overdue_tasks)
 
-    async def _find_tasks(  # pylint: disable=too-many-arguments
+    async def _find_tasks(
         self,
         *,
         year: int | None,
@@ -839,11 +882,11 @@ class HelpersController(BaseController):
 
         if year is not None:
             query = query.where(
-                func.coalesce(  # pylint: disable=not-callable
+                func.coalesce(
                     HelperTaskEntity.starts_at, HelperTaskEntity.deadline
                 ).between(
-                    datetime(year, 1, 1, 0, 0, 0, 0),
-                    datetime(year, 12, 31, 23, 59, 59, 0),
+                    datetime(year, 1, 1, 0, 0, 0, 0),  # noqa: DTZ001
+                    datetime(year, 12, 31, 23, 59, 59, 0),  # noqa: DTZ001
                 )
             )
         if task_id is not None:
@@ -855,9 +898,7 @@ class HelpersController(BaseController):
 
         query = query.order_by(
             HelperTaskEntity.urgent.desc(),
-            func.coalesce(  # pylint: disable=not-callable
-                HelperTaskEntity.starts_at, HelperTaskEntity.deadline
-            ).asc(),
+            func.coalesce(HelperTaskEntity.starts_at, HelperTaskEntity.deadline).asc(),
         )
 
         return await self.database_context.query_all(
@@ -895,7 +936,7 @@ class HelpersController(BaseController):
         )
         if task:
             return task
-        raise ControllerNotFoundException(
+        raise ControllerNotFoundError(
             "Task not found or not published" if published else "Task not found"
         )
 
@@ -912,7 +953,8 @@ class HelpersController(BaseController):
         )
 
         if task.captain:
-            raise ControllerConflictException("Task already has a captain")
+            msg = "Task already has a captain"
+            raise ControllerConflictError(msg)
 
         if task.captain_required_licence_info:
             has_licence = (
@@ -928,9 +970,11 @@ class HelpersController(BaseController):
             )
 
             if not has_licence:
-                raise ControllerConflictException(
-                    f"Task captain needs licence: {task.captain_required_licence_info.licence}"
+                msg = (
+                    "Task captain needs licence:"
+                    f" {task.captain_required_licence_info.licence}"
                 )
+                raise ControllerConflictError(msg)
 
     async def _check_can_sign_up_as_helper(
         self,
@@ -945,29 +989,38 @@ class HelpersController(BaseController):
         )
 
         if len(task.helpers) >= task.helper_max_count:
-            raise ControllerConflictException("Task helper limit reached")
+            msg = "Task helper limit reached"
+            raise ControllerConflictError(msg)
 
         if not editor_action:
-            # Check: helper cannot sign up for multiple surveillance tasks before mid-June:
-            # 1. This allows more members completing one surveillance shift in the beginning of the season
-            # 2. Members who want to do all their tasks early can still do maintenance tasks
+            # Check: helper cannot sign up for multiple surveillance tasks before
+            # mid-June:
+            # 1. This allows more members completing one surveillance shift in the
+            #    beginning of the season
+            # 2. Members who want to do all their tasks early can still do maintenance
+            #    tasks
 
             surveillance_task = "surveillance" in task.category.title.lower()
             mid_june = date(task.year, 6, 15)
-            message = "You cannot sign up for multiple surveillance shifts before mid-June — but you can still sign up for maintenance tasks!"
+            message = (
+                "You cannot sign up for multiple surveillance shifts before mid-June "
+                "— but you can still sign up for maintenance tasks!"
+            )
 
             if (
                 surveillance_task
                 and task.starts_at
                 and task.starts_at.date() < mid_june
             ):
-                # Check if the member has signed up for any other surveillance shift before mid-June
+                # Check if the member has signed up for any other surveillance shift
+                # before mid-June
                 other_tasks = await self._find_tasks(
                     year=task.year,
                     task_id=None,
                     published=None,
                     where=and_(
-                        # Assumes that we only have one surveillance category, good enough
+                        # Assumes that we only have one surveillance category, good
+                        # enough
                         HelperTaskEntity.category_id == task.category.id,
                         HelperTaskEntity.starts_at < mid_june,
                         or_(
@@ -979,34 +1032,36 @@ class HelpersController(BaseController):
                     session=session,
                 )
                 if other_tasks:
-                    raise ControllerConflictException(message)
+                    raise ControllerConflictError(message)
 
     async def _check_can_sign_up(
         self, *, task: HelperTaskDto, member_id: int, editor_action: bool
     ) -> None:
         if not task.published:
-            raise ControllerConflictException("Cannot sign up for an unpublished task")
+            msg = "Cannot sign up for an unpublished task"
+            raise ControllerConflictError(msg)
 
         if not editor_action:
             if task.state == HelperTaskState.DONE:
-                raise ControllerConflictException(
-                    "Cannot sign up for a task marked as done"
-                )
+                msg = "Cannot sign up for a task marked as done"
+                raise ControllerConflictError(msg)
             if task.state == HelperTaskState.VALIDATED:
-                raise ControllerConflictException("Cannot sign up for a validated task")
+                msg = "Cannot sign up for a validated task"
+                raise ControllerConflictError(msg)
 
             now = get_now()
             if (task.starts_at and task.starts_at < now) or (
                 task.deadline and task.deadline < now
             ):
-                raise ControllerConflictException(
-                    "Cannot sign up for a task in the past"
-                )
+                msg = "Cannot sign up for a task in the past"
+                raise ControllerConflictError(msg)
 
         if task.captain and task.captain.member.id == member_id:
-            raise ControllerConflictException("Already signed up as captain")
+            msg = "Already signed up as captain"
+            raise ControllerConflictError(msg)
         if any(helper.member.id == member_id for helper in task.helpers):
-            raise ControllerConflictException("Already signed up as helper")
+            msg = "Already signed up as helper"
+            raise ControllerConflictError(msg)
 
     def _starts_in_the_future(self, task: HelperTaskDto) -> bool:
         return bool(task.starts_at and task.starts_at > get_now())
