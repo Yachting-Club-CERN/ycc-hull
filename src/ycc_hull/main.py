@@ -15,9 +15,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from ycc_hull.api.audit_log import api_audit_log
 from ycc_hull.api.boats import api_boats
 from ycc_hull.api.errors import (
-    create_http_exception_400,
-    create_http_exception_404,
-    create_http_exception_409,
+    create_http_error_400,
+    create_http_error_404,
+    create_http_error_409,
 )
 from ycc_hull.api.helpers import api_helpers
 from ycc_hull.api.holidays import api_holidays
@@ -29,7 +29,7 @@ from ycc_hull.app_controllers import (
 )
 from ycc_hull.config import CONFIG
 from ycc_hull.constants import LOGGING_CONFIG_FILE
-from ycc_hull.controllers.exceptions import (
+from ycc_hull.controllers.errors import (
     ControllerBadRequestError,
     ControllerConflictError,
     ControllerNotFoundError,
@@ -96,7 +96,7 @@ async def controller_400_exception_handler(
     exc: ControllerBadRequestError,
 ) -> Response:
     """Handle 400 Bad Request exceptions."""
-    return await http_exception_handler(request, create_http_exception_400(exc.message))
+    return await http_exception_handler(request, create_http_error_400(exc.message))
 
 
 @app.exception_handler(ControllerNotFoundError)
@@ -105,7 +105,7 @@ async def controller_404_exception_handler(
     exc: ControllerNotFoundError,
 ) -> Response:
     """Handle 404 Not Found exceptions."""
-    return await http_exception_handler(request, create_http_exception_404(exc.message))
+    return await http_exception_handler(request, create_http_error_404(exc.message))
 
 
 @app.exception_handler(ControllerConflictError)
@@ -114,7 +114,7 @@ async def controller_409_exception_handler(
     exc: ControllerConflictError,
 ) -> Response:
     """Handle 409 Conflict exceptions."""
-    return await http_exception_handler(request, create_http_exception_409(exc.message))
+    return await http_exception_handler(request, create_http_error_409(exc.message))
 
 
 app.add_middleware(

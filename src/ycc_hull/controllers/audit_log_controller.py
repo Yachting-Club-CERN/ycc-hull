@@ -6,7 +6,7 @@ from sqlalchemy import delete, desc, select
 from sqlalchemy.orm import defer
 
 from ycc_hull.controllers.base_controller import BaseController
-from ycc_hull.controllers.exceptions import ControllerNotFoundError
+from ycc_hull.controllers.errors import ControllerNotFoundError
 from ycc_hull.db.entities import AuditLogEntryEntity
 from ycc_hull.models.audit_log_dtos import (
     AuditLogEntriesDeleteRequestDto,

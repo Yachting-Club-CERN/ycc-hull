@@ -1,17 +1,16 @@
 """Member API endpoints."""
 
 from collections.abc import Sequence
-from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from ycc_hull.api.errors import create_http_exception_403
+from ycc_hull.api.errors import create_http_error_403
 from ycc_hull.app_controllers import get_members_controller
 from ycc_hull.auth import User, auth
 from ycc_hull.controllers.members_controller import MembersController
 from ycc_hull.models.dtos import MemberPublicInfoDto, MembershipTypeDto, UserDto
-from ycc_hull.utils import TIME_ZONE
+from ycc_hull.utils import get_now
 
 api_members = APIRouter(dependencies=[Depends(auth)])
 
@@ -43,14 +42,14 @@ async def users_get(
     """List all users."""
     if not user.admin:
         msg = "You do not have permission to list users"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)
 
     return await controller.find_all_users()
 
 
 def _check_can_access_year(year: int | None, user: User) -> None:
-    current_year = datetime.now(tz=TIME_ZONE).year
+    current_year = get_now().year
 
     if year != current_year and not (user.admin or user.committee_member):
         msg = f"You do not have permission to view members for {year}"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)

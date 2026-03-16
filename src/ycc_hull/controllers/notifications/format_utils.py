@@ -233,9 +233,11 @@ def format_helper_task(
     if task.helpers:
         helpers_html = f"""
     <ul>
-        {"\n".join(
-            f"<li>{format_member_info(helper.member)}</li>"
-            for helper in task.helpers)
+        {
+            "\n".join(
+                f"<li>{format_member_info(helper.member)}</li>"
+                for helper in task.helpers
+            )
         }
     </ul>
 """

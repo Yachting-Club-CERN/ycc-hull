@@ -1,12 +1,11 @@
 """Helpers API endpoints."""
 
 from collections.abc import Sequence
-from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
-from ycc_hull.api.errors import create_http_exception_403
+from ycc_hull.api.errors import create_http_error_403
 from ycc_hull.app_controllers import get_helpers_controller
 from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
@@ -21,7 +20,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
-from ycc_hull.utils import TIME_ZONE
+from ycc_hull.utils import get_now
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
 
@@ -96,7 +95,7 @@ async def helper_tasks_get(
             if year
             else "You do not have permission to list all tasks"
         )
-        raise create_http_exception_403(error_message)
+        raise create_http_error_403(error_message)
 
     return await controller.find_all_tasks(year=year, published=_published(user))
 
@@ -112,7 +111,7 @@ async def helper_tasks_get_by_id(
 
     if not _can_access_year(task.year, user):
         msg = "You do not have permission to view this task"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)
 
     return task
 
@@ -126,10 +125,10 @@ async def helper_tasks_create(
     """Create a new helper task."""
     if not user.helpers_app_admin and not user.helpers_app_editor:
         msg = "You do not have permission to create helper tasks"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)
     if not user.helpers_app_admin and request.contact_id != user.member_id:
         msg = "You have to be the contact for the tasks you create"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)
 
     return await controller.create_task(request, user)
 
@@ -153,7 +152,7 @@ async def helper_tasks_update(
         or existing_task.contact.id != user.member_id
     ):
         msg = "You have to be the contact for the tasks you update"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)
 
     return await controller.update_task(task_id, request, user)
 
@@ -252,7 +251,7 @@ async def helper_tasks_mark_as_done(
             or (task.captain and task.captain.member.id == user.member_id)
         ):
             msg = "You do not have permission to mark this task as done"
-            raise create_http_exception_403(msg)
+            raise create_http_error_403(msg)
 
     await controller.mark_as_done(task_id, request, user)
     return await controller.get_task_by_id(task_id, published=True)
@@ -270,7 +269,7 @@ async def helper_tasks_validate(
         task = await helper_tasks_get_by_id(task_id, user, controller)
         if task.contact.id != user.member_id:
             msg = "You do not have permission to validate this task"
-            raise create_http_exception_403(msg)
+            raise create_http_error_403(msg)
 
     await controller.validate(task_id, request, user)
     return await controller.get_task_by_id(task_id, published=True)
@@ -279,7 +278,7 @@ async def helper_tasks_validate(
 def _check_can_manage_permissions(user: User) -> None:
     if not user.helpers_app_admin:
         msg = "Forbidden"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)
 
 
 def _published(user: User) -> bool | None:
@@ -287,7 +286,7 @@ def _published(user: User) -> bool | None:
 
 
 def _can_access_year(year: int | None, user: User) -> bool:
-    current_year = datetime.now(tz=TIME_ZONE).year
+    current_year = get_now().year
 
     return (
         year == current_year
@@ -303,7 +302,7 @@ async def _check_can_update(
 ) -> None:
     if not user.helpers_app_admin and not user.helpers_app_editor:
         msg = "You do not have permission to update helper tasks"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)
 
     existing_task = await helper_tasks_get_by_id(task_id, user, controller)
 
@@ -311,4 +310,4 @@ async def _check_can_update(
         contact_id != user.member_id or existing_task.contact.id != user.member_id
     ):
         msg = "You have to be the contact for the tasks you update"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)

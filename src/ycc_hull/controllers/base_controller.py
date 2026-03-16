@@ -13,7 +13,7 @@ from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session
 
 from ycc_hull.controllers.audit import create_audit_entry
-from ycc_hull.controllers.exceptions import ControllerConflictError
+from ycc_hull.controllers.errors import ControllerConflictError
 from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
 from ycc_hull.db.entities import BaseEntity
 from ycc_hull.models.base import CamelisedBaseModel

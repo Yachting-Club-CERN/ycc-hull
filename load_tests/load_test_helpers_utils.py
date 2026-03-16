@@ -1,13 +1,13 @@
 """Helpers API utilities for load tests."""
 
 import random
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from locust.clients import HttpSession
 
 from load_tests.load_test_auth_utils import create_auth_header
 from load_tests.load_test_config import API_BASE_URL
-from ycc_hull.utils import TIME_ZONE
+from ycc_hull.utils import get_now
 
 
 def get_task_categories(client: HttpSession, access_token: str) -> list[dict]:
@@ -28,7 +28,7 @@ def get_tasks(client: HttpSession, access_token: str) -> list[dict]:
     """Fetch all helper tasks."""
     response = client.get(
         f"{API_BASE_URL}/helpers/tasks",
-        params={"year": datetime.now(tz=TIME_ZONE).year},
+        params={"year": get_now().year},
         headers=create_auth_header(access_token),
     )
     assert response.status_code == 200, response
@@ -58,7 +58,7 @@ def create_task(client: HttpSession, contact_id: int, access_token: str) -> dict
     category_id = random.choice(  # noqa: S311
         get_task_categories(client, access_token)
     )["id"]
-    now = datetime.now(tz=TIME_ZONE)
+    now = get_now()
     deadline = now + timedelta(hours=random.randint(24, 24 * 10))  # noqa: S311
 
     response = client.post(

@@ -215,7 +215,9 @@ async def run() -> None:
 
         await send_message(
             smtp,
-            EmailMessageBuilder().to(helper_task.captain.member).cc(helper_task.contact)
+            EmailMessageBuilder()
+            .to(helper_task.captain.member)
+            .cc(helper_task.contact)
             # CC is removed by the builder if it is the same as TO
             .cc(helper_task.captain.member)
             .cc(helper.member for helper in helper_task.helpers)

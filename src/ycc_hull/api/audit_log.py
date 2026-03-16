@@ -5,7 +5,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Response, status
 
-from ycc_hull.api.errors import create_http_exception_403
+from ycc_hull.api.errors import create_http_error_403
 from ycc_hull.app_controllers import get_audit_log_controller
 from ycc_hull.auth import User, auth
 from ycc_hull.controllers.audit_log_controller import AuditLogController
@@ -56,4 +56,4 @@ async def audit_log_entries_delete(
 def _check_can_access(user: User) -> None:
     if not user.helpers_app_admin:
         msg = "Forbidden"
-        raise create_http_exception_403(msg)
+        raise create_http_error_403(msg)

@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from keycloak import KeycloakOpenID
 from keycloak.exceptions import KeycloakAuthenticationError, KeycloakInvalidTokenError
 
-from ycc_hull.api.errors import create_http_exception_401
+from ycc_hull.api.errors import create_http_error_401
 from ycc_hull.config import CONFIG
 from ycc_hull.models.user import User
 from ycc_hull.utils import full_type_name
@@ -151,21 +151,22 @@ async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
     try:
         _logger.debug("Token: %s", token)
 
+        # Practically it is always a dict, not bytes
         user_info: dict = _KEYCLOAK.userinfo(token)  # type: ignore[assignment]  # cspell:disable-line
         _logger.debug("User info: %s", user_info)
-        token_info: dict = _KEYCLOAK.introspect(token)
+        token_info = _KEYCLOAK.introspect(token)
         _logger.debug("Token info: %s", token_info)
 
         if not token_info["active"]:
             _logger.warning("Authentication failed")
-            raise create_http_exception_401(_INACTIVE_USER)
+            raise create_http_error_401(_INACTIVE_USER)
 
         user = _create_user(user_info=user_info, token_info=token_info)
         _logger.debug("Authentication succeeded: %s", user)
 
         if not user.active_member:
             _logger.info("Inactive member: %s, roles: %s", user.username, user.roles)
-            raise create_http_exception_401(_INACTIVE_MEMBER)
+            raise create_http_error_401(_INACTIVE_MEMBER)
 
         _logger.info(
             "Active member: %s (%d), groups: %s, roles: %s",
@@ -179,4 +180,4 @@ async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
         _logger.warning(
             "Authentication failed: %s: %s", full_type_name(exc.__class__), exc
         )
-        raise create_http_exception_401(_AUTHENTICATION_FAILED)  # noqa: B904
+        raise create_http_error_401(_AUTHENTICATION_FAILED)  # noqa: B904

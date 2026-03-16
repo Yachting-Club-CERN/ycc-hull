@@ -103,7 +103,9 @@ class _HelperTaskChanges:
         self._collect_undetected_changes()
 
     def _add_detailed_change(
-        self, label: str, previous_value: Any  # noqa: ANN401
+        self,
+        label: str,
+        previous_value: Any,  # noqa: ANN401
     ) -> None:
         self.summary.append(label)
         self.relevant_details[f"Previous {label}"] = previous_value
@@ -112,8 +114,10 @@ class _HelperTaskChanges:
         # Group fields covering the same concept and remove keys we never want to report
         for remaining_key in list(self._diff.keys()):
             if (
-                remaining_key == "id" or remaining_key.endswith((".id", "Id"))
-            ) or remaining_key.startswith("category."):
+                remaining_key == "id"
+                or remaining_key.endswith((".id", "Id"))
+                or remaining_key.startswith("category.")
+            ):
                 self._diff.pop(remaining_key)
             elif remaining_key.startswith("contact."):
                 self._contact_changed = True
@@ -218,7 +222,7 @@ class HelpersNotificationsController(BaseController):
         diff: dict[str, DiffEntry],
         user: User,
     ) -> None:
-        """Notify signed-up members about a task update."""
+        """Notify signed up members about a task update."""
         if not CONFIG.emails_enabled(self._logger):
             return
 
@@ -238,10 +242,12 @@ class HelpersNotificationsController(BaseController):
 <p style="font-size: small;">Change details:</p>
 
 <table style="font-size: small;">
-    {"\n".join(
-        f"  <tr><td>{key}</td><td>{value}</td></tr>"
-        for key, value in changes.relevant_details.items()
-    )}
+    {
+                "\n".join(
+                    f"  <tr><td>{key}</td><td>{value}</td></tr>"
+                    for key, value in changes.relevant_details.items()
+                )
+            }
 </table>
 """
 

@@ -65,7 +65,8 @@ class CamelisedBaseModel(BaseModel):
 
     @staticmethod
     def _sanitise_value(
-        field_info: FieldInfo | None, value: Any  # noqa: ANN401
+        field_info: FieldInfo | None,
+        value: Any,  # noqa: ANN401
     ) -> Any:  # noqa: ANN401
         is_str = isinstance(value, str)
         is_datetime = isinstance(value, datetime)

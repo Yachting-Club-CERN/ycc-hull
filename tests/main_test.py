@@ -7,13 +7,13 @@ from fastapi.exception_handlers import http_exception_handler
 
 from test_data.controllers.test_data_controller import TestDataController
 from ycc_hull.api.errors import (
-    create_http_exception_400,
-    create_http_exception_404,
-    create_http_exception_409,
+    create_http_error_400,
+    create_http_error_404,
+    create_http_error_409,
 )
 from ycc_hull.app_controllers import init_app_controllers
 from ycc_hull.auth import auth
-from ycc_hull.controllers.exceptions import (
+from ycc_hull.controllers.errors import (
     ControllerBadRequestError,
     ControllerConflictError,
     ControllerNotFoundError,
@@ -31,7 +31,7 @@ async def controller_400_exception_handler(
     request: Request,
     exc: ControllerBadRequestError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_400(exc.message))
+    return await http_exception_handler(request, create_http_error_400(exc.message))
 
 
 @app_test.exception_handler(ControllerNotFoundError)
@@ -39,7 +39,7 @@ async def controller_404_exception_handler(
     request: Request,
     exc: ControllerNotFoundError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_404(exc.message))
+    return await http_exception_handler(request, create_http_error_404(exc.message))
 
 
 @app_test.exception_handler(ControllerConflictError)
@@ -47,7 +47,7 @@ async def controller_409_exception_handler(
     request: Request,
     exc: ControllerConflictError,
 ) -> Response:
-    return await http_exception_handler(request, create_http_exception_409(exc.message))
+    return await http_exception_handler(request, create_http_error_409(exc.message))
 
 
 class FakeAuth:

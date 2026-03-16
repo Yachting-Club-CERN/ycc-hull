@@ -33,9 +33,7 @@ BOATS_JSON_FILE = _SCRIPT_DIR / "generated/Boats.json"
 BOATS_EXPORTED_JSON_FILE = _SCRIPT_DIR / "exported/BOATS_DATA_TABLE.json-formatted"
 
 # Helpers
-HELPERS_APP_PERMISSIONS_JSON_FILE = (
-    _SCRIPT_DIR / "generated/HelpersAppPermissions.json"
-)
+HELPERS_APP_PERMISSIONS_JSON_FILE = _SCRIPT_DIR / "generated/HelpersAppPermissions.json"
 HELPER_TASK_CATEGORIES_JSON_FILE = _SCRIPT_DIR / "generated/HelperTaskCategories.json"
 HELPER_TASKS_JSON_FILE = _SCRIPT_DIR / "generated/HelperTasks.json"
 HELPER_TASK_HELPERS_JSON_FILE = _SCRIPT_DIR / "generated/HelperTaskHelpers.json"

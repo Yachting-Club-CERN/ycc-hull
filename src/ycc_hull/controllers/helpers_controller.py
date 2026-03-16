@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session, defer
 
 from ycc_hull.config import CONFIG
 from ycc_hull.controllers.base_controller import BaseController
-from ycc_hull.controllers.exceptions import (
+from ycc_hull.controllers.errors import (
     ControllerConflictError,
     ControllerNotFoundError,
 )
@@ -328,12 +328,12 @@ class HelpersController(BaseController):
                 raise ControllerConflictError(msg)
 
         # Check: Cannot set the maximum number of helpers below the number of already
-        # signed-up helpers
+        # signed up helpers
         signed_up_helper_count = len(original_task.helpers)
         if request.helper_max_count < signed_up_helper_count:
             msg = (
                 "Cannot set the maximum number of helpers below the number of already "
-                f"signed-up helpers ({signed_up_helper_count})"
+                f"signed up helpers ({signed_up_helper_count})"
             )
             raise ControllerConflictError(msg)
 
