@@ -1,6 +1,9 @@
 {
-  "files.eol": "\n",
-  "python.formatting.provider": "black",
+  "peacock.color": "#215732",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "yachting-club-cern",
+    "projectKey": "Yachting-Club-CERN_ycc-hull"
+  },
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#2f7c47",
     "activityBar.background": "#2f7c47",
@@ -20,12 +23,4 @@
     "titleBar.inactiveBackground": "#21573299",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#215732",
-  "python.testing.pytestArgs": ["tests"],
-  "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "sonarlint.connectedMode.project": {
-    "connectionId": "yachting-club-cern",
-    "projectKey": "Yachting-Club-CERN_ycc-hull"
-  }
 }
