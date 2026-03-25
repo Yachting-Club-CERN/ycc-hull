@@ -1000,7 +1000,7 @@ class HelpersController(BaseController):
         if not editor_action:
             # Before the sign-up limit date, a member can only be helper on maximum one
             # surveillance shift:
-            # 1. This allows more members completing one surveillance shift in the 
+            # 1. This allows more members completing one surveillance shift in the
             #    beginning of the season
             # 2. Members who want to do all their tasks early can still do maintenance
             #    tasks
