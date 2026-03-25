@@ -7,6 +7,11 @@ from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.orm import Session, defer
 
 from ycc_hull.config import CONFIG
+from ycc_hull.constants import (
+    SURVEILLANCE_SIGN_UP_LIMIT_DAY,
+    SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
+    SURVEILLANCE_TASK_PREFIX,
+)
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.errors import (
     ControllerConflictError,
@@ -993,46 +998,49 @@ class HelpersController(BaseController):
             raise ControllerConflictError(msg)
 
         if not editor_action:
-            # Check: helper cannot sign up for multiple surveillance tasks before
-            # mid-June:
-            # 1. This allows more members completing one surveillance shift in the
+            # Before the sign-up limit date, a member can only be helper on maximum one
+            # surveillance shift:
+            # 1. This allows more members completing one surveillance shift in the 
             #    beginning of the season
             # 2. Members who want to do all their tasks early can still do maintenance
             #    tasks
 
-            surveillance_task = "surveillance" in task.category.title.lower()
-            mid_june = date(task.year, 6, 15)
-            message = (
-                "You cannot sign up for multiple surveillance shifts before mid-June "
-                "— but you can still sign up for maintenance tasks!"
+            surveillance_task = task.category.title.lower().startswith(
+                SURVEILLANCE_TASK_PREFIX.lower()
+            )
+            limit_date = date(
+                task.year,
+                SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
+                SURVEILLANCE_SIGN_UP_LIMIT_DAY,
             )
 
-            if (
-                surveillance_task
-                and task.starts_at
-                and task.starts_at.date() < mid_june
-            ):
+            if surveillance_task and get_now().date() < limit_date:
                 # Check if the member has signed up for any other surveillance shift
-                # before mid-June
-                other_tasks = await self._find_tasks(
+                # before the limit date
+                other_surveillance_tasks = await self._find_tasks(
                     year=task.year,
                     task_id=None,
                     published=None,
                     where=and_(
-                        # Assumes that we only have one surveillance category, good
-                        # enough
-                        HelperTaskEntity.category_id == task.category.id,
-                        HelperTaskEntity.starts_at < mid_june,
-                        or_(
-                            HelperTaskEntity.helpers.any(
-                                HelperTaskHelperEntity.member_id == member_id
-                            ),
+                        HelperTaskEntity.category.has(
+                            HelperTaskCategoryEntity.title.istartswith(
+                                SURVEILLANCE_TASK_PREFIX
+                            )
+                        ),
+                        HelperTaskEntity.helpers.any(
+                            HelperTaskHelperEntity.member_id == member_id
                         ),
                     ),
                     session=session,
                 )
-                if other_tasks:
-                    raise ControllerConflictError(message)
+                if other_surveillance_tasks:
+                    limit_str = f"{limit_date.day} {limit_date.strftime('%B')}"
+                    msg = (
+                        "You cannot sign up for multiple surveillance shifts before "
+                        f"{limit_str} - but you can still sign up for maintenance and "
+                        "other tasks! 😉"
+                    )
+                    raise ControllerConflictError(msg)
 
     async def _check_can_sign_up(
         self, *, task: HelperTaskDto, member_id: int, editor_action: bool
