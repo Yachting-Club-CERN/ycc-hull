@@ -114,6 +114,7 @@ ignore = [
     "D101",    # no class docstrings needed in tests
     "D103",    # no function docstrings needed in tests
     "D104",    # no package docstrings needed in tests
+    "PLC0415", # local imports needed for patching
     "PLR2004", # magic values are fine in tests
     "S101",    # assert is fine in tests
 ]

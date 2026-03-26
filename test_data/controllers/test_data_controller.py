@@ -41,7 +41,7 @@ from ycc_hull.db.entities import (
     MembershipTypeEntity,
     UserEntity,
 )
-from ycc_hull.utils import full_type_name, short_type_name
+from ycc_hull.utils import full_type_name, get_now, short_type_name
 
 
 class _TestDataImporter:
@@ -279,7 +279,7 @@ class TestDataController(BaseController):
 
         category_id = 1
         contact_id = 1
-        today = datetime.today().date()
+        today = get_now().date()
 
         for i in range(-30, 31):
             day = today + timedelta(days=i)

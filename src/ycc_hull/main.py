@@ -134,6 +134,7 @@ if CONFIG.api_docs_enabled:
         "scopes": "openid profile email",
     }
 
+
 @app.get("/", response_class=HTMLResponse)
 async def landing_page() -> str:
     """Landing page that redirects to the club website."""

@@ -18,6 +18,7 @@ from ycc_hull.utils import get_now
 app_test.include_router(api_helpers)
 client = TestClient(app_test)
 
+past_day = (get_now().date() - timedelta(days=1)).strftime("%Y-%m-%d")
 future_day = (get_now().date() + timedelta(days=5)).strftime("%Y-%m-%d")
 SHORT_DESCRIPTION = " The Club needs your help for this task! \n "
 SANITISED_SHORT_DESCRIPTION = "The Club needs your help for this task!"
@@ -45,8 +46,8 @@ task_creation_deadline = {
     "longDescription": " Really! It is very important to get this done! \n ",
     "contactId": 1,
     "urgent": True,
-    "starts_at": None,
-    "ends_at": None,
+    "startsAt": None,
+    "endsAt": None,
     "deadline": f" {future_day}T20:00:00 \n ",
     "captainRequiredLicenceInfoId": None,
     "helperMinCount": 2,
@@ -59,8 +60,7 @@ task_update_shift = {**task_creation_shift, "notifySignedUpMembers": True}
 
 task_update_deadline = {**task_creation_deadline, "notifySignedUpMembers": False}
 
-audit_keys = {
-    "@type",
+TASK_RESPONSE_KEYS = {
     "id",
     "category",
     "title",
@@ -84,6 +84,10 @@ audit_keys = {
     "validatedBy",
     "validationComment",
 }
+
+audit_keys = {"@type", *TASK_RESPONSE_KEYS}
+
+CATEGORY_RESPONSE_KEYS = {"id", "title", "shortDescription", "longDescription"}
 
 
 @pytest_asyncio.fixture(scope="module", autouse=True)
@@ -205,6 +209,11 @@ def test_create_task_fails_if_editor_but_not_contact() -> None:
     assert response.json() == {
         "detail": "You have to be the contact for the tasks you create"
     }
+
+
+# ==============================================================================
+# Update Task (existing tests)
+# ==============================================================================
 
 
 @pytest.mark.asyncio

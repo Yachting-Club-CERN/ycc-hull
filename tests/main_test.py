@@ -90,6 +90,24 @@ class FakeAuth:
         )
 
     @classmethod
+    async def _create_admin(cls) -> User:
+        return await cls._create_test_user(
+            roles=(
+                "ycc-member-active",
+                "ycc-admin",
+            )
+        )
+
+    @classmethod
+    async def _create_committee_member(cls) -> User:
+        return await cls._create_test_user(
+            roles=(
+                "ycc-member-active",
+                "ycc-member-committee",
+            )
+        )
+
+    @classmethod
     def set_member(cls, member_id: int = 100) -> None:
         """Set up auth as a regular member."""
         cls._member_id = member_id
@@ -106,6 +124,18 @@ class FakeAuth:
         """Set up auth as an editor."""
         cls._member_id = 2
         app_test.dependency_overrides[auth] = cls._create_helpers_app_editor
+
+    @classmethod
+    def set_admin(cls) -> None:
+        """Set up auth as an admin."""
+        cls._member_id = 1
+        app_test.dependency_overrides[auth] = cls._create_admin
+
+    @classmethod
+    def set_committee_member(cls) -> None:
+        """Set up auth as a committee member."""
+        cls._member_id = 1
+        app_test.dependency_overrides[auth] = cls._create_committee_member
 
 
 async def init_test_database(name: str) -> None:
