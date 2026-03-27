@@ -10,6 +10,7 @@ from ycc_hull.config import CONFIG
 from ycc_hull.constants import (
     SURVEILLANCE_SIGN_UP_LIMIT_DAY,
     SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
+    SURVEILLANCE_SIGN_UP_LIMIT_STR,
     SURVEILLANCE_TASK_PREFIX,
 )
 from ycc_hull.controllers.base_controller import BaseController
@@ -1034,11 +1035,10 @@ class HelpersController(BaseController):
                     session=session,
                 )
                 if other_surveillance_tasks:
-                    limit_str = f"{limit_date.day} {limit_date.strftime('%B')}"
                     msg = (
-                        "You cannot sign up for multiple surveillance shifts before "
-                        f"{limit_str} - but you can still sign up for maintenance and "
-                        "other tasks! 😉"
+                        "You cannot sign up for multiple surveillance shifts "
+                        f"before {SURVEILLANCE_SIGN_UP_LIMIT_STR} - but you "
+                        f"can still sign up for maintenance and other tasks! 😉"
                     )
                     raise ControllerConflictError(msg)
 

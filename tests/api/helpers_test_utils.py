@@ -5,6 +5,7 @@ Contains task creation/sign-up helpers, audit log queries, and response key cons
 
 import json
 from datetime import timedelta
+from pathlib import Path
 from typing import Any
 
 from fastapi.testclient import TestClient
@@ -85,30 +86,38 @@ HELPER_KEYS = {"member", "signedUpAt"}
 AUDIT_TASK_KEYS = {"@type", *TASK_RESPONSE_KEYS}
 
 # ==============================================================================
-# Well-known seed data dicts (used by assert_task_json in test_helpers.py)
+# Well-known seed data dicts (loaded from generated test data)
 # ==============================================================================
 
-MEMBER_1 = {
-    "id": 1,
-    "username": "MHUFF",
-    "firstName": "Michele",
-    "lastName": "Huff",
-    "email": "michele.huff@mailinator.com",
-    "mobilePhone": "+41009635687",
-    "homePhone": None,
-    "workPhone": None,
-}
+_GENERATED_DIR = (
+    Path(__file__).resolve().parent.parent.parent / "test_data" / "generated"
+)
 
-MEMBER_2 = {
-    "id": 2,
-    "username": "AFERGUSO",
-    "firstName": "Alexander",
-    "lastName": "Ferguson",
-    "email": "alexander.ferguson@mailinator.com",
-    "mobilePhone": "+41004213215",
-    "homePhone": "+33004279678",
-    "workPhone": "+41009005981",
-}
+
+def _load_member(member_id: int) -> dict[str, Any]:
+    """Build a MemberPublicInfo-shaped dict from the generated seed data."""
+    with (_GENERATED_DIR / "Members.json").open(encoding="utf-8") as f:
+        members = json.load(f)
+    with (_GENERATED_DIR / "Users.json").open(encoding="utf-8") as f:
+        users = json.load(f)
+
+    member = next(m for m in members if m["id"] == member_id)
+    user = next(u for u in users if u["member_id"] == member_id)
+
+    return {
+        "id": member_id,
+        "username": user["logon_id"],
+        "firstName": member["firstname"],
+        "lastName": member["name"],
+        "email": member["e_mail"],
+        "mobilePhone": member["cell_phone"],
+        "homePhone": member["home_phone"],
+        "workPhone": member["work_phone"],
+    }
+
+
+MEMBER_1 = _load_member(1)
+MEMBER_2 = _load_member(2)
 
 CATEGORY_SURVEILLANCE = {
     "id": 1,

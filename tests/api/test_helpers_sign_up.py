@@ -213,9 +213,8 @@ def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
     assert response2.status_code == 409
     assert response2.json() == {
         "detail": (
-            "You cannot sign up for multiple surveillance shifts before "
-            "1 May - but you can still sign up for maintenance and "
-            "other tasks! 😉"
+            "You cannot sign up for multiple surveillance shifts before 1 May "
+            "- but you can still sign up for maintenance and other tasks! 😉"
         )
     }
 
