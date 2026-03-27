@@ -223,17 +223,17 @@ def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
 @pytest.mark.asyncio
 async def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() -> None:
     """Surveillance limit should not block signing up for maintenance tasks."""
-    surv_task = create_surveillance_shift(client)
-    maint_task = create_shift_task(client)
+    surveillance_task = create_surveillance_shift(client)
+    maintenance_task = create_shift_task(client)
 
     FakeAuth.set_member(member_id=203)
     response1 = client.post(
-        f"/api/v1/helpers/tasks/{surv_task['id']}/sign-up-as-helper"
+        f"/api/v1/helpers/tasks/{surveillance_task['id']}/sign-up-as-helper"
     )
     assert response1.status_code == 200
 
     response2 = client.post(
-        f"/api/v1/helpers/tasks/{maint_task['id']}/sign-up-as-helper"
+        f"/api/v1/helpers/tasks/{maintenance_task['id']}/sign-up-as-helper"
     )
 
     assert response2.status_code == 200
@@ -243,7 +243,7 @@ async def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() ->
     assert len(data["helpers"]) == 1
     assert_helper_shape(data["helpers"][0], member_id=203)
 
-    await verify_sign_up_audit_log(maint_task["id"], "SignUpAsHelper")
+    await verify_sign_up_audit_log(maintenance_task["id"], "SignUpAsHelper")
 
 
 @pytest.mark.asyncio
