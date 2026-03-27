@@ -77,9 +77,9 @@ def patch_notifications(
 
 
 @contextmanager
-def patch_notifications_with_sleep() -> (
-    Generator[tuple[AsyncMock, AsyncMock], None, None]
-):
+def patch_notifications_with_sleep() -> Generator[
+    tuple[AsyncMock, AsyncMock], None, None
+]:
     """Patch CONFIG, SmtpConnection, and asyncio.sleep for reminder tests.
 
     Yields ``(send_message, mock_sleep)`` for assertions.

@@ -104,7 +104,7 @@ async def test_create_task_as_editor() -> None:
         helpers=[],
     )
 
-    await verify_creation_audit_log_entry(data["shortDescription"])
+    verify_creation_audit_log_entry(data["shortDescription"])
 
 
 @pytest.mark.asyncio
@@ -137,7 +137,7 @@ async def test_create_task_as_admin() -> None:
         helpers=[],
     )
 
-    await verify_creation_audit_log_entry(data["shortDescription"])
+    verify_creation_audit_log_entry(data["shortDescription"])
 
 
 def test_create_task_fails_if_not_admin_nor_editor() -> None:
@@ -208,7 +208,7 @@ async def test_update_task_as_editor() -> None:
         helpers=[],
     )
 
-    await verify_update_audit_log_entry(
+    verify_update_audit_log_entry(
         task_id,
         SANITISED_SHORT_DESCRIPTION,
         data["shortDescription"],

@@ -22,10 +22,15 @@ from ycc_hull.utils import get_now
 
 _HELPERS_MODULE = "ycc_hull.controllers.helpers_controller"
 
+_current_year = get_now().year
+
 # A fixed date before the surveillance sign-up cutoff (1 May)
-_BEFORE_CUTOFF = datetime(2026, 3, 15, 12, 0, 0, tzinfo=UTC)
+_BEFORE_CUTOFF = datetime(_current_year, 3, 15, 12, 0, 0, tzinfo=UTC)
 # A fixed date after the surveillance sign-up cutoff (1 May)
-_AFTER_CUTOFF = datetime(2026, 6, 15, 12, 0, 0, tzinfo=UTC)
+_AFTER_CUTOFF = datetime(_current_year, 6, 15, 12, 0, 0, tzinfo=UTC)
+
+_current_july = f"{_current_year}-07-15"
+_current_august = f"{_current_year}-08-15"
 
 # ==============================================================================
 # Sign Up As Helper - Happy Path
@@ -114,7 +119,7 @@ def test_sign_up_as_helper_fails_if_unpublished() -> None:
 
 
 def test_sign_up_as_helper_fails_if_task_in_the_past() -> None:
-    # Pre-seeded task 2001: starts 2025-01-04, published, maintenance
+    # Pre-seeded task 2001: starts previous year Jan 4, published, maintenance
     FakeAuth.set_member()
 
     response = client.post("/api/v1/helpers/tasks/2001/sign-up-as-helper")
@@ -209,8 +214,8 @@ def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
     task1 = create_surveillance_shift(client)
     task2 = create_surveillance_shift(
         client,
-        starts_at="2026-07-15T10:00:00",
-        ends_at="2026-07-15T18:00:00",
+        starts_at=f"{_current_july}T10:00:00",
+        ends_at=f"{_current_july}T18:00:00",
     )
 
     FakeAuth.set_member(member_id=201)
@@ -238,13 +243,13 @@ async def test_sign_up_as_helper_surveillance_limit_allowed_after_cutoff() -> No
     """After the cutoff date, multiple surveillance sign-ups should be allowed."""
     task1 = create_surveillance_shift(
         client,
-        starts_at="2026-07-15T10:00:00",
-        ends_at="2026-07-15T18:00:00",
+        starts_at=f"{_current_july}T10:00:00",
+        ends_at=f"{_current_july}T18:00:00",
     )
     task2 = create_surveillance_shift(
         client,
-        starts_at="2026-08-15T10:00:00",
-        ends_at="2026-08-15T18:00:00",
+        starts_at=f"{_current_august}T10:00:00",
+        ends_at=f"{_current_august}T18:00:00",
     )
 
     FakeAuth.set_member(member_id=202)
@@ -303,18 +308,14 @@ async def test_sign_up_as_helper_surveillance_different_members() -> None:
 
     with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
         FakeAuth.set_member(member_id=205)
-        response1 = client.post(
-            f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper"
-        )
+        response1 = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
         assert response1.status_code == 200
         data1 = response1.json()
         assert_full_task_response(data1)
         assert len(data1["helpers"]) == 1
 
         FakeAuth.set_member(member_id=206)
-        response2 = client.post(
-            f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper"
-        )
+        response2 = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
 
     assert response2.status_code == 200
     data2 = response2.json()
@@ -366,8 +367,8 @@ async def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count
             title="Surveillance",
             short_description="Previous year surveillance",
             contact_id=1,
-            starts_at=datetime(2025, 6, 1, 10, 0, 0, tzinfo=UTC),
-            ends_at=datetime(2025, 6, 1, 18, 0, 0, tzinfo=UTC),
+            starts_at=datetime(_current_year - 1, 6, 1, 10, 0, 0, tzinfo=UTC),
+            ends_at=datetime(_current_year - 1, 6, 1, 18, 0, 0, tzinfo=UTC),
             urgent=False,
             helper_min_count=1,
             helper_max_count=2,
@@ -380,7 +381,7 @@ async def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count
             HelperTaskHelperEntity(
                 task_id=prev_year_task.id,
                 member_id=member_id,
-                signed_up_at=datetime(2025, 6, 1, 10, 0, 0, tzinfo=UTC),
+                signed_up_at=datetime(_current_year - 1, 6, 1, 10, 0, 0, tzinfo=UTC),
             )
         )
         session.commit()
@@ -389,9 +390,7 @@ async def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count
     FakeAuth.set_member(member_id=member_id)
 
     with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
-        response = client.post(
-            f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper"
-        )
+        response = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
 
     assert response.status_code == 200
     data = response.json()

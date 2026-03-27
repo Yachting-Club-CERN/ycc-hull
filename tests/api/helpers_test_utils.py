@@ -312,7 +312,7 @@ def get_last_audit_log_entry() -> AuditLogEntryEntity:
         return entry
 
 
-async def verify_creation_audit_log_entry(short_description: str) -> None:
+def verify_creation_audit_log_entry(short_description: str) -> None:
     """Verify audit log for a task creation."""
     audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
@@ -328,7 +328,7 @@ async def verify_creation_audit_log_entry(short_description: str) -> None:
     assert audit_data["new"].keys() == AUDIT_TASK_KEYS
 
 
-async def verify_update_audit_log_entry(
+def verify_update_audit_log_entry(
     task_id: int, old_short_description: str, new_short_description: str
 ) -> None:
     """Verify audit log for a task update."""
@@ -484,15 +484,15 @@ def assert_task_json(  # noqa: PLR0913
         actual = data[key]
 
         if key in datetime_keys and isinstance(value, str) and isinstance(actual, str):
-            assert actual.startswith(
-                value
-            ), f"data[{key!r}]: {actual!r} does not start with {value!r}"
+            assert actual.startswith(value), (
+                f"data[{key!r}]: {actual!r} does not start with {value!r}"
+            )
         elif isinstance(value, dict) and isinstance(actual, dict):
             _assert_dict_subset(actual, value, path=f"data[{key!r}]")
         elif isinstance(value, list) and isinstance(actual, list):
-            assert len(actual) == len(
-                value
-            ), f"data[{key!r}]: expected {len(value)} items, got {len(actual)}"
+            assert len(actual) == len(value), (
+                f"data[{key!r}]: expected {len(value)} items, got {len(actual)}"
+            )
             for i, (act, exp) in enumerate(zip(actual, value, strict=True)):
                 if isinstance(exp, dict) and isinstance(act, dict):
                     _assert_dict_subset(act, exp, path=f"data[{key!r}][{i}]")
