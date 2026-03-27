@@ -62,7 +62,7 @@ def test_parse_trigger(
 def test_parse_trigger_invalid(
     _mock_config: MagicMock,  # noqa: PT019
     spec: str,
-    error_type: type,
+    error_type: type[Exception],
     match: str,
 ) -> None:
     from ycc_hull.scheduler import _parse_trigger

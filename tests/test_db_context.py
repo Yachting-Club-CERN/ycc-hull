@@ -95,7 +95,7 @@ async def test_query_all_both_transformers_raise() -> None:
         await ctx.query_all(
             select(AuditLogEntryEntity),
             transformer=lambda r: r,
-            async_transformer=lambda r: r,  # type: ignore[arg-type]
+            async_transformer=lambda r: r,
         )
 
 
@@ -160,7 +160,7 @@ async def test_close() -> None:
 
     await ctx.close()
 
-    # After dispose, in-memory DB is gone — tables no longer exist
+    # After dispose, in-memory DB is gone - tables no longer exist
     with (
         pytest.raises(OperationalError, match="no such table: audit_log"),
         ctx.session() as session,

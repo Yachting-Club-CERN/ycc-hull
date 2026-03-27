@@ -1,10 +1,15 @@
 """Helpers API DTO classes."""
 
 from collections.abc import Sequence
-from datetime import datetime
 from enum import StrEnum
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import (
+    AwareDatetime,
+    Field,
+    NonNegativeInt,
+    field_validator,
+    model_validator,
+)
 
 from ycc_hull.db.entities import (
     HelpersAppPermissionEntity,
@@ -98,22 +103,22 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
     short_description: str
     long_description: str | None = Field(json_schema_extra={"html": True})
     contact: MemberPublicInfoDto
-    starts_at: datetime | None
-    ends_at: datetime | None
-    deadline: datetime | None
+    starts_at: AwareDatetime | None
+    ends_at: AwareDatetime | None
+    deadline: AwareDatetime | None
     urgent: bool
     captain_required_licence_info: LicenceInfoDto | None
-    helper_min_count: int
-    helper_max_count: int
+    helper_min_count: NonNegativeInt
+    helper_max_count: NonNegativeInt
     published: bool
 
     captain: "HelperTaskHelperDto | None"
     helpers: Sequence["HelperTaskHelperDto"]
 
-    marked_as_done_at: datetime | None
+    marked_as_done_at: AwareDatetime | None
     marked_as_done_by: MemberPublicInfoDto | None
     marked_as_done_comment: str | None = Field(json_schema_extra={"html": True})
-    validated_at: datetime | None
+    validated_at: AwareDatetime | None
     validated_by: MemberPublicInfoDto | None
     validation_comment: str | None = Field(json_schema_extra={"html": True})
 
@@ -237,13 +242,13 @@ class HelperTaskMutationRequestBaseDto(CamelisedBaseModel):
     short_description: str
     long_description: str | None = Field(json_schema_extra={"html": True})
     contact_id: int
-    starts_at: datetime | None
-    ends_at: datetime | None
-    deadline: datetime | None
+    starts_at: AwareDatetime | None
+    ends_at: AwareDatetime | None
+    deadline: AwareDatetime | None
     urgent: bool
     captain_required_licence_info_id: int | None
-    helper_min_count: int
-    helper_max_count: int
+    helper_min_count: NonNegativeInt
+    helper_max_count: NonNegativeInt
     published: bool
 
     @property
@@ -286,7 +291,7 @@ class HelperTaskMutationRequestBaseDto(CamelisedBaseModel):
     @model_validator(mode="after")
     def check_helper_min_max_count(self) -> "HelperTaskMutationRequestBaseDto":
         """Validate helper min/max count."""
-        if 0 <= self.helper_min_count <= self.helper_max_count:
+        if self.helper_min_count <= self.helper_max_count:
             return self
         msg = "Invalid minimum/maximum helper count"
         raise ValueError(msg)
@@ -320,7 +325,7 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
     """DTO for helper task helper."""
 
     member: MemberPublicInfoDto
-    signed_up_at: datetime
+    signed_up_at: AwareDatetime
 
     @staticmethod
     async def create(
@@ -335,7 +340,7 @@ class HelperTaskHelperDto(CamelisedBaseModelWithEntity[HelperTaskHelperEntity]):
 
     @staticmethod
     async def create_from_member_entity(
-        member: MemberEntity, signed_up_at: datetime
+        member: MemberEntity, signed_up_at: AwareDatetime
     ) -> "HelperTaskHelperDto":
         """Create a DTO from a member entity."""
         return HelperTaskHelperDto(

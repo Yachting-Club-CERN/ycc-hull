@@ -5,6 +5,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from tests.mock_utils import patch_notifications
+
 
 @pytest.fixture(scope="session", autouse=True)
 def _no_smtp() -> Generator[None, None, None]:
@@ -20,3 +22,13 @@ def _no_smtp() -> Generator[None, None, None]:
         return_value=mock,
     ):
         yield
+
+
+@pytest.fixture
+def mock_send_message() -> Generator[AsyncMock, None, None]:
+    """Patch CONFIG + SmtpConnection for notification tests.
+
+    Yields send_message mock.
+    """
+    with patch_notifications() as send:
+        yield send

@@ -4,7 +4,7 @@ import json
 from enum import StrEnum
 from logging import Logger
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, PositiveInt, SecretStr
 
 from ycc_hull.constants import CONFIG_FILE
 from ycc_hull.models.base import CamelisedBaseModel
@@ -27,10 +27,10 @@ class EmailConfig(CamelisedBaseModel):
         default=None, json_schema_extra={"sanitise": False}
     )
     smtp_host: str
-    smtp_port: int
+    smtp_port: PositiveInt
     smtp_start_tls: bool
     smtp_username: str | None = None
-    smtp_password: str | None = None
+    smtp_password: SecretStr | None = None
 
 
 class KeycloakConfig(CamelisedBaseModel):
@@ -39,7 +39,7 @@ class KeycloakConfig(CamelisedBaseModel):
     server_url: str
     realm: str
     client: str
-    client_secret: str
+    client_secret: SecretStr
     swagger_client: str | None = None
 
 
@@ -73,7 +73,7 @@ class Config(CamelisedBaseModel):
     email: EmailConfig | None = None
     keycloak: KeycloakConfig
     notifications: NotificationsConfig
-    uvicorn_port: int
+    uvicorn_port: PositiveInt
     ycc_app: YccAppConfig
 
     @property

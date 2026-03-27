@@ -39,7 +39,11 @@ class SmtpConnection:
             port=self._config.smtp_port,
             start_tls=self._config.smtp_start_tls,
             username=self._config.smtp_username,
-            password=self._config.smtp_password,
+            password=(
+                self._config.smtp_password.get_secret_value()
+                if self._config.smtp_password
+                else None
+            ),
         )
         await self._smtp.connect()
 

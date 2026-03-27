@@ -61,7 +61,7 @@ def test_create_user_from_user_info() -> None:
 def test_create_user_falls_back_to_token_info() -> None:
     from ycc_hull.auth import _create_user
 
-    # Minimal user_info — forces fallback to token_info for most fields
+    # Minimal user_info - forces fallback to token_info for most fields
     user_info = {"sub": "f:id:42"}
     token_info = _sample_token_info()
     token_info["sub"] = "f:id:42"
