@@ -1,6 +1,7 @@
 """Helpers sign-up API tests."""
 
 from datetime import UTC, datetime, timedelta
+from unittest.mock import patch
 
 import pytest
 
@@ -18,6 +19,13 @@ from tests.main_test import FakeAuth
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import HelperTaskEntity, HelperTaskHelperEntity
 from ycc_hull.utils import get_now
+
+_HELPERS_MODULE = "ycc_hull.controllers.helpers_controller"
+
+# A fixed date before the surveillance sign-up cutoff (1 May)
+_BEFORE_CUTOFF = datetime(2026, 3, 15, 12, 0, 0, tzinfo=UTC)
+# A fixed date after the surveillance sign-up cutoff (1 May)
+_AFTER_CUTOFF = datetime(2026, 6, 15, 12, 0, 0, tzinfo=UTC)
 
 # ==============================================================================
 # Sign Up As Helper - Happy Path
@@ -180,7 +188,8 @@ async def test_sign_up_as_helper_surveillance_limit_first_is_ok() -> None:
     task = create_surveillance_shift(client)
     FakeAuth.set_member(member_id=200)
 
-    response = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
+    with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
+        response = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
 
     assert response.status_code == 200
     data = response.json()
@@ -205,10 +214,15 @@ def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
     )
 
     FakeAuth.set_member(member_id=201)
-    response1 = client.post(f"/api/v1/helpers/tasks/{task1['id']}/sign-up-as-helper")
-    assert response1.status_code == 200
+    with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
+        response1 = client.post(
+            f"/api/v1/helpers/tasks/{task1['id']}/sign-up-as-helper"
+        )
+        assert response1.status_code == 200
 
-    response2 = client.post(f"/api/v1/helpers/tasks/{task2['id']}/sign-up-as-helper")
+        response2 = client.post(
+            f"/api/v1/helpers/tasks/{task2['id']}/sign-up-as-helper"
+        )
 
     assert response2.status_code == 409
     assert response2.json() == {
@@ -220,20 +234,54 @@ def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
 
 
 @pytest.mark.asyncio
+async def test_sign_up_as_helper_surveillance_limit_allowed_after_cutoff() -> None:
+    """After the cutoff date, multiple surveillance sign-ups should be allowed."""
+    task1 = create_surveillance_shift(
+        client,
+        starts_at="2026-07-15T10:00:00",
+        ends_at="2026-07-15T18:00:00",
+    )
+    task2 = create_surveillance_shift(
+        client,
+        starts_at="2026-08-15T10:00:00",
+        ends_at="2026-08-15T18:00:00",
+    )
+
+    FakeAuth.set_member(member_id=202)
+    with patch(f"{_HELPERS_MODULE}.get_now", return_value=_AFTER_CUTOFF):
+        response1 = client.post(
+            f"/api/v1/helpers/tasks/{task1['id']}/sign-up-as-helper"
+        )
+        assert response1.status_code == 200
+
+        response2 = client.post(
+            f"/api/v1/helpers/tasks/{task2['id']}/sign-up-as-helper"
+        )
+
+    assert response2.status_code == 200
+    data = response2.json()
+    assert_full_task_response(data)
+    assert data["category"]["title"] == "Surveillance"
+    assert len(data["helpers"]) == 1
+    assert_helper_shape(data["helpers"][0], member_id=202)
+
+
+@pytest.mark.asyncio
 async def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() -> None:
     """Surveillance limit should not block signing up for maintenance tasks."""
     surveillance_task = create_surveillance_shift(client)
     maintenance_task = create_shift_task(client)
 
     FakeAuth.set_member(member_id=203)
-    response1 = client.post(
-        f"/api/v1/helpers/tasks/{surveillance_task['id']}/sign-up-as-helper"
-    )
-    assert response1.status_code == 200
+    with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
+        response1 = client.post(
+            f"/api/v1/helpers/tasks/{surveillance_task['id']}/sign-up-as-helper"
+        )
+        assert response1.status_code == 200
 
-    response2 = client.post(
-        f"/api/v1/helpers/tasks/{maintenance_task['id']}/sign-up-as-helper"
-    )
+        response2 = client.post(
+            f"/api/v1/helpers/tasks/{maintenance_task['id']}/sign-up-as-helper"
+        )
 
     assert response2.status_code == 200
     data = response2.json()
@@ -253,15 +301,20 @@ async def test_sign_up_as_helper_surveillance_different_members() -> None:
     """
     task = create_surveillance_shift(client)
 
-    FakeAuth.set_member(member_id=205)
-    response1 = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
-    assert response1.status_code == 200
-    data1 = response1.json()
-    assert_full_task_response(data1)
-    assert len(data1["helpers"]) == 1
+    with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
+        FakeAuth.set_member(member_id=205)
+        response1 = client.post(
+            f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper"
+        )
+        assert response1.status_code == 200
+        data1 = response1.json()
+        assert_full_task_response(data1)
+        assert len(data1["helpers"]) == 1
 
-    FakeAuth.set_member(member_id=206)
-    response2 = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
+        FakeAuth.set_member(member_id=206)
+        response2 = client.post(
+            f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper"
+        )
 
     assert response2.status_code == 200
     data2 = response2.json()
@@ -280,13 +333,18 @@ async def test_sign_up_as_captain_surveillance_limit_not_restricted() -> None:
     task2 = create_surveillance_shift(client)
 
     FakeAuth.set_member(member_id=4)  # member 4 has active licence 9
-    response1 = client.post(f"/api/v1/helpers/tasks/{task1['id']}/sign-up-as-captain")
-    assert response1.status_code == 200
-    data1 = response1.json()
-    assert_full_task_response(data1)
-    assert_captain_shape(data1["captain"], member_id=4)
+    with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
+        response1 = client.post(
+            f"/api/v1/helpers/tasks/{task1['id']}/sign-up-as-captain"
+        )
+        assert response1.status_code == 200
+        data1 = response1.json()
+        assert_full_task_response(data1)
+        assert_captain_shape(data1["captain"], member_id=4)
 
-    response2 = client.post(f"/api/v1/helpers/tasks/{task2['id']}/sign-up-as-captain")
+        response2 = client.post(
+            f"/api/v1/helpers/tasks/{task2['id']}/sign-up-as-captain"
+        )
 
     assert response2.status_code == 200
     data2 = response2.json()
@@ -330,7 +388,10 @@ async def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count
     task = create_surveillance_shift(client)
     FakeAuth.set_member(member_id=member_id)
 
-    response = client.post(f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper")
+    with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
+        response = client.post(
+            f"/api/v1/helpers/tasks/{task['id']}/sign-up-as-helper"
+        )
 
     assert response.status_code == 200
     data = response.json()
