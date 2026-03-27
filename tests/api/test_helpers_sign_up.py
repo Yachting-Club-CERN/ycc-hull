@@ -41,7 +41,7 @@ async def test_sign_up_as_helper() -> None:
     assert len(data["helpers"]) == 1
     assert_helper_shape(data["helpers"][0], member_id=100)
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
+    verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
 @pytest.mark.asyncio
@@ -62,7 +62,7 @@ async def test_sign_up_as_helper_deadline_task() -> None:
     assert len(data["helpers"]) == 1
     assert_helper_shape(data["helpers"][0], member_id=100)
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
+    verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
 @pytest.mark.asyncio
@@ -86,7 +86,7 @@ async def test_sign_up_as_helper_multiple_members() -> None:
     helper_ids = {h["member"]["id"] for h in data2["helpers"]}
     assert helper_ids == {100, 101}
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
+    verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
 # ==============================================================================
@@ -189,7 +189,7 @@ async def test_sign_up_as_helper_surveillance_limit_first_is_ok() -> None:
     assert len(data["helpers"]) == 1
     assert_helper_shape(data["helpers"][0], member_id=200)
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
+    verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
 def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
@@ -243,7 +243,7 @@ async def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() ->
     assert len(data["helpers"]) == 1
     assert_helper_shape(data["helpers"][0], member_id=203)
 
-    await verify_sign_up_audit_log(maintenance_task["id"], "SignUpAsHelper")
+    verify_sign_up_audit_log(maintenance_task["id"], "SignUpAsHelper")
 
 
 @pytest.mark.asyncio
@@ -271,7 +271,7 @@ async def test_sign_up_as_helper_surveillance_different_members() -> None:
     helper_ids = {h["member"]["id"] for h in data2["helpers"]}
     assert helper_ids == {205, 206}
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
+    verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
 @pytest.mark.asyncio
@@ -294,7 +294,7 @@ async def test_sign_up_as_captain_surveillance_limit_not_restricted() -> None:
     assert_full_task_response(data2)
     assert_captain_shape(data2["captain"], member_id=4)
 
-    await verify_sign_up_audit_log(task2["id"], "SignUpAsCaptain")
+    verify_sign_up_audit_log(task2["id"], "SignUpAsCaptain")
 
 
 @pytest.mark.asyncio
@@ -340,7 +340,7 @@ async def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count
     assert len(data["helpers"]) == 1
     assert_helper_shape(data["helpers"][0], member_id=member_id)
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
+    verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
 # ==============================================================================
@@ -362,7 +362,7 @@ async def test_sign_up_as_captain() -> None:
     assert data["helpers"] == []
     assert_captain_shape(data["captain"], member_id=100)
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
+    verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
 
 
 @pytest.mark.asyncio
@@ -382,7 +382,7 @@ async def test_sign_up_as_captain_surveillance_with_licence() -> None:
     assert data["helpers"] == []
     assert_captain_shape(data["captain"], member_id=4)
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
+    verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
 
 
 @pytest.mark.asyncio
@@ -400,7 +400,7 @@ async def test_sign_up_as_captain_no_licence_required() -> None:
     assert data["helpers"] == []
     assert_captain_shape(data["captain"], member_id=100)
 
-    await verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
+    verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
 
 
 # ==============================================================================

@@ -291,7 +291,7 @@ def update_request_from(task: dict, **overrides: object) -> dict:
 # ==============================================================================
 
 
-async def get_last_audit_log_entry() -> AuditLogEntryEntity:
+def get_last_audit_log_entry() -> AuditLogEntryEntity:
     """Return the most recently created audit log entry."""
     with DatabaseContextHolder.context.session() as session:
         entry = session.scalar(
@@ -305,7 +305,7 @@ async def get_last_audit_log_entry() -> AuditLogEntryEntity:
 
 async def verify_creation_audit_log_entry(short_description: str) -> None:
     """Verify audit log for a task creation."""
-    audit = await get_last_audit_log_entry()
+    audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
     assert audit.principal == "testuser"
     assert audit.description == "Helpers/Tasks/Create"
@@ -323,7 +323,7 @@ async def verify_update_audit_log_entry(
     task_id: int, old_short_description: str, new_short_description: str
 ) -> None:
     """Verify audit log for a task update."""
-    audit = await get_last_audit_log_entry()
+    audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
     assert audit.principal == "testuser"
     assert audit.description == f"Helpers/Tasks/Update/{task_id}"
@@ -348,7 +348,7 @@ async def verify_update_audit_log_entry(
     assert audit_data["new"].keys() == AUDIT_TASK_KEYS
 
 
-async def verify_sign_up_audit_log(task_id: int, action: str) -> None:
+def verify_sign_up_audit_log(task_id: int, action: str) -> None:
     """Verify audit log for a sign-up action."""
     expected_description = f"Helpers/Tasks/{action}/{task_id}"
     with DatabaseContextHolder.context.session() as session:

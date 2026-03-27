@@ -150,7 +150,7 @@ async def test_grant_permission() -> None:
     assert data["note"] == "New editor"
 
     # Verify audit log
-    audit = await get_last_audit_log_entry()
+    audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
     assert audit.principal == "testuser"
     assert audit.description == "Helpers/Permissions/Grant"
@@ -213,7 +213,7 @@ async def test_update_permission_note() -> None:
     assert data["note"] == "Updated note"
 
     # Verify audit log
-    audit = await get_last_audit_log_entry()
+    audit = get_last_audit_log_entry()
     assert audit.principal == "testuser"
     assert audit.description == "Helpers/Permissions/Update/3"
     assert isinstance(audit.data, str)
@@ -273,7 +273,7 @@ async def test_revoke_permission() -> None:
     assert response.status_code == 204
 
     # Verify audit log
-    audit = await get_last_audit_log_entry()
+    audit = get_last_audit_log_entry()
     assert audit.principal == "testuser"
     assert audit.description == "Helpers/Permissions/Revoke/7"
     assert isinstance(audit.data, str)
