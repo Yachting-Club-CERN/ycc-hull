@@ -3,8 +3,6 @@
 from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
-import pytest
-
 from tests.api.conftest import client
 from tests.api.helpers_test_utils import (
     assert_captain_shape,
@@ -37,8 +35,7 @@ _current_august = f"{_current_year}-08-15"
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_helper() -> None:
+def test_sign_up_as_helper() -> None:
     task = create_shift_task(client)
     FakeAuth.set_member()
 
@@ -57,8 +54,7 @@ async def test_sign_up_as_helper() -> None:
     verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_helper_deadline_task() -> None:
+def test_sign_up_as_helper_deadline_task() -> None:
     task = create_deadline_task(client)
     FakeAuth.set_member()
 
@@ -78,8 +74,7 @@ async def test_sign_up_as_helper_deadline_task() -> None:
     verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_helper_multiple_members() -> None:
+def test_sign_up_as_helper_multiple_members() -> None:
     task = create_shift_task(client, helper_max_count=3)
 
     FakeAuth.set_member(member_id=100)
@@ -187,8 +182,7 @@ def test_sign_up_as_helper_fails_if_limit_reached() -> None:
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_helper_surveillance_limit_first_is_ok() -> None:
+def test_sign_up_as_helper_surveillance_limit_first_is_ok() -> None:
     """First surveillance helper sign-up (before cutoff) should succeed."""
     task = create_surveillance_shift(client)
     FakeAuth.set_member(member_id=200)
@@ -238,8 +232,7 @@ def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
     }
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_helper_surveillance_limit_allowed_after_cutoff() -> None:
+def test_sign_up_as_helper_surveillance_limit_allowed_after_cutoff() -> None:
     """After the cutoff date, multiple surveillance sign-ups should be allowed."""
     task1 = create_surveillance_shift(
         client,
@@ -271,8 +264,7 @@ async def test_sign_up_as_helper_surveillance_limit_allowed_after_cutoff() -> No
     assert_helper_shape(data["helpers"][0], member_id=202)
 
 
-@pytest.mark.asyncio
-async def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() -> None:
+def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() -> None:
     """Surveillance limit should not block signing up for maintenance tasks."""
     surveillance_task = create_surveillance_shift(client)
     maintenance_task = create_shift_task(client)
@@ -298,8 +290,7 @@ async def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() ->
     verify_sign_up_audit_log(maintenance_task["id"], "SignUpAsHelper")
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_helper_surveillance_different_members() -> None:
+def test_sign_up_as_helper_surveillance_different_members() -> None:
     """Different members should each be able to sign up for the same surveillance task.
 
     Verifies the limit is per-member, not global.
@@ -327,8 +318,7 @@ async def test_sign_up_as_helper_surveillance_different_members() -> None:
     verify_sign_up_audit_log(task["id"], "SignUpAsHelper")
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_captain_surveillance_limit_not_restricted() -> None:
+def test_sign_up_as_captain_surveillance_limit_not_restricted() -> None:
     """Captains (drivers) are not subject to the surveillance sign-up limit."""
     task1 = create_surveillance_shift(client)
     task2 = create_surveillance_shift(client)
@@ -355,10 +345,7 @@ async def test_sign_up_as_captain_surveillance_limit_not_restricted() -> None:
     verify_sign_up_audit_log(task2["id"], "SignUpAsCaptain")
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count() -> (
-    None
-):
+def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count() -> None:
     """Previous-year sign-ups should not count toward current year limit."""
     member_id = 207
     with DatabaseContextHolder.context.session() as session:
@@ -407,8 +394,7 @@ async def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_captain() -> None:
+def test_sign_up_as_captain() -> None:
     task = create_deadline_task(client)
     FakeAuth.set_member()
 
@@ -424,8 +410,7 @@ async def test_sign_up_as_captain() -> None:
     verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_captain_surveillance_with_licence() -> None:
+def test_sign_up_as_captain_surveillance_with_licence() -> None:
     """Member with motor boat licence (id=9) can captain a surveillance task."""
     task = create_surveillance_shift(client)
     FakeAuth.set_member(member_id=4)  # member 4 has active licence 9
@@ -444,8 +429,7 @@ async def test_sign_up_as_captain_surveillance_with_licence() -> None:
     verify_sign_up_audit_log(task["id"], "SignUpAsCaptain")
 
 
-@pytest.mark.asyncio
-async def test_sign_up_as_captain_no_licence_required() -> None:
+def test_sign_up_as_captain_no_licence_required() -> None:
     """Task without licence requirement should allow any member as captain."""
     task = create_shift_task(client, captain_required_licence_info_id=None)
     FakeAuth.set_member()

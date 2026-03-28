@@ -2,8 +2,6 @@
 
 import json
 
-import pytest
-
 from tests.api.conftest import client
 from tests.api.helpers_test_utils import get_last_audit_log_entry
 from tests.main_test import FakeAuth
@@ -134,8 +132,7 @@ def test_get_permissions_returns_notes() -> None:
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_grant_permission() -> None:
+def test_grant_permission() -> None:
     FakeAuth.set_helpers_app_admin()
 
     response = client.post(
@@ -159,8 +156,7 @@ async def test_grant_permission() -> None:
     assert audit_data.keys() == {"new"}
 
 
-@pytest.mark.asyncio
-async def test_grant_permission_without_note() -> None:
+def test_grant_permission_without_note() -> None:
     FakeAuth.set_helpers_app_admin()
 
     response = client.post(
@@ -197,8 +193,7 @@ def test_grant_permission_shows_up_in_list() -> None:
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_update_permission_note() -> None:
+def test_update_permission_note() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # Update the note for member 3 (seeded EDITOR with no note)
@@ -221,8 +216,7 @@ async def test_update_permission_note() -> None:
     assert audit_data.keys() == {"diff", "old", "new"}
 
 
-@pytest.mark.asyncio
-async def test_update_permission_clear_note() -> None:
+def test_update_permission_clear_note() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # First set a note
@@ -258,8 +252,7 @@ def test_update_permission_not_found() -> None:
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_revoke_permission() -> None:
+def test_revoke_permission() -> None:
     FakeAuth.set_helpers_app_admin()
 
     # Grant a permission first so we can revoke it

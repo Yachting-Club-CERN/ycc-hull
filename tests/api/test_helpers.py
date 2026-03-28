@@ -2,8 +2,6 @@
 
 from datetime import timedelta
 
-import pytest
-
 from tests.api.conftest import client
 from tests.api.helpers_test_utils import (
     ANY,
@@ -74,8 +72,7 @@ task_update_deadline = {**task_creation_deadline, "notifySignedUpMembers": False
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_create_task_as_editor() -> None:
+def test_create_task_as_editor() -> None:
     # Given
     FakeAuth.set_helpers_app_editor()
 
@@ -107,8 +104,7 @@ async def test_create_task_as_editor() -> None:
     verify_creation_audit_log_entry(data["shortDescription"])
 
 
-@pytest.mark.asyncio
-async def test_create_task_as_admin() -> None:
+def test_create_task_as_admin() -> None:
     # Given
     FakeAuth.set_helpers_app_admin()
 
@@ -173,8 +169,7 @@ def test_create_task_fails_if_editor_but_not_contact() -> None:
 # ==============================================================================
 
 
-@pytest.mark.asyncio
-async def test_update_task_as_editor() -> None:
+def test_update_task_as_editor() -> None:
     # Given
     FakeAuth.set_helpers_app_editor()
     request = task_creation_shift.copy()
