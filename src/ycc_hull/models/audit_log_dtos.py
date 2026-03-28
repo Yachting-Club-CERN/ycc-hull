@@ -1,6 +1,8 @@
 """Audit log API DTO classes."""
 
-from datetime import date, datetime
+from datetime import date
+
+from pydantic import AwareDatetime
 
 from ycc_hull.db.entities import AuditLogEntryEntity
 from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntity
@@ -10,7 +12,7 @@ class AuditLogEntryDto(CamelisedBaseModelWithEntity[AuditLogEntryEntity]):
     """DTO for an audit log entry."""
 
     id: int
-    created_at: datetime
+    created_at: AwareDatetime
     application: str
     principal: str
     description: str

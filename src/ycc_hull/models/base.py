@@ -1,7 +1,7 @@
 """Base model."""
 
 from datetime import datetime
-from typing import Any
+from typing import Any, get_args, get_origin
 
 import lxml
 import lxml.etree
@@ -9,7 +9,7 @@ import lxml.html
 import lxml.html.clean
 from humps import camelize
 from lxml_html_clean import Cleaner, clean_html
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 from pydantic.fields import FieldInfo
 
 from ycc_hull.utils import TIME_ZONE, full_type_name
@@ -70,9 +70,8 @@ class CamelisedBaseModel(BaseModel):
     ) -> Any:  # noqa: ANN401
         is_str = isinstance(value, str)
         is_datetime = isinstance(value, datetime)
-        is_datetime_field = field_info and field_info.annotation in (
-            datetime,
-            datetime | None,
+        is_datetime_field = field_info and _is_datetime_annotation(
+            field_info.annotation
         )
 
         if is_datetime or is_datetime_field:
@@ -104,6 +103,20 @@ def _get_field_info_extra_bool(
         raise ValueError(msg)
 
     return default
+
+
+def _is_datetime_annotation(annotation: Any) -> bool:  # noqa: ANN401
+    """Check if a field annotation is a datetime type (including AwareDatetime)."""
+    if annotation is datetime or annotation is AwareDatetime:
+        return True
+
+    # Handle Union types (e.g. AwareDatetime | None)
+    origin = get_origin(annotation)
+    if origin is not None:
+        args = get_args(annotation)
+        return any(_is_datetime_annotation(arg) for arg in args)
+
+    return False
 
 
 class CamelisedBaseModelWithEntity[EntityT](CamelisedBaseModel):

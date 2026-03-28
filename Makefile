@@ -15,12 +15,12 @@ lint:
 	uv run ruff check .
 	uv run ty check
 
-lint-fix:
+lint-fix: format
 	uv run ruff check --fix .
 	uv run ty check .
 
 test:
-	uv run pytest
+	uv run pytest -vvv
 
 up:
 	uv run start

@@ -26,7 +26,7 @@ _KEYCLOAK = KeycloakOpenID(
     server_url=CONFIG.keycloak.server_url,
     realm_name=CONFIG.keycloak.realm,
     client_id=CONFIG.keycloak.client,
-    client_secret_key=CONFIG.keycloak.client_secret,
+    client_secret_key=CONFIG.keycloak.client_secret.get_secret_value(),
 )
 
 

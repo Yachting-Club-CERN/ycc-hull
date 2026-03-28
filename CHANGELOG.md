@@ -18,15 +18,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API endpoints for granting, updating and revoking permissions (deployed in 2025)
 - Tooling: uv, Ruff, ty, Makefile
 - Landing page `/` with HTML redirect to yachting.web.cern.ch
+- Extensive API and controller test coverage
 
 ### Changed
 
+- Surveillance sign-up restriction: cutoff moved from mid-June to 1 May
 - Dependency upgrades (2026-03), notable:
   - lxml 6
   - python-keycloak 7
   - sqlacodegen 4
 - Regenerate test data for 2026
 - Many fixes for the new Ruff rules
+- API endpoints now expect AwareDatetime
 
 ### Removed
 

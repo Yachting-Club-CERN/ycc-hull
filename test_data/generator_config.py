@@ -1,11 +1,12 @@
 """Test data generator configuration."""
 
-from datetime import date
 from pathlib import Path
+
+from ycc_hull.utils import get_now
 
 _SCRIPT_DIR = Path(__file__).parent.resolve()
 
-CURRENT_YEAR = date.today().year
+CURRENT_YEAR = get_now().year
 MEMBER_COUNT = 300
 
 # Holidays
