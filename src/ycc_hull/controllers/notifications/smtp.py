@@ -41,7 +41,7 @@ class SmtpConnection:
             username=self._config.smtp_username,
             password=(
                 self._config.smtp_password.get_secret_value()
-                if self._config.smtp_password
+                if self._config.smtp_password is not None
                 else None
             ),
         )
