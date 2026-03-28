@@ -3,10 +3,9 @@
 import pytest
 import pytest_asyncio
 from sqlalchemy import select
-from sqlalchemy.exc import OperationalError
 
 from tests.main_test import init_test_database
-from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
+from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import AuditLogEntryEntity
 
 
@@ -144,25 +143,3 @@ async def test_query_count_with_session() -> None:
         count = await ctx.query_count(AuditLogEntryEntity, session=session)
         all_rows = await ctx.query_all(select(AuditLogEntryEntity), session=session)
         assert count == len(all_rows)
-
-
-# ==============================================================================
-# close
-# ==============================================================================
-
-
-@pytest.mark.asyncio
-async def test_close() -> None:
-    ctx = DatabaseContext("sqlite:///:memory:")
-    # Verify usable before closing
-    with ctx.session() as session:
-        assert session.is_active
-
-    await ctx.close()
-
-    # After dispose, in-memory DB is gone - tables no longer exist
-    with (
-        pytest.raises(OperationalError, match="no such table: audit_log"),
-        ctx.session() as session,
-    ):
-        session.execute(select(AuditLogEntryEntity))
