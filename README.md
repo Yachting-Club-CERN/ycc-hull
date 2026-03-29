@@ -101,8 +101,8 @@ You can regenerate entities using the following commands:
 
 ```sh
 uv run sqlacodegen oracle+oracledb://ycclocal:changeit@127.0.0.1:1521/XE --outfile generated_entities/entities_generated.py
-uv run ruff format generated_entities/entities_generated.py
 uv run ruff check --fix generated_entities/entities_generated.py
+uv run ruff format generated_entities/entities_generated.py
 ```
 
 Generated entities does not work as good as handwritten ones. Please use the generated entities as a reference for updating handwritten entities in `entities.py`.

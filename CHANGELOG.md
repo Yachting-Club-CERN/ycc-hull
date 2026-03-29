@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tooling: uv, Ruff, ty, Makefile
 - Landing page `/` with HTML redirect to yachting.web.cern.ch
 - Extensive API and controller test coverage
+- API endpoints for helper task attachments
 
 ### Changed
 
