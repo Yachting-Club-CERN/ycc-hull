@@ -60,7 +60,9 @@ def test_extract_address_unsupported_type() -> None:
         TypeError,
         match=r"^Expected string, MemberPublicInfoDto or User, got 12345$",
     ):
-        builder._extract_address(12345)  # type: ignore[arg-type]  # noqa: SLF001
+        builder._extract_address(  # noqa: SLF001
+            12345  # ty: ignore[invalid-argument-type]
+        )
 
 
 # ==============================================================================

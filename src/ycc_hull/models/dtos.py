@@ -35,13 +35,13 @@ class BoatDto(CamelisedBaseModelWithEntity[BoatEntity]):
         boat: BoatEntity,
     ) -> "BoatDto":
         """Create a DTO from a boat entity."""
-        return BoatDto(  # type: ignore[missing-argument]
+        return BoatDto(  # ty: ignore[missing-argument]
             entity=boat,
             id=boat.boat_id,
             name=boat.name,
             type=boat.type,
             licence=boat.license,
-            class_=boat.class_,  # type: ignore[missing-argument]
+            class_=boat.class_,  # ty: ignore[unknown-argument]
             capacity=boat.capacity,
             table_position=boat.table_pos,
         )

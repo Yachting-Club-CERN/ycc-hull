@@ -23,7 +23,6 @@ from ycc_hull.utils import resolve_attachment_mime_type
         ("photo.webp", "image/webp"),
         ("PHOTO.WEBP", "image/webp"),
         ("screenshot.png", "image/png"),
-        # Multiple dots - only last extension matters
         ("archive.backup.jpg", "image/jpeg"),
         ("my.file.name.png", "image/png"),
     ],

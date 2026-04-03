@@ -152,7 +152,7 @@ async def auth(token: str = Depends(_OAUTH2_SCHEME)) -> User:
         _logger.debug("Token: %s", token)
 
         # Practically it is always a dict, not bytes
-        user_info: dict = _KEYCLOAK.userinfo(token)  # type: ignore[assignment]  # cspell:disable-line
+        user_info: dict = _KEYCLOAK.userinfo(token)  # ty: ignore[invalid-assignment]  # cspell:disable-line
         _logger.debug("User info: %s", user_info)
         token_info = _KEYCLOAK.introspect(token)
         _logger.debug("Token info: %s", token_info)

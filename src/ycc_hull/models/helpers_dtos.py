@@ -238,7 +238,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
                 await HelperTaskHelperDto.create_from_member_entity(
                     # Either both or none are present
                     captain,
-                    task.captain_signed_up_at,  # type: ignore[arg-type]
+                    task.captain_signed_up_at,  # ty: ignore[invalid-argument-type]
                 )
                 if task.captain
                 else None
