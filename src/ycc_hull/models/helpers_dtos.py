@@ -23,22 +23,6 @@ from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntit
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
 
-class HelperTaskType(StrEnum):
-    """Helper task type enumeration."""
-
-    SHIFT = "Shift"
-    DEADLINE = "Deadline"
-    UNKNOWN = "Unknown"
-
-
-class HelperTaskState(StrEnum):
-    """Helper task state enumeration."""
-
-    PENDING = "Pending"
-    DONE = "Done"
-    VALIDATED = "Validated"
-
-
 class AttachmentMetadataDto(CamelisedBaseModel):
     """DTO for attachment metadata (excludes binary content)."""
 
@@ -64,6 +48,22 @@ class AttachmentMetadataDto(CamelisedBaseModel):
             ),
             created=attachment.created,
         )
+
+
+class HelperTaskType(StrEnum):
+    """Helper task type enumeration."""
+
+    SHIFT = "Shift"
+    DEADLINE = "Deadline"
+    UNKNOWN = "Unknown"
+
+
+class HelperTaskState(StrEnum):
+    """Helper task state enumeration."""
+
+    PENDING = "Pending"
+    DONE = "Done"
+    VALIDATED = "Validated"
 
 
 class HelpersAppPermissionDto(CamelisedBaseModelWithEntity[HelpersAppPermissionEntity]):
