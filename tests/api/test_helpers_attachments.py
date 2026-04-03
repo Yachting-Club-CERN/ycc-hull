@@ -168,12 +168,23 @@ def test_upload_allowed_for_regular_member() -> None:
     assert data["description"] == "Member upload"
 
 
-def test_upload_jpeg_extension() -> None:
+def test_upload_jpg_extension() -> None:
     FakeAuth.set_helpers_app_admin()
     task = create_shift_task(client)
     task_id = task["id"]
 
     response = _upload(task_id, filename="photo.jpg")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["mimeType"] == "image/jpeg"
+
+
+def test_upload_jpeg_extension() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client)
+    task_id = task["id"]
+
+    response = _upload(task_id, filename="photo.jpeg")
     assert response.status_code == 200
     data = response.json()
     assert data["mimeType"] == "image/jpeg"
