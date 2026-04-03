@@ -1087,5 +1087,175 @@ class HelpersController(BaseController):
             msg = "Already signed up as helper"
             raise ControllerConflictError(msg)
 
+    async def find_attachments_for_task(
+        self, task_id: int
+    ) -> Sequence[AttachmentMetadataDto]:
+        """Return attachment metadata for a helper task (no BLOB content)."""
+        return await self.database_context.query_all(
+            select(AttachmentEntity)
+            .options(*_ATTACHMENT_WITHOUT_BLOBS)
+            .where(
+                AttachmentEntity.ref_id == task_id,
+                AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+            )
+            .order_by(AttachmentEntity.created, AttachmentEntity.id),
+            async_transformer=AttachmentMetadataDto.create,
+        )
+
+    async def get_attachment_with_content(
+        self, task_id: int, attachment_id: int
+    ) -> AttachmentEntity:
+        """Return a single attachment with content for download."""
+        with self.database_context.session() as session:
+            entity = session.scalars(
+                select(AttachmentEntity)
+                .options(defer(AttachmentEntity.thumbnail))
+                .where(
+                    AttachmentEntity.id == attachment_id,
+                    AttachmentEntity.ref_id == task_id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+            ).first()
+            if entity is None:
+                msg = "Attachment not found"
+                raise ControllerNotFoundError(msg)
+            return entity
+
+    async def get_attachment_owner_id(self, task_id: int, attachment_id: int) -> int:
+        """Return the owner_id of an attachment (without loading BLOBs)."""
+        with self.database_context.session() as session:
+            entity = session.scalars(
+                select(AttachmentEntity)
+                .options(*_ATTACHMENT_WITHOUT_BLOBS)
+                .where(
+                    AttachmentEntity.id == attachment_id,
+                    AttachmentEntity.ref_id == task_id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+            ).first()
+            if entity is None:
+                msg = "Attachment not found"
+                raise ControllerNotFoundError(msg)
+            return entity.owner_id
+
+    async def upload_attachment(
+        self,
+        task_id: int,
+        file: UploadFile,
+        description: str | None,
+        user: User,
+    ) -> AttachmentMetadataDto:
+        """Upload an attachment for a helper task."""
+        if not file.filename:
+            msg = "Filename is required"
+            raise ControllerBadRequestError(msg)
+        filename = sanitise_filename(file.filename)
+        try:
+            mime_type = resolve_attachment_mime_type(filename)
+        except ValueError as exc:
+            msg = f"File type not allowed: {filename}"
+            raise ControllerBadRequestError(msg) from exc
+
+        content = await file.read()
+
+        if len(content) > ATTACHMENT_MAX_FILE_SIZE_BYTES:
+            msg = (
+                f"File too large: {len(content)} bytes "
+                f"(max {ATTACHMENT_MAX_FILE_SIZE_BYTES})"
+            )
+            raise ControllerBadRequestError(msg)
+
+        with self.database_action(
+            action="Helpers / Upload Attachment",
+            user=user,
+            details={"task_id": task_id, "filename": filename},
+        ) as session:
+            entity = AttachmentEntity(
+                name=filename,
+                content=content,
+                description=description,
+                mime_type=mime_type,
+                size_bytes=len(content),
+                owner_id=user.member_id,
+                created=get_now(),
+                thumbnail=None,
+                ref_id=task_id,
+                ref_class_id=ATTACHMENT_REF_CLASS_ID,
+            )
+            session.add(entity)
+            session.commit()
+            session.refresh(entity)
+
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Tasks/Attachments/Upload/{task_id}",
+                {
+                    "attachment_id": entity.id,
+                    "filename": filename,
+                    "description": description,
+                    "mime_type": mime_type,
+                    "size_bytes": len(content),
+                },
+            )
+
+            result = await AttachmentMetadataDto.create(entity)
+
+        task = await self.get_task_by_id(task_id, published=None)
+        self._run_in_background(
+            self._notifications.on_attachment_upload(task, filename, user)
+        )
+
+        return result
+
+    async def delete_attachment(
+        self, task_id: int, attachment_id: int, user: User
+    ) -> None:
+        """Delete an attachment."""
+        with self.database_action(
+            action="Helpers / Delete Attachment",
+            user=user,
+            details={"task_id": task_id, "attachment_id": attachment_id},
+        ) as session:
+            entity = session.scalars(
+                select(AttachmentEntity)
+                .options(
+                    defer(AttachmentEntity.content),
+                    defer(AttachmentEntity.thumbnail),
+                )
+                .where(AttachmentEntity.id == attachment_id)
+            ).first()
+            if (
+                entity is None
+                or entity.ref_id != task_id
+                or entity.ref_class_id != ATTACHMENT_REF_CLASS_ID
+            ):
+                msg = "Attachment not found"
+                raise ControllerNotFoundError(msg)
+
+            deleted_filename = entity.name
+            audit_data = {
+                "attachment_id": attachment_id,
+                "filename": entity.name,
+                "description": entity.description,
+                "mime_type": entity.mime_type,
+                "size_bytes": entity.size_bytes,
+            }
+
+            session.delete(entity)
+            session.commit()
+
+            self._audit_log(
+                session,
+                user,
+                f"Helpers/Tasks/Attachments/Delete/{task_id}",
+                audit_data,
+            )
+
+        task = await self.get_task_by_id(task_id, published=None)
+        self._run_in_background(
+            self._notifications.on_attachment_delete(task, deleted_filename, user)
+        )
+
     def _starts_in_the_future(self, task: HelperTaskDto) -> bool:
         return bool(task.starts_at and task.starts_at > get_now())

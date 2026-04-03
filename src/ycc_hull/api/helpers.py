@@ -142,7 +142,7 @@ async def helper_tasks_update(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Update an existing helper task."""
-    await _check_can_update(
+    await _check_can_update_task(
         task_id, contact_id=request.contact_id, user=user, controller=controller
     )
 
@@ -166,7 +166,7 @@ async def helper_tasks_captain_set(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Set the captain for a helper task."""
-    await _check_can_update(
+    await _check_can_update_task(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
@@ -180,7 +180,7 @@ async def helper_tasks_captain_remove(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Remove the captain from a helper task."""
-    await _check_can_update(
+    await _check_can_update_task(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
@@ -195,7 +195,7 @@ async def helper_tasks_helper_add(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Add a helper to a task."""
-    await _check_can_update(
+    await _check_can_update_task(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
@@ -210,7 +210,7 @@ async def helper_tasks_helper_remove(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Remove a helper from a task."""
-    await _check_can_update(
+    await _check_can_update_task(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
@@ -329,10 +329,9 @@ async def helper_task_attachment_delete(
     Allowed for the uploader (owner) of the attachment, or anyone with task
     edit permissions (admin, editor who is contact).
     """
-    attachment = await controller.get_attachment_with_content(task_id, attachment_id)
-    is_owner = attachment.owner_id == user.member_id
-    if not is_owner:
-        await _check_can_update(
+    owner_id = await controller.get_attachment_owner_id(task_id, attachment_id)
+    if owner_id != user.member_id:
+        await _check_can_update_task(
             task_id, contact_id=user.member_id, user=user, controller=controller
         )
     await controller.delete_attachment(task_id, attachment_id, user)
@@ -368,7 +367,7 @@ def _can_access_year(year: int | None, user: User) -> bool:
     )
 
 
-async def _check_can_update(
+async def _check_can_update_task(
     task_id: int, *, contact_id: int, user: User, controller: HelpersController
 ) -> None:
     if not user.helpers_app_admin and not user.helpers_app_editor:
