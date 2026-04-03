@@ -51,10 +51,6 @@ ATTACHMENT_REF_CLASS_ID = 1968
 ATTACHMENT_MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024
 # Only these are supported - do not rely on OS specific MIME type databases
 ATTACHMENT_ALLOWED_EXTENSIONS_TO_MIME_TYPES: dict[str, str] = {
-    ".avif": "image/avif",
-    ".gif": "image/gif",
-    ".heic": "image/heic",
-    ".heif": "image/heif",
     ".jpeg": "image/jpeg",
     ".jpg": "image/jpeg",
     ".png": "image/png",

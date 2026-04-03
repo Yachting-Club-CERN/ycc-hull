@@ -6,16 +6,8 @@ from ycc_hull.utils import resolve_attachment_mime_type
 @pytest.mark.parametrize(
     ("filename", "expected"),
     [
-        ("animation.gif", "image/gif"),
-        ("file.GIF", "image/gif"),
         ("IMAGE.PNG", "image/png"),
         ("MiXedCaSe.JpG", "image/jpeg"),
-        ("photo.avif", "image/avif"),
-        ("PHOTO.AVIF", "image/avif"),
-        ("photo.heic", "image/heic"),
-        ("PHOTO.HEIC", "image/heic"),
-        ("photo.heif", "image/heif"),
-        ("Photo.Heif", "image/heif"),
         ("photo.jpeg", "image/jpeg"),
         ("Photo.Jpeg", "image/jpeg"),
         ("photo.jpg", "image/jpeg"),
@@ -34,6 +26,16 @@ def test_resolve_attachment_mime_type(filename: str, expected: str) -> None:
 @pytest.mark.parametrize(
     "filename",
     [
+        "animation.gif",
+        "file.GIF",
+        # These are not supported widely yet
+        "photo.avif",
+        "PHOTO.AVIF",
+        "photo.heic",
+        "PHOTO.HEIC",
+        "photo.heif",
+        "Photo.Heif",
+        # Abominations
         ".hidden",
         "",
         "noextension",
