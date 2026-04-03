@@ -105,6 +105,27 @@ def test_upload_rejects_file_too_large() -> None:
     assert "too large" in detail.lower()
 
 
+def test_upload_rejects_description_too_long() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client)
+    task_id = task["id"]
+
+    response = _upload(task_id, description="x" * 201)
+    assert response.status_code == 400
+    detail = response.json()["detail"]
+    assert detail == "Description too long (max 200 characters)"
+
+
+def test_upload_accepts_description_at_max_length() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client)
+    task_id = task["id"]
+
+    response = _upload(task_id, description="x" * 200)
+    assert response.status_code == 200
+    assert response.json()["description"] == "x" * 200
+
+
 def test_upload_allowed_for_regular_member() -> None:
     FakeAuth.set_helpers_app_admin()
     task = create_shift_task(client, published=True)
@@ -207,7 +228,7 @@ def test_list_excludes_blob_content() -> None:
         assert entity is not None
         # inspect() shows which attributes are loaded vs deferred
         state = inspect(entity)
-        # content and thumbnail should bot be in the loaded set
+        # content and thumbnail should not be in the loaded set
         assert "content" not in state.dict
         assert "thumbnail" not in state.dict
         # But other fields should be loaded

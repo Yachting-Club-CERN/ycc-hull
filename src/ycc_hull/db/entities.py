@@ -50,6 +50,7 @@ from sqlalchemy import (
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from ycc_hull.constants import ATTACHMENT_MAX_DESCRIPTION_LENGTH
 from ycc_hull.utils import short_type_name
 
 
@@ -88,7 +89,9 @@ class AttachmentEntity(BaseEntity):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(VARCHAR(200))
-    description: Mapped[str | None] = mapped_column(VARCHAR(200))
+    description: Mapped[str | None] = mapped_column(
+        VARCHAR(ATTACHMENT_MAX_DESCRIPTION_LENGTH)
+    )
     content: Mapped[bytes] = mapped_column(BLOB)
     mime_type: Mapped[str] = mapped_column(VARCHAR(100))
     size_bytes: Mapped[int] = mapped_column(Integer)

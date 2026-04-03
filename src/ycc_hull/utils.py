@@ -89,7 +89,7 @@ def sanitise_filename(original: str) -> str:
     Handles abominations too.
     """
     remaining = _clean_string_for_filename(original)
-    last_dot = _clean_string_for_filename(original).rfind(".")
+    last_dot = remaining.rfind(".")
     if last_dot >= 0:
         stem = remaining[:last_dot]
         ext = remaining[last_dot:].strip()

@@ -9,8 +9,10 @@ from sqlalchemy.orm import Session, defer
 
 from ycc_hull.config import CONFIG
 from ycc_hull.constants import (
+    ATTACHMENT_MAX_DESCRIPTION_LENGTH,
     ATTACHMENT_MAX_FILE_SIZE_BYTES,
     ATTACHMENT_REF_CLASS_ID,
+    ATTACHMENT_UPLOAD_BUFFER_CHUNK_SIZE,
     SURVEILLANCE_SIGN_UP_LIMIT_DAY,
     SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
     SURVEILLANCE_SIGN_UP_LIMIT_STR,
@@ -1156,14 +1158,24 @@ class HelpersController(BaseController):
             msg = f"File type not allowed: {filename}"
             raise ControllerBadRequestError(msg) from exc
 
-        content = await file.read()
-
-        if len(content) > ATTACHMENT_MAX_FILE_SIZE_BYTES:
+        if description and len(description) > ATTACHMENT_MAX_DESCRIPTION_LENGTH:
             msg = (
-                f"File too large: {len(content)} bytes "
-                f"(max {ATTACHMENT_MAX_FILE_SIZE_BYTES})"
+                "Description too long "
+                f"(max {ATTACHMENT_MAX_DESCRIPTION_LENGTH} characters)"
             )
             raise ControllerBadRequestError(msg)
+
+        # Read in chunks to reject oversized uploads without buffering
+        # the entire file into memory first.
+        chunks: list[bytes] = []
+        size = 0
+        while chunk := await file.read(ATTACHMENT_UPLOAD_BUFFER_CHUNK_SIZE):
+            size += len(chunk)
+            if size > ATTACHMENT_MAX_FILE_SIZE_BYTES:
+                msg = f"File too large (max {ATTACHMENT_MAX_FILE_SIZE_BYTES} bytes)"
+                raise ControllerBadRequestError(msg)
+            chunks.append(chunk)
+        content = b"".join(chunks)
 
         with self.database_action(
             action="Helpers / Upload Attachment",
