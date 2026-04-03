@@ -3,7 +3,7 @@
 from collections.abc import Sequence
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Form, Response, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, Response, UploadFile, status
 
 from ycc_hull.api.errors import create_http_error_403
 from ycc_hull.app_controllers import get_helpers_controller
@@ -307,7 +307,7 @@ async def helper_task_attachment_download(
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/attachments")
 async def helper_task_attachment_upload(
     task_id: int,
-    file: UploadFile,
+    file: Annotated[UploadFile, File()],
     user: Annotated[User, Depends(auth)],
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
     description: Annotated[str | None, Form()] = None,

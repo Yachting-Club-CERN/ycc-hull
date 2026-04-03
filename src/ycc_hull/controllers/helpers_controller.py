@@ -1159,19 +1159,6 @@ class HelpersController(BaseController):
             msg = f"File type not allowed: {filename}"
             raise ControllerBadRequestError(msg) from exc
 
-        with self.database_context.session() as session:
-            count = session.scalar(
-                select(func.count())
-                .select_from(AttachmentEntity)
-                .where(
-                    AttachmentEntity.ref_id == task_id,
-                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
-                )
-            )
-        if count >= ATTACHMENT_MAX_PER_TASK:
-            msg = f"Task already has {ATTACHMENT_MAX_PER_TASK} attachments (maximum)"
-            raise ControllerBadRequestError(msg)
-
         if description and len(description) > ATTACHMENT_MAX_DESCRIPTION_LENGTH:
             msg = (
                 "Description too long "
@@ -1183,7 +1170,7 @@ class HelpersController(BaseController):
         # into memory first
         content = bytearray()
         while chunk := await file.read(ATTACHMENT_UPLOAD_BUFFER_CHUNK_SIZE):
-            content += chunk
+            content.extend(chunk)
             if len(content) > ATTACHMENT_MAX_FILE_SIZE_BYTES:
                 msg = f"File too large (max {ATTACHMENT_MAX_FILE_SIZE_BYTES} bytes)"
                 raise ControllerBadRequestError(msg)
@@ -1193,9 +1180,26 @@ class HelpersController(BaseController):
             user=user,
             details={"task_id": task_id, "filename": filename},
         ) as session:
+            # Lock existing attachment rows for this task so concurrent uploads
+            # serialise on the count check, preventing the limit from being exceeded
+            count = session.scalar(
+                select(func.count())
+                .select_from(AttachmentEntity)
+                .where(
+                    AttachmentEntity.ref_id == task_id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+                .with_for_update()
+            )
+            if count >= ATTACHMENT_MAX_PER_TASK:
+                msg = (
+                    f"Task already has {ATTACHMENT_MAX_PER_TASK} attachments (maximum)"
+                )
+                raise ControllerBadRequestError(msg)
+
             entity = AttachmentEntity(
                 name=filename,
-                content=content,
+                content=bytes(content),
                 description=description,
                 mime_type=mime_type,
                 size_bytes=len(content),
