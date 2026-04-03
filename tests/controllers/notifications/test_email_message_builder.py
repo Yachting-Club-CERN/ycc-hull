@@ -1,5 +1,3 @@
-"""Tests for EmailMessageBuilder."""
-
 import pytest
 
 from tests.factories import make_member, make_user
@@ -130,7 +128,6 @@ def test_build_with_cc() -> None:
 
 
 def test_build_cc_deduplicates_with_to() -> None:
-    """CC recipients already in TO should be removed."""
     msg = _valid_builder().cc("recipient@example.com").build()  # same as TO
 
     assert msg["Cc"] is None

@@ -1,5 +1,3 @@
-"""Helpers API tests."""
-
 from datetime import timedelta
 
 from tests.api.conftest import client

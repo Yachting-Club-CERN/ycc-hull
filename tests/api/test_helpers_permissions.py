@@ -1,5 +1,3 @@
-"""Helpers permissions API tests."""
-
 import json
 
 from tests.api.conftest import client
@@ -291,7 +289,6 @@ def test_revoke_permission_no_longer_in_list() -> None:
 
 
 def test_revoke_own_permission_fails() -> None:
-    """Admin (member_id=1) cannot revoke their own permission."""
     FakeAuth.set_helpers_app_admin()
 
     response = client.delete("/api/v1/helpers/permissions/1")

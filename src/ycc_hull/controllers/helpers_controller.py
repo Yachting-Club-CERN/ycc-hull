@@ -3,11 +3,14 @@
 from collections.abc import Sequence
 from datetime import date, datetime, timedelta
 
+from fastapi import UploadFile
 from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.orm import Session, defer
 
 from ycc_hull.config import CONFIG
 from ycc_hull.constants import (
+    ATTACHMENT_MAX_FILE_SIZE_BYTES,
+    ATTACHMENT_REF_CLASS_ID,
     SURVEILLANCE_SIGN_UP_LIMIT_DAY,
     SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
     SURVEILLANCE_SIGN_UP_LIMIT_STR,
@@ -15,6 +18,7 @@ from ycc_hull.constants import (
 )
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.errors import (
+    ControllerBadRequestError,
     ControllerConflictError,
     ControllerNotFoundError,
 )
@@ -22,6 +26,7 @@ from ycc_hull.controllers.notifications.helpers_notifications_controller import 
     HelpersNotificationsController,
 )
 from ycc_hull.db.entities import (
+    AttachmentEntity,
     HelpersAppPermissionEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -31,6 +36,7 @@ from ycc_hull.db.entities import (
 )
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
+    AttachmentMetadataDto,
     HelpersAppPermissionDto,
     HelpersAppPermissionGrantRequestDto,
     HelpersAppPermissionUpdateRequestDto,
@@ -44,7 +50,17 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
-from ycc_hull.utils import deep_diff, get_now
+from ycc_hull.utils import (
+    deep_diff,
+    get_now,
+    resolve_attachment_mime_type,
+    sanitise_filename,
+)
+
+_ATTACHMENT_WITHOUT_BLOBS = (
+    defer(AttachmentEntity.content),
+    defer(AttachmentEntity.thumbnail),
+)
 
 
 class HelpersController(BaseController):

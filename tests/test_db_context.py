@@ -1,5 +1,3 @@
-"""Tests for DatabaseContext."""
-
 import pytest
 import pytest_asyncio
 from sqlalchemy import select

@@ -1,5 +1,3 @@
-"""Boats API tests."""
-
 from tests.api.conftest import client
 from tests.main_test import FakeAuth
 

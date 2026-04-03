@@ -1,5 +1,3 @@
-"""Shared test factories for creating model/DTO instances."""
-
 from collections.abc import Sequence
 from datetime import UTC, datetime
 
@@ -22,7 +20,6 @@ def make_user(  # noqa: PLR0913
     groups: tuple[str, ...] = (),
     roles: tuple[str, ...] = (),
 ) -> User:
-    """Create a User with sensible defaults. Override any field by keyword."""
     return User(
         member_id=member_id,
         username=username,
@@ -45,7 +42,6 @@ def make_member(  # noqa: PLR0913
     home_phone: str | None = None,
     work_phone: str | None = None,
 ) -> MemberPublicInfoDto:
-    """Create a MemberPublicInfoDto with sensible defaults."""
     return MemberPublicInfoDto(
         id=member_id,
         username=username if username is not None else f"user{member_id}",
@@ -65,7 +61,6 @@ def make_category(
     short_description: str = "Cat desc",
     long_description: str | None = None,
 ) -> HelperTaskCategoryDto:
-    """Create a HelperTaskCategoryDto with sensible defaults."""
     return HelperTaskCategoryDto(
         id=category_id,
         title=title,
@@ -79,7 +74,6 @@ def make_helper(
     member: MemberPublicInfoDto | None = None,
     signed_up_at: datetime = datetime(2026, 4, 1, 10, 0, tzinfo=UTC),
 ) -> HelperTaskHelperDto:
-    """Create a HelperTaskHelperDto with sensible defaults."""
     return HelperTaskHelperDto(
         member=member
         or make_member(
@@ -117,7 +111,6 @@ def make_task_dto(  # noqa: PLR0913
     validated_by: MemberPublicInfoDto | None = None,
     validation_comment: str | None = None,
 ) -> HelperTaskDto:
-    """Create a HelperTaskDto with sensible defaults."""
     return HelperTaskDto(
         id=task_id,
         category=category or make_category(),

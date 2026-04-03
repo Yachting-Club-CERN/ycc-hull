@@ -1,5 +1,3 @@
-"""Test app & utilities."""
-
 from pathlib import Path
 
 from fastapi import FastAPI, Request, Response
@@ -115,13 +113,13 @@ class FakeAuth:
 
     @classmethod
     def set_helpers_app_admin(cls) -> None:
-        """Set up auth as an admin."""
+        """Set up auth as a helpers app admin."""
         cls._member_id = 1
         app_test.dependency_overrides[auth] = cls._create_helpers_app_admin
 
     @classmethod
     def set_helpers_app_editor(cls) -> None:
-        """Set up auth as an editor."""
+        """Set up auth as a helpers app editor."""
         cls._member_id = 2
         app_test.dependency_overrides[auth] = cls._create_helpers_app_editor
 

@@ -1,5 +1,3 @@
-"""Tests for HelpersController.send_daily_reminders."""
-
 from datetime import datetime, timedelta
 from email.message import EmailMessage
 from email.utils import getaddresses
@@ -81,12 +79,10 @@ def _delete_task(task_id: int) -> None:
 
 
 def _get_sent_emails(mock_smtp: MagicMock) -> list[EmailMessage]:
-    """Extract all EmailMessage objects passed to smtp.send_message."""
     return [call.args[0] for call in mock_smtp.send_message.call_args_list]
 
 
 def _to_emails(msg: EmailMessage) -> set[str]:
-    """Extract To email addresses as a set."""
     raw = msg["To"]
     if not raw:
         return set()
@@ -94,10 +90,6 @@ def _to_emails(msg: EmailMessage) -> set[str]:
 
 
 async def _run_reminders() -> list[EmailMessage]:
-    """Run send_daily_reminders with all modules patched.
-
-    Returns the list of captured EmailMessage objects.
-    """
     with patch_reminders(now=NOW, from_email=FROM_EMAIL, app_name=APP_NAME) as smtp:
         await _controller().send_daily_reminders()
     return _get_sent_emails(smtp)
@@ -106,7 +98,6 @@ async def _run_reminders() -> list[EmailMessage]:
 def _find_email_by_task_title(
     emails: list[EmailMessage], task_id: int
 ) -> EmailMessage | None:
-    """Find an upcoming reminder email by task title in subject."""
     title = f"Test Task {task_id}"
     for email in emails:
         if title in (email["Subject"] or ""):
@@ -115,14 +106,12 @@ def _find_email_by_task_title(
 
 
 def _find_overdue_emails(emails: list[EmailMessage]) -> list[EmailMessage]:
-    """Find all overdue reminder emails (grouped by contact)."""
     return [e for e in emails if "overdue" in (e["Subject"] or "").lower()]
 
 
 def _find_contact_overdue_email(
     emails: list[EmailMessage], contact_email: str
 ) -> EmailMessage:
-    """Find the overdue email addressed to a specific contact."""
     overdue = _find_overdue_emails(emails)
     matches = [e for e in overdue if contact_email in _to_emails(e)]
     assert len(matches) == 1, (
@@ -133,15 +122,14 @@ def _find_contact_overdue_email(
 
 
 def _assert_email_not_mentioned(emails: list[EmailMessage], task_id: int) -> None:
-    """Assert that a task does not appear in any sent email."""
     title = f"Test Task {task_id}"
     for email in emails:
-        assert title not in (email["Subject"] or ""), (
-            f"Task {task_id} should not appear in subject: {email['Subject']}"
-        )
-        assert title not in email.get_content(), (
-            f"Task {task_id} should not appear in body"
-        )
+        assert title not in (
+            email["Subject"] or ""
+        ), f"Task {task_id} should not appear in subject: {email['Subject']}"
+        assert (
+            title not in email.get_content()
+        ), f"Task {task_id} should not appear in body"
 
 
 # ==============================================================================
@@ -164,7 +152,6 @@ async def test_emails_disabled_sends_no_emails():
 
 @pytest.mark.asyncio
 async def test_upcoming_shift_due_in_14_days():
-    """A shift starting exactly 14 days from now sends an upcoming reminder."""
     task_id = 9001
     starts_at = TODAY_START + timedelta(days=14, hours=18)
     ends_at = starts_at + timedelta(hours=2)
@@ -195,7 +182,6 @@ async def test_upcoming_shift_due_in_14_days():
 
 @pytest.mark.asyncio
 async def test_upcoming_shift_due_in_3_days():
-    """A shift starting exactly 3 days from now sends an upcoming reminder."""
     task_id = 9002
     starts_at = TODAY_START + timedelta(days=3, hours=18)
     ends_at = starts_at + timedelta(hours=2)
@@ -223,7 +209,6 @@ async def test_upcoming_shift_due_in_3_days():
 
 @pytest.mark.asyncio
 async def test_upcoming_shift_due_today():
-    """A shift starting later today sends an upcoming reminder."""
     task_id = 9003
     starts_at = NOW + timedelta(hours=4)
     ends_at = starts_at + timedelta(hours=2)
@@ -249,7 +234,6 @@ async def test_upcoming_shift_due_today():
 
 @pytest.mark.asyncio
 async def test_upcoming_deadline_task_due_in_3_days():
-    """A deadline task due in 3 days sends an upcoming reminder."""
     task_id = 9004
     deadline = TODAY_START + timedelta(days=3, hours=20)
     _insert_task(task_id=task_id, deadline=deadline)
@@ -281,7 +265,6 @@ async def test_upcoming_deadline_task_due_in_3_days():
 
 @pytest.mark.asyncio
 async def test_ongoing_task_no_email():
-    """A shift that has started but not yet ended must not trigger any email."""
     task_id = 9010
     starts_at = NOW - timedelta(hours=1)
     ends_at = NOW + timedelta(hours=1)
@@ -295,7 +278,6 @@ async def test_ongoing_task_no_email():
 
 @pytest.mark.asyncio
 async def test_validated_task_no_email():
-    """A validated task must not trigger any email."""
     task_id = 9011
     starts_at = NOW - timedelta(days=10)
     ends_at = starts_at + timedelta(hours=2)
@@ -314,7 +296,6 @@ async def test_validated_task_no_email():
 
 @pytest.mark.asyncio
 async def test_task_not_in_reminder_window_no_email():
-    """A future task 7 days out (not matching any window) must not trigger email."""
     task_id = 9013
     starts_at = TODAY_START + timedelta(days=7, hours=18)
     ends_at = starts_at + timedelta(hours=2)
@@ -333,7 +314,6 @@ async def test_task_not_in_reminder_window_no_email():
 
 @pytest.mark.asyncio
 async def test_overdue_deadline_task_sends_grouped_email():
-    """An overdue deadline task appears in the overdue grouped email to its contact."""
     task_id = 9020
     deadline = NOW - timedelta(days=2)
     _insert_task(task_id=task_id, deadline=deadline)
@@ -364,7 +344,6 @@ async def test_overdue_deadline_task_sends_grouped_email():
 
 @pytest.mark.asyncio
 async def test_overdue_shift_past_grace_period_sends_email():
-    """A shift ended >7 days ago appears in the overdue grouped email."""
     task_id = 9021
     starts_at = NOW - timedelta(days=10)
     ends_at = starts_at + timedelta(hours=2)
@@ -385,7 +364,6 @@ async def test_overdue_shift_past_grace_period_sends_email():
 
 @pytest.mark.asyncio
 async def test_overdue_shift_in_grace_period_no_email():
-    """A shift ended 3 days ago (within 7-day grace) must not trigger email."""
     task_id = 9022
     starts_at = NOW - timedelta(days=3)
     ends_at = starts_at + timedelta(hours=2)
@@ -409,7 +387,6 @@ async def test_overdue_shift_in_grace_period_no_email():
 
 @pytest.mark.asyncio
 async def test_shift_grace_period_boundary_exactly_7_days():
-    """A shift ended exactly 7 days ago: grace check is strict (<), so overdue."""
     task_id = 9030
     ends_at = NOW - timedelta(days=7)
     starts_at = ends_at - timedelta(hours=2)
@@ -430,7 +407,6 @@ async def test_shift_grace_period_boundary_exactly_7_days():
 
 @pytest.mark.asyncio
 async def test_unpublished_task_still_sends_email():
-    """Unpublished overdue tasks still get reminder emails (per docstring)."""
     task_id = 9031
     deadline = NOW - timedelta(days=2)
     _insert_task(task_id=task_id, deadline=deadline, published=False)
@@ -445,7 +421,6 @@ async def test_unpublished_task_still_sends_email():
 
 @pytest.mark.asyncio
 async def test_previous_year_unvalidated_task_sends_email():
-    """Unvalidated tasks from previous years still get reminder emails."""
     task_id = 9032
     deadline = datetime(2025, 12, 31, 20, 0, tzinfo=TIME_ZONE)
     _insert_task(task_id=task_id, deadline=deadline)

@@ -3,13 +3,14 @@
 from collections.abc import Sequence
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Form, Response, UploadFile, status
 
 from ycc_hull.api.errors import create_http_error_403
 from ycc_hull.app_controllers import get_helpers_controller
 from ycc_hull.auth import User, auth
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.models.helpers_dtos import (
+    AttachmentMetadataDto,
     HelpersAppPermissionDto,
     HelpersAppPermissionGrantRequestDto,
     HelpersAppPermissionUpdateRequestDto,
@@ -275,10 +276,80 @@ async def helper_tasks_validate(
     return await controller.get_task_by_id(task_id, published=True)
 
 
+@api_helpers.get("/api/v1/helpers/tasks/{task_id}/attachments")
+async def helper_task_attachments_list(
+    task_id: int,
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
+) -> Sequence[AttachmentMetadataDto]:
+    """List attachment metadata for a helper task."""
+    await _verify_task_accessible(task_id, user, controller)
+    return await controller.find_attachments_for_task(task_id)
+
+
+@api_helpers.get("/api/v1/helpers/tasks/{task_id}/attachments/{attachment_id}")
+async def helper_task_attachment_download(
+    task_id: int,
+    attachment_id: int,
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
+) -> Response:
+    """Download an attachment."""
+    await _verify_task_accessible(task_id, user, controller)
+    attachment = await controller.get_attachment_with_content(task_id, attachment_id)
+    return Response(
+        content=attachment.content,
+        media_type=attachment.mime_type,
+        headers={"Content-Disposition": f'inline; filename="{attachment.name}"'},
+    )
+
+
+@api_helpers.post("/api/v1/helpers/tasks/{task_id}/attachments")
+async def helper_task_attachment_upload(
+    task_id: int,
+    file: UploadFile,
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
+    description: Annotated[str | None, Form()] = None,
+) -> AttachmentMetadataDto:
+    """Upload an attachment to a helper task. Any authenticated member can upload."""
+    await _verify_task_accessible(task_id, user, controller)
+    return await controller.upload_attachment(task_id, file, description, user)
+
+
+@api_helpers.delete("/api/v1/helpers/tasks/{task_id}/attachments/{attachment_id}")
+async def helper_task_attachment_delete(
+    task_id: int,
+    attachment_id: int,
+    user: Annotated[User, Depends(auth)],
+    controller: Annotated[HelpersController, Depends(get_helpers_controller)],
+) -> Response:
+    """Delete an attachment from a helper task.
+
+    Allowed for the uploader (owner) of the attachment, or anyone with task
+    edit permissions (admin, editor who is contact).
+    """
+    attachment = await controller.get_attachment_with_content(task_id, attachment_id)
+    is_owner = attachment.owner_id == user.member_id
+    if not is_owner:
+        await _check_can_update(
+            task_id, contact_id=user.member_id, user=user, controller=controller
+        )
+    await controller.delete_attachment(task_id, attachment_id, user)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 def _check_can_manage_permissions(user: User) -> None:
     if not user.helpers_app_admin:
         msg = "Forbidden"
         raise create_http_error_403(msg)
+
+
+async def _verify_task_accessible(
+    task_id: int, user: User, controller: HelpersController
+) -> None:
+    """Verify the task exists and the user can view it."""
+    await controller.get_task_by_id(task_id, published=_published(user))
 
 
 def _published(user: User) -> bool | None:

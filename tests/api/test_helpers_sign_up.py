@@ -1,5 +1,3 @@
-"""Helpers sign-up API tests."""
-
 from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
@@ -183,7 +181,6 @@ def test_sign_up_as_helper_fails_if_limit_reached() -> None:
 
 
 def test_sign_up_as_helper_surveillance_limit_first_is_ok() -> None:
-    """First surveillance helper sign-up (before cutoff) should succeed."""
     task = create_surveillance_shift(client)
     FakeAuth.set_member(member_id=200)
 
@@ -201,10 +198,6 @@ def test_sign_up_as_helper_surveillance_limit_first_is_ok() -> None:
 
 
 def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
-    """Second surveillance helper sign-up (before cutoff) should be blocked.
-
-    Regardless of task date.
-    """
     task1 = create_surveillance_shift(client)
     task2 = create_surveillance_shift(
         client,
@@ -233,7 +226,6 @@ def test_sign_up_as_helper_surveillance_limit_second_blocked() -> None:
 
 
 def test_sign_up_as_helper_surveillance_limit_allowed_after_cutoff() -> None:
-    """After the cutoff date, multiple surveillance sign-ups should be allowed."""
     task1 = create_surveillance_shift(
         client,
         starts_at=f"{_current_july}T10:00:00",
@@ -265,7 +257,6 @@ def test_sign_up_as_helper_surveillance_limit_allowed_after_cutoff() -> None:
 
 
 def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() -> None:
-    """Surveillance limit should not block signing up for maintenance tasks."""
     surveillance_task = create_surveillance_shift(client)
     maintenance_task = create_shift_task(client)
 
@@ -291,10 +282,6 @@ def test_sign_up_helper_surveillance_limit_does_not_block_maintenance() -> None:
 
 
 def test_sign_up_as_helper_surveillance_different_members() -> None:
-    """Different members should each be able to sign up for the same surveillance task.
-
-    Verifies the limit is per-member, not global.
-    """
     task = create_surveillance_shift(client)
 
     with patch(f"{_HELPERS_MODULE}.get_now", return_value=_BEFORE_CUTOFF):
@@ -319,7 +306,6 @@ def test_sign_up_as_helper_surveillance_different_members() -> None:
 
 
 def test_sign_up_as_captain_surveillance_limit_not_restricted() -> None:
-    """Captains (drivers) are not subject to the surveillance sign-up limit."""
     task1 = create_surveillance_shift(client)
     task2 = create_surveillance_shift(client)
 
@@ -346,7 +332,6 @@ def test_sign_up_as_captain_surveillance_limit_not_restricted() -> None:
 
 
 def test_sign_up_as_helper_surveillance_limit_previous_year_does_not_count() -> None:
-    """Previous-year sign-ups should not count toward current year limit."""
     member_id = 207
     with DatabaseContextHolder.context.session() as session:
         prev_year_task = HelperTaskEntity(
@@ -411,7 +396,6 @@ def test_sign_up_as_captain() -> None:
 
 
 def test_sign_up_as_captain_surveillance_with_licence() -> None:
-    """Member with motor boat licence (id=9) can captain a surveillance task."""
     task = create_surveillance_shift(client)
     FakeAuth.set_member(member_id=4)  # member 4 has active licence 9
 
@@ -430,7 +414,6 @@ def test_sign_up_as_captain_surveillance_with_licence() -> None:
 
 
 def test_sign_up_as_captain_no_licence_required() -> None:
-    """Task without licence requirement should allow any member as captain."""
     task = create_shift_task(client, captain_required_licence_info_id=None)
     FakeAuth.set_member()
 
@@ -525,7 +508,6 @@ def test_sign_up_as_captain_fails_if_already_has_captain() -> None:
 
 
 def test_sign_up_as_captain_fails_without_required_licence() -> None:
-    """Member without motor boat licence cannot captain a surveillance task."""
     task = create_surveillance_shift(client)
     FakeAuth.set_member(member_id=100)  # member 100 does NOT have licence 9
 

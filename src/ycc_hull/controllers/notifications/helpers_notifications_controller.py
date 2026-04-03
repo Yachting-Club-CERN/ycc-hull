@@ -409,6 +409,60 @@ from {task.contact.full_name}.</p>
         async with SmtpConnection() as smtp:
             await smtp.send_message(message)
 
+    async def on_attachment_upload(
+        self, task: HelperTaskDto, filename: str, user: User
+    ) -> None:
+        """Notify all participants about a new attachment."""
+        if not CONFIG.emails_enabled(self._logger):
+            return
+
+        message = (
+            _task_notification_email_to_all_participants(task, user)
+            .content(
+                f"""
+{_DEAR_SAILORS}
+
+<p>{user.full_name} has added an attachment to this task:
+<strong>{filename}</strong> 📸</p>
+
+{format_helper_task(task)}
+
+{_SIGNATURE}
+"""
+            )
+            .build()
+        )
+
+        async with SmtpConnection() as smtp:
+            await smtp.send_message(message)
+
+    async def on_attachment_delete(
+        self, task: HelperTaskDto, filename: str, user: User
+    ) -> None:
+        """Notify all participants about a deleted attachment."""
+        if not CONFIG.emails_enabled(self._logger):
+            return
+
+        message = (
+            _task_notification_email_to_all_participants(task, user)
+            .content(
+                f"""
+{_DEAR_SAILORS}
+
+<p>{user.full_name} has removed an attachment from this task:
+<strong>{filename}</strong></p>
+
+{format_helper_task(task)}
+
+{_SIGNATURE}
+"""
+            )
+            .build()
+        )
+
+        async with SmtpConnection() as smtp:
+            await smtp.send_message(message)
+
     async def send_reminders(
         self,
         upcoming_tasks: list[HelperTaskDto],

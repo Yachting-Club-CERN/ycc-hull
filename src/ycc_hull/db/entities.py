@@ -81,6 +81,26 @@ class AuditLogEntryEntity(BaseEntity):
     data: Mapped[str | None] = mapped_column(UnicodeText)
 
 
+class AttachmentEntity(BaseEntity):
+    """Represents a file attachment."""
+
+    __tablename__ = "attachment"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(VARCHAR(200))
+    description: Mapped[str | None] = mapped_column(VARCHAR(200))
+    content: Mapped[bytes] = mapped_column(BLOB)
+    mime_type: Mapped[str] = mapped_column(VARCHAR(100))
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
+    created: Mapped[datetime] = mapped_column(DateTime)
+    thumbnail: Mapped[bytes | None] = mapped_column(BLOB)
+    ref_id: Mapped[int | None] = mapped_column(Integer)
+    ref_class_id: Mapped[int | None] = mapped_column(Integer)
+
+    owner: Mapped["MemberEntity"] = relationship(foreign_keys=owner_id, lazy="joined")
+
+
 class BoatEntity(BaseEntity):
     """Represents a boat."""
 

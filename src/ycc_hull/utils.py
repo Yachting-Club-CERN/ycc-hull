@@ -1,5 +1,7 @@
 """General utilities."""
 
+import re
+import unicodedata
 from datetime import datetime
 from typing import Any, TypedDict
 from zoneinfo import ZoneInfo
@@ -7,7 +9,7 @@ from zoneinfo import ZoneInfo
 import humps
 from pydantic import BaseModel
 
-from ycc_hull.constants import TIME_ZONE_ID
+from ycc_hull.constants import ATTACHMENT_ALLOWED_EXTENSIONS_TO_MIME_TYPES, TIME_ZONE_ID
 
 TIME_ZONE = ZoneInfo(TIME_ZONE_ID)
 
@@ -60,6 +62,90 @@ def camel_case_to_words(string: str) -> str:
     return (
         humps.decamelize(string.replace(" ", "_")).replace("_", " ").replace(".", " ")
     )
+
+
+_STORAGE_FILENAME_MAX_LENGTH = 50
+_STORAGE_FILENAME_MULTI_SEPARATORS = re.compile(r"([_.-])\1+")
+_STORAGE_FILENAME_SAFE_CHARS = re.compile(r"[^A-Za-z0-9._-]")
+# Characters that NFKD doesn't decompose but have obvious ASCII equivalents
+_STORAGE_FILENAME_PRE_NFKD: dict[int, str] = {
+    ord("ß"): "ss",
+    ord("æ"): "ae",
+    ord("Æ"): "Ae",
+    ord("ø"): "o",
+    ord("Ø"): "O",
+    ord("đ"): "d",
+    ord("Đ"): "D",
+    ord("ł"): "l",
+    ord("Ł"): "L",
+    ord("þ"): "th",
+    ord("Þ"): "Th",
+}
+
+
+def sanitise_filename(original: str) -> str:
+    """Convert a filename for storage.
+
+    Handles abominations too.
+    """
+    remaining = _clean_string_for_filename(original)
+    last_dot = _clean_string_for_filename(original).rfind(".")
+    if last_dot >= 0:
+        stem = remaining[:last_dot]
+        ext = remaining[last_dot:].strip()
+        if ext == ".":
+            ext = ""
+    else:
+        stem = remaining
+        ext = ""
+
+    # Handle .tar.XYZ compound extensions
+    if stem.endswith(".tar"):
+        stem = stem[:-4]
+        ext = ".tar" + ext
+
+    stem = stem.strip("._-")
+
+    if not stem:
+        stem = "file"
+    # Truncate stem to fit within max length: stem + ext
+    overhead = len(ext)
+    max_stem = _STORAGE_FILENAME_MAX_LENGTH - overhead
+    if len(stem) > max_stem:
+        stem = stem[:max_stem].rstrip("_")
+
+    return f"{stem}{ext}"
+
+
+def _clean_string_for_filename(original: str) -> str:
+    cleaned = original.strip().replace("\\", "/")
+
+    last_slash = cleaned.rfind("/")
+    if last_slash >= 0:
+        cleaned = cleaned[last_slash + 1 :]
+
+    cleaned = cleaned.translate(_STORAGE_FILENAME_PRE_NFKD)
+    cleaned = unicodedata.normalize("NFKD", cleaned)
+    cleaned = "".join(c for c in cleaned if not unicodedata.combining(c))
+    cleaned = cleaned.lower()
+    cleaned = cleaned.replace(" ", "_")
+    cleaned = _STORAGE_FILENAME_SAFE_CHARS.sub("", cleaned)
+    cleaned = _STORAGE_FILENAME_MULTI_SEPARATORS.sub(r"\1", cleaned)
+    return cleaned.strip("_")
+
+
+def resolve_attachment_mime_type(filename: str) -> str:
+    """Resolve the MIME type for an attachment from its filename extension.
+
+    Raises `ValueError` if the extension is not recognised.
+    """
+    lower = filename.lower()
+    for ext, mime_type in ATTACHMENT_ALLOWED_EXTENSIONS_TO_MIME_TYPES.items():
+        if lower.endswith(ext):
+            return mime_type
+
+    msg = f"Unsupported attachment file type: {filename}"
+    raise ValueError(msg)
 
 
 class DiffEntry(TypedDict):

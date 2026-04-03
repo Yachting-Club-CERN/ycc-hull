@@ -1,5 +1,3 @@
-"""Tests for the utils.camel_case_to_words."""
-
 import pytest
 
 from ycc_hull.utils import camel_case_to_words

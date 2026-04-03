@@ -1,5 +1,3 @@
-"""Helpers API tests - task actions (captain/helper, mark-as-done, validate)."""
-
 from tests.api.conftest import client
 from tests.api.helpers_test_utils import (
     ANY,

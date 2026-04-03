@@ -1,5 +1,3 @@
-"""Notifications format utils test."""
-
 # ruff: noqa: DTZ001
 
 from datetime import datetime

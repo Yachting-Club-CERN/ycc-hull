@@ -1,5 +1,3 @@
-"""Base DTO tests."""
-
 import pytest
 
 from ycc_hull.models.base import (

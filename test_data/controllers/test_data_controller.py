@@ -25,6 +25,7 @@ from test_data.generator_config import (
 )
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.db.entities import (
+    AttachmentEntity,
     AuditLogEntryEntity,
     BaseEntity,
     BoatEntity,
@@ -337,19 +338,21 @@ class TestDataController(BaseController):
         """Clear all test data from the database."""
         log: list[str] = []
         classes = (
+            # Attachments
+            AttachmentEntity,
             # Helpers
             HelpersAppPermissionEntity,
             HelperTaskHelperEntity,
             HelperTaskEntity,
             HelperTaskCategoryEntity,
-            # Licences,
+            # Licences
             LicenceEntity,
             # Members
             EntranceFeeRecordEntity,
             FeeRecordEntity,
             UserEntity,
             MemberEntity,
-            # Licence infos,
+            # Licence infos
             LicenceInfoEntity,
             # Boats
             BoatEntity,

@@ -47,11 +47,16 @@ SURVEILLANCE_SIGN_UP_LIMIT_MONTH = 5
 SURVEILLANCE_SIGN_UP_LIMIT_DAY = 1
 SURVEILLANCE_SIGN_UP_LIMIT_STR = "1 May"
 
-ATTACHMENT_REF_CLASS_ID_DESCRIPTION = 1000
-ATTACHMENT_REF_CLASS_ID_PROGRESS = 1001
-ATTACHMENT_REF_CLASS_ID_COMPLETION = 1002
-
+ATTACHMENT_REF_CLASS_ID = 1968
 ATTACHMENT_MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024
-ATTACHMENT_ALLOWED_EXTENSIONS = frozenset(
-    {"avif", "gif", "heic", "heif", "jpeg", "jpg", "png", "webp"}
-)
+# Only these are supported - do not rely on OS specific MIME type databases
+ATTACHMENT_ALLOWED_EXTENSIONS_TO_MIME_TYPES: dict[str, str] = {
+    ".avif": "image/avif",
+    ".gif": "image/gif",
+    ".heic": "image/heic",
+    ".heif": "image/heif",
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".webp": "image/webp",
+}

@@ -1,5 +1,3 @@
-"""Shared mock factories for tests."""
-
 from collections.abc import Generator
 from contextlib import contextmanager
 from datetime import datetime
@@ -7,7 +5,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 
 def make_mock_smtp() -> MagicMock:
-    """Create a mock SmtpConnection that captures sent EmailMessage objects."""
     mock_smtp = MagicMock()
     mock_smtp.send_message = AsyncMock()
     mock_smtp.__aenter__ = AsyncMock(return_value=mock_smtp)
@@ -23,7 +20,6 @@ def make_mock_config(
     base_url: str = "https://app.ycc.test",
     content_header: str | None = None,
 ) -> MagicMock:
-    """Create a mock CONFIG object for notification tests."""
     cfg = MagicMock()
     cfg.emails_enabled.return_value = emails_enabled
     if emails_enabled:
@@ -54,7 +50,6 @@ def _make_notifications_mocks(
     *,
     emails_enabled: bool = True,
 ) -> tuple[MagicMock, MagicMock, AsyncMock]:
-    """Create the (config, smtp_class, send_message) triple for notification tests."""
     cfg = make_mock_config(emails_enabled=emails_enabled)
     smtp_instance = make_mock_smtp()
     send = smtp_instance.send_message
@@ -69,7 +64,7 @@ def patch_notifications(
 ) -> Generator[AsyncMock, None, None]:
     """Patch CONFIG and SmtpConnection for notification tests.
 
-    Yields the ``send_message`` AsyncMock for assertions.
+    Yields the `send_message` AsyncMock for assertions.
     """
     cfg, smtp_class, send = _make_notifications_mocks(emails_enabled=emails_enabled)
     with patch(_NOTIFICATIONS_CONFIG, cfg), patch(_NOTIFICATIONS_SMTP, smtp_class):
@@ -77,12 +72,12 @@ def patch_notifications(
 
 
 @contextmanager
-def patch_notifications_with_sleep() -> Generator[
-    tuple[AsyncMock, AsyncMock], None, None
-]:
+def patch_notifications_with_sleep() -> (
+    Generator[tuple[AsyncMock, AsyncMock], None, None]
+):
     """Patch CONFIG, SmtpConnection, and asyncio.sleep for reminder tests.
 
-    Yields ``(send_message, mock_sleep)`` for assertions.
+    Yields `(send_message, mock_sleep)` for assertions.
     """
     with (
         patch_notifications() as send,
@@ -104,7 +99,7 @@ def patch_reminders(
     Patches CONFIG in helpers_controller, notifications_controller, and
     email_message_builder, plus get_now, SmtpConnection, and asyncio.sleep.
 
-    Yields the mock SMTP instance (use ``smtp.send_message.call_args_list` to
+    Yields the mock SMTP instance (use `smtp.send_message.call_args_list` to
     inspect sent emails).
     """
     cfg = make_mock_config(

@@ -1,5 +1,3 @@
-"""Members API tests."""
-
 from test_data.generator_config import MEMBER_COUNT
 from tests.api.conftest import client
 from tests.main_test import FakeAuth
