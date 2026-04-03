@@ -300,7 +300,11 @@ async def helper_task_attachment_download(
     return Response(
         content=attachment.content,
         media_type=attachment.mime_type,
-        headers={"Content-Disposition": f'inline; filename="{attachment.name}"'},
+        headers={
+            # inline so the frontend can render images directly in the browser
+            "Content-Disposition": f'inline; filename="{attachment.name}"',
+            "X-Content-Type-Options": "nosniff",
+        },
     )
 
 
