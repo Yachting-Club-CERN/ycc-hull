@@ -21,7 +21,7 @@ from tests.api.helpers_test_utils import (
     verify_creation_audit_log_entry,
     verify_update_audit_log_entry,
 )
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.utils import get_now
 
 SHORT_DESCRIPTION = " The Club needs your help for this task! \n "

@@ -11,7 +11,7 @@ from tests.api.helpers_test_utils import (
     create_surveillance_shift,
     verify_sign_up_audit_log,
 )
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import HelperTaskEntity, HelperTaskHelperEntity
 from ycc_hull.utils import get_now

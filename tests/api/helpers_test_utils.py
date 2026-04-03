@@ -6,7 +6,7 @@ from typing import Any
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import AuditLogEntryEntity
 from ycc_hull.utils import get_now
@@ -452,15 +452,15 @@ def assert_task_json(  # noqa: PLR0913
         actual = data[key]
 
         if key in datetime_keys and isinstance(value, str) and isinstance(actual, str):
-            assert actual.startswith(
-                value
-            ), f"data[{key!r}]: {actual!r} does not start with {value!r}"
+            assert actual.startswith(value), (
+                f"data[{key!r}]: {actual!r} does not start with {value!r}"
+            )
         elif isinstance(value, dict) and isinstance(actual, dict):
             _assert_dict_subset(actual, value, path=f"data[{key!r}]")
         elif isinstance(value, list) and isinstance(actual, list):
-            assert len(actual) == len(
-                value
-            ), f"data[{key!r}]: expected {len(value)} items, got {len(actual)}"
+            assert len(actual) == len(value), (
+                f"data[{key!r}]: expected {len(value)} items, got {len(actual)}"
+            )
             for i, (act, exp) in enumerate(zip(actual, value, strict=True)):
                 if isinstance(exp, dict) and isinstance(act, dict):
                     _assert_dict_subset(act, exp, path=f"data[{key!r}][{i}]")

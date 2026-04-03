@@ -2,7 +2,7 @@ import pytest
 import pytest_asyncio
 from sqlalchemy import select
 
-from tests.main_test import init_test_database
+from tests.test_main import init_test_database
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import AuditLogEntryEntity
 

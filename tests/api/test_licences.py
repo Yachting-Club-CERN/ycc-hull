@@ -1,5 +1,5 @@
 from tests.api.conftest import client
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 
 
 def test_licence_infos_get() -> None:

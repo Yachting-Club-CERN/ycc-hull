@@ -6,8 +6,8 @@ from unittest.mock import MagicMock
 import pytest
 import pytest_asyncio
 
-from tests.main_test import app_test, init_test_database
 from tests.mock_utils import patch_reminders
+from tests.test_main import app_test, init_test_database
 from ycc_hull.app_controllers import get_controllers
 from ycc_hull.controllers.helpers_controller import HelpersController
 from ycc_hull.db.context import DatabaseContextHolder
@@ -124,12 +124,12 @@ def _find_contact_overdue_email(
 def _assert_email_not_mentioned(emails: list[EmailMessage], task_id: int) -> None:
     title = f"Test Task {task_id}"
     for email in emails:
-        assert title not in (
-            email["Subject"] or ""
-        ), f"Task {task_id} should not appear in subject: {email['Subject']}"
-        assert (
-            title not in email.get_content()
-        ), f"Task {task_id} should not appear in body"
+        assert title not in (email["Subject"] or ""), (
+            f"Task {task_id} should not appear in subject: {email['Subject']}"
+        )
+        assert title not in email.get_content(), (
+            f"Task {task_id} should not appear in body"
+        )
 
 
 # ==============================================================================

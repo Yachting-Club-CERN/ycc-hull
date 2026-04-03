@@ -13,7 +13,7 @@ from tests.api.helpers_test_utils import (
     sign_up_captain,
     sign_up_helper,
 )
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 
 # ==============================================================================
 # Set Captain / Remove Captain

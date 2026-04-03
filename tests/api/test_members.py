@@ -1,6 +1,6 @@
 from test_data.generator_config import MEMBER_COUNT
 from tests.api.conftest import client
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.utils import get_now
 
 CURRENT_YEAR = get_now().year

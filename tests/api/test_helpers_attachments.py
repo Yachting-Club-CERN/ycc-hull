@@ -6,7 +6,7 @@ from sqlalchemy import inspect, select
 
 from tests.api.conftest import client
 from tests.api.helpers_test_utils import MEMBER_PUBLIC_INFO_KEYS, create_shift_task
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import AttachmentEntity
 from ycc_hull.utils import get_now

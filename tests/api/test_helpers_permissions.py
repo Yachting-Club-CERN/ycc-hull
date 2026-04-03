@@ -2,7 +2,7 @@ import json
 
 from tests.api.conftest import client
 from tests.api.helpers_test_utils import get_last_audit_log_entry
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 
 # ==============================================================================
 # Authorization - only admin can manage permissions

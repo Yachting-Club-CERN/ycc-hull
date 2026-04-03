@@ -2,7 +2,7 @@ import pytest
 import pytest_asyncio
 from fastapi.testclient import TestClient
 
-from tests.main_test import app_test, init_test_database
+from tests.test_main import app_test, init_test_database
 from ycc_hull.api.audit_log import api_audit_log
 from ycc_hull.api.boats import api_boats
 from ycc_hull.api.helpers import api_helpers
