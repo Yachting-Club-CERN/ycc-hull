@@ -1127,19 +1127,17 @@ class HelpersController(BaseController):
     async def get_attachment_owner_id(self, task_id: int, attachment_id: int) -> int:
         """Return the owner_id of an attachment (without loading BLOBs)."""
         with self.database_context.session() as session:
-            entity = session.scalars(
-                select(AttachmentEntity)
-                .options(*_ATTACHMENT_WITHOUT_BLOBS)
-                .where(
+            owner_id = session.execute(
+                select(AttachmentEntity.owner_id).where(
                     AttachmentEntity.id == attachment_id,
                     AttachmentEntity.ref_id == task_id,
                     AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
                 )
-            ).first()
-            if entity is None:
+            ).scalar_one_or_none()
+            if owner_id is None:
                 msg = "Attachment not found"
                 raise ControllerNotFoundError(msg)
-            return entity.owner_id
+            return owner_id
 
     async def upload_attachment(
         self,
@@ -1215,7 +1213,7 @@ class HelpersController(BaseController):
             )
             session.add(entity)
             session.commit()
-            session.refresh(entity)
+            session.refresh(entity, ["id"])
 
             self._audit_log(
                 session,
@@ -1254,13 +1252,13 @@ class HelpersController(BaseController):
                     defer(AttachmentEntity.content),
                     defer(AttachmentEntity.thumbnail),
                 )
-                .where(AttachmentEntity.id == attachment_id)
+                .where(
+                    AttachmentEntity.id == attachment_id,
+                    AttachmentEntity.ref_id == task_id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
             ).first()
-            if (
-                entity is None
-                or entity.ref_id != task_id
-                or entity.ref_class_id != ATTACHMENT_REF_CLASS_ID
-            ):
+            if entity is None:
                 msg = "Attachment not found"
                 raise ControllerNotFoundError(msg)
 
