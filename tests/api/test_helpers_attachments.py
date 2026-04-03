@@ -105,6 +105,35 @@ def test_upload_rejects_file_too_large() -> None:
     assert "too large" in detail.lower()
 
 
+def test_upload_rejects_when_task_has_max_attachments() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client)
+    task_id = task["id"]
+
+    # Patch the limit to 2 so we do not need 20 uploads
+    target = "ycc_hull.controllers.helpers_controller.ATTACHMENT_MAX_PER_TASK"
+    with patch(target, 2):
+        assert _upload(task_id, filename="a.png").status_code == 200
+        assert _upload(task_id, filename="b.png").status_code == 200
+
+        response = _upload(task_id, filename="c.png")
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Task already has 2 attachments (maximum)"
+
+
+def test_upload_succeeds_just_below_max_attachments() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client)
+    task_id = task["id"]
+
+    target = "ycc_hull.controllers.helpers_controller.ATTACHMENT_MAX_PER_TASK"
+    with patch(target, 2):
+        assert _upload(task_id, filename="a.png").status_code == 200
+        response = _upload(task_id, filename="b.png")
+    assert response.status_code == 200
+    assert response.json()["name"] == "b.png"
+
+
 def test_upload_rejects_description_too_long() -> None:
     FakeAuth.set_helpers_app_admin()
     task = create_shift_task(client)

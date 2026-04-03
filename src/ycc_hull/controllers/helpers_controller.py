@@ -1158,6 +1158,19 @@ class HelpersController(BaseController):
             msg = f"File type not allowed: {filename}"
             raise ControllerBadRequestError(msg) from exc
 
+        with self.database_context.session() as session:
+            count = session.scalar(
+                select(func.count())
+                .select_from(AttachmentEntity)
+                .where(
+                    AttachmentEntity.ref_id == task_id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+            )
+        if count >= ATTACHMENT_MAX_PER_TASK:
+            msg = f"Task already has {ATTACHMENT_MAX_PER_TASK} attachments (maximum)"
+            raise ControllerBadRequestError(msg)
+
         if description and len(description) > ATTACHMENT_MAX_DESCRIPTION_LENGTH:
             msg = (
                 "Description too long "
