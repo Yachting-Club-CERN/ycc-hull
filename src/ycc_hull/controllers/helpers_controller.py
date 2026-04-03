@@ -1220,7 +1220,7 @@ class HelpersController(BaseController):
             self._audit_log(
                 session,
                 user,
-                f"Helpers/Tasks/Attachments/Upload/{task_id}",
+                f"Helpers/Tasks/UploadAttachment/{task_id}",
                 {
                     "attachment_id": entity.id,
                     "filename": filename,
@@ -1279,7 +1279,7 @@ class HelpersController(BaseController):
             self._audit_log(
                 session,
                 user,
-                f"Helpers/Tasks/Attachments/Delete/{task_id}",
+                f"Helpers/Tasks/DeleteAttachment/{task_id}",
                 audit_data,
             )
 
