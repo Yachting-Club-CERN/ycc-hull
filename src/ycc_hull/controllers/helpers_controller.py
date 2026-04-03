@@ -1166,8 +1166,8 @@ class HelpersController(BaseController):
             )
             raise ControllerBadRequestError(msg)
 
-        # Read in chunks to reject oversized uploads without buffering the entire file
-        # into memory first
+        # Read in chunks so we can reject oversized uploads early, before the entire
+        # file has been received
         content = bytearray()
         while chunk := await file.read(ATTACHMENT_UPLOAD_BUFFER_CHUNK_SIZE):
             content.extend(chunk)
@@ -1180,19 +1180,21 @@ class HelpersController(BaseController):
             user=user,
             details={"task_id": task_id, "filename": filename},
         ) as session:
-            # Lock existing attachment rows for this task so concurrent uploads
-            # serialise on the count check, preventing the limit from being exceeded.
-            # Note: Oracle doesn't allow FOR UPDATE with aggregate functions (ORA-01786)
-            # so we lock the rows first, then count them.
-            locked_rows = session.execute(
-                select(AttachmentEntity.id)
-                .where(
+            # Lock the parent task row so concurrent uploads for the same task serialise
+            # on this lock, preventing the limit from being exceeded.
+            # We lock the task row (which always exists) rather than attachment rows,
+            # because FOR UPDATE on an empty result set acquires no locks.
+            session.execute(
+                select(HelperTaskEntity.id)
+                .where(HelperTaskEntity.id == task_id)
+                .with_for_update()
+            ).one()
+            count = session.execute(
+                select(func.count()).where(
                     AttachmentEntity.ref_id == task_id,
                     AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
                 )
-                .with_for_update()
-            ).all()
-            count = len(locked_rows)
+            ).scalar_one()
             if count >= ATTACHMENT_MAX_PER_TASK:
                 msg = (
                     f"Task already has {ATTACHMENT_MAX_PER_TASK} attachments (maximum)"
