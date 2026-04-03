@@ -1179,17 +1179,14 @@ class HelpersController(BaseController):
             )
             raise ControllerBadRequestError(msg)
 
-        # Read in chunks to reject oversized uploads without buffering
-        # the entire file into memory first.
-        chunks: list[bytes] = []
-        size = 0
+        # Read in chunks to reject oversized uploads without buffering the entire file
+        # into memory first
+        content = bytearray()
         while chunk := await file.read(ATTACHMENT_UPLOAD_BUFFER_CHUNK_SIZE):
-            size += len(chunk)
-            if size > ATTACHMENT_MAX_FILE_SIZE_BYTES:
+            content += chunk
+            if len(content) > ATTACHMENT_MAX_FILE_SIZE_BYTES:
                 msg = f"File too large (max {ATTACHMENT_MAX_FILE_SIZE_BYTES} bytes)"
                 raise ControllerBadRequestError(msg)
-            chunks.append(chunk)
-        content = b"".join(chunks)
 
         with self.database_action(
             action="Helpers / Upload Attachment",

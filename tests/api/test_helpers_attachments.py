@@ -455,3 +455,20 @@ def test_delete_wrong_ref_class_id() -> None:
     # Delete should return 404
     response = client.delete(f"/api/v1/helpers/tasks/{task_id}/attachments/{bogus_id}")
     assert response.status_code == 404
+
+
+def test_delete_blocked_when_task_not_accessible() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client, published=False)
+    task_id = task["id"]
+
+    upload_response = _upload(task_id, filename="hidden.png")
+    assert upload_response.status_code == 200
+    attachment_id = upload_response.json()["id"]
+
+    # Regular member cannot access the unpublished task
+    FakeAuth.set_member(member_id=100)
+    response = client.delete(
+        f"/api/v1/helpers/tasks/{task_id}/attachments/{attachment_id}"
+    )
+    assert response.status_code == 404

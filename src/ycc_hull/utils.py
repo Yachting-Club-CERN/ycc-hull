@@ -108,11 +108,15 @@ def sanitise_filename(original: str) -> str:
 
     if not stem:
         stem = "file"
-    # Truncate stem to fit within max length: stem + ext
-    overhead = len(ext)
-    max_stem = _STORAGE_FILENAME_MAX_LENGTH - overhead
-    if len(stem) > max_stem:
-        stem = stem[:max_stem].rstrip("_")
+
+    limit = _STORAGE_FILENAME_MAX_LENGTH
+    if len(stem) + len(ext) > limit:
+        max_stem = limit - len(ext)
+        if max_stem >= 1:
+            stem = stem[:max_stem].rstrip("_") or stem[:1]
+        else:
+            ext = ext[: limit - 1]
+            stem = stem[:1]
 
     return f"{stem}{ext}"
 

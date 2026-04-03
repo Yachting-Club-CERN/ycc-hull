@@ -329,6 +329,7 @@ async def helper_task_attachment_delete(
     Allowed for the uploader (owner) of the attachment, or anyone with task
     edit permissions (admin, editor who is contact).
     """
+    await _verify_task_accessible(task_id, user, controller)
     owner_id = await controller.get_attachment_owner_id(task_id, attachment_id)
     if owner_id != user.member_id:
         await _check_can_update_task(

@@ -111,7 +111,36 @@ from ycc_hull.utils import sanitise_filename
         (r"C:\Users\docs\file-x.jpg", "file-x.jpg"),
         ("path/to/file-x.jpg", "file-x.jpg"),
         ("test\x00fi\x01\x02\x03le.j\x00p\x01\x02\x03g", "testfile.jpg"),
+        # Extension longer than max length - truncated, stem keeps 1 char
+        ("x." + "a" * 60, "x." + "a" * 48),
+        # Extension exactly at max length - stem gets 1 char
+        ("hello." + "a" * 49, "h." + "a" * 48),
+        # Long chained extensions within budget - stem truncated normally
+        ("report.p7m.p7m.p7m.pdf", "report.p7m.p7m.p7m.pdf"),
+        # Long chained extensions exceeding budget - stem (with inner dots) truncated
+        ("a" * 50 + ".p7m.p7m.p7m.pdf", "a" * 46 + ".pdf"),
+        # No room for stem at all - ext truncated to limit-1
+        ("ab." + "z" * 100, "a." + "z" * 48),
     ],
 )
 def test_sanitise_filename(original: str, expected: str) -> None:
     assert sanitise_filename(original) == expected
+
+
+def test_sanitise_filename_never_exceeds_max_length() -> None:
+    from ycc_hull.utils import _STORAGE_FILENAME_MAX_LENGTH
+
+    cases = [
+        "x." + "a" * 200,
+        "." + "b" * 200,
+        "a" * 200 + "." + "c" * 200,
+        "hello." + "p7m." * 30 + "pdf",
+        "a" * 200 + ".tar." + "z" * 200,
+    ]
+    for original in cases:
+        result = sanitise_filename(original)
+        assert len(result) <= _STORAGE_FILENAME_MAX_LENGTH, (
+            f"sanitise_filename({original!r}) = {result!r} "
+            f"(len {len(result)} > {_STORAGE_FILENAME_MAX_LENGTH})"
+        )
+        assert len(result) >= 1
