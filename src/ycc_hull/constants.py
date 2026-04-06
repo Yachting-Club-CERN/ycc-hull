@@ -61,6 +61,8 @@ ATTACHMENT_REF_CLASS_ID = 1968
 
 HEIC_HEIF_EXTENSIONS: frozenset[str] = frozenset({".heic", ".heif"})
 TRANSCODE_JPEG_QUALITY = 85
+# Hard cap on simultaneous transcodes (CERN PaaS resource limits...)
+TRANSCODE_MAX_CONCURRENCY = 5
 # Decompression bomb defense
 TRANSCODE_MAX_DECODED_PIXELS = 100 * 1000 * 1000
 TRANSCODE_MAX_DIMENSION = 2000

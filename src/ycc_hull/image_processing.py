@@ -1,5 +1,6 @@
 """Server-side image processing for uploaded attachments."""
 
+import asyncio
 from io import BytesIO
 
 from PIL import Image, ImageOps
@@ -7,6 +8,7 @@ from pillow_heif import register_heif_opener
 
 from ycc_hull.constants import (
     TRANSCODE_JPEG_QUALITY,
+    TRANSCODE_MAX_CONCURRENCY,
     TRANSCODE_MAX_DECODED_PIXELS,
     TRANSCODE_MAX_DIMENSION,
 )
@@ -17,9 +19,19 @@ register_heif_opener()
 # Defend against decompression bombs
 Image.MAX_IMAGE_PIXELS = TRANSCODE_MAX_DECODED_PIXELS
 
+# Hard cap on simultaneous transcodes. Excess requests await this semaphore
+# (FIFO queue, no timeout) so memory and CPU stay bounded under bursty load
+_transcode_semaphore = asyncio.Semaphore(TRANSCODE_MAX_CONCURRENCY)
 
-def convert_heic_to_jpeg(data: bytes) -> bytes:
-    """Decode HEIC/HEIF bytes and re-encode as a stripped, downscaled JPEG."""
+
+async def convert_heic_to_jpeg(data: bytes) -> bytes:
+    """Convert HEIC/HEIF bytes to JPEG bytes."""
+    async with _transcode_semaphore:
+        return await asyncio.to_thread(_convert_heic_to_jpeg, data)
+
+
+def _convert_heic_to_jpeg(data: bytes) -> bytes:
+    """Convert HEIC/HEIF bytes to JPEG bytes."""
     try:
         with Image.open(BytesIO(data)) as img:
             oriented = ImageOps.exif_transpose(img) or img

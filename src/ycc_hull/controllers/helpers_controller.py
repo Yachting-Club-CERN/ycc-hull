@@ -1307,7 +1307,7 @@ class HelpersController(BaseController):
         )
 
         try:
-            return convert_heic_to_jpeg(bytes(content))
+            return await convert_heic_to_jpeg(bytes(content))
         except ValueError as exc:
             msg = f"Invalid HEIC/HEIF image: {file.filename}"
             raise ControllerBadRequestError(msg) from exc
