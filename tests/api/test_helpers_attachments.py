@@ -201,6 +201,26 @@ def test_upload_webp_extension() -> None:
     assert data["mimeType"] == "image/webp"
 
 
+def test_upload_rejects_heic() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client)
+    task_id = task["id"]
+
+    response = _upload(task_id, filename="photo.heic", content=b"\x00" * 32)
+    assert response.status_code == 400
+    assert response.json()["detail"] == "File type not allowed: photo.heic"
+
+
+def test_upload_rejects_heif() -> None:
+    FakeAuth.set_helpers_app_admin()
+    task = create_shift_task(client)
+    task_id = task["id"]
+
+    response = _upload(task_id, filename="photo.heif", content=b"\x00" * 32)
+    assert response.status_code == 400
+    assert response.json()["detail"] == "File type not allowed: photo.heif"
+
+
 # ==============================================================================
 # List tests
 # ==============================================================================

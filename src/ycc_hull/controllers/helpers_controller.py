@@ -13,7 +13,7 @@ from ycc_hull.constants import (
     ATTACHMENT_MAX_FILE_SIZE_BYTES,
     ATTACHMENT_MAX_PER_TASK,
     ATTACHMENT_REF_CLASS_ID,
-    ATTACHMENT_UPLOAD_BUFFER_CHUNK_SIZE,
+    HEIC_HEIF_EXTENSIONS,
     SURVEILLANCE_SIGN_UP_LIMIT_DAY,
     SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
     SURVEILLANCE_SIGN_UP_LIMIT_STR,
@@ -37,6 +37,7 @@ from ycc_hull.db.entities import (
     LicenceEntity,
     MemberEntity,
 )
+from ycc_hull.image_processing import convert_heic_to_jpeg
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
     AttachmentMetadataDto,
@@ -1090,6 +1091,9 @@ class HelpersController(BaseController):
             msg = "Already signed up as helper"
             raise ControllerConflictError(msg)
 
+    def _starts_in_the_future(self, task: HelperTaskDto) -> bool:
+        return bool(task.starts_at and task.starts_at > get_now())
+
     async def find_attachments_for_task(
         self, task_id: int
     ) -> Sequence[AttachmentMetadataDto]:
@@ -1164,14 +1168,10 @@ class HelpersController(BaseController):
             )
             raise ControllerBadRequestError(msg)
 
-        # Read in chunks so we can reject oversized uploads early, before the entire
-        # file has been received
-        content = bytearray()
-        while chunk := await file.read(ATTACHMENT_UPLOAD_BUFFER_CHUNK_SIZE):
-            content.extend(chunk)
-            if len(content) > ATTACHMENT_MAX_FILE_SIZE_BYTES:
-                msg = f"File too large (max {ATTACHMENT_MAX_FILE_SIZE_BYTES} bytes)"
-                raise ControllerBadRequestError(msg)
+        content = await self._read_upload_with_size_limit(
+            file=file,
+            max_size_bytes=ATTACHMENT_MAX_FILE_SIZE_BYTES,
+        )
 
         with self.database_action(
             action="Helpers / Upload Attachment",
@@ -1286,5 +1286,28 @@ class HelpersController(BaseController):
             self._notifications.on_attachment_delete(task, deleted_filename, user)
         )
 
-    def _starts_in_the_future(self, task: HelperTaskDto) -> bool:
-        return bool(task.starts_at and task.starts_at > get_now())
+    async def transcode_image_to_jpeg(
+        self,
+        file: UploadFile,
+    ) -> bytes:
+        """Transcode an uploaded HEIC/HEIF image to JPEG bytes."""
+        if not file.filename:
+            msg = "Filename is required"
+            raise ControllerBadRequestError(msg)
+
+        filename = sanitise_filename(file.filename)
+        ext = filename[filename.rfind(".") :].lower() if "." in filename else ""
+        if ext not in HEIC_HEIF_EXTENSIONS:
+            msg = f"Only HEIC/HEIF files can be transcoded, not {file.filename}"
+            raise ControllerBadRequestError(msg)
+
+        content = await self._read_upload_with_size_limit(
+            file=file,
+            max_size_bytes=ATTACHMENT_MAX_FILE_SIZE_BYTES,
+        )
+
+        try:
+            return convert_heic_to_jpeg(bytes(content))
+        except ValueError as exc:
+            msg = f"Invalid HEIC/HEIF image: {file.filename}"
+            raise ControllerBadRequestError(msg) from exc
