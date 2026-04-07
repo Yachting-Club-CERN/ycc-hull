@@ -63,7 +63,7 @@ HEIC_HEIF_EXTENSIONS: frozenset[str] = frozenset({".heic", ".heif"})
 TRANSCODE_JPEG_QUALITY = 85
 # Hard cap on simultaneous transcodes (CERN PaaS resource limits...)
 TRANSCODE_MAX_CONCURRENCY = 5
-# Decompression bomb defense
+# Decompression bomb defence (the hard limit is the double of this value for PIL)
 TRANSCODE_MAX_DECODED_PIXELS = 100 * 1000 * 1000
 TRANSCODE_MAX_DIMENSION = 2000
 

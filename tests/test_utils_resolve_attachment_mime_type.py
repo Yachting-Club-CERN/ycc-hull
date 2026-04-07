@@ -28,7 +28,7 @@ def test_resolve_attachment_mime_type(filename: str, expected: str) -> None:
     [
         "animation.gif",
         "file.GIF",
-        # These are not supported widely yet
+        # These should be transcoded instead (no general browser support)
         "photo.avif",
         "PHOTO.AVIF",
         "photo.heic",
@@ -38,6 +38,9 @@ def test_resolve_attachment_mime_type(filename: str, expected: str) -> None:
         # Abominations
         ".hidden",
         "",
+        "photo. jpg",
+        "photo._jpg",
+        "photo.-jpg",
         "noextension",
         "document.pdf",
         "file.xyz123",

@@ -50,10 +50,7 @@ def _convert_heic_to_jpeg(data: bytes) -> bytes:
                 progressive=True,
             )
             return out.getvalue()
-    except (
-        Image.DecompressionBombError,
-        Image.DecompressionBombWarning,
-    ) as exc:
+    except Image.DecompressionBombError as exc:
         msg = "Image is too large to decode safely"
         raise ValueError(msg) from exc
     except Exception as exc:

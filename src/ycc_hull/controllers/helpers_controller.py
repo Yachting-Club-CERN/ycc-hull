@@ -101,9 +101,7 @@ class HelpersController(BaseController):
                 "Granted permission: %s, user: %s", permission, user.username
             )
 
-            self._audit_log(
-                session, user, "Helpers/Permissions/Grant", {"new": permission}
-            )
+            self._audit_log(user, "Helpers/Permissions/Grant", {"new": permission})
 
             return permission
 
@@ -130,7 +128,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Permissions/Update/{member_id}",
                 {
@@ -166,7 +163,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Permissions/Revoke/{member_id}",
                 {
@@ -244,7 +240,7 @@ class HelpersController(BaseController):
             task = await HelperTaskDto.create(task_entity)
             self._logger.info("Created task: %s, user: %s", task.id, user.username)
 
-            self._audit_log(session, user, "Helpers/Tasks/Create", {"new": task})
+            self._audit_log(user, "Helpers/Tasks/Create", {"new": task})
 
             return task
 
@@ -279,7 +275,6 @@ class HelpersController(BaseController):
             diff = deep_diff(original_task, updated_task)
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/Update/{task_id}",
                 {
@@ -398,7 +393,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/SetCaptain/{task_id}/Captain/{member_id}",
             )
@@ -440,7 +434,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/RemoveCaptain/{task_id}/Captain/{original_captain.id}",
             )
@@ -486,7 +479,6 @@ class HelpersController(BaseController):
                 user.username,
             )
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/AddHelper/{task_id}/Helper/{member_id}",
             )
@@ -538,7 +530,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/RemoveHelper/{task_id}/Helper/{member_id}",
             )
@@ -577,7 +568,7 @@ class HelpersController(BaseController):
                 user.username,
             )
 
-            self._audit_log(session, user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
+            self._audit_log(user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
             return updated_task
@@ -613,7 +604,7 @@ class HelpersController(BaseController):
                 user.username,
             )
 
-            self._audit_log(session, user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
+            self._audit_log(user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
             return updated_task
@@ -647,7 +638,7 @@ class HelpersController(BaseController):
                 "Marked task as done: %s, user: %s", updated_task.id, user.username
             )
 
-            self._audit_log(session, user, f"Helpers/Tasks/MarkAsDone/{task_id}")
+            self._audit_log(user, f"Helpers/Tasks/MarkAsDone/{task_id}")
             self._run_in_background(
                 self._notifications.on_mark_as_done(updated_task, user)
             )
@@ -692,7 +683,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/Validate/{task_id}",
             )
@@ -730,7 +720,7 @@ class HelpersController(BaseController):
 
         for task in validated_urgent_tasks:
             self._audit_log(
-                session, user, f"Helpers/Tasks/UnsetUrgentForValidatedTask/{task.id}"
+                user, f"Helpers/Tasks/UnsetUrgentForValidatedTask/{task.id}"
             )
 
     async def send_daily_reminders(self) -> None:
@@ -1182,11 +1172,14 @@ class HelpersController(BaseController):
             # on this lock, preventing the limit from being exceeded.
             # We lock the task row (which always exists) rather than attachment rows,
             # because FOR UPDATE on an empty result set acquires no locks.
-            session.execute(
+            locked = session.execute(
                 select(HelperTaskEntity.id)
                 .where(HelperTaskEntity.id == task_id)
                 .with_for_update()
-            ).one()
+            ).scalar_one_or_none()
+            if locked is None:
+                msg = "Task not found"
+                raise ControllerNotFoundError(msg)
             count = session.execute(
                 select(func.count()).where(
                     AttachmentEntity.ref_id == task_id,
@@ -1201,7 +1194,7 @@ class HelpersController(BaseController):
 
             entity = AttachmentEntity(
                 name=filename,
-                content=bytes(content),
+                content=content,
                 description=description,
                 mime_type=mime_type,
                 size_bytes=len(content),
@@ -1216,7 +1209,6 @@ class HelpersController(BaseController):
             session.refresh(entity, ["id"])
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/UploadAttachment/{task_id}",
                 {
@@ -1275,7 +1267,6 @@ class HelpersController(BaseController):
             session.commit()
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/DeleteAttachment/{task_id}",
                 audit_data,
@@ -1307,7 +1298,7 @@ class HelpersController(BaseController):
         )
 
         try:
-            return await convert_heic_to_jpeg(bytes(content))
+            return await convert_heic_to_jpeg(content)
         except ValueError as exc:
             msg = f"Invalid HEIC/HEIF image: {file.filename}"
             raise ControllerBadRequestError(msg) from exc

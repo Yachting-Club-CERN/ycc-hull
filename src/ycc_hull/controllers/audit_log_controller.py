@@ -72,6 +72,4 @@ class AuditLogController(BaseController):
                 request.cutoff_date,
                 user.username,
             )
-            self._audit_log(
-                session, user, f"AuditLog/DeleteEntriesBefore/{request.cutoff_date}"
-            )
+            self._audit_log(user, f"AuditLog/DeleteEntriesBefore/{request.cutoff_date}")

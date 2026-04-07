@@ -114,11 +114,12 @@ class BaseController(metaclass=ABCMeta):  # noqa: B024
             setattr(entity, field, value)
 
     def _audit_log(
-        self, session: Session, user: User, description: str, data: dict | None = None
+        self, user: User, description: str, data: dict | None = None
     ) -> None:
         async def wrapper() -> None:
-            session.add(create_audit_entry(user, description, data))
-            session.commit()
+            with self.database_context.session() as session:
+                session.add(create_audit_entry(user, description, data))
+                session.commit()
 
         self._run_in_background(wrapper())
 
@@ -138,7 +139,7 @@ class BaseController(metaclass=ABCMeta):  # noqa: B024
         *,
         file: UploadFile,
         max_size_bytes: int,
-    ) -> bytearray:
+    ) -> bytes:
         """Read an UploadFile in chunks, aborting early if it exceeds the limit."""
         content = bytearray()
         while chunk := await file.read(UPLOAD_BUFFER_CHUNK_SIZE):
@@ -146,4 +147,4 @@ class BaseController(metaclass=ABCMeta):  # noqa: B024
             if len(content) > max_size_bytes:
                 msg = f"File too large (max {max_size_bytes} bytes)"
                 raise ControllerBadRequestError(msg)
-        return content
+        return bytes(content)

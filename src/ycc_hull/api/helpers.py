@@ -21,7 +21,7 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskUpdateRequestDto,
     HelperTaskValidationRequestDto,
 )
-from ycc_hull.utils import get_now
+from ycc_hull.utils import get_now, sanitise_filename
 
 api_helpers = APIRouter(dependencies=[Depends(auth)])
 
@@ -302,7 +302,9 @@ async def helper_task_attachment_download(
         media_type=attachment.mime_type,
         headers={
             # inline so the frontend can render images directly in the browser
-            "Content-Disposition": f'inline; filename="{attachment.name}"',
+            "Content-Disposition": (
+                f'inline; filename="{sanitise_filename(attachment.name)}"'
+            ),
             "X-Content-Type-Options": "nosniff",
         },
     )
