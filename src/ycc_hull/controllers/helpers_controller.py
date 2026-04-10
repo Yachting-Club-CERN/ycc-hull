@@ -1112,7 +1112,7 @@ class HelpersController(BaseController):
     async def find_attachments_for_task(
         self, *, task_id: int, published: bool | None = None
     ) -> Sequence[AttachmentMetadataDto]:
-        """Return attachment metadata for a helper task (no BLOB content)."""
+        """Return attachments for a helper task (without content)."""
         # Check that the task is visible
         task = await self.get_task_by_id(task_id=task_id, published=published)
         return await self.database_context.query_all(
@@ -1157,7 +1157,7 @@ class HelpersController(BaseController):
     async def get_attachment_owner_id(
         self, *, task_id: int, attachment_id: int, published: bool | None = None
     ) -> int:
-        """Return the owner_id of an attachment (without loading BLOBs)."""
+        """Return the owner_id of an attachment."""
         with self.database_context.session() as session:
             # Check that the task is visible
             task = await self.get_task_by_id(
@@ -1185,7 +1185,7 @@ class HelpersController(BaseController):
         user: User,
         published: bool | None = None,
     ) -> AttachmentMetadataDto:
-        """Upload an attachment for a helper task."""
+        """Upload an attachment."""
         if not file.filename:
             msg = "Filename is required"
             raise ControllerBadRequestError(msg)
