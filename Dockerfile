@@ -33,5 +33,8 @@ COPY --chown=1001:0 "docker-entrypoint.sh" "pyproject.toml" "src" "./"
 RUN mkdir conf/ && chmod 0777 conf/ && \
     mkdir log/ && chmod 0777 log/
 
+# Prevent glibc malloc from hoarding freed memory
+ENV MALLOC_TRIM_THRESHOLD_=65536
+
 EXPOSE 8080
 ENTRYPOINT [ "/opt/app-root/src/docker-entrypoint.sh" ]

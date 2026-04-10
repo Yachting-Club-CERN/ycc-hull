@@ -62,7 +62,10 @@ ATTACHMENT_REF_CLASS_ID = 1968
 TRANSCODE_ALLOWED_EXTENSIONS: frozenset[str] = frozenset({".heic", ".heif"})
 TRANSCODE_JPEG_QUALITY = 85
 # Hard cap on simultaneous transcodes (CERN PaaS resource limits...)
-TRANSCODE_MAX_CONCURRENCY = 5
+# Note with 5 and heavy uploads OOM can easily happen with 2 GB RAM...
+# And ideally iPhone can transcode this on the client side, this is only for
+# Mac + Firefox and similar setups
+TRANSCODE_MAX_CONCURRENCY = 2
 # Decompression bomb defence
 TRANSCODE_MAX_DECODED_PIXELS = 100 * 1000 * 1000
 TRANSCODE_MAX_DIMENSION = 2000
