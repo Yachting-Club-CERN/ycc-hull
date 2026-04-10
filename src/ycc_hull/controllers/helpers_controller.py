@@ -1277,9 +1277,7 @@ class HelpersController(BaseController):
 
             result = await AttachmentMetadataDto.create(entity)
 
-        self._run_in_background(
-            self._notifications.on_attachment_upload(task, filename, user)
-        )
+        self._notifications.on_attachment_upload(task, filename, user)
 
         return result
 
@@ -1336,9 +1334,7 @@ class HelpersController(BaseController):
                 audit_data,
             )
 
-        self._run_in_background(
-            self._notifications.on_attachment_delete(task, deleted_filename, user)
-        )
+        self._notifications.on_attachment_delete(task, deleted_filename, user)
 
     async def transcode_image_to_jpeg(
         self,
