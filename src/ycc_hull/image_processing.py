@@ -48,19 +48,22 @@ def _transcode_to_jpeg(data: bytes) -> bytes:
             # 2026-03: It looks like it simply drops alpha, good enough for now
             rgb = img.convert("RGB")
 
-            rgb.thumbnail(
-                (TRANSCODE_MAX_DIMENSION, TRANSCODE_MAX_DIMENSION),
-                Image.Resampling.LANCZOS,
-            )
-            out = BytesIO()
-            rgb.save(
-                out,
-                format="JPEG",
-                quality=TRANSCODE_JPEG_QUALITY,
-                optimize=True,
-                progressive=True,
-            )
-            return out.getvalue()
+            try:
+                rgb.thumbnail(
+                    (TRANSCODE_MAX_DIMENSION, TRANSCODE_MAX_DIMENSION),
+                    Image.Resampling.LANCZOS,
+                )
+                out = BytesIO()
+                rgb.save(
+                    out,
+                    format="JPEG",
+                    quality=TRANSCODE_JPEG_QUALITY,
+                    optimize=True,
+                    progressive=True,
+                )
+                return out.getvalue()
+            finally:
+                rgb.close()
     except Image.DecompressionBombError as exc:
         msg = "Image is too large"
         _logger.exception(msg)
