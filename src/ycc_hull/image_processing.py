@@ -1,6 +1,7 @@
-"""Server-side image processing for uploaded attachments."""
+"""Image processing utilities."""
 
 import asyncio
+import logging
 from io import BytesIO
 
 from PIL import Image, ImageOps
@@ -16,11 +17,13 @@ from ycc_hull.constants import (
 # HEIC/HEIF support
 register_heif_opener()
 
-# Defend against decompression bombs (note: PIL fails at 2x the limit)
-Image.MAX_IMAGE_PIXELS = TRANSCODE_MAX_DECODED_PIXELS
+# Defend against decompression bombs (PIL errors at 2x the value)
+Image.MAX_IMAGE_PIXELS = TRANSCODE_MAX_DECODED_PIXELS // 2
 
 # Hard cap on simultaneous transcodes to prevent OOM
 _transcode_semaphore = asyncio.Semaphore(TRANSCODE_MAX_CONCURRENCY)
+
+_logger = logging.getLogger(__name__)
 
 
 class ImageTranscodeError(Exception):
@@ -32,6 +35,8 @@ async def transcode_to_jpeg(data: bytes) -> bytes:
 
     Applies orientation from EXIF, resizes and compresses the image.
     """
+    if _transcode_semaphore.locked():
+        _logger.info("Transcode semaphore saturated; request queued")
     async with _transcode_semaphore:
         return await asyncio.to_thread(_transcode_to_jpeg, data)
 
@@ -39,9 +44,9 @@ async def transcode_to_jpeg(data: bytes) -> bytes:
 def _transcode_to_jpeg(data: bytes) -> bytes:
     try:
         with Image.open(BytesIO(data)) as img:
-            oriented = ImageOps.exif_transpose(img) or img
+            ImageOps.exif_transpose(img, in_place=True)
             # 2026-03: It looks like it simply drops alpha, good enough for now
-            rgb = oriented.convert("RGB")
+            rgb = img.convert("RGB")
 
             rgb.thumbnail(
                 (TRANSCODE_MAX_DIMENSION, TRANSCODE_MAX_DIMENSION),
@@ -58,7 +63,9 @@ def _transcode_to_jpeg(data: bytes) -> bytes:
             return out.getvalue()
     except Image.DecompressionBombError as exc:
         msg = "Image is too large"
+        _logger.exception(msg)
         raise ImageTranscodeError(msg) from exc
     except Exception as exc:
         msg = "Failed to transcode image"
+        _logger.exception(msg)
         raise ImageTranscodeError(msg) from exc

@@ -23,6 +23,14 @@ from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntit
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
 
 
+class AttachmentDownloadDto(CamelisedBaseModel):
+    """DTO for attachment download."""
+
+    name: str
+    mime_type: str
+    content: bytes
+
+
 class AttachmentMetadataDto(CamelisedBaseModel):
     """DTO for attachment metadata (excludes binary content)."""
 

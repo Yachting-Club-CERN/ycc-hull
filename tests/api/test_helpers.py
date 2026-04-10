@@ -393,6 +393,15 @@ def test_find_task_by_id() -> None:
     assert task["validatedAt"] is None
 
 
+def test_find_task_by_id_forbidden_for_member_different_year() -> None:
+    FakeAuth.set_member()
+
+    response = client.get("/api/v1/helpers/tasks/2001")
+
+    assert response.status_code == 403
+    assert response.json() == {"detail": "You do not have permission to view this task"}
+
+
 def test_find_task_by_id_not_found() -> None:
     FakeAuth.set_helpers_app_admin()
 

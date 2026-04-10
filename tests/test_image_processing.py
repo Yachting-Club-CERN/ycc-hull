@@ -6,26 +6,13 @@ from unittest.mock import patch
 import pytest
 from PIL import Image
 
+from tests.image_helpers import JPEG_START_OF_IMAGE_MARKER, make_heic_bytes
 from ycc_hull.constants import TRANSCODE_MAX_CONCURRENCY
 from ycc_hull.image_processing import (
     ImageTranscodeError,
     _transcode_to_jpeg,
     transcode_to_jpeg,
 )
-
-JPEG_START_OF_IMAGE_MARKER = b"\xff\xd8\xff"
-
-
-def _make_heic(
-    width: int,
-    height: int,
-    *,
-    color: tuple[int, int, int] = (200, 50, 50),
-) -> bytes:
-    img = Image.new("RGB", (width, height), color=color)
-    buf = BytesIO()
-    img.save(buf, format="HEIF")
-    return buf.getvalue()
 
 
 @pytest.mark.parametrize(
@@ -44,7 +31,7 @@ def _make_heic(
 def test_transcode_to_jpeg_with_heic(
     input_size: tuple[int, int], expected_size: tuple[int, int]
 ) -> None:
-    heic = _make_heic(*input_size)
+    heic = make_heic_bytes(*input_size)
 
     jpeg = _transcode_to_jpeg(heic)
 
@@ -54,6 +41,59 @@ def test_transcode_to_jpeg_with_heic(
     assert decoded.size == expected_size
     assert decoded.info.get("exif") is None
     assert decoded.info.get("progressive") == 1
+
+
+def test_transcode_to_jpeg_raises_on_decompression_bomb() -> None:
+    heic = make_heic_bytes(100, 100)
+    original = Image.MAX_IMAGE_PIXELS
+    try:
+        Image.MAX_IMAGE_PIXELS = 10
+        with pytest.raises(ImageTranscodeError, match="Image is too large"):
+            _transcode_to_jpeg(heic)
+    finally:
+        Image.MAX_IMAGE_PIXELS = original
+
+
+def test_transcode_to_jpeg_applies_exif_orientation() -> None:
+    """A 100x200 image with EXIF Orientation=6 (90° CW) should become 200x100."""
+    # Orientation tag = 0x0112, type SHORT, value 6 = 90° CW
+    orientation_6_exif = (
+        b"Exif\x00\x00"  # Exif header
+        b"MM"  # Big-endian
+        b"\x00\x2a"  # TIFF magic
+        b"\x00\x00\x00\x08"  # Offset to IFD0
+        b"\x00\x01"  # 1 entry in IFD0
+        b"\x01\x12"  # Tag: Orientation (0x0112)
+        b"\x00\x03"  # Type: SHORT
+        b"\x00\x00\x00\x01"  # Count: 1
+        b"\x00\x06\x00\x00"  # Value: 6 (90° CW)
+        b"\x00\x00\x00\x00"  # Next IFD offset: none
+    )
+
+    img = Image.new("RGB", (100, 200), color=(255, 0, 0))
+    buf = BytesIO()
+    img.save(buf, format="JPEG", exif=orientation_6_exif)
+    rotated_jpeg = buf.getvalue()
+
+    result = _transcode_to_jpeg(rotated_jpeg)
+
+    decoded = Image.open(BytesIO(result))
+    assert decoded.size == (200, 100)
+    assert decoded.info.get("exif") is None
+
+
+def test_transcode_to_jpeg_drops_alpha_channel() -> None:
+    img = Image.new("RGBA", (100, 100), color=(255, 0, 0, 128))
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    rgba_png = buf.getvalue()
+
+    result = _transcode_to_jpeg(rgba_png)
+
+    decoded = Image.open(BytesIO(result))
+    assert decoded.format == "JPEG"
+    assert decoded.mode == "RGB"
+    assert decoded.size == (100, 100)
 
 
 def test_transcode_to_jpeg_raises_on_garbage_input() -> None:

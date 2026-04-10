@@ -96,6 +96,7 @@ ignore = [
 "load_tests/**/*.py" = [
     "D100",    # no module docstrings needed in tests
     "D101",    # no class docstrings needed in tests
+    "D102",    # no method docstrings needed in tests
     "D103",    # no function docstrings needed in tests
     "D104",    # no package docstrings needed in tests
     "PLR2004", # magic values are fine in load tests
@@ -120,6 +121,7 @@ ignore = [
     "ANN201",  # no return type annotations needed in tests
     "D100",    # no module docstrings needed in tests
     "D101",    # no class docstrings needed in tests
+    "D102",    # no method docstrings needed in tests
     "D103",    # no function docstrings needed in tests
     "D104",    # no package docstrings needed in tests
     "PLC0415", # local imports needed for patching

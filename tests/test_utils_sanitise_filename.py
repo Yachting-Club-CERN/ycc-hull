@@ -128,7 +128,7 @@ def test_sanitise_filename(original: str, expected: str) -> None:
 
 
 def test_sanitise_filename_never_exceeds_max_length() -> None:
-    from ycc_hull.utils import _STORAGE_FILENAME_MAX_LENGTH
+    from ycc_hull.utils import _SANITISED_FILENAME_MAX_LENGTH
 
     cases = [
         "x." + "a" * 200,
@@ -139,8 +139,8 @@ def test_sanitise_filename_never_exceeds_max_length() -> None:
     ]
     for original in cases:
         result = sanitise_filename(original)
-        assert len(result) <= _STORAGE_FILENAME_MAX_LENGTH, (
+        assert len(result) <= _SANITISED_FILENAME_MAX_LENGTH, (
             f"sanitise_filename({original!r}) = {result!r} "
-            f"(len {len(result)} > {_STORAGE_FILENAME_MAX_LENGTH})"
+            f"(len {len(result)} > {_SANITISED_FILENAME_MAX_LENGTH})"
         )
         assert len(result) >= 1

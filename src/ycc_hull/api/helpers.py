@@ -46,7 +46,7 @@ async def helpers_permissions_grant(
     """Grant a helpers app permission."""
     _check_can_manage_permissions(user)
 
-    return await controller.grant_permission(request, user)
+    return await controller.grant_permission(request=request, user=user)
 
 
 @api_helpers.put("/api/v1/helpers/permissions/{member_id}")
@@ -59,7 +59,9 @@ async def helpers_permissions_update(
     """Update a helpers app permission."""
     _check_can_manage_permissions(user)
 
-    return await controller.update_permission(member_id, request, user)
+    return await controller.update_permission(
+        member_id=member_id, request=request, user=user
+    )
 
 
 @api_helpers.delete("/api/v1/helpers/permissions/{member_id}")
@@ -71,7 +73,7 @@ async def helpers_permissions_revoke(
     """Revoke a helpers app permission."""
     _check_can_manage_permissions(user)
 
-    await controller.revoke_permission(member_id, user)
+    await controller.revoke_permission(member_id=member_id, user=user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -108,7 +110,7 @@ async def helper_tasks_get_by_id(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Get a helper task by ID."""
-    task = await controller.get_task_by_id(task_id, published=_published(user))
+    task = await controller.get_task_by_id(task_id=task_id, published=_published(user))
 
     if not _can_access_year(task.year, user):
         msg = "You do not have permission to view this task"
@@ -131,7 +133,7 @@ async def helper_tasks_create(
         msg = "You have to be the contact for the tasks you create"
         raise create_http_error_403(msg)
 
-    return await controller.create_task(request, user)
+    return await controller.create_task(request=request, user=user)
 
 
 @api_helpers.put("/api/v1/helpers/tasks/{task_id}")
@@ -155,7 +157,7 @@ async def helper_tasks_update(
         msg = "You have to be the contact for the tasks you update"
         raise create_http_error_403(msg)
 
-    return await controller.update_task(task_id, request, user)
+    return await controller.update_task(task_id=task_id, request=request, user=user)
 
 
 @api_helpers.put("/api/v1/helpers/tasks/{task_id}/captain/{member_id}")
@@ -170,7 +172,7 @@ async def helper_tasks_captain_set(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
-    return await controller.set_captain(task_id, member_id, user)
+    return await controller.set_captain(task_id=task_id, member_id=member_id, user=user)
 
 
 @api_helpers.delete("/api/v1/helpers/tasks/{task_id}/captain")
@@ -184,7 +186,7 @@ async def helper_tasks_captain_remove(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
-    return await controller.remove_captain(task_id, user)
+    return await controller.remove_captain(task_id=task_id, user=user)
 
 
 @api_helpers.put("/api/v1/helpers/tasks/{task_id}/helpers/{member_id}")
@@ -199,7 +201,7 @@ async def helper_tasks_helper_add(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
-    return await controller.add_helper(task_id, member_id, user)
+    return await controller.add_helper(task_id=task_id, member_id=member_id, user=user)
 
 
 @api_helpers.delete("/api/v1/helpers/tasks/{task_id}/helpers/{member_id}")
@@ -214,7 +216,9 @@ async def helper_tasks_helper_remove(
         task_id, contact_id=user.member_id, user=user, controller=controller
     )
 
-    return await controller.remove_helper(task_id, member_id, user)
+    return await controller.remove_helper(
+        task_id=task_id, member_id=member_id, user=user
+    )
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-captain")
@@ -224,7 +228,7 @@ async def helper_tasks_sign_up_as_captain(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Sign up as captain for a task."""
-    return await controller.sign_up_as_captain(task_id, user)
+    return await controller.sign_up_as_captain(task_id=task_id, user=user)
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/sign-up-as-helper")
@@ -234,7 +238,7 @@ async def helper_tasks_sign_up_as_helper(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> HelperTaskDto:
     """Sign up as helper for a task."""
-    return await controller.sign_up_as_helper(task_id, user)
+    return await controller.sign_up_as_helper(task_id=task_id, user=user)
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/mark-as-done")
@@ -254,8 +258,8 @@ async def helper_tasks_mark_as_done(
             msg = "You do not have permission to mark this task as done"
             raise create_http_error_403(msg)
 
-    await controller.mark_as_done(task_id, request, user)
-    return await controller.get_task_by_id(task_id, published=True)
+    await controller.mark_as_done(task_id=task_id, request=request, user=user)
+    return await controller.get_task_by_id(task_id=task_id, published=True)
 
 
 @api_helpers.post("/api/v1/helpers/tasks/{task_id}/validate")
@@ -272,8 +276,8 @@ async def helper_tasks_validate(
             msg = "You do not have permission to validate this task"
             raise create_http_error_403(msg)
 
-    await controller.validate(task_id, request, user)
-    return await controller.get_task_by_id(task_id, published=True)
+    await controller.validate(task_id=task_id, request=request, user=user)
+    return await controller.get_task_by_id(task_id=task_id, published=True)
 
 
 @api_helpers.get("/api/v1/helpers/tasks/{task_id}/attachments")
@@ -282,9 +286,10 @@ async def helper_task_attachments_list(
     user: Annotated[User, Depends(auth)],
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> Sequence[AttachmentMetadataDto]:
-    """List attachment metadata for a helper task."""
-    await _verify_task_accessible(task_id, user, controller)
-    return await controller.find_attachments_for_task(task_id)
+    """List attachments for a helper task."""
+    return await controller.find_attachments_for_task(
+        task_id=task_id, published=_published(user)
+    )
 
 
 @api_helpers.get("/api/v1/helpers/tasks/{task_id}/attachments/{attachment_id}")
@@ -295,8 +300,9 @@ async def helper_task_attachment_download(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> Response:
     """Download an attachment."""
-    await _verify_task_accessible(task_id, user, controller)
-    attachment = await controller.get_attachment_with_content(task_id, attachment_id)
+    attachment = await controller.get_attachment_with_content(
+        task_id=task_id, attachment_id=attachment_id, published=_published(user)
+    )
     return Response(
         content=attachment.content,
         media_type=attachment.mime_type,
@@ -318,9 +324,14 @@ async def helper_task_attachment_upload(
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
     description: Annotated[str | None, Form()] = None,
 ) -> AttachmentMetadataDto:
-    """Upload an attachment to a helper task. Any authenticated member can upload."""
-    await _verify_task_accessible(task_id, user, controller)
-    return await controller.upload_attachment(task_id, file, description, user)
+    """Upload an attachment to a helper task."""
+    return await controller.upload_attachment(
+        task_id=task_id,
+        file=file,
+        description=description,
+        user=user,
+        published=_published(user),
+    )
 
 
 @api_helpers.post("/api/v1/helpers/attachments/transcode")
@@ -329,8 +340,8 @@ async def helper_attachment_transcode(
     user: Annotated[User, Depends(auth)],
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> Response:
-    """Transcode an uploaded image to JPEG and return the bytes."""
-    jpeg = await controller.transcode_image_to_jpeg(file, user)
+    """Transcode an image to JPEG and return the bytes."""
+    jpeg = await controller.transcode_image_to_jpeg(file=file, user=user)
     return Response(
         content=jpeg,
         media_type="image/jpeg",
@@ -350,13 +361,16 @@ async def helper_task_attachment_delete(
     Allowed for the uploader (owner) of the attachment, or anyone with task
     edit permissions (admin, editor who is contact).
     """
-    await _verify_task_accessible(task_id, user, controller)
-    owner_id = await controller.get_attachment_owner_id(task_id, attachment_id)
+    owner_id = await controller.get_attachment_owner_id(
+        task_id=task_id, attachment_id=attachment_id, published=_published(user)
+    )
     if owner_id != user.member_id:
         await _check_can_update_task(
             task_id, contact_id=user.member_id, user=user, controller=controller
         )
-    await controller.delete_attachment(task_id, attachment_id, user)
+    await controller.delete_attachment(
+        task_id=task_id, attachment_id=attachment_id, user=user
+    )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
@@ -364,13 +378,6 @@ def _check_can_manage_permissions(user: User) -> None:
     if not user.helpers_app_admin:
         msg = "Forbidden"
         raise create_http_error_403(msg)
-
-
-async def _verify_task_accessible(
-    task_id: int, user: User, controller: HelpersController
-) -> None:
-    """Verify the task exists and the user can view it."""
-    await controller.get_task_by_id(task_id, published=_published(user))
 
 
 def _published(user: User) -> bool | None:

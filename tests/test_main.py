@@ -49,8 +49,6 @@ async def controller_409_exception_handler(
 
 
 class FakeAuth:
-    """Mocks app authentication dependency."""
-
     _member_id: int = -1
 
     @classmethod
@@ -107,31 +105,26 @@ class FakeAuth:
 
     @classmethod
     def set_member(cls, member_id: int = 100) -> None:
-        """Set up auth as a regular member."""
         cls._member_id = member_id
         app_test.dependency_overrides[auth] = cls._create_member
 
     @classmethod
     def set_helpers_app_admin(cls) -> None:
-        """Set up auth as a helpers app admin."""
         cls._member_id = 1
         app_test.dependency_overrides[auth] = cls._create_helpers_app_admin
 
     @classmethod
     def set_helpers_app_editor(cls) -> None:
-        """Set up auth as a helpers app editor."""
         cls._member_id = 2
         app_test.dependency_overrides[auth] = cls._create_helpers_app_editor
 
     @classmethod
     def set_admin(cls) -> None:
-        """Set up auth as an admin."""
         cls._member_id = 1
         app_test.dependency_overrides[auth] = cls._create_admin
 
     @classmethod
     def set_committee_member(cls) -> None:
-        """Set up auth as a committee member."""
         cls._member_id = 1
         app_test.dependency_overrides[auth] = cls._create_committee_member
 

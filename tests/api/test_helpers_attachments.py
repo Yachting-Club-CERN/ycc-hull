@@ -2,6 +2,7 @@ from io import BytesIO
 from unittest.mock import patch
 
 import httpx
+import pytest
 from sqlalchemy import inspect, select
 
 from tests.api.conftest import client
@@ -80,6 +81,13 @@ def test_upload_attachment_no_description() -> None:
     assert data["description"] is None
 
 
+def test_upload_rejects_non_existent_task() -> None:
+    FakeAuth.set_helpers_app_admin()
+
+    response = _upload(999999)
+    assert response.status_code == 404
+
+
 def test_upload_rejects_disallowed_extension() -> None:
     FakeAuth.set_helpers_app_admin()
     task = create_shift_task(client)
@@ -87,8 +95,7 @@ def test_upload_rejects_disallowed_extension() -> None:
 
     response = _upload(task_id, filename="malware.exe")
     assert response.status_code == 400
-    detail = response.json()["detail"]
-    assert "not allowed" in detail
+    assert response.json()["detail"] == "File type not allowed: malware.exe"
 
 
 def test_upload_rejects_file_too_large() -> None:
@@ -96,13 +103,11 @@ def test_upload_rejects_file_too_large() -> None:
     task = create_shift_task(client)
     task_id = task["id"]
 
-    # Patch the limit to 10 bytes so we do not need a huge payload
     target = "ycc_hull.controllers.helpers_controller.ATTACHMENT_MAX_FILE_SIZE_BYTES"
     with patch(target, 10):
         response = _upload(task_id, content=b"\x00" * 11)
     assert response.status_code == 400
-    detail = response.json()["detail"]
-    assert "too large" in detail.lower()
+    assert response.json()["detail"] == "File too large (max 10 bytes)"
 
 
 def test_upload_rejects_when_task_has_max_attachments() -> None:
@@ -110,7 +115,6 @@ def test_upload_rejects_when_task_has_max_attachments() -> None:
     task = create_shift_task(client)
     task_id = task["id"]
 
-    # Patch the limit to 2 so we do not need 20 uploads
     target = "ycc_hull.controllers.helpers_controller.ATTACHMENT_MAX_PER_TASK"
     with patch(target, 2):
         assert _upload(task_id, filename="a.png").status_code == 200
@@ -168,57 +172,31 @@ def test_upload_allowed_for_regular_member() -> None:
     assert data["description"] == "Member upload"
 
 
-def test_upload_jpg_extension() -> None:
+@pytest.mark.parametrize(
+    ("ext", "expected_mime"),
+    [
+        ("jpg", "image/jpeg"),
+        ("jpeg", "image/jpeg"),
+        ("webp", "image/webp"),
+    ],
+)
+def test_upload_accepted_extensions(ext: str, expected_mime: str) -> None:
     FakeAuth.set_helpers_app_admin()
     task = create_shift_task(client)
-    task_id = task["id"]
 
-    response = _upload(task_id, filename="photo.jpg")
+    response = _upload(task["id"], filename=f"photo.{ext}")
     assert response.status_code == 200
-    data = response.json()
-    assert data["mimeType"] == "image/jpeg"
+    assert response.json()["mimeType"] == expected_mime
 
 
-def test_upload_jpeg_extension() -> None:
+@pytest.mark.parametrize("ext", ["heic", "heif"])
+def test_upload_rejects_heic_heif(ext: str) -> None:
     FakeAuth.set_helpers_app_admin()
     task = create_shift_task(client)
-    task_id = task["id"]
 
-    response = _upload(task_id, filename="photo.jpeg")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["mimeType"] == "image/jpeg"
-
-
-def test_upload_webp_extension() -> None:
-    FakeAuth.set_helpers_app_admin()
-    task = create_shift_task(client)
-    task_id = task["id"]
-
-    response = _upload(task_id, filename="photo.webp")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["mimeType"] == "image/webp"
-
-
-def test_upload_rejects_heic() -> None:
-    FakeAuth.set_helpers_app_admin()
-    task = create_shift_task(client)
-    task_id = task["id"]
-
-    response = _upload(task_id, filename="photo.heic", content=b"\x00" * 32)
+    response = _upload(task["id"], filename=f"photo.{ext}", content=b"\x00" * 32)
     assert response.status_code == 400
-    assert response.json()["detail"] == "File type not allowed: photo.heic"
-
-
-def test_upload_rejects_heif() -> None:
-    FakeAuth.set_helpers_app_admin()
-    task = create_shift_task(client)
-    task_id = task["id"]
-
-    response = _upload(task_id, filename="photo.heif", content=b"\x00" * 32)
-    assert response.status_code == 400
-    assert response.json()["detail"] == "File type not allowed: photo.heif"
+    assert response.json()["detail"] == f"File type not allowed: photo.{ext}"
 
 
 # ==============================================================================
@@ -239,7 +217,6 @@ def test_list_attachments() -> None:
     data = response.json()
     assert len(data) == 2
 
-    # Ordered by creation
     assert data[0]["name"] == "first.png"
     assert data[0]["description"] == "First"
     assert data[0].keys() == ATTACHMENT_METADATA_KEYS
@@ -266,7 +243,6 @@ def test_list_excludes_blob_content() -> None:
     task_id = task["id"]
     _upload(task_id, description="BLOB test")
 
-    # Verify the API response does not contain content/thumbnail keys
     response = client.get(f"/api/v1/helpers/tasks/{task_id}/attachments")
     assert response.status_code == 200
     data = response.json()
@@ -275,8 +251,6 @@ def test_list_excludes_blob_content() -> None:
     assert "thumbnail" not in data[0]
     assert data[0].keys() == ATTACHMENT_METADATA_KEYS
 
-    # Verify at SQLAlchemy level that the entity loaded via defer() does not have
-    # content/thumbnail in its loaded state
     from sqlalchemy.orm import defer
 
     with DatabaseContextHolder.context.session() as session:
@@ -286,12 +260,9 @@ def test_list_excludes_blob_content() -> None:
             .where(AttachmentEntity.ref_id == task_id)
         ).first()
         assert entity is not None
-        # inspect() shows which attributes are loaded vs deferred
         state = inspect(entity)
-        # content and thumbnail should not be in the loaded set
         assert "content" not in state.dict
         assert "thumbnail" not in state.dict
-        # But other fields should be loaded
         assert "name" in state.dict
         assert "mime_type" in state.dict
 
@@ -412,12 +383,10 @@ def test_delete_forbidden_for_non_owner_regular_member() -> None:
     task = create_shift_task(client)
     task_id = task["id"]
 
-    # Admin uploads the attachment (owner_id=1)
     upload_response = _upload(task_id, filename="no_delete.png")
     assert upload_response.status_code == 200
     attachment_id = upload_response.json()["id"]
 
-    # Different member (id=100) tries to delete - forbidden
     FakeAuth.set_member(member_id=100)
     response = client.delete(
         f"/api/v1/helpers/tasks/{task_id}/attachments/{attachment_id}"
@@ -426,25 +395,21 @@ def test_delete_forbidden_for_non_owner_regular_member() -> None:
 
 
 def test_delete_allowed_for_owner() -> None:
-    # Create a published task as admin
     FakeAuth.set_helpers_app_admin()
     task = create_shift_task(client, published=True)
     task_id = task["id"]
 
-    # Upload as regular member 100 (anyone can upload)
     FakeAuth.set_member(member_id=100)
     upload_response = _upload(task_id, filename="my_photo.png")
     assert upload_response.status_code == 200
     attachment_id = upload_response.json()["id"]
     assert upload_response.json()["owner"]["id"] == 100
 
-    # Same regular member 100 deletes their own attachment
     response = client.delete(
         f"/api/v1/helpers/tasks/{task_id}/attachments/{attachment_id}"
     )
     assert response.status_code == 204
 
-    # Verify it is gone
     list_response = client.get(f"/api/v1/helpers/tasks/{task_id}/attachments")
     assert list_response.status_code == 200
     assert list_response.json() == []
@@ -455,7 +420,6 @@ def test_delete_wrong_ref_class_id() -> None:
     task = create_shift_task(client)
     task_id = task["id"]
 
-    # Insert an attachment directly with a bogus ref_class_id
     with DatabaseContextHolder.context.session() as session:
         entity = AttachmentEntity(
             name="bogus.png",
@@ -467,23 +431,20 @@ def test_delete_wrong_ref_class_id() -> None:
             description=None,
             thumbnail=None,
             ref_id=task_id,
-            ref_class_id=9999,  # Not a valid ref_class_id
+            ref_class_id=9999,
         )
         session.add(entity)
         session.commit()
         session.refresh(entity)
         bogus_id = entity.id
 
-    # Should not appear in the list (filtered by ref_class_id)
     list_response = client.get(f"/api/v1/helpers/tasks/{task_id}/attachments")
     assert list_response.status_code == 200
     assert all(item["id"] != bogus_id for item in list_response.json())
 
-    # Download should return 404
     response = client.get(f"/api/v1/helpers/tasks/{task_id}/attachments/{bogus_id}")
     assert response.status_code == 404
 
-    # Delete should return 404
     response = client.delete(f"/api/v1/helpers/tasks/{task_id}/attachments/{bogus_id}")
     assert response.status_code == 404
 
@@ -497,7 +458,6 @@ def test_delete_blocked_when_task_not_accessible() -> None:
     assert upload_response.status_code == 200
     attachment_id = upload_response.json()["id"]
 
-    # Regular member cannot access the unpublished task
     FakeAuth.set_member(member_id=100)
     response = client.delete(
         f"/api/v1/helpers/tasks/{task_id}/attachments/{attachment_id}"

@@ -64,11 +64,11 @@ def camel_case_to_words(string: str) -> str:
     )
 
 
-_STORAGE_FILENAME_MAX_LENGTH = 50
-_STORAGE_FILENAME_MULTI_SEPARATORS = re.compile(r"([_.-])\1+")
-_STORAGE_FILENAME_SAFE_CHARS = re.compile(r"[^A-Za-z0-9._-]")
+_SANITISED_FILENAME_MAX_LENGTH = 50
+_SANITISED_FILENAME_MULTI_SEPARATORS = re.compile(r"([_.-])\1+")
+_SANITISED_FILENAME_SAFE_CHARS = re.compile(r"[^A-Za-z0-9._-]")
 # Characters that NFKD doesn't decompose but have obvious ASCII equivalents
-_STORAGE_FILENAME_PRE_NFKD: dict[int, str] = {
+_SANITISED_FILENAME_PRE_NFKD: dict[int, str] = {
     ord("ß"): "ss",
     ord("æ"): "ae",
     ord("Æ"): "Ae",
@@ -88,7 +88,7 @@ def sanitise_filename(original: str) -> str:
 
     Handles abominations too.
     """
-    remaining = _clean_string_for_filename(original)
+    remaining = _normalise_filename_string(original)
     last_dot = remaining.rfind(".")
     if last_dot >= 0:
         stem = remaining[:last_dot]
@@ -109,7 +109,7 @@ def sanitise_filename(original: str) -> str:
     if not stem:
         stem = "file"
 
-    limit = _STORAGE_FILENAME_MAX_LENGTH
+    limit = _SANITISED_FILENAME_MAX_LENGTH
     if len(stem) + len(ext) > limit:
         max_stem = limit - len(ext)
         if max_stem >= 1:
@@ -121,20 +121,20 @@ def sanitise_filename(original: str) -> str:
     return f"{stem}{ext}"
 
 
-def _clean_string_for_filename(original: str) -> str:
+def _normalise_filename_string(original: str) -> str:
     cleaned = original.strip().replace("\\", "/")
 
     last_slash = cleaned.rfind("/")
     if last_slash >= 0:
         cleaned = cleaned[last_slash + 1 :]
 
-    cleaned = cleaned.translate(_STORAGE_FILENAME_PRE_NFKD)
+    cleaned = cleaned.translate(_SANITISED_FILENAME_PRE_NFKD)
     cleaned = unicodedata.normalize("NFKD", cleaned)
     cleaned = "".join(c for c in cleaned if not unicodedata.combining(c))
     cleaned = cleaned.lower()
     cleaned = cleaned.replace(" ", "_")
-    cleaned = _STORAGE_FILENAME_SAFE_CHARS.sub("", cleaned)
-    cleaned = _STORAGE_FILENAME_MULTI_SEPARATORS.sub(r"\1", cleaned)
+    cleaned = _SANITISED_FILENAME_SAFE_CHARS.sub("", cleaned)
+    cleaned = _SANITISED_FILENAME_MULTI_SEPARATORS.sub(r"\1", cleaned)
     return cleaned.strip("_")
 
 
