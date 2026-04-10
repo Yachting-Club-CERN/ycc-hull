@@ -326,17 +326,11 @@ async def helper_task_attachment_upload(
 @api_helpers.post("/api/v1/helpers/attachments/transcode")
 async def helper_attachment_transcode(
     file: Annotated[UploadFile, File()],
-    user: Annotated[User, Depends(auth)],  # noqa: ARG001 (require auth)
+    user: Annotated[User, Depends(auth)],
     controller: Annotated[HelpersController, Depends(get_helpers_controller)],
 ) -> Response:
-    """Transcode an uploaded HEIC/HEIF image to JPEG and return the bytes.
-
-    Stateless utility for the frontend - no database writes. Used so that HEIC/HEIF
-    images can be previewed in browsers (e.g. Mac + Firefox) that cannot decode them
-    natively. The frontend uploads the resulting JPEG via the regular upload endpoint
-    when the user finalises.
-    """
-    jpeg = await controller.transcode_image_to_jpeg(file)
+    """Transcode an uploaded image to JPEG and return the bytes."""
+    jpeg = await controller.transcode_image_to_jpeg(file, user)
     return Response(
         content=jpeg,
         media_type="image/jpeg",

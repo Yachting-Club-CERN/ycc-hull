@@ -1,5 +1,3 @@
-"""Tests for the HEIC/HEIF -> JPEG transcode endpoint."""
-
 from io import BytesIO
 from unittest.mock import patch
 
@@ -99,7 +97,7 @@ def test_transcode_rejects_jpg() -> None:
     assert response.status_code == 400
     assert (
         response.json()["detail"]
-        == "Only HEIC/HEIF files can be transcoded, not photo.jpg"
+        == "Unsupported file type for transcoding: photo.jpg (allowed: .heic, .heif)"
     )
 
 
@@ -111,7 +109,7 @@ def test_transcode_rejects_png() -> None:
     assert response.status_code == 400
     assert (
         response.json()["detail"]
-        == "Only HEIC/HEIF files can be transcoded, not photo.png"
+        == "Unsupported file type for transcoding: photo.png (allowed: .heic, .heif)"
     )
 
 
@@ -123,7 +121,7 @@ def test_transcode_rejects_webp() -> None:
     assert response.status_code == 400
     assert (
         response.json()["detail"]
-        == "Only HEIC/HEIF files can be transcoded, not photo.webp"
+        == "Unsupported file type for transcoding: photo.webp (allowed: .heic, .heif)"
     )
 
 
@@ -135,7 +133,7 @@ def test_transcode_rejects_unknown_extension() -> None:
     assert response.status_code == 400
     assert (
         response.json()["detail"]
-        == "Only HEIC/HEIF files can be transcoded, not malware.exe"
+        == "Unsupported file type for transcoding: malware.exe (allowed: .heic, .heif)"
     )
 
 
@@ -145,7 +143,7 @@ def test_transcode_rejects_corrupt_heic() -> None:
     response = _post("broken.heic", b"this is definitely not a heic file")
 
     assert response.status_code == 400
-    assert response.json()["detail"] == "Invalid HEIC/HEIF image: broken.heic"
+    assert response.json()["detail"] == "Invalid image: broken.heic"
 
 
 def test_transcode_rejects_oversized_input_before_decoding() -> None:
@@ -160,7 +158,6 @@ def test_transcode_rejects_oversized_input_before_decoding() -> None:
 
 
 def test_transcode_allowed_for_regular_member() -> None:
-    """Any authenticated user can transcode - matches the upload endpoint policy."""
     FakeAuth.set_member(member_id=100)
     heic = _make_heic_bytes()
 

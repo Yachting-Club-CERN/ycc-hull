@@ -59,7 +59,7 @@ ATTACHMENT_MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024
 ATTACHMENT_MAX_PER_TASK = 100
 ATTACHMENT_REF_CLASS_ID = 1968
 
-HEIC_HEIF_EXTENSIONS: frozenset[str] = frozenset({".heic", ".heif"})
+TRANSCODE_ALLOWED_EXTENSIONS: frozenset[str] = frozenset({".heic", ".heif"})
 TRANSCODE_JPEG_QUALITY = 85
 # Hard cap on simultaneous transcodes (CERN PaaS resource limits...)
 TRANSCODE_MAX_CONCURRENCY = 5

@@ -1,5 +1,6 @@
 """Helpers controller."""
 
+import time
 from collections.abc import Sequence
 from datetime import date, datetime, timedelta
 
@@ -13,11 +14,11 @@ from ycc_hull.constants import (
     ATTACHMENT_MAX_FILE_SIZE_BYTES,
     ATTACHMENT_MAX_PER_TASK,
     ATTACHMENT_REF_CLASS_ID,
-    HEIC_HEIF_EXTENSIONS,
     SURVEILLANCE_SIGN_UP_LIMIT_DAY,
     SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
     SURVEILLANCE_SIGN_UP_LIMIT_STR,
     SURVEILLANCE_TASK_PREFIX,
+    TRANSCODE_ALLOWED_EXTENSIONS,
 )
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.errors import (
@@ -37,7 +38,7 @@ from ycc_hull.db.entities import (
     LicenceEntity,
     MemberEntity,
 )
-from ycc_hull.image_processing import convert_heic_to_jpeg
+from ycc_hull.image_processing import ImageTranscodeError, transcode_to_jpeg
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
     AttachmentMetadataDto,
@@ -1280,16 +1281,31 @@ class HelpersController(BaseController):
     async def transcode_image_to_jpeg(
         self,
         file: UploadFile,
+        user: User,
     ) -> bytes:
-        """Transcode an uploaded HEIC/HEIF image to JPEG bytes."""
+        """Transcode an uploaded image to JPEG bytes."""
         if not file.filename:
+            self._logger.warning(
+                "Transcode rejected (no filename): user=%s", user.username
+            )
             msg = "Filename is required"
             raise ControllerBadRequestError(msg)
 
         filename = sanitise_filename(file.filename)
-        ext = filename[filename.rfind(".") :].lower() if "." in filename else ""
-        if ext not in HEIC_HEIF_EXTENSIONS:
-            msg = f"Only HEIC/HEIF files can be transcoded, not {file.filename}"
+
+        if not any(
+            filename.lower().endswith(ext) for ext in TRANSCODE_ALLOWED_EXTENSIONS
+        ):
+            self._logger.warning(
+                "Transcode rejected (unsupported extension): user=%s, filename=%r",
+                user.username,
+                file.filename,
+            )
+            allowed = ", ".join(sorted(TRANSCODE_ALLOWED_EXTENSIONS))
+            msg = (
+                f"Unsupported file type for transcoding: {file.filename} "
+                f"(allowed: {allowed})"
+            )
             raise ControllerBadRequestError(msg)
 
         content = await self._read_upload_with_size_limit(
@@ -1297,8 +1313,29 @@ class HelpersController(BaseController):
             max_size_bytes=ATTACHMENT_MAX_FILE_SIZE_BYTES,
         )
 
+        start = time.monotonic()
         try:
-            return await convert_heic_to_jpeg(content)
-        except ValueError as exc:
-            msg = f"Invalid HEIC/HEIF image: {file.filename}"
+            result = await transcode_to_jpeg(content)
+        except ImageTranscodeError as exc:
+            self._logger.warning(
+                "Transcode failed (decode error): user=%s, filename=%r, "
+                "input_bytes=%d",
+                user.username,
+                file.filename,
+                len(content),
+                exc_info=True,
+            )
+            msg = f"Invalid image: {file.filename}"
             raise ControllerBadRequestError(msg) from exc
+
+        elapsed_ms = int((time.monotonic() - start) * 1000)
+        self._logger.info(
+            "Transcoded image to JPEG: user=%s, filename=%r, "
+            "input_bytes=%d, output_bytes=%d, elapsed_ms=%d",
+            user.username,
+            file.filename,
+            len(content),
+            len(result),
+            elapsed_ms,
+        )
+        return result
