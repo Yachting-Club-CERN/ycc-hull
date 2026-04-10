@@ -1193,7 +1193,7 @@ class HelpersController(BaseController):
         try:
             mime_type = resolve_attachment_mime_type(filename)
         except ValueError as exc:
-            msg = f"File type not allowed: {filename}"
+            msg = f"File type not allowed: {file.filename}"
             raise ControllerBadRequestError(msg) from exc
 
         if description and len(description) > ATTACHMENT_MAX_DESCRIPTION_LENGTH:
