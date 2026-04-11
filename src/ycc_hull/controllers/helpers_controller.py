@@ -1,20 +1,28 @@
 """Helpers controller."""
 
+import time
 from collections.abc import Sequence
 from datetime import date, datetime, timedelta
 
+from fastapi import UploadFile
 from sqlalchemy import ColumnElement, and_, func, or_, select
 from sqlalchemy.orm import Session, defer
 
 from ycc_hull.config import CONFIG
 from ycc_hull.constants import (
+    ATTACHMENT_MAX_DESCRIPTION_LENGTH,
+    ATTACHMENT_MAX_FILE_SIZE_BYTES,
+    ATTACHMENT_MAX_PER_TASK,
+    ATTACHMENT_REF_CLASS_ID,
     SURVEILLANCE_SIGN_UP_LIMIT_DAY,
     SURVEILLANCE_SIGN_UP_LIMIT_MONTH,
     SURVEILLANCE_SIGN_UP_LIMIT_STR,
     SURVEILLANCE_TASK_PREFIX,
+    TRANSCODE_ALLOWED_EXTENSIONS,
 )
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.errors import (
+    ControllerBadRequestError,
     ControllerConflictError,
     ControllerNotFoundError,
 )
@@ -22,6 +30,7 @@ from ycc_hull.controllers.notifications.helpers_notifications_controller import 
     HelpersNotificationsController,
 )
 from ycc_hull.db.entities import (
+    AttachmentEntity,
     HelpersAppPermissionEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -29,8 +38,11 @@ from ycc_hull.db.entities import (
     LicenceEntity,
     MemberEntity,
 )
+from ycc_hull.image_processing import ImageTranscodeError, transcode_to_jpeg
 from ycc_hull.models.dtos import MemberPublicInfoDto
 from ycc_hull.models.helpers_dtos import (
+    AttachmentDownloadDto,
+    AttachmentMetadataDto,
     HelpersAppPermissionDto,
     HelpersAppPermissionGrantRequestDto,
     HelpersAppPermissionUpdateRequestDto,
@@ -44,7 +56,17 @@ from ycc_hull.models.helpers_dtos import (
     HelperTaskValidationRequestDto,
 )
 from ycc_hull.models.user import User
-from ycc_hull.utils import deep_diff, get_now
+from ycc_hull.utils import (
+    deep_diff,
+    get_now,
+    resolve_attachment_mime_type,
+    sanitise_filename,
+)
+
+_ATTACHMENT_WITHOUT_BLOBS = (
+    defer(AttachmentEntity.content),
+    defer(AttachmentEntity.thumbnail),
+)
 
 
 class HelpersController(BaseController):
@@ -66,7 +88,7 @@ class HelpersController(BaseController):
         )
 
     async def grant_permission(
-        self, request: HelpersAppPermissionGrantRequestDto, user: User
+        self, *, request: HelpersAppPermissionGrantRequestDto, user: User
     ) -> HelpersAppPermissionDto:
         """Grant a permission to a member."""
         with self.database_action(
@@ -81,14 +103,16 @@ class HelpersController(BaseController):
                 "Granted permission: %s, user: %s", permission, user.username
             )
 
-            self._audit_log(
-                session, user, "Helpers/Permissions/Grant", {"new": permission}
-            )
+            self._audit_log(user, "Helpers/Permissions/Grant", {"new": permission})
 
             return permission
 
     async def update_permission(
-        self, member_id: int, request: HelpersAppPermissionUpdateRequestDto, user: User
+        self,
+        *,
+        member_id: int,
+        request: HelpersAppPermissionUpdateRequestDto,
+        user: User,
     ) -> HelpersAppPermissionDto:
         """Update a permission."""
         with self.database_action(
@@ -97,7 +121,7 @@ class HelpersController(BaseController):
             details={"member_id": member_id, "request": request},
         ) as session:
             original_permission = await self._get_permission_by_id(
-                member_id, session=session
+                member_id=member_id, session=session
             )
 
             permission_entity = original_permission.get_entity()
@@ -110,7 +134,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Permissions/Update/{member_id}",
                 {
@@ -122,7 +145,7 @@ class HelpersController(BaseController):
 
             return updated_permission
 
-    async def revoke_permission(self, member_id: int, user: User) -> None:
+    async def revoke_permission(self, *, member_id: int, user: User) -> None:
         """Revoke a permission from a member."""
         if member_id == user.member_id:
             msg = "You cannot revoke your own permissions"
@@ -133,7 +156,9 @@ class HelpersController(BaseController):
             user=user,
             details={"member_id": member_id},
         ) as session:
-            permission = await self._get_permission_by_id(member_id, session=session)
+            permission = await self._get_permission_by_id(
+                member_id=member_id, session=session
+            )
 
             permission_entity = permission.get_entity()
             session.delete(permission_entity)
@@ -146,7 +171,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Permissions/Revoke/{member_id}",
                 {
@@ -155,7 +179,7 @@ class HelpersController(BaseController):
             )
 
     async def _get_permission_by_id(
-        self, member_id: int, *, session: Session
+        self, *, member_id: int, session: Session
     ) -> HelpersAppPermissionDto:
         entries = await self.database_context.query_all(
             select(HelpersAppPermissionEntity).where(
@@ -186,32 +210,34 @@ class HelpersController(BaseController):
 
     async def find_task_by_id(
         self,
-        task_id: int,
         *,
+        task_id: int,
         published: bool | None = None,
         session: Session | None = None,
     ) -> HelperTaskDto | None:
         """Find a helper task by ID, or return None."""
         return await self._find_task_by_id(
-            task_id, published=published, session=session
+            task_id=task_id, published=published, session=session
         )
 
     async def get_task_by_id(
         self,
-        task_id: int,
         *,
+        task_id: int,
         published: bool | None = None,
         session: Session | None = None,
     ) -> HelperTaskDto:
         """Get a helper task by ID, or raise not found."""
-        task = await self.find_task_by_id(task_id, published=published, session=session)
+        task = await self.find_task_by_id(
+            task_id=task_id, published=published, session=session
+        )
         if task:
             return task
         msg = "Task not found"
         raise ControllerNotFoundError(msg)
 
     async def create_task(
-        self, request: HelperTaskCreationRequestDto, user: User
+        self, *, request: HelperTaskCreationRequestDto, user: User
     ) -> HelperTaskDto:
         """Create a new task."""
         with self.database_action(
@@ -224,12 +250,13 @@ class HelpersController(BaseController):
             task = await HelperTaskDto.create(task_entity)
             self._logger.info("Created task: %s, user: %s", task.id, user.username)
 
-            self._audit_log(session, user, "Helpers/Tasks/Create", {"new": task})
+            self._audit_log(user, "Helpers/Tasks/Create", {"new": task})
 
             return task
 
     async def update_task(
         self,
+        *,
         task_id: int,
         request: HelperTaskUpdateRequestDto,
         user: User,
@@ -240,9 +267,11 @@ class HelpersController(BaseController):
             user=user,
             details={"task_id": task_id, "request": request},
         ) as session:
-            original_task = await self._get_task_by_id(task_id, session=session)
+            original_task = await self._get_task_by_id(task_id=task_id, session=session)
 
-            await self._check_can_update_task(request, original_task)
+            await self._check_can_update_task(
+                request=request, original_task=original_task
+            )
 
             task_entity = original_task.get_entity()
             self._update_entity_from_dto(task_entity, request)
@@ -259,7 +288,6 @@ class HelpersController(BaseController):
             diff = deep_diff(original_task, updated_task)
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/Update/{task_id}",
                 {
@@ -292,7 +320,7 @@ class HelpersController(BaseController):
             return updated_task
 
     async def _check_can_update_task(
-        self, request: HelperTaskUpdateRequestDto, original_task: HelperTaskDto
+        self, *, request: HelperTaskUpdateRequestDto, original_task: HelperTaskDto
     ) -> None:
         anyone_signed_up = original_task.captain or original_task.helpers
 
@@ -344,7 +372,7 @@ class HelpersController(BaseController):
             raise ControllerConflictError(msg)
 
     async def set_captain(
-        self, task_id: int, member_id: int, user: User
+        self, *, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
         """Set the captain for a task."""
         with self.database_action(
@@ -352,7 +380,9 @@ class HelpersController(BaseController):
             user=user,
             details={"task_id": task_id, "member_id": member_id},
         ) as session:
-            task = await self._get_task_by_id(task_id, published=True, session=session)
+            task = await self._get_task_by_id(
+                task_id=task_id, published=True, session=session
+            )
             await self._check_can_sign_up_as_captain(
                 task=task, member_id=member_id, editor_action=True, session=session
             )
@@ -378,7 +408,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/SetCaptain/{task_id}/Captain/{member_id}",
             )
@@ -390,7 +419,7 @@ class HelpersController(BaseController):
 
             return updated_task
 
-    async def remove_captain(self, task_id: int, user: User) -> HelperTaskDto:
+    async def remove_captain(self, *, task_id: int, user: User) -> HelperTaskDto:
         """Remove the captain from a task."""
         with self.database_action(
             action="Helper Task / Remove Captain",
@@ -398,7 +427,7 @@ class HelpersController(BaseController):
             details={"task_id": task_id},
         ) as session:
             original_task = await self._get_task_by_id(
-                task_id, published=True, session=session
+                task_id=task_id, published=True, session=session
             )
 
             if not original_task.captain:
@@ -420,7 +449,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/RemoveCaptain/{task_id}/Captain/{original_captain.id}",
             )
@@ -433,7 +461,7 @@ class HelpersController(BaseController):
             return updated_task
 
     async def add_helper(
-        self, task_id: int, member_id: int, user: User
+        self, *, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
         """Add a helper to a task."""
         with self.database_action(
@@ -441,7 +469,9 @@ class HelpersController(BaseController):
             user=user,
             details={"task_id": task_id, "member_id": member_id},
         ) as session:
-            task = await self._get_task_by_id(task_id, published=True, session=session)
+            task = await self._get_task_by_id(
+                task_id=task_id, published=True, session=session
+            )
             await self._check_can_sign_up_as_helper(
                 task=task, member_id=member_id, editor_action=True, session=session
             )
@@ -453,7 +483,7 @@ class HelpersController(BaseController):
             session.commit()
 
             updated_task = await self.get_task_by_id(
-                task_id, published=True, session=session
+                task_id=task_id, published=True, session=session
             )
             helper = await MemberPublicInfoDto.create(
                 await helper_entity.awaitable_attrs.member
@@ -466,7 +496,6 @@ class HelpersController(BaseController):
                 user.username,
             )
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/AddHelper/{task_id}/Helper/{member_id}",
             )
@@ -477,7 +506,7 @@ class HelpersController(BaseController):
             return updated_task
 
     async def remove_helper(
-        self, task_id: int, member_id: int, user: User
+        self, *, task_id: int, member_id: int, user: User
     ) -> HelperTaskDto:
         """Remove a helper from a task."""
         with self.database_action(
@@ -486,7 +515,7 @@ class HelpersController(BaseController):
             details={"task_id": task_id, "member_id": member_id},
         ) as session:
             original_task = await self._get_task_by_id(
-                task_id, published=True, session=session
+                task_id=task_id, published=True, session=session
             )
             task_entity = original_task.get_entity()
 
@@ -518,7 +547,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/RemoveHelper/{task_id}/Helper/{member_id}",
             )
@@ -530,14 +558,16 @@ class HelpersController(BaseController):
 
             return updated_task
 
-    async def sign_up_as_captain(self, task_id: int, user: User) -> HelperTaskDto:
+    async def sign_up_as_captain(self, *, task_id: int, user: User) -> HelperTaskDto:
         """Sign up the current user as captain for a task."""
         with self.database_action(
             action="Helper Task / Sign Up As Captain",
             user=user,
             details={"task_id": task_id},
         ) as session:
-            task = await self._get_task_by_id(task_id, published=True, session=session)
+            task = await self._get_task_by_id(
+                task_id=task_id, published=True, session=session
+            )
 
             await self._check_can_sign_up_as_captain(
                 task=task,
@@ -557,19 +587,21 @@ class HelpersController(BaseController):
                 user.username,
             )
 
-            self._audit_log(session, user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
+            self._audit_log(user, f"Helpers/Tasks/SignUpAsCaptain/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
             return updated_task
 
-    async def sign_up_as_helper(self, task_id: int, user: User) -> HelperTaskDto:
+    async def sign_up_as_helper(self, *, task_id: int, user: User) -> HelperTaskDto:
         """Sign up the current user as helper for a task."""
         with self.database_action(
             action="Helper Task / Sign Up As Helper",
             user=user,
             details={"task_id": task_id},
         ) as session:
-            task = await self.get_task_by_id(task_id, published=True, session=session)
+            task = await self.get_task_by_id(
+                task_id=task_id, published=True, session=session
+            )
 
             await self._check_can_sign_up_as_helper(
                 task=task,
@@ -585,7 +617,7 @@ class HelpersController(BaseController):
             session.commit()
 
             updated_task = await self.get_task_by_id(
-                task_id, published=True, session=session
+                task_id=task_id, published=True, session=session
             )
             self._logger.info(
                 "Signed up as helper for task: %s, user: %s",
@@ -593,13 +625,13 @@ class HelpersController(BaseController):
                 user.username,
             )
 
-            self._audit_log(session, user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
+            self._audit_log(user, f"Helpers/Tasks/SignUpAsHelper/{task_id}")
             self._run_in_background(self._notifications.on_sign_up(updated_task, user))
 
             return updated_task
 
     async def mark_as_done(
-        self, task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User
+        self, *, task_id: int, request: HelperTaskMarkAsDoneRequestDto, user: User
     ) -> HelperTaskDto:
         """Mark a task as done."""
         with self.database_action(
@@ -607,7 +639,9 @@ class HelpersController(BaseController):
             user=user,
             details={"task_id": task_id, "request": request},
         ) as session:
-            task = await self._get_task_by_id(task_id, published=True, session=session)
+            task = await self._get_task_by_id(
+                task_id=task_id, published=True, session=session
+            )
 
             if task.state != HelperTaskState.PENDING:
                 msg = "Task already marked as done"
@@ -627,7 +661,7 @@ class HelpersController(BaseController):
                 "Marked task as done: %s, user: %s", updated_task.id, user.username
             )
 
-            self._audit_log(session, user, f"Helpers/Tasks/MarkAsDone/{task_id}")
+            self._audit_log(user, f"Helpers/Tasks/MarkAsDone/{task_id}")
             self._run_in_background(
                 self._notifications.on_mark_as_done(updated_task, user)
             )
@@ -635,7 +669,7 @@ class HelpersController(BaseController):
             return updated_task
 
     async def validate(
-        self, task_id: int, request: HelperTaskValidationRequestDto, user: User
+        self, *, task_id: int, request: HelperTaskValidationRequestDto, user: User
     ) -> HelperTaskDto:
         """Validate a task."""
         with self.database_action(
@@ -643,7 +677,9 @@ class HelpersController(BaseController):
             user=user,
             details={"task_id": task_id, "request": request},
         ) as session:
-            task = await self._get_task_by_id(task_id, published=True, session=session)
+            task = await self._get_task_by_id(
+                task_id=task_id, published=True, session=session
+            )
 
             if task.state == HelperTaskState.VALIDATED:
                 msg = "Task already validated"
@@ -672,7 +708,6 @@ class HelpersController(BaseController):
             )
 
             self._audit_log(
-                session,
                 user,
                 f"Helpers/Tasks/Validate/{task_id}",
             )
@@ -710,7 +745,7 @@ class HelpersController(BaseController):
 
         for task in validated_urgent_tasks:
             self._audit_log(
-                session, user, f"Helpers/Tasks/UnsetUrgentForValidatedTask/{task.id}"
+                user, f"Helpers/Tasks/UnsetUrgentForValidatedTask/{task.id}"
             )
 
     async def send_daily_reminders(self) -> None:
@@ -920,8 +955,8 @@ class HelpersController(BaseController):
 
     async def _find_task_by_id(
         self,
-        task_id: int,
         *,
+        task_id: int,
         published: bool | None,
         session: Session | None = None,
     ) -> HelperTaskDto | None:
@@ -932,13 +967,13 @@ class HelpersController(BaseController):
 
     async def _get_task_by_id(
         self,
-        task_id: int,
         *,
+        task_id: int,
         published: bool | None = None,
         session: Session | None = None,
     ) -> HelperTaskDto:
         task = await self._find_task_by_id(
-            task_id, published=published, session=session
+            task_id=task_id, published=published, session=session
         )
         if task:
             return task
@@ -1073,3 +1108,292 @@ class HelpersController(BaseController):
 
     def _starts_in_the_future(self, task: HelperTaskDto) -> bool:
         return bool(task.starts_at and task.starts_at > get_now())
+
+    async def find_attachments_for_task(
+        self, *, task_id: int, published: bool | None = None
+    ) -> Sequence[AttachmentMetadataDto]:
+        """Return attachments for a helper task (without content)."""
+        # Check that the task is visible
+        task = await self.get_task_by_id(task_id=task_id, published=published)
+        return await self.database_context.query_all(
+            select(AttachmentEntity)
+            .options(*_ATTACHMENT_WITHOUT_BLOBS)
+            .where(
+                AttachmentEntity.ref_id == task.id,
+                AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+            )
+            .order_by(AttachmentEntity.created, AttachmentEntity.id),
+            async_transformer=AttachmentMetadataDto.create,
+        )
+
+    async def get_attachment_with_content(
+        self, *, task_id: int, attachment_id: int, published: bool | None = None
+    ) -> AttachmentDownloadDto:
+        """Return a single attachment with content for download."""
+        with self.database_context.session() as session:
+            # Check that the task is visible
+            task = await self.get_task_by_id(
+                task_id=task_id, published=published, session=session
+            )
+
+            entity = session.scalars(
+                select(AttachmentEntity)
+                .options(defer(AttachmentEntity.thumbnail))
+                .where(
+                    AttachmentEntity.id == attachment_id,
+                    AttachmentEntity.ref_id == task.id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+            ).first()
+            if entity is None:
+                msg = "Attachment not found"
+                raise ControllerNotFoundError(msg)
+            return AttachmentDownloadDto(
+                name=entity.name,
+                mime_type=entity.mime_type,
+                content=entity.content,
+            )
+
+    async def get_attachment_owner_id(
+        self, *, task_id: int, attachment_id: int, published: bool | None = None
+    ) -> int:
+        """Return the owner_id of an attachment."""
+        with self.database_context.session() as session:
+            # Check that the task is visible
+            task = await self.get_task_by_id(
+                task_id=task_id, published=published, session=session
+            )
+
+            owner_id = session.execute(
+                select(AttachmentEntity.owner_id).where(
+                    AttachmentEntity.id == attachment_id,
+                    AttachmentEntity.ref_id == task.id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+            ).scalar_one_or_none()
+            if owner_id is None:
+                msg = "Attachment not found"
+                raise ControllerNotFoundError(msg)
+            return owner_id
+
+    async def upload_attachment(
+        self,
+        *,
+        task_id: int,
+        file: UploadFile,
+        description: str | None,
+        user: User,
+        published: bool | None = None,
+    ) -> AttachmentMetadataDto:
+        """Upload an attachment."""
+        if not file.filename:
+            msg = "Filename is required"
+            raise ControllerBadRequestError(msg)
+        filename = sanitise_filename(file.filename)
+        try:
+            mime_type = resolve_attachment_mime_type(filename)
+        except ValueError as exc:
+            msg = f"File type not allowed: {file.filename}"
+            raise ControllerBadRequestError(msg) from exc
+
+        if description and len(description) > ATTACHMENT_MAX_DESCRIPTION_LENGTH:
+            msg = (
+                "Description too long "
+                f"(max {ATTACHMENT_MAX_DESCRIPTION_LENGTH} characters)"
+            )
+            raise ControllerBadRequestError(msg)
+
+        content = await self._read_upload_with_size_limit(
+            file=file,
+            max_size_bytes=ATTACHMENT_MAX_FILE_SIZE_BYTES,
+        )
+
+        with self.database_action(
+            action="Helpers / Upload Attachment",
+            user=user,
+            details={"task_id": task_id, "filename": filename},
+        ) as session:
+            # Check that the task is visible
+            task = await self.get_task_by_id(
+                task_id=task_id, published=published, session=session
+            )
+
+            # Serialise concurrent uploads by task
+            locked = session.execute(
+                select(HelperTaskEntity.id)
+                .where(HelperTaskEntity.id == task_id)
+                .with_for_update()
+            ).scalar_one_or_none()
+            if locked is None:
+                msg = "Task not found"
+                raise ControllerNotFoundError(msg)
+            count = session.execute(
+                select(func.count()).where(
+                    AttachmentEntity.ref_id == task_id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+            ).scalar_one()
+            if count >= ATTACHMENT_MAX_PER_TASK:
+                msg = (
+                    f"Task already has {ATTACHMENT_MAX_PER_TASK} attachments (maximum)"
+                )
+                raise ControllerBadRequestError(msg)
+
+            entity = AttachmentEntity(
+                name=filename,
+                content=content,
+                description=description,
+                mime_type=mime_type,
+                size_bytes=len(content),
+                owner_id=user.member_id,
+                created=get_now(),
+                thumbnail=None,
+                ref_id=task_id,
+                ref_class_id=ATTACHMENT_REF_CLASS_ID,
+            )
+            session.add(entity)
+            session.commit()
+            session.refresh(entity, ["id"])
+
+            self._logger.info(
+                "Uploaded attachment: %s, task: %s, filename: %r, user: %s",
+                entity.id,
+                task_id,
+                filename,
+                user.username,
+            )
+
+            self._audit_log(
+                user,
+                f"Helpers/Tasks/UploadAttachment/{task_id}",
+                {
+                    "attachment_id": entity.id,
+                    "filename": filename,
+                    "description": description,
+                    "mime_type": mime_type,
+                    "size_bytes": len(content),
+                },
+            )
+
+            result = await AttachmentMetadataDto.create(entity)
+
+        self._notifications.on_attachment_upload(task, filename, user)
+
+        return result
+
+    async def delete_attachment(
+        self, *, task_id: int, attachment_id: int, user: User
+    ) -> None:
+        """Delete an attachment."""
+        task = await self.get_task_by_id(task_id=task_id, published=None)
+        with self.database_action(
+            action="Helpers / Delete Attachment",
+            user=user,
+            details={"task_id": task_id, "attachment_id": attachment_id},
+        ) as session:
+            entity = session.scalars(
+                select(AttachmentEntity)
+                .options(
+                    defer(AttachmentEntity.content),
+                    defer(AttachmentEntity.thumbnail),
+                )
+                .where(
+                    AttachmentEntity.id == attachment_id,
+                    AttachmentEntity.ref_id == task_id,
+                    AttachmentEntity.ref_class_id == ATTACHMENT_REF_CLASS_ID,
+                )
+            ).first()
+            if entity is None:
+                msg = "Attachment not found"
+                raise ControllerNotFoundError(msg)
+
+            deleted_filename = entity.name
+            audit_data = {
+                "attachment_id": attachment_id,
+                "filename": entity.name,
+                "description": entity.description,
+                "mime_type": entity.mime_type,
+                "size_bytes": entity.size_bytes,
+                "owner_id": entity.owner_id,
+            }
+
+            session.delete(entity)
+            session.commit()
+
+            self._logger.info(
+                "Deleted attachment: %s, task: %s, filename: %r, user: %s",
+                attachment_id,
+                task_id,
+                entity.name,
+                user.username,
+            )
+
+            self._audit_log(
+                user,
+                f"Helpers/Tasks/DeleteAttachment/{task_id}",
+                audit_data,
+            )
+
+        self._notifications.on_attachment_delete(task, deleted_filename, user)
+
+    async def transcode_image_to_jpeg(
+        self,
+        *,
+        file: UploadFile,
+        user: User,
+    ) -> bytes:
+        """Transcode an image to JPEG bytes."""
+        if not file.filename:
+            self._logger.warning(
+                "Transcode rejected (no filename): user=%s", user.username
+            )
+            msg = "Filename is required"
+            raise ControllerBadRequestError(msg)
+
+        filename = sanitise_filename(file.filename)
+
+        if not any(
+            filename.lower().endswith(ext) for ext in TRANSCODE_ALLOWED_EXTENSIONS
+        ):
+            self._logger.warning(
+                "Transcode rejected (unsupported extension): user=%s, filename=%r",
+                user.username,
+                file.filename,
+            )
+            allowed = ", ".join(sorted(TRANSCODE_ALLOWED_EXTENSIONS))
+            msg = (
+                f"Unsupported file type for transcoding: {file.filename} "
+                f"(allowed: {allowed})"
+            )
+            raise ControllerBadRequestError(msg)
+
+        content = await self._read_upload_with_size_limit(
+            file=file,
+            max_size_bytes=ATTACHMENT_MAX_FILE_SIZE_BYTES,
+        )
+
+        start = time.monotonic()
+        try:
+            result = await transcode_to_jpeg(content)
+        except ImageTranscodeError as exc:
+            self._logger.warning(
+                "Transcode failed (decode error): user=%s, filename=%r, input_bytes=%d",
+                user.username,
+                file.filename,
+                len(content),
+                exc_info=True,
+            )
+            msg = f"Invalid image: {file.filename}"
+            raise ControllerBadRequestError(msg) from exc
+
+        elapsed_ms = int((time.monotonic() - start) * 1000)
+        self._logger.info(
+            "Transcoded image to JPEG: user=%s, filename=%r, "
+            "input_bytes=%d, output_bytes=%d, elapsed_ms=%d",
+            user.username,
+            file.filename,
+            len(content),
+            len(result),
+            elapsed_ms,
+        )
+        return result

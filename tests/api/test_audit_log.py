@@ -1,16 +1,13 @@
-"""Audit log API tests."""
-
 from datetime import timedelta
 
 from tests.api.conftest import client
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import AuditLogEntryEntity
 from ycc_hull.utils import get_now
 
 
 def _seed_audit_log_entries() -> list[int]:
-    """Insert test audit log entries and return their IDs."""
     now = get_now()
     with DatabaseContextHolder.context.session() as session:
         entries = [

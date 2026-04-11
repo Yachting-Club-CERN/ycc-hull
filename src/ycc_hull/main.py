@@ -119,8 +119,8 @@ async def controller_409_exception_handler(
 
 
 app.add_middleware(
-    CORSMiddleware,  # type: ignore[arg-type]
-    allow_origins=CONFIG.cors_origins,
+    CORSMiddleware,
+    allow_origins=CONFIG.cors_origins,  # ty: ignore[invalid-argument-type]
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

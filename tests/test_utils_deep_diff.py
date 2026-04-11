@@ -1,5 +1,3 @@
-"""Tests for the utils.deep_diff."""
-
 from ycc_hull.utils import deep_diff
 
 

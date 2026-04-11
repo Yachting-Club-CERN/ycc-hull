@@ -1,5 +1,3 @@
-"""Helpers DTO tests."""
-
 from datetime import datetime
 
 import pytest

@@ -94,7 +94,7 @@ def _get_field_info_extra_bool(
     field_info: FieldInfo | None, key: str, *, default: bool
 ) -> bool:
     if field_info and field_info.json_schema_extra:
-        value = field_info.json_schema_extra.get(key, default)  # type: ignore[arg-type]
+        value = field_info.json_schema_extra.get(key, default)  # ty: ignore[unresolved-attribute]
 
         if isinstance(value, bool):
             return value

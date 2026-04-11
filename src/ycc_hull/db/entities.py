@@ -50,6 +50,7 @@ from sqlalchemy import (
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+from ycc_hull.constants import ATTACHMENT_MAX_DESCRIPTION_LENGTH
 from ycc_hull.utils import short_type_name
 
 
@@ -79,6 +80,28 @@ class AuditLogEntryEntity(BaseEntity):
     principal: Mapped[str] = mapped_column(NVARCHAR(200))
     description: Mapped[str] = mapped_column(NVARCHAR(200))
     data: Mapped[str | None] = mapped_column(UnicodeText)
+
+
+class AttachmentEntity(BaseEntity):
+    """Represents a file attachment."""
+
+    __tablename__ = "attachment"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(VARCHAR(200))
+    description: Mapped[str | None] = mapped_column(
+        VARCHAR(ATTACHMENT_MAX_DESCRIPTION_LENGTH)
+    )
+    content: Mapped[bytes] = mapped_column(BLOB)
+    mime_type: Mapped[str] = mapped_column(VARCHAR(100))
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    owner_id: Mapped[int] = mapped_column(Integer, ForeignKey("members.id"))
+    created: Mapped[datetime] = mapped_column(DateTime)
+    thumbnail: Mapped[bytes | None] = mapped_column(BLOB)
+    ref_id: Mapped[int | None] = mapped_column(Integer)
+    ref_class_id: Mapped[int | None] = mapped_column(Integer)
+
+    owner: Mapped["MemberEntity"] = relationship(foreign_keys=owner_id, lazy="joined")
 
 
 class BoatEntity(BaseEntity):

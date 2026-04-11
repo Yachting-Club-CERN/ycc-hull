@@ -46,3 +46,29 @@ SURVEILLANCE_TASK_PREFIX = "Surveillance"
 SURVEILLANCE_SIGN_UP_LIMIT_MONTH = 5
 SURVEILLANCE_SIGN_UP_LIMIT_DAY = 1
 SURVEILLANCE_SIGN_UP_LIMIT_STR = "1 May"
+
+# Only these are supported - do not rely on OS specific MIME type databases
+ATTACHMENT_ALLOWED_EXTENSIONS_TO_MIME_TYPES: dict[str, str] = {
+    ".jpeg": "image/jpeg",
+    ".jpg": "image/jpeg",
+    ".png": "image/png",
+    ".webp": "image/webp",
+}
+ATTACHMENT_MAX_DESCRIPTION_LENGTH = 200
+ATTACHMENT_MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024
+ATTACHMENT_MAX_PER_TASK = 100
+ATTACHMENT_NOTIFICATION_DEBOUNCE_SECONDS = 60
+ATTACHMENT_REF_CLASS_ID = 1968
+
+TRANSCODE_ALLOWED_EXTENSIONS: frozenset[str] = frozenset({".heic", ".heif"})
+TRANSCODE_JPEG_QUALITY = 85
+# Hard cap on simultaneous transcodes (CERN PaaS resource limits...)
+# Note with 5 and heavy uploads OOM can easily happen with 2 GB RAM...
+# And ideally iPhone can transcode this on the client side, this is only for
+# Mac + Firefox and similar setups
+TRANSCODE_MAX_CONCURRENCY = 2
+# Decompression bomb defence
+TRANSCODE_MAX_DECODED_PIXELS = 100 * 1000 * 1000
+TRANSCODE_MAX_DIMENSION = 2000
+
+UPLOAD_BUFFER_CHUNK_SIZE = 64 * 1024

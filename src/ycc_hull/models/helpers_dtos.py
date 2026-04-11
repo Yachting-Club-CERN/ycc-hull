@@ -12,6 +12,7 @@ from pydantic import (
 )
 
 from ycc_hull.db.entities import (
+    AttachmentEntity,
     HelpersAppPermissionEntity,
     HelperTaskCategoryEntity,
     HelperTaskEntity,
@@ -20,6 +21,41 @@ from ycc_hull.db.entities import (
 )
 from ycc_hull.models.base import CamelisedBaseModel, CamelisedBaseModelWithEntity
 from ycc_hull.models.dtos import LicenceInfoDto, MemberPublicInfoDto
+
+
+class AttachmentDownloadDto(CamelisedBaseModel):
+    """DTO for attachment download."""
+
+    name: str
+    mime_type: str
+    content: bytes
+
+
+class AttachmentMetadataDto(CamelisedBaseModel):
+    """DTO for attachment metadata (excludes binary content)."""
+
+    id: int
+    name: str
+    description: str | None
+    mime_type: str
+    size_bytes: int
+    owner: MemberPublicInfoDto
+    created: AwareDatetime
+
+    @staticmethod
+    async def create(attachment: AttachmentEntity) -> "AttachmentMetadataDto":
+        """Create a DTO from an attachment entity."""
+        return AttachmentMetadataDto(
+            id=attachment.id,
+            name=attachment.name,
+            description=attachment.description,
+            mime_type=attachment.mime_type,
+            size_bytes=attachment.size_bytes,
+            owner=await MemberPublicInfoDto.create(
+                await attachment.awaitable_attrs.owner
+            ),
+            created=attachment.created,
+        )
 
 
 class HelperTaskType(StrEnum):
@@ -210,7 +246,7 @@ class HelperTaskDto(CamelisedBaseModelWithEntity[HelperTaskEntity]):
                 await HelperTaskHelperDto.create_from_member_entity(
                     # Either both or none are present
                     captain,
-                    task.captain_signed_up_at,  # type: ignore[arg-type]
+                    task.captain_signed_up_at,  # ty: ignore[invalid-argument-type]
                 )
                 if task.captain
                 else None
@@ -362,6 +398,7 @@ def get_task_year(task: HelperTaskDto | HelperTaskMutationRequestBaseDto) -> int
     raise ValueError(msg)
 
 
+AttachmentMetadataDto.model_rebuild()
 HelpersAppPermissionDto.model_rebuild()
 HelpersAppPermissionGrantRequestDto.model_rebuild()
 HelpersAppPermissionUpdateRequestDto.model_rebuild()

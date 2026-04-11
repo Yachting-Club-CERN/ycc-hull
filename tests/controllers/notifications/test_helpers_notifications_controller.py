@@ -1,10 +1,3 @@
-"""Unit tests for HelpersNotificationsController.
-
-These tests verify email construction and sending logic for each notification type.
-SmtpConnection is mocked globally via conftest.py; here we use patch_notifications()
-to control the enabled/disabled paths.
-"""
-
 from email.message import EmailMessage
 from email.utils import getaddresses
 from unittest.mock import AsyncMock, patch
@@ -27,13 +20,11 @@ from ycc_hull.utils import DiffEntry
 
 
 def _sent_message(send_mock: AsyncMock) -> EmailMessage:
-    """Extract the EmailMessage from the first send_message call."""
     send_mock.assert_called_once()
     return send_mock.call_args[0][0]
 
 
 def _to_emails(msg: EmailMessage) -> set[str]:
-    """Extract To email addresses as a set."""
     raw = msg["To"]
     if not raw:
         return set()
@@ -41,7 +32,6 @@ def _to_emails(msg: EmailMessage) -> set[str]:
 
 
 def _cc_emails(msg: EmailMessage) -> set[str]:
-    """Extract Cc email addresses as a set."""
     raw = msg["Cc"]
     if not raw:
         return set()
@@ -49,7 +39,6 @@ def _cc_emails(msg: EmailMessage) -> set[str]:
 
 
 def _subject(msg: EmailMessage) -> str:
-    """Extract the Subject header."""
     return msg["Subject"]
 
 
@@ -583,7 +572,6 @@ async def test_reminders_empty_lists_sends_nothing(
 
 @pytest.mark.asyncio
 async def test_reminders_upcoming_with_warnings_includes_contact() -> None:
-    """When a task has warnings, the contact is added to TO."""
     contact = make_member(member_id=10, email="contact@example.com")
     task = make_task_dto(contact=contact, captain=None, helpers=[], helper_min_count=2)
 
@@ -599,7 +587,6 @@ async def test_reminders_upcoming_with_warnings_includes_contact() -> None:
 
 @pytest.mark.asyncio
 async def test_reminders_upcoming_without_warnings_no_contact_in_to() -> None:
-    """When a task has no warnings, the contact is NOT in TO."""
     contact = make_member(member_id=10, email="contact@example.com")
     captain_member = make_member(member_id=77, email="cap@example.com")
     helper1 = make_helper(member=make_member(member_id=50, email="h1@example.com"))

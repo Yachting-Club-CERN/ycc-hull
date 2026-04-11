@@ -1,5 +1,3 @@
-"""Unit tests for _get_task_warnings and _HelperTaskChanges."""
-
 from tests.factories import make_helper, make_member, make_task_dto
 from ycc_hull.controllers.notifications.format_utils import (
     format_helper_task_min_max_helpers,

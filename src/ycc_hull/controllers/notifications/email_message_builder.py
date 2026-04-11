@@ -59,7 +59,7 @@ class EmailMessageBuilder:
                 self._extract_address(recipient) for recipient in contact if recipient
             )
         else:
-            target_set.add(self._extract_address(contact))  # type: ignore[arg-type]
+            target_set.add(self._extract_address(contact))  # ty: ignore[invalid-argument-type]
 
     def from_(self, contact: EmailContact) -> "EmailMessageBuilder":
         """Set the FROM address."""

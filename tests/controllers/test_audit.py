@@ -1,5 +1,3 @@
-"""Tests for audit log entry creation and JSON serialisation."""
-
 from datetime import UTC, date, datetime
 
 import pytest

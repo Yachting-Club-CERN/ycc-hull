@@ -1,5 +1,3 @@
-"""Helpers API load tests."""
-
 import random
 
 from locust import HttpUser, task
@@ -21,13 +19,10 @@ OTHER_ID = get_user_id(OTHER_ACCESS_TOKEN)
 
 
 def get_random_access_token() -> str:
-    """Return a random access token for load testing."""
     return random.choice([ADMIN_ACCESS_TOKEN, OTHER_ACCESS_TOKEN])  # noqa: S311
 
 
 class HelpersLoadTest(HttpUser):
-    """Helpers API load test."""
-
     @task
     def list_tasks(self) -> None:
         """List all tasks."""

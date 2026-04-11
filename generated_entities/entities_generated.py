@@ -141,7 +141,7 @@ t_holidays = Table(
 class ImportantDates(Base):
     __tablename__ = "important_dates"
     __table_args__ = (
-        PrimaryKeyConstraint("id", name="sys_c008361"),
+        PrimaryKeyConstraint("id", name="sys_c008369"),
         Index("important_dates_uq", "what", unique=True),
     )
 
@@ -152,7 +152,7 @@ class ImportantDates(Base):
 
 class ImportantValues(Base):
     __tablename__ = "important_values"
-    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c008317"),)
+    __table_args__ = (PrimaryKeyConstraint("id", name="sys_c008318"),)
 
     id: Mapped[float] = mapped_column(NUMBER(10, 0, False), primary_key=True)
     what: Mapped[str] = mapped_column(VARCHAR(50), nullable=False)
@@ -190,7 +190,7 @@ class Infolicences(Base):
 
 class InterestLevels(Base):
     __tablename__ = "interest_levels"
-    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c008363"),)
+    __table_args__ = (PrimaryKeyConstraint("interest_level", name="sys_c008371"),)
 
     interest_level: Mapped[float] = mapped_column(NUMBER(1, 0, False), primary_key=True)
     description: Mapped[str | None] = mapped_column(VARCHAR(100))
@@ -257,6 +257,9 @@ class Members(Base):
     )
     special_talents: Mapped[str | None] = mapped_column(VARCHAR(1000))
 
+    attachment: Mapped[list["Attachment"]] = relationship(
+        "Attachment", back_populates="owner"
+    )
     boats: Mapped[list["Boats"]] = relationship("Boats", back_populates="members")
     committee: Mapped[list["Committee"]] = relationship(
         "Committee", back_populates="member"
@@ -299,14 +302,49 @@ t_membership = Table(
 )
 
 
+class Attachment(Base):
+    __tablename__ = "attachment"
+    __table_args__ = (
+        ForeignKeyConstraint(["owner_id"], ["members.id"], name="sys_c008399"),
+        PrimaryKeyConstraint("id", name="sys_c008347"),
+    )
+
+    id: Mapped[int] = mapped_column(
+        Integer,
+        Identity(
+            on_null=False,
+            start=1,
+            increment=1,
+            minvalue=1,
+            maxvalue=9999999999999999999999999999,
+            cycle=False,
+            cache=20,
+            order=False,
+        ),
+        primary_key=True,
+    )
+    name: Mapped[str] = mapped_column(VARCHAR(200), nullable=False)
+    content: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
+    mime_type: Mapped[str] = mapped_column(VARCHAR(100), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
+    owner_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    created: Mapped[datetime.datetime] = mapped_column(DateTime, nullable=False)
+    description: Mapped[str | None] = mapped_column(VARCHAR(200))
+    thumbnail: Mapped[bytes | None] = mapped_column(LargeBinary)
+    ref_id: Mapped[int | None] = mapped_column(Integer)
+    ref_class_id: Mapped[int | None] = mapped_column(Integer)
+
+    owner: Mapped["Members"] = relationship("Members", back_populates="attachment")
+
+
 class Boats(Base):
     __tablename__ = "boats"
     __table_args__ = (
-        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c008391"),
-        PrimaryKeyConstraint("boat_id", name="sys_c008356"),
-        Index("sys_c008357", "name", unique=True),
-        Index("sys_c008358", "ycc_num", unique=True),
-        Index("sys_c008359", "table_pos", unique=True),
+        ForeignKeyConstraint(["maintainer_id2"], ["members.id"], name="sys_c008400"),
+        PrimaryKeyConstraint("boat_id", name="sys_c008364"),
+        Index("sys_c008365", "name", unique=True),
+        Index("sys_c008366", "ycc_num", unique=True),
+        Index("sys_c008367", "table_pos", unique=True),
     )
 
     boat_id: Mapped[float] = mapped_column(NUMBER(3, 0, False), primary_key=True)
@@ -338,7 +376,7 @@ class Committee(Base):
     __table_args__ = (
         ForeignKeyConstraint(["member_id"], ["members.id"], name="committee_member_fk"),
         PrimaryKeyConstraint("member_id", "cyear", name="committee_pk"),
-        Index("sys_c008371", "commid", unique=True),
+        Index("sys_c008379", "commid", unique=True),
     )
 
     member_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False), primary_key=True)
@@ -525,7 +563,7 @@ class Licences(Base):
         ForeignKeyConstraint(
             ["licence_id"], ["infolicences.infoid"], name="licences_licence_id_fk"
         ),
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c008396"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c008405"),
         PrimaryKeyConstraint("licence_id", "member_id", name="licence_pk"),
     )
 
@@ -545,9 +583,9 @@ class Licences(Base):
 class WebLogon(Members):
     __tablename__ = "web_logon"
     __table_args__ = (
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c008398"),
-        PrimaryKeyConstraint("member_id", name="sys_c008382"),
-        Index("sys_c008383", "logon_id", unique=True),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c008407"),
+        PrimaryKeyConstraint("member_id", name="sys_c008390"),
+        Index("sys_c008391", "logon_id", unique=True),
     )
 
     member_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False), primary_key=True)
@@ -564,9 +602,9 @@ class WebLogon(Members):
 class BoatMaintainer(Base):
     __tablename__ = "boat_maintainer"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c008392"),
-        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c008393"),
-        PrimaryKeyConstraint("id", name="sys_c008346"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c008401"),
+        ForeignKeyConstraint(["member_id"], ["members.id"], name="sys_c008402"),
+        PrimaryKeyConstraint("id", name="sys_c008354"),
     )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -611,8 +649,8 @@ class HelperTaskHelpers(Base):
 class Reservations(Base):
     __tablename__ = "reservations"
     __table_args__ = (
-        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c008397"),
-        PrimaryKeyConstraint("res_id", name="sys_c008379"),
+        ForeignKeyConstraint(["boat_id"], ["boats.boat_id"], name="sys_c008406"),
+        PrimaryKeyConstraint("res_id", name="sys_c008387"),
     )
 
     res_id: Mapped[float] = mapped_column(NUMBER(asdecimal=False), primary_key=True)

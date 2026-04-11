@@ -9,11 +9,16 @@ from contextlib import contextmanager
 from pprint import pformat
 from typing import Any
 
+from fastapi import UploadFile
 from sqlalchemy.exc import DatabaseError
 from sqlalchemy.orm import Session
 
+from ycc_hull.constants import UPLOAD_BUFFER_CHUNK_SIZE
 from ycc_hull.controllers.audit import create_audit_entry
-from ycc_hull.controllers.errors import ControllerConflictError
+from ycc_hull.controllers.errors import (
+    ControllerBadRequestError,
+    ControllerConflictError,
+)
 from ycc_hull.db.context import DatabaseContext, DatabaseContextHolder
 from ycc_hull.db.entities import BaseEntity
 from ycc_hull.models.base import CamelisedBaseModel
@@ -109,11 +114,12 @@ class BaseController(metaclass=ABCMeta):  # noqa: B024
             setattr(entity, field, value)
 
     def _audit_log(
-        self, session: Session, user: User, description: str, data: dict | None = None
+        self, user: User, description: str, data: dict | None = None
     ) -> None:
         async def wrapper() -> None:
-            session.add(create_audit_entry(user, description, data))
-            session.commit()
+            with self.database_context.session() as session:
+                session.add(create_audit_entry(user, description, data))
+                session.commit()
 
         self._run_in_background(wrapper())
 
@@ -127,3 +133,18 @@ class BaseController(metaclass=ABCMeta):  # noqa: B024
         task = asyncio.create_task(wrapper())
         self._background_tasks.add(task)
         task.add_done_callback(self._background_tasks.discard)
+
+    async def _read_upload_with_size_limit(
+        self,
+        *,
+        file: UploadFile,
+        max_size_bytes: int,
+    ) -> bytes:
+        """Read an UploadFile in chunks, aborting early if it exceeds the limit."""
+        content = bytearray()
+        while chunk := await file.read(UPLOAD_BUFFER_CHUNK_SIZE):
+            content.extend(chunk)
+            if len(content) > max_size_bytes:
+                msg = f"File too large (max {max_size_bytes} bytes)"
+                raise ControllerBadRequestError(msg)
+        return bytes(content)

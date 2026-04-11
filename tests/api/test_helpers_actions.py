@@ -1,5 +1,3 @@
-"""Helpers API tests - task actions (captain/helper, mark-as-done, validate)."""
-
 from tests.api.conftest import client
 from tests.api.helpers_test_utils import (
     ANY,
@@ -15,7 +13,7 @@ from tests.api.helpers_test_utils import (
     sign_up_captain,
     sign_up_helper,
 )
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 
 # ==============================================================================
 # Set Captain / Remove Captain
@@ -415,7 +413,7 @@ def test_mark_as_done_as_contact() -> None:
         contact_id=2,
         deadline=f"{past_day}T20:00:00",
     )
-    FakeAuth.set_helpers_app_editor()  # editor = member 2 = contact
+    FakeAuth.set_helpers_app_editor()
 
     response = client.post(
         f"/api/v1/helpers/tasks/{task['id']}/mark-as-done",
@@ -582,6 +580,28 @@ def test_validate_fails_if_not_admin_and_not_contact() -> None:
     assert response.json() == {
         "detail": "You do not have permission to validate this task"
     }
+
+
+def test_validate_allowed_for_contact_editor() -> None:
+    task = create_deadline_task(
+        client,
+        published=True,
+        deadline=f"{past_day}T20:00:00",
+        contact_id=2,
+    )
+    task_id = task["id"]
+
+    FakeAuth.set_helpers_app_admin()
+    client.post(f"/api/v1/helpers/tasks/{task_id}/mark-as-done", json={"comment": None})
+
+    FakeAuth.set_helpers_app_editor()
+    response = client.post(
+        f"/api/v1/helpers/tasks/{task_id}/validate",
+        json={"comment": None},
+    )
+
+    assert response.status_code == 200
+    assert isinstance(response.json()["validatedAt"], str)
 
 
 def test_validate_unsets_urgent_for_validated_tasks() -> None:

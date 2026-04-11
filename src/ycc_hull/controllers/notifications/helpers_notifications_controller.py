@@ -5,9 +5,13 @@ import copy
 import logging
 import random
 from collections import defaultdict
+from dataclasses import dataclass, field
+from enum import StrEnum
+from html import escape
 from typing import Any
 
 from ycc_hull.config import CONFIG
+from ycc_hull.constants import ATTACHMENT_NOTIFICATION_DEBOUNCE_SECONDS
 from ycc_hull.controllers.base_controller import BaseController
 from ycc_hull.controllers.notifications.email_message_builder import EmailMessageBuilder
 from ycc_hull.controllers.notifications.format_utils import (
@@ -51,6 +55,26 @@ _SIGNATURE = """
     YCC
 </p>
 """
+
+
+class _AttachmentAction(StrEnum):
+    UPLOAD = "upload"
+    DELETE = "delete"
+
+
+# Debounce key: (task_id, user_member_id, action)
+_AttachmentDebounceKey = tuple[int, int, _AttachmentAction]
+
+
+@dataclass
+class _AttachmentDebounceBucket:
+    """Collects attachment filenames while waiting for the debounce timer."""
+
+    task: HelperTaskDto
+    user: User
+    action: _AttachmentAction
+    filenames: list[str] = field(default_factory=list)
+    timer_handle: asyncio.TimerHandle | None = None
 
 
 class _HelperTaskChanges:
@@ -214,6 +238,13 @@ class _HelperTaskChanges:
 
 class HelpersNotificationsController(BaseController):
     """Controller for sending helper task notifications."""
+
+    def __init__(self) -> None:
+        """Initialise the controller."""
+        super().__init__()
+        self._attachment_debounce: dict[
+            _AttachmentDebounceKey, _AttachmentDebounceBucket
+        ] = {}
 
     async def on_update(
         self,
@@ -404,6 +435,120 @@ from {task.contact.full_name}.</p>
 """
             )
             .build()
+        )
+
+        async with SmtpConnection() as smtp:
+            await smtp.send_message(message)
+
+    def on_attachment_upload(
+        self, task: HelperTaskDto, filename: str, user: User
+    ) -> None:
+        """Buffer an attachment upload notification (debounced)."""
+        self._debounce_attachment(task, filename, user, _AttachmentAction.UPLOAD)
+
+    def on_attachment_delete(
+        self, task: HelperTaskDto, filename: str, user: User
+    ) -> None:
+        """Buffer an attachment delete notification (debounced)."""
+        self._debounce_attachment(task, filename, user, _AttachmentAction.DELETE)
+
+    def _debounce_attachment(
+        self,
+        task: HelperTaskDto,
+        filename: str,
+        user: User,
+        action: _AttachmentAction,
+    ) -> None:
+        if not CONFIG.emails_enabled(self._logger):
+            return
+
+        key: _AttachmentDebounceKey = (task.id, user.member_id, action)
+        bucket = self._attachment_debounce.get(key)
+
+        if bucket is None:
+            bucket = _AttachmentDebounceBucket(task=task, user=user, action=action)
+            self._attachment_debounce[key] = bucket
+
+        bucket.filenames.append(filename)
+        # Always keep the latest task snapshot (participants may have changed)
+        bucket.task = task
+
+        if bucket.timer_handle is not None:
+            bucket.timer_handle.cancel()
+
+        loop = asyncio.get_running_loop()
+        bucket.timer_handle = loop.call_later(
+            ATTACHMENT_NOTIFICATION_DEBOUNCE_SECONDS,
+            lambda k=key: self._run_in_background(self._flush_attachment(k)),
+        )
+
+        self._logger.info(
+            "Attachment %s debounced: task=%d, user=%s, filename=%r, "
+            "queued=%d, debounce=%ds",
+            action.value,
+            task.id,
+            user.username,
+            filename,
+            len(bucket.filenames),
+            ATTACHMENT_NOTIFICATION_DEBOUNCE_SECONDS,
+        )
+
+    async def _flush_attachment(self, key: _AttachmentDebounceKey) -> None:
+        bucket = self._attachment_debounce.pop(key, None)
+        if bucket is None:
+            return
+
+        task = bucket.task
+        user = bucket.user
+        filenames = bucket.filenames
+        count = len(filenames)
+        filenames_html = ", ".join(f"<strong>{escape(f)}</strong>" for f in filenames)
+
+        if bucket.action == _AttachmentAction.UPLOAD:
+            if count == 1:
+                action_text = (
+                    f"{user.full_name} has added an attachment to this task: "
+                    f"{filenames_html} 📸"
+                )
+            else:
+                action_text = (
+                    f"{user.full_name} has added {count} attachments to this task: "
+                    f"{filenames_html} 📸"
+                )
+        elif count == 1:
+            action_text = (
+                f"{user.full_name} has removed an attachment from this task: "
+                f"{filenames_html}"
+            )
+        else:
+            action_text = (
+                f"{user.full_name} has removed {count} attachments from this task: "
+                f"{filenames_html}"
+            )
+
+        message = (
+            _task_notification_email_to_all_participants(task, user)
+            .content(
+                f"""
+{_DEAR_SAILORS}
+
+<p>{action_text}</p>
+
+{format_helper_task(task)}
+
+{_SIGNATURE}
+"""
+            )
+            .build()
+        )
+
+        self._logger.info(
+            "Sending batched attachment %s notification: task=%d, user=%s, "
+            "filenames=[%s]",
+            bucket.action.value,
+            task.id,
+            user.username,
+            ", ".join(repr(f) for f in filenames),
         )
 
         async with SmtpConnection() as smtp:

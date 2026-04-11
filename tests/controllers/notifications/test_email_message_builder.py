@@ -1,5 +1,3 @@
-"""Tests for EmailMessageBuilder."""
-
 import pytest
 
 from tests.factories import make_member, make_user
@@ -62,7 +60,9 @@ def test_extract_address_unsupported_type() -> None:
         TypeError,
         match=r"^Expected string, MemberPublicInfoDto or User, got 12345$",
     ):
-        builder._extract_address(12345)  # type: ignore[arg-type]  # noqa: SLF001
+        builder._extract_address(  # noqa: SLF001
+            12345  # ty: ignore[invalid-argument-type]
+        )
 
 
 # ==============================================================================
@@ -130,7 +130,6 @@ def test_build_with_cc() -> None:
 
 
 def test_build_cc_deduplicates_with_to() -> None:
-    """CC recipients already in TO should be removed."""
     msg = _valid_builder().cc("recipient@example.com").build()  # same as TO
 
     assert msg["Cc"] is None

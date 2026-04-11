@@ -1,8 +1,3 @@
-"""Shared helpers for API integration tests.
-
-Contains task creation/sign-up helpers, audit log queries, and response key constants.
-"""
-
 import json
 from datetime import timedelta
 from pathlib import Path
@@ -11,7 +6,7 @@ from typing import Any
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.db.context import DatabaseContextHolder
 from ycc_hull.db.entities import AuditLogEntryEntity
 from ycc_hull.utils import get_now
@@ -95,7 +90,6 @@ _GENERATED_DIR = (
 
 
 def _load_member(member_id: int) -> dict[str, Any]:
-    """Build a MemberPublicInfo-shaped dict from the generated seed data."""
     with (_GENERATED_DIR / "Members.json").open(encoding="utf-8") as f:
         members = json.load(f)
     with (_GENERATED_DIR / "Users.json").open(encoding="utf-8") as f:
@@ -159,7 +153,6 @@ def create_task(  # noqa: PLR0913
     contact_id: int = 1,
     urgent: bool = False,
 ) -> dict:
-    """Create a task via the API as admin. Returns the response JSON."""
     FakeAuth.set_helpers_app_admin()
     request = {
         "categoryId": category_id,
@@ -190,7 +183,6 @@ def create_shift_task(  # noqa: PLR0913
     helper_max_count: int = 2,
     captain_required_licence_info_id: int | None = None,
 ) -> dict:
-    """Create a shift task (with starts_at/ends_at) in the future."""
     return create_task(
         client,
         published=published,
@@ -210,7 +202,6 @@ def create_deadline_task(  # noqa: PLR0913
     helper_max_count: int = 2,
     contact_id: int = 1,
 ) -> dict:
-    """Create a deadline task in the future."""
     return create_task(
         client,
         published=published,
@@ -227,7 +218,6 @@ def create_surveillance_shift(
     starts_at: str = f"{future_day}T10:00:00",
     ends_at: str = f"{future_day}T18:00:00",
 ) -> dict:
-    """Create a surveillance shift task (category_id=1, requires licence 9)."""
     return create_task(
         client,
         category_id=1,
@@ -243,7 +233,6 @@ def create_surveillance_shift(
 
 
 def sign_up_helper(client: TestClient, task_id: int, member_id: int = 100) -> dict:
-    """Sign up a member as helper. Returns the response JSON."""
     FakeAuth.set_member(member_id=member_id)
     resp = client.post(f"/api/v1/helpers/tasks/{task_id}/sign-up-as-helper")
     assert resp.status_code == 200
@@ -254,7 +243,6 @@ def sign_up_helper(client: TestClient, task_id: int, member_id: int = 100) -> di
 
 
 def sign_up_captain(client: TestClient, task_id: int, member_id: int = 100) -> dict:
-    """Sign up a member as captain. Returns the response JSON."""
     FakeAuth.set_member(member_id=member_id)
     resp = client.post(f"/api/v1/helpers/tasks/{task_id}/sign-up-as-captain")
     assert resp.status_code == 200
@@ -270,7 +258,6 @@ def sign_up_captain(client: TestClient, task_id: int, member_id: int = 100) -> d
 
 
 def update_request_from(task: dict, **overrides: object) -> dict:
-    """Build an update request from an existing task response, with overrides."""
     request = {
         "categoryId": task["category"]["id"],
         "title": task["title"],
@@ -301,7 +288,6 @@ def update_request_from(task: dict, **overrides: object) -> dict:
 
 
 def get_last_audit_log_entry() -> AuditLogEntryEntity:
-    """Return the most recently created audit log entry."""
     with DatabaseContextHolder.context.session() as session:
         entry = session.scalar(
             select(AuditLogEntryEntity).order_by(AuditLogEntryEntity.id.desc()).limit(1)
@@ -313,7 +299,6 @@ def get_last_audit_log_entry() -> AuditLogEntryEntity:
 
 
 def verify_creation_audit_log_entry(short_description: str) -> None:
-    """Verify audit log for a task creation."""
     audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
     assert audit.principal == "testuser"
@@ -331,7 +316,6 @@ def verify_creation_audit_log_entry(short_description: str) -> None:
 def verify_update_audit_log_entry(
     task_id: int, old_short_description: str, new_short_description: str
 ) -> None:
-    """Verify audit log for a task update."""
     audit = get_last_audit_log_entry()
     assert audit.application.startswith("YCC Hull")
     assert audit.principal == "testuser"
@@ -358,7 +342,6 @@ def verify_update_audit_log_entry(
 
 
 def verify_sign_up_audit_log(task_id: int, action: str) -> None:
-    """Verify audit log for a sign-up action."""
     expected_description = f"Helpers/Tasks/{action}/{task_id}"
     with DatabaseContextHolder.context.session() as session:
         entry = session.scalar(
@@ -378,7 +361,6 @@ def verify_sign_up_audit_log(task_id: int, action: str) -> None:
 
 
 def assert_full_task_response(data: dict) -> None:
-    """Assert the response has the complete HelperTaskDto shape."""
     assert data.keys() == TASK_RESPONSE_KEYS
     assert data["category"].keys() == CATEGORY_RESPONSE_KEYS
     assert data["contact"].keys() == MEMBER_PUBLIC_INFO_KEYS
@@ -391,16 +373,10 @@ def assert_full_task_response(data: dict) -> None:
 
 
 def helper_entry(member_id: int) -> dict[str, Any]:
-    """Build an expected helper/captain entry with ANY for signedUpAt."""
     return {"member": {"id": member_id}, "signedUpAt": ANY}
 
 
 def _assert_dict_subset(actual: dict, expected: dict, *, path: str) -> None:
-    """Assert that every key in expected matches the corresponding actual value.
-
-    For nested dicts, recurse so that partial expected dicts work (e.g. only
-    checking ``{"id": 100}`` against a full member dict).
-    """
     for sub_key, sub_value in expected.items():
         assert sub_key in actual, f"{path} missing key {sub_key!r}: {actual}"
         act = actual[sub_key]
@@ -435,14 +411,6 @@ def assert_task_json(  # noqa: PLR0913
     validated_by: dict | None = None,
     validation_comment: str | None = None,
 ) -> None:
-    """Assert that a task JSON response matches the expected values exactly.
-
-    All core task fields are required. Workflow fields (mark-as-done,
-    validation) default to ``None`` which is the fresh-task state.
-
-    Use ``ANY`` for dynamic values (timestamps) whose exact value is not
-    predictable.
-    """
     assert data.keys() == TASK_RESPONSE_KEYS
 
     # Verify nested shapes
@@ -503,7 +471,6 @@ def assert_task_json(  # noqa: PLR0913
 
 
 def assert_helper_shape(helper: dict, *, member_id: int) -> None:
-    """Assert a helper entry has the correct shape and member id."""
     assert helper.keys() == HELPER_KEYS
     assert helper["member"].keys() == MEMBER_PUBLIC_INFO_KEYS
     assert helper["member"]["id"] == member_id
@@ -511,7 +478,6 @@ def assert_helper_shape(helper: dict, *, member_id: int) -> None:
 
 
 def assert_captain_shape(captain: dict, *, member_id: int) -> None:
-    """Assert a captain entry has the correct shape and member id."""
     assert captain.keys() == HELPER_KEYS
     assert captain["member"].keys() == MEMBER_PUBLIC_INFO_KEYS
     assert captain["member"]["id"] == member_id

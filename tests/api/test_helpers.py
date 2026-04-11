@@ -1,5 +1,3 @@
-"""Helpers API tests."""
-
 from datetime import timedelta
 
 from tests.api.conftest import client
@@ -23,7 +21,7 @@ from tests.api.helpers_test_utils import (
     verify_creation_audit_log_entry,
     verify_update_audit_log_entry,
 )
-from tests.main_test import FakeAuth
+from tests.test_main import FakeAuth
 from ycc_hull.utils import get_now
 
 SHORT_DESCRIPTION = " The Club needs your help for this task! \n "
@@ -393,6 +391,15 @@ def test_find_task_by_id() -> None:
     assert task["helpers"] == []
     assert task["markedAsDoneAt"] is None
     assert task["validatedAt"] is None
+
+
+def test_find_task_by_id_forbidden_for_member_different_year() -> None:
+    FakeAuth.set_member()
+
+    response = client.get("/api/v1/helpers/tasks/2001")
+
+    assert response.status_code == 403
+    assert response.json() == {"detail": "You do not have permission to view this task"}
 
 
 def test_find_task_by_id_not_found() -> None:

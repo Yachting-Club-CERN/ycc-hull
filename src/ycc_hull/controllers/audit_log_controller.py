@@ -68,10 +68,8 @@ class AuditLogController(BaseController):
 
             self._logger.info(
                 "Deleted %d audit log entries older than %s, user: %s",
-                result.rowcount,  # type: ignore[unresolved-attribute]
+                result.rowcount,  # ty: ignore[unresolved-attribute]
                 request.cutoff_date,
                 user.username,
             )
-            self._audit_log(
-                session, user, f"AuditLog/DeleteEntriesBefore/{request.cutoff_date}"
-            )
+            self._audit_log(user, f"AuditLog/DeleteEntriesBefore/{request.cutoff_date}")

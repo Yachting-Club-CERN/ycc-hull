@@ -1,5 +1,3 @@
-"""Helpers API utilities for load tests."""
-
 import random
 from datetime import timedelta
 
@@ -11,7 +9,6 @@ from ycc_hull.utils import get_now
 
 
 def get_task_categories(client: HttpSession, access_token: str) -> list[dict]:
-    """Fetch all task categories."""
     response = client.get(
         f"{API_BASE_URL}/helpers/task-categories",
         headers=create_auth_header(access_token),
@@ -25,7 +22,6 @@ def get_task_categories(client: HttpSession, access_token: str) -> list[dict]:
 
 
 def get_tasks(client: HttpSession, access_token: str) -> list[dict]:
-    """Fetch all helper tasks."""
     response = client.get(
         f"{API_BASE_URL}/helpers/tasks",
         params={"year": get_now().year},
@@ -40,7 +36,6 @@ def get_tasks(client: HttpSession, access_token: str) -> list[dict]:
 
 
 def get_task(client: HttpSession, task_id: int, access_token: str) -> dict:
-    """Fetch a single helper task by ID."""
     response = client.get(
         f"{API_BASE_URL}/helpers/tasks/{task_id}",
         headers=create_auth_header(access_token),
@@ -54,7 +49,6 @@ def get_task(client: HttpSession, task_id: int, access_token: str) -> dict:
 
 
 def create_task(client: HttpSession, contact_id: int, access_token: str) -> dict:
-    """Create a helper task via the API."""
     category_id = random.choice(  # noqa: S311
         get_task_categories(client, access_token)
     )["id"]
@@ -90,7 +84,6 @@ def create_task(client: HttpSession, contact_id: int, access_token: str) -> dict
 
 
 def sign_up_as_captain(client: HttpSession, task_id: int, access_token: str) -> dict:
-    """Sign up as captain for a task."""
     response = client.post(
         f"{API_BASE_URL}/helpers/tasks/{task_id}/sign-up-as-captain",
         headers=create_auth_header(access_token),
@@ -105,7 +98,6 @@ def sign_up_as_captain(client: HttpSession, task_id: int, access_token: str) -> 
 
 
 def sign_up_as_helper(client: HttpSession, task_id: int, access_token: str) -> dict:
-    """Sign up as helper for a task."""
     response = client.post(
         f"{API_BASE_URL}/helpers/tasks/{task_id}/sign-up-as-helper",
         headers=create_auth_header(access_token),
