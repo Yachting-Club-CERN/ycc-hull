@@ -28,7 +28,7 @@ dependencies = [
 
     # REST API
     "fastapi>=0.135.3",
-    "python-multipart>=0.0.22",
+    "python-multipart>=0.0.26",
     "uvicorn[standard]>=0.42.0",
 
     # DB
